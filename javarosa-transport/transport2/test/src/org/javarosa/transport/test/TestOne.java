@@ -28,10 +28,10 @@ public class TestOne {
 
 	// public TestOne(int arg0, String arg1) {
 	// super(arg0, arg1);
-	//		 
-	// }
-
-	public void test(int i) {
+		svc.registerTransportMethod(new HTTPTransport());
+		svc.registerTransportMethod(new SMSTransport());
+		svc.registerTransportMethod(new BluetoothTransport());
+		
 		String url = "http://www.google.co.tz/search?hl=en&q=";
 		try {
 			Connector.open(url);
