@@ -24,8 +24,8 @@ import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
+import org.javarosa.user.api.AddUserState;
 import org.javarosa.user.model.User;
-import org.javarosa.user.utility.LoginContext;
 
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
@@ -97,6 +97,7 @@ public class LoginForm extends FramedForm {
 			}
 			
 			tempUser = (User)users.read(lowestID);
+
 		}
 		initLoginControls(tempUser.getUsername());
 
@@ -179,7 +180,7 @@ public class LoginForm extends FramedForm {
 				return true;
 			}
 		}
-		
+
 		return false;
 
 	}
@@ -188,10 +189,10 @@ public class LoginForm extends FramedForm {
 	 * @param passwordMode
 	 */
 	public void setPasswordMode(String passwordMode) {
-		if (LoginContext.PASSWORD_FORMAT_NUMERIC.equals(passwordMode)) {
+		if (AddUserState.PASSWORD_FORMAT_NUMERIC.equals(passwordMode)) {
 			this.passwordField.setConstraints(TextField.PASSWORD
 					| TextField.NUMERIC);
-		} else if (LoginContext.PASSWORD_FORMAT_ALPHA_NUMERIC
+		} else if (AddUserState.PASSWORD_FORMAT_ALPHA_NUMERIC
 				.equals(passwordMode)) {
 			this.passwordField.setConstraints(TextField.PASSWORD);
 		}

@@ -24,7 +24,7 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
-import org.javarosa.entity.activity.EntitySelectState;
+import org.javarosa.entity.api.EntitySelectState;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.FramedForm;
@@ -215,15 +215,15 @@ public class EntitySelectView extends FramedForm implements ItemStateListener, C
 				UiAccess.setStyle(i);
 				break;
 			case EVEN:
-				//#style ${esstyle}SelectEvenRow, patselSelectedRow
+				//#style ${esstyle}SelectEvenRow, patselEvenRow
 				UiAccess.setStyle(i);
 				break;
 			case ODD:
-				//#style ${esstyle}SelectOddRow, patselEvenRow
+				//#style ${esstyle}SelectOddRow, patselOddRow
 				UiAccess.setStyle(i);
 				break;
 			case SELECTED:
-				//#style ${esstyle}SelectSelectedRow, patselOddRow
+				//#style ${esstyle}SelectSelectedRow, patselSelectedRow
 				UiAccess.setStyle(i);
 				break;
 			}
