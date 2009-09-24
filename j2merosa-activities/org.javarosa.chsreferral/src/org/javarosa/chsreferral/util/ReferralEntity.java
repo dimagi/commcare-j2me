@@ -19,16 +19,12 @@
  */
 package org.javarosa.chsreferral.util;
 
-import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 
 import org.javarosa.chsreferral.model.PatientReferral;
 import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.services.storage.utilities.RMSUtility;
-import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.entity.model.IEntity;
-import org.javarosa.xpath.expr.XPathFuncExpr;
 
 /**
  * @author Clayton Sims
@@ -39,8 +35,8 @@ public class ReferralEntity implements IEntity {
 	
 	protected int recordId;
 	String id;
-	String type;
-	Date date;
+	protected String type;
+	protected Date date;
 	boolean pending;
 	
 	/* (non-Javadoc)
@@ -62,16 +58,8 @@ public class ReferralEntity implements IEntity {
 	/* (non-Javadoc)
 	 * @see org.javarosa.entity.model.IEntity#fetchRMS(org.javarosa.core.services.storage.utilities.RMSUtility)
 	 */
-	public Object fetchRMS(RMSUtility rmsu) {
-		PatientReferral r = new PatientReferral();
-		try {
-			rmsu.retrieveFromRMS(recordId, r);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (DeserializationException e) {
-			e.printStackTrace();
-		}
-		return r;
+	public Object fetch(IStorageUtility referrals) {
+		return (PatientReferral)referrals.read(recordId);
 	}
 
 	/* (non-Javadoc)
@@ -158,7 +146,7 @@ public class ReferralEntity implements IEntity {
 	 */
 	public void readEntity(Object o) {
 		PatientReferral r = (PatientReferral)o;
-		this.recordId = r.getRecordId();
+		this.recordId = r.getID();
 		this.type = r.getType();
 		this.date = r.getDateReferred();
 		this.pending = r.isPending();
