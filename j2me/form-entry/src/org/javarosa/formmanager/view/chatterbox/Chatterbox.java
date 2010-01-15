@@ -33,7 +33,6 @@ import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
-import org.javarosa.formmanager.utility.FormEntryModelListener;
 import org.javarosa.formmanager.utility.SortedIndexSet;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
@@ -51,7 +50,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.UiAccess;
 
 
-public class Chatterbox extends FramedForm implements CommandListener{
+public class Chatterbox extends FramedForm implements CommandListener, IFormEntryView{
 	private static int LANGUAGE_CYCLE_KEYCODE = Canvas.KEY_POUND;
 	
     private static final String PROMPT_REQUIRED_QUESTION = Localization.get("view.sending.RequiredQuestion");
@@ -358,7 +357,7 @@ public class Chatterbox extends FramedForm implements CommandListener{
     
 
 	private void createHeaderForElement(FormIndex questionIndex) {
-		String headerText = model.getEventTitle(questionIndex);
+		String headerText = model.getQuestionPrompt(questionIndex).getLongText();
 		if(headerText != null) {
 			ChatterboxWidget headerWidget = widgetFactory.getNewLabelWidget(questionIndex, headerText);
 			//If there is no valid header, there's no valid header. Possibly no label.
@@ -386,7 +385,7 @@ public class Chatterbox extends FramedForm implements CommandListener{
     	} else if (model.getForm().explodeIndex(questionIndex).lastElement() instanceof GroupDef) {
     		//do nothing
     	} else if (model.isRelevant(questionIndex)) { //FIXME relevancy check
-    		cw = widgetFactory.getWidget(questionIndex, model.getForm(),
+    		cw = widgetFactory.getWidget(questionIndex, model,
     									  expanded ? ChatterboxWidget.VIEW_EXPANDED
     									    	   : ChatterboxWidget.VIEW_COLLAPSED);
     	}
@@ -528,7 +527,7 @@ public class Chatterbox extends FramedForm implements CommandListener{
     private void commitAndSave () {
        	ChatterboxWidget frame = (activeIsInterstitial ? null : activeFrame());
     	if (frame != null) {
-    		controller.questionAnswered(this.model.getCurrentFormIndex(), frame.getData());
+    		controller.answerQuestion(this.model.getCurrentFormIndex(), frame.getData());
     	}
     	//TODO: DEAL;
     	//controller.save();
@@ -546,11 +545,11 @@ public class Chatterbox extends FramedForm implements CommandListener{
     		}
     		controller.stepToNextEvent();
     	} else {
-    		int status = controller.questionAnswered(this.model.getCurrentFormIndex(), frame.getData());
-	    	if (status == FormEntryController.QUESTION_REQUIRED_BUT_EMPTY) {
+    		int status = controller.answerQuestion(this.model.getCurrentFormIndex(), frame.getData());
+	    	if (status == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 	        	J2MEDisplay.showError(null, PROMPT_REQUIRED_QUESTION);
-	    	} else if (status == FormEntryController.QUESTION_CONSTRAINT_VIOLATED) {
-	    		String msg = model.getQuestionPrompt().getConstraintText();
+	    	} else if (status == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
+	    		String msg = model.getCurrentQuestionPrompt().getConstraintText();
 	    		J2MEDisplay.showError(null, msg != null ? msg : PROMPT_DEFAULT_CONSTRAINT_VIOL);
 	     	}
     	}
