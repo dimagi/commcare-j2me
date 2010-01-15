@@ -33,6 +33,7 @@ import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
+import org.javarosa.formmanager.utility.FormEntryModelListener;
 import org.javarosa.formmanager.utility.SortedIndexSet;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
@@ -160,6 +161,7 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
     	} else {
     		//Default Mode: Start at first question
     		controller.stepToNextEvent();
+    		jumpToQuestion(model.getCurrentFormIndex());
     	}
     	this.currentlyActiveContainer = this.container;
     }
@@ -207,6 +209,19 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
         //#style progressbar
         progressBar = new Gauge(null, false, model.getNumQuestions(), 0);
         append(Graphics.BOTTOM, progressBar);
+    }
+    
+    private void step(int event) {
+    	switch(event) {
+    	case FormEntryController.BEGINNING_OF_FORM_EVENT:
+    		break;
+    	case FormEntryController.END_OF_FORM_EVENT:
+    		formComplete();
+    		break;
+    		default:
+    			jumpToQuestion(model.getCurrentFormIndex());
+    			break;
+    	}
     }
     
     //make given question active; deal with all necessary questions in between
@@ -551,6 +566,8 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
 	    	} else if (status == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
 	    		String msg = model.getCurrentQuestionPrompt().getConstraintText();
 	    		J2MEDisplay.showError(null, msg != null ? msg : PROMPT_DEFAULT_CONSTRAINT_VIOL);
+	     	} else {
+	     		step(controller.stepToNextEvent());
 	     	}
     	}
     }
