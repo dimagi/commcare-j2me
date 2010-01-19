@@ -2,22 +2,22 @@ package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
 import javax.microedition.lcdui.Command;
 
-import org.javarosa.core.api.Constants;
 import org.javarosa.core.services.locale.Localization;
 
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.StyleSheet;
 
 public class NewRepeatScreen extends FramedForm {
 
-	public Command noCommand = new Command(Constants.ACTIVITY_CANCEL,
+	public static Command noCommand = new Command("Yes",
 			Command.ITEM, 1);
-	private Command yesCommand = new Command(Constants.ACTIVITY_COMPLETE,
+	public static Command yesCommand = new Command("No",
 			Command.ITEM, 1);
 
-	public NewRepeatScreen() {
-		super("Add new repeat?");//Localization.get("formview.repeat.addNew"));
+	public NewRepeatScreen(String title) {
+		super(title, StyleSheet.getStyle("OneQPS_Form_Flash"));//Localization.get("formview.repeat.addNew"));
 		createView();
 		addCommands();
 	}

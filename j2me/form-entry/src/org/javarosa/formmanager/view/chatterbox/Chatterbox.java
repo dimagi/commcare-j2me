@@ -142,6 +142,10 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
     	J2MEDisplay.setView(this);
     }
     
+    public void show (FormIndex index) {
+    	J2MEDisplay.setView(this);
+    }
+    
     private void initGUI () {
     	setUpCommands();
     	initProgressBar();
@@ -180,7 +184,7 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
         //next command is added on a per-widget basis
         
         //TODO: READ ONLY FLAG!
-        if(false) {
+        if(true) {
             addCommand(backCommand);
             addCommand(exitSaveCommand);
             addCommand(saveCommand);
@@ -445,7 +449,7 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
 				Thread.sleep(1000); //let them bask in their completeness
 			} catch (InterruptedException ie) { }
 				
-			controller.saveAndExit();
+			controller.saveAndExit(true);
     	} else { 
     		
     	}
@@ -490,13 +494,11 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
     	
     	if (command == backCommand) {
     		System.out.println("back");
-    		controller.stepToPreviousEvent();
+    		step(controller.stepToPreviousEvent());
     	} else if (command == exitNoSaveCommand) {
     		controller.abort();
     	} else if (command == exitSaveCommand) {
     		commitAndSave();
-    		//controller.exit();
-    		//TODO: EXIT?
     	} else if (command == saveCommand) {
     		commitAndSave();
     	} else if (command.getLabel() == Constants.ACTIVITY_TYPE_GET_IMAGES) {
@@ -546,7 +548,7 @@ public class Chatterbox extends FramedForm implements CommandListener, IFormEntr
     		controller.answerQuestion(this.model.getCurrentFormIndex(), frame.getData());
     	}
     	//TODO: DEAL;
-    	//controller.save();
+    	controller.saveAndExit(true);
     }
     
     public void questionAnswered () {

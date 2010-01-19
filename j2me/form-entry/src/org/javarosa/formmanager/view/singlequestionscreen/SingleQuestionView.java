@@ -16,7 +16,6 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen;
 
-import org.javarosa.core.api.Constants;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.IFormElement;
@@ -33,28 +32,25 @@ import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.NewRepeatScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.SingleQuestionScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.SingleQuestionScreenFactory;
+import org.javarosa.formmanager.view.summary.FormSummaryState;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.FramedForm;
-import de.enough.polish.ui.Item;
-import de.enough.polish.ui.ItemCommandListener;
-import de.enough.polish.ui.List;
 
-public class SingleQuestionScreenManager extends FramedForm implements
-		IFormEntryView, CommandListener, ItemCommandListener {
+public class SingleQuestionView extends FramedForm implements
+		IFormEntryView, CommandListener {
 	private JrFormEntryController controller;
 	private FormEntryModel model;
 
 	private SingleQuestionScreen currentQuestionScreen;
 	private boolean goingForward;
-	private FormViewScreen formView;
 	private NewRepeatScreen repeatScreen;
 
 	// GUI elements
-	public SingleQuestionScreenManager(JrFormEntryController controller) {
+	public SingleQuestionView(JrFormEntryController controller) {
 		super(controller.getModel().getFormTitle());
 		this.controller = controller;
 		this.model = controller.getModel();
@@ -77,7 +73,6 @@ public class SingleQuestionScreenManager extends FramedForm implements
 			currentQuestionScreen.addLanguageCommands(model.getLanguages());
 		}
 		currentQuestionScreen.setCommandListener(this);
-		currentQuestionScreen.setItemCommandListner(this);
 		return currentQuestionScreen;
 	}
 
@@ -85,14 +80,18 @@ public class SingleQuestionScreenManager extends FramedForm implements
 	}
 
 	public void show() {
-		showFormViewScreen();
+		showFormSummary();
+	}
+	
+	public void show(FormIndex index) {
+		controller.jumpToIndex(index);
+		refreshView();
 	}
 
-	private void showFormViewScreen() {
+	private void showFormSummary() {
 		controller.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-		formView = new FormViewScreen(this.model);
-		formView.setCommandListener(this);
-		J2MEDisplay.setView(formView);
+		FormSummaryState summaryState = new FormSummaryState(controller);
+		summaryState.start();
 	}
 
 	public void refreshView() {
@@ -102,11 +101,10 @@ public class SingleQuestionScreenManager extends FramedForm implements
 	}
 
 	public void commandAction(Command command, Displayable arg1) {
-		if (arg1 == formView) {
-			formViewCommands(command);
-		} else if (arg1 == repeatScreen){
-			if (command.getLabel().equals(Constants.ACTIVITY_COMPLETE)){
+		if (arg1 == repeatScreen){
+			if (command == NewRepeatScreen.yesCommand){
 				controller.newRepeat(model.getCurrentFormIndex());
+				controller.stepToNextEvent();
 				refreshView();
 			} else {
 				processModelEvent(controller.stepToNextEvent());
@@ -163,12 +161,12 @@ public class SingleQuestionScreenManager extends FramedForm implements
 				}
 			}
 
-		}
+		} 
 	}
 
 	private void viewAnswers() {
 		controller.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-		showFormViewScreen();
+		showFormSummary();
 	}
 
 	private void switchViewLanguage() {
@@ -180,7 +178,6 @@ public class SingleQuestionScreenManager extends FramedForm implements
 	}
 
 	private void processModelEvent(int event) {
-		System.out.println("event = " + event);
 		int nextEvent = -1;
 		switch (event) {
 		case FormEntryController.BEGINNING_OF_FORM_EVENT:
@@ -199,7 +196,8 @@ public class SingleQuestionScreenManager extends FramedForm implements
 					: controller.stepToPreviousEvent();
 			break;
 		case FormEntryController.PROMPT_NEW_REPEAT_EVENT:
-			repeatScreen = new NewRepeatScreen();
+			FormEntryCaption[] hierachy = model.getCaptionHierarchy(model.getCurrentFormIndex());
+			repeatScreen = new NewRepeatScreen("Add a new " + hierachy[hierachy.length -1].getLongText());
 			repeatScreen.setCommandListener(this);
 			J2MEDisplay.setView(repeatScreen);
 			break;
@@ -211,38 +209,6 @@ public class SingleQuestionScreenManager extends FramedForm implements
 		}
 		if (nextEvent > 0)
 			processModelEvent(nextEvent);
-	}
-
-	private void formViewCommands(Command command) {
-		if (command == FormViewScreen.backCommand) {
-			this.show();
-		} else if (command == FormViewScreen.exitNoSaveCommand) {
-			controller.abort();
-		} else if (command == FormViewScreen.exitSaveCommand) {
-			controller.saveAndExit();
-		} else if (command == FormViewScreen.sendCommand) {
-			int counter = countUnansweredQuestions(true);
-			if (counter > 0) {
-				String txt = "There are unanswered compulsory questions and must be completed first to proceed";
-				J2MEDisplay.showError("Question Required!", txt);
-			} else {
-				// TODO: FIXME
-				// model.setFormComplete();
-				// controller.exit();
-			}
-		} else if (command == List.SELECT_COMMAND) {
-			int i = formView.getSelectedIndex();
-			FormIndex index = formView.indexHash.get(i);
-			int event = controller.jumpToIndex(index);
-			this.goingForward = true;
-			processModelEvent(event);
-		}
-	}
-
-	public void commandAction(Command c, Item item) {
-		if (c == SingleQuestionScreen.nextItemCommand) {
-			answerQuestion();
-		}
 	}
 
 	private void answerQuestion() {
