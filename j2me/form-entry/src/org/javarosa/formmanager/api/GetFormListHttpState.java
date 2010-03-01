@@ -16,10 +16,13 @@
 
 package org.javarosa.formmanager.api;
 
+import java.io.UnsupportedEncodingException;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 
 import org.javarosa.core.api.State;
+import org.javarosa.core.log.FatalException;
 import org.javarosa.formmanager.api.transitions.HttpFetchTransitions;
 import org.javarosa.formmanager.view.ProgressScreen;
 import org.javarosa.j2me.log.CrashHandler;
@@ -103,14 +106,23 @@ public abstract class GetFormListHttpState implements State,HandledCommandListen
 		
 	}
 
-	public void process(String response) {
+	public void process(byte[] response) {
+		String sResponse = null;
+		if (response != null) {
+			try {
+				sResponse = new String(response, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				throw new FatalException("can't happen; utf8 must be supported", e);
+			}
+		}
+		
 		//FIXME - resolve the responses to be received from the webserver
-		if(response ==null){
+		if(sResponse ==null){
 			//TODO: I don't think this is even possible.
 			fail("Null Response from server");
-		}else if(response.equals("WebServerResponses.GET_LIST_ERROR")){
+		}else if(sResponse.equals("WebServerResponses.GET_LIST_ERROR")){
 			fail("Get List Error from Server");
-		}else if(response.equals("WebServerResponses.GET_LIST_NO_SURVEY")){
+		}else if(sResponse.equals("WebServerResponses.GET_LIST_NO_SURVEY")){
 			fail("No survey error from server");
 		}else{
 			fetched();

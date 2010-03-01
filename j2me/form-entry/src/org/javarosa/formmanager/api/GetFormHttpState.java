@@ -92,10 +92,10 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
 		}
 	}
 	
-	public void process(String response) {
+	public void process(byte[] response) {
 		IStorageUtility formStorage = StorageManager.getStorage(FormDef.STORAGE_KEY);
 
-		bin = new ByteArrayInputStream(response.getBytes());
+		bin = new ByteArrayInputStream(response);
 		try {
 			formStorage.write(XFormUtils.getFormFromInputStream(bin));
 		} catch (StorageFullException e) {
