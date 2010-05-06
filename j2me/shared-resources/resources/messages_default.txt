@@ -87,7 +87,7 @@ menu.SendToNewServer=Send to new server
 menu.Scan=Scan
 menu.SendData=Send Data
 menu.send.all=Send All Unsent
-menu.send.all.val=Send All Unsent(${0})
+menu.send.all.val=Send All Unsent (${0})
 menu.Edit=Edit
 menu.Review=Review
 menu.Refresh=Refresh
@@ -334,3 +334,17 @@ case.status=Currently Open
 yes=Yes
 no=No
 date.unknown=unknown
+
+log.submit.url=Log Submit URL
+log.submit.never=Disable Auto-Send
+log.submit.short=Send Device Log
+log.submit.full=Send Full Diagnostic
+log.submit.nigthly=Nightly Log Format
+log.submit.weekly=Weekly Log Format
+log.submit.next.daily=Next Daily Log
+log.submit.next.weekly=Next Weekly Log
+
+user.create.header=New User
+
+sending.status.success=Successfully Submitted. Today we have received ${0} forms from you.
+sending.status.problem.datasafe=Successfully Submitted. Your data is safe, but we made a small mistake. We're working on it.
