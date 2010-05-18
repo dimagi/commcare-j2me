@@ -66,6 +66,8 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
 	}
 	
 	public boolean focus () {
+		System.out.println("Focus() called in SelectOneEntryWidget");
+		getAudioAndPlay(prompt,null);
 		choiceGroup().focusChild(choiceGroup().getSelectedIndex());
 		return true;
 	}
