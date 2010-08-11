@@ -77,9 +77,8 @@ public class CollapsedWidget implements IWidgetStyle {
 		
 		prompt.setText(fep.getShortText());
 		
-		IAnswerData data = fep.getAnswerValue();
-		if (data != null) {
-			String value = data.getDisplayText();
+		String value = fep.getAnswerText();
+		if (value != null) {
 			if(fep.getControlType() == Constants.CONTROL_SECRET) {
 				String obfuscated = "";
 				for(int i =0 ; i < value.length() ; ++i ) { 

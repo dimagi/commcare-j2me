@@ -16,7 +16,6 @@
 
 package org.javarosa.form.api;
 
-import java.util.Hashtable;
 import java.util.Vector;
 
 import org.javarosa.core.model.Constants;
@@ -31,9 +30,8 @@ import org.javarosa.core.model.data.SelectMultiData;
 import org.javarosa.core.model.data.SelectOneData;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.core.model.instance.TreeElement;
-import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.services.locale.Localizer;
+import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.util.NoLocalizedTextException;
 import org.javarosa.core.util.UnregisteredLocaleException;
 import org.javarosa.formmanager.view.IQuestionWidget;
@@ -153,10 +151,27 @@ public class FormEntryPrompt extends FormEntryCaption {
    
 
     public String getAnswerText() {
-        if (mTreeElement.getValue() == null)
+    	IAnswerData data = this.getAnswerValue();
+    	
+        if (data == null)
             return null;
-        else
-            return mTreeElement.getValue().getDisplayText();
+        else {
+        	//csims@dimagi.com - Aug 11, 2010 - Added special logic to
+        	//capture and display the appropriate value for selections
+        	//and multi-selects.
+        	if(data instanceof SelectOneData) {
+        		return this.getSelectionText((Selection)data.getValue());
+        	} else if(data  instanceof SelectMultiData) {
+        		String returnValue = "";
+        		Vector<Selection> values = (Vector<Selection>)data.getValue();
+        		for(Selection value : values) {
+        			returnValue += this.getSelectionText(value) + " ";
+        		}
+        		return returnValue;
+        	} else {
+        		return data.getDisplayText();
+        	}
+        }
     }
 
     public String getConstraintText() {
