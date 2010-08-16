@@ -202,6 +202,14 @@ focused{
 		orientation: all;
 	}	
 }
+.cgFocused extends focused {
+    before: url (focused.png);
+    background-color: yellow;
+}
+
+.cgItemFocused {
+   focused-style: .cgFocused;
+}
 	
 .textBox {
 	label-style: choiceGroupLabel;
