@@ -32,6 +32,8 @@ public class Harness {
 	public static final int MODE_CSV_IMPORT = 5;
 	
 	public static void main(String[] args) {
+		System.out.println("version : " +
+		         Harness.class.getPackage().getImplementationVersion() );
 		int mode = -1;
 		
 		if (args.length == 0) {
