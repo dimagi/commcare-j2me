@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 
 import org.javarosa.core.model.FormDef;
+import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.data.GeoPointData;
 import org.javarosa.core.model.instance.FormInstance;
@@ -74,13 +75,14 @@ LocationReceiver {
 	public void formEntrySaved(FormDef form, FormInstance instanceData, boolean formWasCompleted) {
 		System.out.println("form is complete: " + formWasCompleted);
 		if (formWasCompleted) {
+			final SubmissionProfile profile = form.getSubmissionProfile();
 			
 			CompletedFormOptionsState completed = new CompletedFormOptionsState(instanceData) {
 
 				public void sendData(FormInstance data) {
 					JRDemoFormTransportState send;
 					try {
-						send = new JRDemoFormTransportState(data) {
+						send = new JRDemoFormTransportState(data, profile) {
 
 							public void done() {
 								JRDemoUtil.goToList(cameFromFormList);
