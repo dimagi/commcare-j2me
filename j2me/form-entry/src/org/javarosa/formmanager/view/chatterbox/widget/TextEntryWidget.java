@@ -17,6 +17,8 @@
 package org.javarosa.formmanager.view.chatterbox.widget;
 
 import org.javarosa.core.model.Constants;
+import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
+import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
@@ -34,6 +36,8 @@ public class TextEntryWidget extends ExpandedWidget {
 	public TextEntryWidget () {
 		//#if polish.TextField.useDirectInput == true && !polish.blackberry
 		this(TextField.MODE_UPPERCASE);
+		//#else 
+		//# this(TextField.ANY); 
 		//#endif
 	}
 	
@@ -60,6 +64,25 @@ public class TextEntryWidget extends ExpandedWidget {
 	}
 	
 	protected Item getEntryWidget (FormEntryPrompt prompt) {
+		
+		//See if we can get the max length of the constraint to limit entry options
+		try {
+			StringLengthRangeHint hint = new StringLengthRangeHint();
+			prompt.requestConstraintHint(hint);
+			
+			StringData maxexample = hint.getMax();
+			if(maxexample != null) {
+				int length = ((String)maxexample.getValue()).length();
+				if(!hint.isMaxInclusive()) {
+					length = -1;
+				}
+				textField.setMaxSize(length);
+			}
+		} catch (UnpivotableExpressionException e) {
+			// No big deal
+		}
+		
+		
 		return wec.wrapEntryWidget(textField);
 	}
 	

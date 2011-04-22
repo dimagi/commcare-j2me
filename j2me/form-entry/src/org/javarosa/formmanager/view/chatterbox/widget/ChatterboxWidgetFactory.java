@@ -21,6 +21,8 @@ import java.util.Vector;
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
+import org.javarosa.core.model.data.DecimalData;
+import org.javarosa.core.model.data.LongData;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.util.externalizable.PrototypeFactoryDeprecated;
 import org.javarosa.form.api.FormEntryCaption;
@@ -81,15 +83,15 @@ public class ChatterboxWidgetFactory {
 			switch (dataType) {
 			case Constants.DATATYPE_INTEGER:
 				expandedStyle = new NumericEntryWidget();
-				if(controlType == Constants.CONTROL_SECRET) {
-					((NumericEntryWidget)expandedStyle).setConstraint(TextField.PASSWORD);
-				}
+				pw(controlType, (NumericEntryWidget)expandedStyle);
+				break;
+			case Constants.DATATYPE_LONG:
+				expandedStyle = new NumericEntryWidget(false, new LongData());
+				pw(controlType, (NumericEntryWidget)expandedStyle);
 				break;
 			case Constants.DATATYPE_DECIMAL:
-				expandedStyle = new NumericEntryWidget(true);
-				if(controlType == Constants.CONTROL_SECRET) {
-					((NumericEntryWidget)expandedStyle).setConstraint(TextField.PASSWORD);
-				}
+				expandedStyle = new NumericEntryWidget(true, new DecimalData());
+				pw(controlType, (NumericEntryWidget)expandedStyle);
 				break;
 			case Constants.DATATYPE_DATE_TIME:
 				expandedStyle = new DateEntryWidget(true);
@@ -157,6 +159,12 @@ public class ChatterboxWidgetFactory {
 		ChatterboxWidget widget = new ChatterboxWidget(cbox, prompt, initViewState, collapsedStyle, expandedStyle);
 		prompt.register(widget);
 		return widget;
+	}
+	
+	private void pw(int controlType, NumericEntryWidget w) {
+		if(controlType == Constants.CONTROL_SECRET) {
+			w.setConstraint(TextField.PASSWORD);
+		}
 	}
 	
     public ChatterboxWidget getNewRepeatWidget (FormIndex index, FormEntryModel model, Chatterbox cbox) {

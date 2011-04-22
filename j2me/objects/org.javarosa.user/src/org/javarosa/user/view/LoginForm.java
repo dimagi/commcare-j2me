@@ -24,7 +24,7 @@ import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.SHA1;
-import org.javarosa.user.api.AddUserController;
+import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
 
 import de.enough.polish.math.BigInteger;
@@ -156,6 +156,7 @@ public class LoginForm extends FramedForm {
 		// put the extra text if it's been set
 		if(this.extraText != null) {
 			for (int i = 0; i < extraText.length; i++) {
+				//#style loginExtraText?
 				append(this.extraText[i]);
 			}
 		}
@@ -239,12 +240,12 @@ public class LoginForm extends FramedForm {
 	 * @param passwordMode
 	 */
 	public void setPasswordMode(String passwordMode) {
-		if (AddUserController.PASSWORD_FORMAT_NUMERIC.equals(passwordMode)) {
+		if (CreateUserController.PASSWORD_FORMAT_NUMERIC.equals(passwordMode)) {
 			if(passwordField.getConstraints() != (TextField.PASSWORD | TextField.NUMERIC)) {
 			this.passwordField.setConstraints(TextField.PASSWORD
 					| TextField.NUMERIC);
 			}
-		} else if (AddUserController.PASSWORD_FORMAT_ALPHA_NUMERIC
+		} else if (CreateUserController.PASSWORD_FORMAT_ALPHA_NUMERIC
 				.equals(passwordMode)) {
 			if(this.passwordField.getConstraints() != TextField.PASSWORD) {
 				this.passwordField.setConstraints(TextField.PASSWORD);

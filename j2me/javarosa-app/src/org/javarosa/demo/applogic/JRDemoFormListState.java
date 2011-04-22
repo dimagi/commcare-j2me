@@ -8,7 +8,7 @@ import org.javarosa.demo.activity.formlist.JRDemoFormListTransitions;
 import org.javarosa.demo.properties.DemoAppProperties;
 import org.javarosa.demo.util.JRDemoUtil;
 import org.javarosa.services.properties.api.PropertyUpdateState;
-import org.javarosa.user.api.AddUserState;
+import org.javarosa.user.api.CreateUserState;
 import org.javarosa.user.model.User;
 
 public class JRDemoFormListState implements JRDemoFormListTransitions, State {
@@ -41,12 +41,12 @@ public class JRDemoFormListState implements JRDemoFormListTransitions, State {
 	}
 
 	public void addUser() {
-		new AddUserState () {
+		new CreateUserState () {
 			public void cancel() {
 				new JRDemoFormListState().start();
 			}
 
-			public void userAdded(User newUser) {
+			public void userCreated(User newUser) {
 				new JRDemoFormListState().start();
 			}
 		}.start();

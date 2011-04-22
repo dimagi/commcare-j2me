@@ -14,9 +14,7 @@ import org.javarosa.j2me.reference.HttpRoot;
 import org.javarosa.j2me.storage.rms.RMSStorageUtilityIndexed;
 import org.javarosa.services.transport.impl.TransportMessageSerializationWrapper;
 import org.javarosa.services.transport.impl.TransportMessageStore;
-import org.javarosa.services.transport.impl.binarysms.BinarySMSTransportMessage;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
-import org.javarosa.services.transport.impl.sms.SMSTransportMessage;
 
 /**
  * @author ctsims
@@ -28,15 +26,19 @@ public class TransportManagerModule implements IModule {
 	 * @see org.javarosa.core.api.IModule#registerModule()
 	 */
 	public void registerModule() {
-		String[] prototypes = new String[] { SimpleHttpTransportMessage.class.getName(), SMSTransportMessage.class.getName(), BinarySMSTransportMessage.class.getName(), TransportMessageSerializationWrapper.class.getName()};
-		PrototypeManager.registerPrototypes(prototypes);
-		IStorageFactory f = new IStorageFactory () {
-			public IStorageUtility newStorage(String name, Class type) {
-				return new RMSStorageUtilityIndexed(name, type);
-			}
-		} ;
-		StorageManager.registerStorage(TransportMessageStore.Q_STORENAME, new WrappingStorageUtility(TransportMessageStore.Q_STORENAME,new TransportMessageSerializationWrapper(),f));
-		StorageManager.registerStorage(TransportMessageStore.RECENTLY_SENT_STORENAME, new WrappingStorageUtility(TransportMessageStore.RECENTLY_SENT_STORENAME,new TransportMessageSerializationWrapper(),f));
+		
+		//Note: Do not remove fully qualified names here, otherwise the imports mess up the polish preprocessing 
+		
+		//#if polish.api.wmapi
+		String[] prototypes = new String[] { SimpleHttpTransportMessage.class.getName(), org.javarosa.services.transport.impl.sms.SMSTransportMessage.class.getName(), org.javarosa.services.transport.impl.binarysms.BinarySMSTransportMessage.class.getName(), TransportMessageSerializationWrapper.class.getName()};
+		//#else
+		//# String[] prototypes = new String[] { SimpleHttpTransportMessage.class.getName(), TransportMessageSerializationWrapper.class.getName()};
+		//#endif
+		
+		PrototypeManager.registerPrototypes(prototypes);	
+		
+		StorageManager.registerWrappedStorage(TransportMessageStore.Q_STORENAME, TransportMessageStore.Q_STORENAME, new TransportMessageSerializationWrapper());
+		StorageManager.registerWrappedStorage(TransportMessageStore.RECENTLY_SENT_STORENAME, TransportMessageStore.RECENTLY_SENT_STORENAME, new TransportMessageSerializationWrapper());
 		ReferenceManager._().addReferenceFactory(new HttpRoot());
 		TransportService.init();
 	}
