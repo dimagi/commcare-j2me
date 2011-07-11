@@ -197,9 +197,8 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				try {
 					controller.suspendActivity(FormEntryState.MEDIA_LOCATION);
 				} catch (UnavailableServiceException ue) {
-					J2MEDisplay.showError(Localization
-							.get("activity.locationcapture.LocationError"), Localization
-							.get("activity.locationcapture.GPSNotAvailable"));
+					J2MEDisplay.showError(Localization.get("activity.locationcapture.LocationError"), 
+							              Localization.get("activity.locationcapture.GPSNotAvailable"));
 				}
 			}
 
@@ -320,8 +319,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			J2MEDisplay.showError("Validation failure", model
 					.getQuestionPrompt().getConstraintText());
 		} else if (result == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
-			String txt = Localization
-					.get("formview.CompulsoryQuestionIncomplete");
+			String txt = Localization.get("view.sending.RequiredQuestion");
 			J2MEDisplay.showError("Question Required", txt);
 		}
 	}
