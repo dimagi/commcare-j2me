@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;

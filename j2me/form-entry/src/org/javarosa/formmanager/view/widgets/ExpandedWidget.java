@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 
 import javax.microedition.lcdui.Image;
@@ -25,6 +25,7 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.UncastData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
+import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 
@@ -45,6 +46,10 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	
 	/** Used during image scaling **/
 	public static int fallback = 99;
+	
+	public static final int NEXT_ON_MANUAL = 1;
+	public static final int NEXT_ON_ENTRY = 2;
+	public static final int NEXT_ON_SELECT = 3;
 	
 	protected FormMultimediaController multimediaController;
 	
@@ -140,7 +145,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	}
 	
 	public int getNextMode () {
-		return ChatterboxWidget.NEXT_ON_MANUAL;
+		return ExpandedWidget.NEXT_ON_MANUAL;
 	}
 	
 	public Item getInteractiveWidget () {

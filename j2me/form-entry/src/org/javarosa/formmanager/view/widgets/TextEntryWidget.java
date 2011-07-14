@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
@@ -22,6 +22,7 @@ import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.TextField;
@@ -60,7 +61,7 @@ public class TextEntryWidget extends ExpandedWidget {
 	}
 	
 	public int getNextMode () {
-		return wec.wrapNextMode(ChatterboxWidget.NEXT_ON_SELECT);
+		return wec.wrapNextMode(ExpandedWidget.NEXT_ON_SELECT);
 	}
 	
 	protected Item getEntryWidget (FormEntryPrompt prompt) {

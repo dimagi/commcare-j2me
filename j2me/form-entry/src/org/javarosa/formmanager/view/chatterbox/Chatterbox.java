@@ -47,8 +47,9 @@ import org.javarosa.formmanager.utility.SortedIndexSet;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidgetFactory;
-import org.javarosa.formmanager.view.chatterbox.widget.CollapsedWidget;
-import org.javarosa.formmanager.view.chatterbox.widget.GeoPointWidget;
+import org.javarosa.formmanager.view.widgets.CollapsedWidget;
+import org.javarosa.formmanager.view.widgets.GeoPointWidget;
+import org.javarosa.formmanager.view.widgets.WidgetFactory;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.log.HandledThread;
@@ -129,9 +130,8 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     		}
     	};
 
-    	widgetFactory = new ChatterboxWidgetFactory(this, controller);
+    	widgetFactory = new ChatterboxWidgetFactory(this, controller,new WidgetFactory(controller.isEntryOptimized()));
     	widgetFactory.setReadOnly(model.isReadOnlyMode());
-    	widgetFactory.setOptimizeEntry(controller.isEntryOptimized());
     	
     	multiLingual = (model.getForm().getLocalizer() != null);
     	questionIndexes = new SortedIndexSet();

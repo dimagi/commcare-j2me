@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import java.util.Date;
 
@@ -22,6 +22,7 @@ import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.Item;
 
@@ -42,7 +43,7 @@ public class SimpleDateEntryWidget extends ExpandedWidget
 	
 	public int getNextMode()
 	{
-		return ChatterboxWidget.NEXT_ON_SELECT;
+		return ExpandedWidget.NEXT_ON_SELECT;
 	}
 	
 	protected IAnswerData getWidgetValue() 

@@ -22,6 +22,11 @@ import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.IQuestionWidget;
 import org.javarosa.formmanager.view.chatterbox.Chatterbox;
+import org.javarosa.formmanager.view.widgets.ExpandedWidget;
+import org.javarosa.formmanager.view.widgets.IWidgetStyle;
+import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
+import org.javarosa.formmanager.view.widgets.LabelWidget;
+import org.javarosa.formmanager.view.widgets.TextEntryWidget;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPItemCommandListener;
 import org.javarosa.j2me.log.HandledPItemStateListener;
@@ -41,10 +46,6 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 	public static final int VIEW_COLLAPSED = 1;
 	/** A Label that will never be interacted with **/
 	public static final int VIEW_LABEL = 2;
-	
-	public static final int NEXT_ON_MANUAL = 1;
-	public static final int NEXT_ON_ENTRY = 2;
-	public static final int NEXT_ON_SELECT = 3;
 	
 	/** Only valid for Labels **/
 	private boolean pinned = false;
@@ -155,12 +156,12 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		widget.setItemCommandListener(this);
 		
 		switch(expandedStyle.getNextMode()) {
-		case NEXT_ON_MANUAL:
+		case ExpandedWidget.NEXT_ON_MANUAL:
 			break;
-		case NEXT_ON_ENTRY: 
+		case ExpandedWidget.NEXT_ON_ENTRY: 
 			widget.setItemStateListener(this);
 			break;
-		case NEXT_ON_SELECT:
+		case ExpandedWidget.NEXT_ON_SELECT:
 			widget.setDefaultCommand(nextCommand);
 			break;
 		}
@@ -171,12 +172,12 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		Item widget = expandedStyle.getInteractiveWidget();
 		
 		switch(expandedStyle.getNextMode()) {
-		case NEXT_ON_MANUAL:
+		case ExpandedWidget.NEXT_ON_MANUAL:
 			break;
-		case NEXT_ON_ENTRY: 
+		case ExpandedWidget.NEXT_ON_ENTRY: 
 			widget.setItemStateListener(null);
 			break;
-		case NEXT_ON_SELECT:
+		case ExpandedWidget.NEXT_ON_SELECT:
 			if(widget.getDefaultCommand() != null) {
 				widget.removeCommand(widget.getDefaultCommand());
 			}
@@ -227,19 +228,8 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 	
 	public void UIHack (int hackType) {
 		if (hackType == Chatterbox.UIHACK_SELECT_PRESS) {
-			if (expandedStyle.getNextMode() == NEXT_ON_SELECT && expandedStyle instanceof TextEntryWidget) {
-				String text = (((TextEntryWidget)expandedStyle).textField()).getText();
-				System.out.println("Text equals: " + text);
-				if (text == null || text.length() == 0) {
-					_commandAction(nextCommand, expandedStyle.getInteractiveWidget());
-				}
-				else {
-					//Jan 14, 2009 - I don't know why only the P1i was setup to do this. Seems weird to me...
-					
-					_commandAction(nextCommand, expandedStyle.getInteractiveWidget());
-					//#if device.identifier == Sony-Ericsson/P1i
-					//#endif
-				}
+			if (expandedStyle.getNextMode() == ExpandedWidget.NEXT_ON_SELECT && expandedStyle instanceof TextEntryWidget) {
+				_commandAction(nextCommand, expandedStyle.getInteractiveWidget());
 			}
 		}
 	}

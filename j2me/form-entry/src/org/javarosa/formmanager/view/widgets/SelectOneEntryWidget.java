@@ -14,13 +14,14 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.SelectOneData;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.formmanager.view.chatterbox.Chatterbox;
+import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.ChoiceGroup;
 
@@ -42,7 +43,7 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
 	}
 	
 	public int getNextMode () {
-		return ChatterboxWidget.NEXT_ON_ENTRY;
+		return ExpandedWidget.NEXT_ON_ENTRY;
 	}
 	
 	protected void setWidgetValue (Object o) {

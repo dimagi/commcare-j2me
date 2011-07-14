@@ -16,6 +16,8 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen;
 
+import java.util.Date;
+
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.services.UnavailableServiceException;
@@ -28,14 +30,16 @@ import org.javarosa.formmanager.api.FormEntryState;
 import org.javarosa.formmanager.api.JrFormEntryController;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
-import org.javarosa.formmanager.view.singlequestionscreen.screen.LocationQuestionScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.NewRepeatScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.SingleQuestionScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.SingleQuestionScreenFactory;
 import org.javarosa.formmanager.view.summary.FormSummaryController;
 import org.javarosa.formmanager.view.summary.FormSummaryState;
+import org.javarosa.formmanager.view.widgets.GeoPointWidget;
+import org.javarosa.formmanager.view.widgets.WidgetFactory;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
+import org.javarosa.j2me.log.HandledThread;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Command;
@@ -51,6 +55,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 	private boolean goingForward;
 	private NewRepeatScreen repeatScreen;
 	private String backupTitle;
+	private SingleQuestionScreenFactory factory;
 	
 	//TODO: Replace with something non-static once question count works properly
 	private int numQuestions = -1;
@@ -69,6 +74,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		this.goingForward = true;
 		this.backupTitle = title;
 		numQuestions = controller.getModel().getNumQuestions();
+		this.factory = new SingleQuestionScreenFactory(new WidgetFactory(controller.isEntryOptimized()));
 	}
 
 	public SingleQuestionScreen getView(FormEntryPrompt prompt, boolean fromFormView) {
@@ -108,8 +114,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		if(groupTitle == "") {
 			groupTitle = backupTitle;
 		}
-		currentQuestionScreen = SingleQuestionScreenFactory.getQuestionScreen(
-				prompt, groupTitle, fromFormView, goingForward, controller.isEntryOptimized());
+		currentQuestionScreen = factory.getQuestionScreen(prompt, groupTitle, fromFormView, goingForward);
 
 		if (model.getLanguages() != null && model.getLanguages().length > 0) {
 			currentQuestionScreen.addLanguageCommands(model.getLanguages());
@@ -193,7 +198,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				processModelEvent(event);
 			} else if (command == currentQuestionScreen.viewAnswersCommand) {
 				viewAnswers();
-			} else if (command == LocationQuestionScreen.captureCommand) {
+			} else if (command == GeoPointWidget.captureCommand) {
 				try {
 					controller.suspendActivity(FormEntryState.MEDIA_LOCATION);
 				} catch (UnavailableServiceException ue) {
@@ -322,5 +327,32 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			String txt = Localization.get("view.sending.RequiredQuestion");
 			J2MEDisplay.showError("Question Required", txt);
 		}
+	}
+	
+	
+	String alertTitle;
+	String msg;
+	private void raiseAlert() {
+		if(alertTitle != null || msg != null) {
+			final String at = alertTitle;
+			final String m = msg;
+			final long time = new Date().getTime();
+			Runnable r = new Runnable() {
+	
+				public void run() {
+					while(new Date().getTime() < time + 300);
+					J2MEDisplay.showError(at, m);
+				}
+				
+			};
+			new HandledThread(r).start();
+			alertTitle = null;
+			msg = null;
+		}
+	}
+	
+	private void queueError(String title, String msg) {
+			alertTitle = title;
+			this.msg = msg;
 	}
 }

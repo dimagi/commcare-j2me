@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import javax.microedition.lcdui.TextField;
 

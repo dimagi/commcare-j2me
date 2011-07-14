@@ -14,9 +14,10 @@
  * the License.
  */
 
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.services.locale.Localization;
+import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
@@ -51,7 +52,7 @@ public class WidgetEscapeComponent implements IWidgetComponentWrapper {
 	
 	public int wrapNextMode(int topReturnMode) {
 		int i = topReturnMode;
-		i = ChatterboxWidget.NEXT_ON_SELECT;
+		i = ExpandedWidget.NEXT_ON_MANUAL;
 		return i;
 	}
 }

@@ -17,7 +17,7 @@
 /**
  * 
  */
-package org.javarosa.formmanager.view.chatterbox.widget;
+package org.javarosa.formmanager.view.widgets;
 
 import de.enough.polish.ui.Item;
 
