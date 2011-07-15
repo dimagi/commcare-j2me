@@ -192,12 +192,12 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 
 			if(format == null) return AUDIO_NOT_RECOGNIZED;
 			if(audioPlayer == null){
-				audioPlayer = Manager.createPlayer(curAudRef.getStream(), format);
+				audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
 				audioPlayer.start();
 			}else{
 				audioPlayer.deallocate();
 				audioPlayer.close();
-				audioPlayer = Manager.createPlayer(curAudRef.getStream(), format);
+				audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
 				audioPlayer.start();
 			}
 			
