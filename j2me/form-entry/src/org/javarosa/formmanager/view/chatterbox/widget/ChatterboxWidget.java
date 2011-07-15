@@ -157,6 +157,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		
 		switch(expandedStyle.getNextMode()) {
 		case ExpandedWidget.NEXT_ON_MANUAL:
+			widget.setDefaultCommand(nextCommand);
 			break;
 		case ExpandedWidget.NEXT_ON_ENTRY: 
 			widget.setItemStateListener(this);

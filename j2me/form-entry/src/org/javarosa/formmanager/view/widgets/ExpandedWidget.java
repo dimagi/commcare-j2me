@@ -47,8 +47,13 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	/** Used during image scaling **/
 	public static int fallback = 99;
 	
+	/** The widget will provide it's own UI element for navigating to the next item **/
 	public static final int NEXT_ON_MANUAL = 1;
+	
+	/** The widget will assume that as soon as a value is set, that the interface will navigate**/
 	public static final int NEXT_ON_ENTRY = 2;
+	
+	/** The widget contains an item which can signal navigation, but doesn't have a manual element **/
 	public static final int NEXT_ON_SELECT = 3;
 	
 	protected FormMultimediaController multimediaController;
