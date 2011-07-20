@@ -4,6 +4,8 @@
 package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.formmanager.api.FormMultimediaController;
+import org.javarosa.formmanager.api.JrFormEntryController;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService;
 import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.formmanager.view.widgets.WidgetFactory;
@@ -18,13 +20,17 @@ import de.enough.polish.ui.StyleSheet;
 public class SingleQuestionScreenFactory {
 	
 	WidgetFactory widgetFactory;
+	FormMultimediaController mediacontroller;
+	JrFormEntryController fec;
 	
-	public SingleQuestionScreenFactory() {
-		this(new WidgetFactory(false));
+	public SingleQuestionScreenFactory(JrFormEntryController fec, FormMultimediaController controller) {
+		this(fec, controller, new WidgetFactory(false));
 	}
 	
-	public SingleQuestionScreenFactory(WidgetFactory factory) {
+	public SingleQuestionScreenFactory(JrFormEntryController fec, FormMultimediaController controller, WidgetFactory factory) {
 		this.widgetFactory = factory;
+		this.mediacontroller = controller;
+		this.fec = fec;
 	}
 
 	/**
@@ -57,7 +63,10 @@ public class SingleQuestionScreenFactory {
 			throw new IllegalStateException("No appropriate screen to render question");
 		}
 		
-		screenToReturn = new SingleQuestionScreen(prompt, groupTitle, widget, style);
+		widget.registerMultimediaController(mediacontroller);
+		screenToReturn = new SingleQuestionScreen(prompt, groupTitle, widget, fec, style);
+		
+		prompt.register(screenToReturn);
 
 		return screenToReturn;
 	}

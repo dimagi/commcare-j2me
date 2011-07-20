@@ -27,6 +27,7 @@ import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormEntryState;
+import org.javarosa.formmanager.api.FormMultimediaController;
 import org.javarosa.formmanager.api.JrFormEntryController;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
@@ -74,7 +75,6 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		this.goingForward = true;
 		this.backupTitle = title;
 		numQuestions = controller.getModel().getNumQuestions();
-		this.factory = new SingleQuestionScreenFactory(new WidgetFactory(controller.isEntryOptimized()));
 	}
 
 	public SingleQuestionScreen getView(FormEntryPrompt prompt, boolean fromFormView) {
@@ -354,5 +354,9 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 	private void queueError(String title, String msg) {
 			alertTitle = title;
 			this.msg = msg;
+	}
+
+	public void attachFormMediaController(FormMultimediaController mediacontroller) {	
+		this.factory = new SingleQuestionScreenFactory(controller, mediacontroller, new WidgetFactory(controller.isEntryOptimized()));
 	}
 }

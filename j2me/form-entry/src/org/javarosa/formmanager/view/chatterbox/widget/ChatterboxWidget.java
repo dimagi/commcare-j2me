@@ -82,8 +82,9 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 	}
 	
 	public void destroy () {
-		if (viewState == VIEW_EXPANDED)
+		if (viewState == VIEW_EXPANDED) {
 			detachWidget();
+		}
 		
 		prompt.unregister();
 	}
@@ -137,8 +138,9 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 	}
 
 	private void reset () {
-		if (viewState == VIEW_EXPANDED)
+		if (viewState == VIEW_EXPANDED) {
 			detachWidget();
+		}
 		
 		activeStyle.reset();
 		clear();

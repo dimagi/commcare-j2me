@@ -23,6 +23,8 @@ import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.formmanager.api.JrFormEntryController;
+import org.javarosa.formmanager.view.IQuestionWidget;
 import org.javarosa.formmanager.view.widgets.ExpandedWidget;
 import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.j2me.view.J2MEDisplay;
@@ -38,13 +40,14 @@ import de.enough.polish.ui.Style;
 import de.enough.polish.ui.Ticker;
 import de.enough.polish.ui.UiAccess;
 
-public class SingleQuestionScreen extends FramedForm implements ItemCommandListener, ItemStateListener {
+public class SingleQuestionScreen extends FramedForm implements ItemCommandListener, ItemStateListener, IQuestionWidget {
 
 	protected FormEntryPrompt prompt;
 	private Gauge progressBar;
     
 	private IWidgetStyleEditable widget;
 	protected IAnswerData answer;
+	JrFormEntryController fec;
 
 	// GUI elements
 	public Command previousCommand;
@@ -67,11 +70,12 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 		throw new RuntimeException("Deprecated!");
 	}
 
-	public SingleQuestionScreen(FormEntryPrompt prompt, String groupName, IWidgetStyleEditable widget, Style style) {
+	public SingleQuestionScreen(FormEntryPrompt prompt, String groupName, IWidgetStyleEditable widget, JrFormEntryController fec, Style style) {
 		super(groupName, style);
 		itemCommandQueue = new Command[1];
 		this.prompt = prompt;
 		this.widget = widget;
+		this.fec = fec;
 		this.setUpCommands();
 		this.createView();
 	}
@@ -189,6 +193,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	//We only want to handle paired key events, so releases without a press (generally
 	//coming from a different screen) need to be absorbed.
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		if(fec.handleKeyEvent(keyCode)) { return true; }
 		synchronized(itemCommandQueue) {
 			this.getKeyStates();
 			itemCommandQueue[0] = null;
@@ -213,5 +218,16 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 		}
 		return super.handleKeyReleased(keyCode, gameAction);
 	}
+
+	public void refreshWidget(int changeFlags) {
+		widget.refreshWidget(prompt, changeFlags);		
+	}
 	
+
+	public void releaseResources() {
+		super.releaseResources();
+		if(prompt != null) { 
+			prompt.unregister();
+		}
+	}
 }
