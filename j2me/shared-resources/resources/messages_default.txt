@@ -113,7 +113,7 @@ menu.ok=OK
 
 
 
-
+sending.view.done.title=Finished
 sending.view.done=Form Complete, thanks!
 sending.view.submit=Submit Form
 sending.view.now=Send Now
