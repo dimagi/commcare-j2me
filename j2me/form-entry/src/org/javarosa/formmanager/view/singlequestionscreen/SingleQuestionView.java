@@ -16,10 +16,18 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+
+import javax.microedition.lcdui.Image;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryCaption;
@@ -321,39 +329,33 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			int event = controller.stepToNextEvent();
 			processModelEvent(event);
 		} else if (result == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
-			J2MEDisplay.showError("Validation failure", model
-					.getQuestionPrompt().getConstraintText());
+			String constraintMsg = model.getQuestionPrompt().getConstraintText(answer);
+			String constraintImage = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, answer);
+			String constraintAudio = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, answer);
+			
+			Image image = null;
+			
+			if(constraintImage != null) {
+				try {
+					Reference ref = ReferenceManager._().DeriveReference(constraintImage);
+				
+					InputStream is = ref.getStream();
+					image = Image.createImage(is);
+					is.close();
+				} catch (InvalidReferenceException e) {
+					Logger.exception(e);
+				} catch (IOException e) {
+					Logger.exception(e);
+				}
+			}
+			J2MEDisplay.showError("Validation failure", constraintMsg, image);
+			if(constraintAudio != null) {
+				this.controller.playAudio(constraintAudio);
+			}
 		} else if (result == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 			String txt = Localization.get("view.sending.RequiredQuestion");
 			J2MEDisplay.showError("Question Required", txt);
 		}
-	}
-	
-	
-	String alertTitle;
-	String msg;
-	private void raiseAlert() {
-		if(alertTitle != null || msg != null) {
-			final String at = alertTitle;
-			final String m = msg;
-			final long time = new Date().getTime();
-			Runnable r = new Runnable() {
-	
-				public void run() {
-					while(new Date().getTime() < time + 300);
-					J2MEDisplay.showError(at, m);
-				}
-				
-			};
-			new HandledThread(r).start();
-			alertTitle = null;
-			msg = null;
-		}
-	}
-	
-	private void queueError(String title, String msg) {
-			alertTitle = title;
-			this.msg = msg;
 	}
 
 	public void attachFormMediaController(FormMultimediaController mediacontroller) {	

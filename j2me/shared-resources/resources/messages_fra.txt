@@ -115,7 +115,7 @@ menu.ok=OK
 
 
 
-
+sending.view.done.title=Finished
 sending.view.done=formulaire complet, merci
 sending.view.submit=Soumettre le formulaire
 sending.view.now=Envoyer maintenant

@@ -235,6 +235,13 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 				return AUDIO_NO_RESOURCE;
 			}
 		}
+		
+		//No idea why this is a member variable...
+		return playAudio(curAudioURI);
+	}
+	
+	public int playAudio(String jrRefURI) {
+		curAudioURI = jrRefURI;
 		int retcode = AUDIO_SUCCESS;
 		try {
 			curAudRef = ReferenceManager._().DeriveReference(curAudioURI);
@@ -265,6 +272,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 			System.err.println("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
 		}
 		return retcode;
+
 	}
 	
 	private static String getFileFormat(String fpath){

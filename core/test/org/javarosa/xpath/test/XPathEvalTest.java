@@ -533,13 +533,13 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return Boolean.TRUE; }
+			public Object eval (Object[] args, EvaluationContext ec) { return Boolean.TRUE; }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler(){
 
 			public String getName() { return "regex";	}
-			public Object eval(Object[] args) { 
+			public Object eval(Object[] args, EvaluationContext ec) { 
 				System.out.println("EVAL REGEX TESTS:");
 				for (int i = 0; i< args.length; i++){
 					System.out.println("REGEX ARGS: " +args[i].toString());
@@ -568,7 +568,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return new Double(((Double)args[0]).doubleValue() +  ((Double)args[1]).doubleValue()); }
+			public Object eval (Object[] args, EvaluationContext ec) { return new Double(((Double)args[0]).doubleValue() +  ((Double)args[1]).doubleValue()); }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -582,7 +582,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return printArgs(args); }
+			public Object eval (Object[] args, EvaluationContext ec) { return printArgs(args); }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -593,7 +593,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return true; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return printArgs(args); }
+			public Object eval (Object[] args, EvaluationContext ec) { return printArgs(args); }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -601,7 +601,7 @@ public class XPathEvalTest extends TestCase {
 			public Vector getPrototypes () { return null; }
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return Boolean.FALSE; }
+			public Object eval (Object[] args, EvaluationContext ec) { return Boolean.FALSE; }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -609,7 +609,7 @@ public class XPathEvalTest extends TestCase {
 			public Vector getPrototypes () { return new Vector(); }
 			public boolean rawArgs () { return true; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) {
+			public Object eval (Object[] args, EvaluationContext ec) {
 				StringBuffer sb = new StringBuffer();
 				for (int i = 0; i < args.length; i++)
 					sb.append(XPathFuncExpr.toString(args[i]));
@@ -625,7 +625,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return new IExprDataType () {
+			public Object eval (Object[] args, EvaluationContext ec) { return new IExprDataType () {
 					public Boolean toBoolean () { return Boolean.TRUE; }
 					public Double toNumeric () { return new Double(5.0); }
 					public String toString () { return "hi"; }
@@ -641,7 +641,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return new Object(); }
+			public Object eval (Object[] args, EvaluationContext ec) { return new Object(); }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -652,7 +652,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) { return ((Boolean)args[0]).booleanValue() ? new CustomSubType() : new CustomType(); }
+			public Object eval (Object[] args, EvaluationContext ec) { return ((Boolean)args[0]).booleanValue() ? new CustomSubType() : new CustomType(); }
 		});
 		
 		ec.addFunctionHandler(new IFunctionHandler () {
@@ -663,7 +663,7 @@ public class XPathEvalTest extends TestCase {
 			}
 			public boolean rawArgs () { return false; }
 			public boolean realTime () { return false; }
-			public Object eval (Object[] args) {
+			public Object eval (Object[] args, EvaluationContext ec) {
 				if (args.length != 5 || !(args[0] instanceof Boolean) || !(args[1] instanceof Double) ||
 						!(args[2] instanceof String) || !(args[3] instanceof Date) || !(args[4] instanceof CustomType))
 					fail("Types in custom function handler not converted properly/prototype not matched properly");
@@ -734,7 +734,7 @@ public class XPathEvalTest extends TestCase {
 			p.addElement(new Class[0]);
 			return p;
 		}
-		public Object eval (Object[] args) { return val; }
+		public Object eval (Object[] args, EvaluationContext ec) { return val; }
 	};
 	
 	StatefulFunc write = new StatefulFunc () {
@@ -744,7 +744,7 @@ public class XPathEvalTest extends TestCase {
 			p.addElement(proto);
 			return p;
 		}
-		public Object eval (Object[] args) { val = (String)args[0]; return Boolean.TRUE; }
+		public Object eval (Object[] args, EvaluationContext ec) { val = (String)args[0]; return Boolean.TRUE; }
 	};
 }
 
