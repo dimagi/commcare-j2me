@@ -31,11 +31,11 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
 	}
 	
 	public SelectOneEntryWidget (int style) {
-		this(style, true);
+		this(style, true, false);
 	}
 
-	public SelectOneEntryWidget(int style, boolean autoSelect) {
-		super(style, autoSelect);
+	public SelectOneEntryWidget(int style, boolean autoSelect, boolean numericNavigation) {
+		super(style, autoSelect, numericNavigation);
 		
 		if (style == ChoiceGroup.MULTIPLE) {
 			throw new IllegalArgumentException("Cannot use style 'MULTIPLE' on select1 control");
@@ -54,6 +54,7 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
 		//To prevent audio from being played over if appropriate
 		choiceGroup().setLastSelected(s.index);
 		choiceGroup().setSelectedIndex(s.index, true);
+		choiceGroup().touch();
 	}
 
 	protected IAnswerData getWidgetValue () {

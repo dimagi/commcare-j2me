@@ -32,11 +32,11 @@ public class SelectMultiEntryWidget extends SelectEntryWidget {
 	
 	
 	public SelectMultiEntryWidget () {
-		this(true);
+		this(true, false);
 	}
 	
-	public SelectMultiEntryWidget(boolean autoSelect) {
-		super(ChoiceGroup.MULTIPLE, autoSelect);
+	public SelectMultiEntryWidget(boolean autoSelect, boolean numericNavigation) {
+		super(ChoiceGroup.MULTIPLE, autoSelect, numericNavigation);
 	}
 	
 	protected void setWidgetValue (Object o) {
@@ -47,6 +47,7 @@ public class SelectMultiEntryWidget extends SelectEntryWidget {
 				s.attachChoice(prompt.getQuestion());
 			}
 			choiceGroup().setSelectedIndex(s.index, true);
+			choiceGroup().touch();
 		}
 	}
 	

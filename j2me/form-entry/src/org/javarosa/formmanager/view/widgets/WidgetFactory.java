@@ -74,10 +74,10 @@ public class WidgetFactory {
 			else
 				style = ChoiceGroup.EXCLUSIVE;
 
-			expandedStyle = new SelectOneEntryWidget(style,optimizeEntry);
+			expandedStyle = new SelectOneEntryWidget(style,optimizeEntry, !optimizeEntry);
 			break;
 		case Constants.CONTROL_SELECT_MULTI:
-			expandedStyle = new SelectMultiEntryWidget(optimizeEntry);
+			expandedStyle = new SelectMultiEntryWidget(optimizeEntry, !optimizeEntry);
 			break;
 		case Constants.CONTROL_TEXTAREA:
 			expandedStyle = new TextEntryWidget();

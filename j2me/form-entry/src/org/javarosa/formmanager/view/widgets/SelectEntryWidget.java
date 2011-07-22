@@ -44,27 +44,40 @@ import de.enough.polish.ui.Item;
 public abstract class SelectEntryWidget extends ExpandedWidget {
 	private int style;
 	private boolean autoSelect;
+	private boolean numericNavigation;
 	protected FormEntryPrompt prompt;
 	
 	private CustomChoiceGroup choicegroup;
 	
-	public SelectEntryWidget (int style, boolean autoSelect) {
+	public SelectEntryWidget (int style, boolean autoSelect, boolean numericNavigation) {
 		this.style = style;
 		this.autoSelect = autoSelect;
+		this.numericNavigation = numericNavigation;
 	}
 	
 	protected Item getEntryWidget (FormEntryPrompt prompt) {
 		this.prompt = prompt;
 		
-		CustomChoiceGroup cg = new CustomChoiceGroup("",style, autoSelect) {
+		int numChoices = prompt.getSelectChoices().size();
+		
+		if(numChoices > 9) {
+			numericNavigation = false;
+		}
+		
+		CustomChoiceGroup cg = new CustomChoiceGroup("",style, autoSelect, numericNavigation) {
 			public void playAudio(int index) {
 				getMultimediaController().playAudioOnDemand(SelectEntryWidget.this.prompt,
 															SelectEntryWidget.this.prompt.getSelectChoices().elementAt(index));
 			}
 		};
-		for (int i = 0; i < prompt.getSelectChoices().size(); i++){
-			//#style listitem
-			cg.append("", null);
+		for (int i = 0; i < numChoices; i++){
+			if(numericNavigation) {
+				//#style uninitializedListItem
+				cg.append("", null);
+			} else {
+				//#style listitem
+				cg.append("", null);
+			}
 		}
 		
 		this.choicegroup = cg;
