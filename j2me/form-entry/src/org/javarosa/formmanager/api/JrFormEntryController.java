@@ -112,6 +112,23 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     		cycleLanguage();
     		return true;
     	} else if(FormManagerProperties.EXTRA_KEY_AUDIO_PLAYBACK.equals(getExtraKeyMode()) && key == POUND_KEYCODE){
+    		
+    		//For now, we'll assume that video playback basically trumps audio playback. 
+    		//TODO: Add a way to play videos when extra-key isn't set to audio
+    		if(player != null) {
+    			try {
+	    			if(player.getState() == Player.STARTED) {
+	    				player.stop();
+	    			} else {
+	    				player.start();
+	    			}
+				} catch (MediaException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    			return true;
+    		}
+    		
     		if(this.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {return false;}
     		//Get prompt
     		FormEntryPrompt fep = this.getModel().getQuestionPrompt();
@@ -158,6 +175,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 	}
 	
 	public void abort() {
+		view.destroy();
 		transitions.abort();
 	}
 	
@@ -165,10 +183,12 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 		if (formComplete){
 			this.getModel().getForm().postProcessInstance();
 		}
+		view.destroy();
 		transitions.formEntrySaved(this.getModel().getForm(),this.getModel().getForm().getInstance(),formComplete);
 	}
 	
 	public void suspendActivity(int mediaType) throws UnavailableServiceException {
+		view.destroy();
 		transitions.suspendForMediaCapture(mediaType);
 	}
 	
@@ -303,6 +323,31 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 
 	public boolean isEntryOptimized() {
 		return quickEntry;
+	}
+	
+	//A video player being controlled by this controller
+	Player player;
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.javarosa.formmanager.api.FormMultimediaController#attachVideoPlayer(javax.microedition.media.Player)
+	 */
+	public void attachVideoPlayer(Player player) {
+		//NOTE: Not thread safe
+		if(this.player != null) {
+			detachVideoPlayer(player);
+		}
+		this.player = player;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.javarosa.formmanager.api.FormMultimediaController#detachVideoPlayer(javax.microedition.media.Player)
+	 */
+	public void detachVideoPlayer(Player player) {
+		if(this.player == player) {
+			this.player = null;
+		}
 	}
 
 }

@@ -50,4 +50,9 @@ public interface IWidgetStyleEditable extends IWidgetStyle {
 	 * @param controller
 	 */
 	public void registerMultimediaController(FormMultimediaController controller);
+
+	/**
+	 * Releases any external media loaded for this widget (but without clearing that media)
+	 */
+	void releaseMedia();
 }

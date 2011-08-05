@@ -223,11 +223,15 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 		widget.refreshWidget(prompt, changeFlags);		
 	}
 	
+	public void releaseMedia() {
+		widget.releaseMedia();
+	}
 
 	public void releaseResources() {
-		super.releaseResources();
 		if(prompt != null) { 
 			prompt.unregister();
+			widget.reset();
 		}
+		super.releaseResources();
 	}
 }

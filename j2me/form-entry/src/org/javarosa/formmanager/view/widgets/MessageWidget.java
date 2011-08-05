@@ -128,4 +128,9 @@ public class MessageWidget implements IWidgetStyleEditable {
 			imItem = null;
 		}
 	}
+
+	public void releaseMedia() {
+		// TODO Auto-generated method stub
+		
+	}
 }

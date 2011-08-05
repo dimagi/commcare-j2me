@@ -173,6 +173,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 	
 	private void detachWidget () {
 		Item widget = expandedStyle.getInteractiveWidget();
+		expandedStyle.reset();
 		
 		switch(expandedStyle.getNextMode()) {
 		case ExpandedWidget.NEXT_ON_MANUAL:

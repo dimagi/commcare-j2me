@@ -17,17 +17,23 @@
 package org.javarosa.formmanager.view.widgets;
 
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Image;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.UncastData;
+import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
+import org.javarosa.utilities.media.VideoItem;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ImageItem;
@@ -43,6 +49,8 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	private Container c;
 	private Container fullPrompt;
 	private int scrHeight,scrWidth;
+	
+	protected VideoItem vItem;
 	
 	/** Used during image scaling **/
 	public static int fallback = 99;
@@ -108,13 +116,34 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		
 	}
 	
+	public static VideoItem getVideoItem(FormEntryPrompt fep) {
+		try {
+			String videoRef = fep.getSpecialFormQuestionText(FormEntryPrompt.TEXT_FORM_VIDEO);
+			if(videoRef == null) { return null;}
+			return new VideoItem(videoRef);
+		} catch (MediaException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidReferenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 
 
+	static int count = 0;
 	private int imageIndex=-1;
 	
 	private ImageItem imItem;
 	
 	public void refreshWidget (FormEntryPrompt fep, int changeFlags) {
+		
+		//Look for and attach an image if one exists
 		ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight/2,scrWidth-16); //width and height have been disabled!
 		if(newImItem!=null){
 			detachImage();
@@ -122,9 +151,18 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 			imItem = newImItem;
 		}
 		
+		//Look for and attach an image if one exists
+		VideoItem newVItem = ExpandedWidget.getVideoItem(fep);
+		if(newVItem!=null){
+			detachVideo();
+			getMultimediaController().attachVideoPlayer(newVItem.getPlayer());
+			fullPrompt.add(newVItem);
+			vItem = newVItem;
+		}
+		
 		getMultimediaController().playAudioOnLoad(fep);
 			
-		prompt.setText(fep.getLongText());	
+		prompt.setText(fep.getLongText());
 		updateWidget(fep);
 		
 		//don't wipe out user-entered data, even on data-changed event
@@ -140,6 +178,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 
 	public void reset () {
 		detachImage();
+		detachVideo();
 		prompt = null;
 		entryWidget = null;
 	}
@@ -180,6 +219,18 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		}
 	}
 	
+	private void detachVideo() {
+		if(vItem != null) {
+			fullPrompt.remove(vItem);
+			multimediaController.detachVideoPlayer(vItem.getPlayer());
+			vItem.releaseResources();
+			vItem = null;
+		}
+	}
+	
+	public void releaseMedia() {
+		detachVideo();
+	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {
 		this.multimediaController = controller;
@@ -203,6 +254,16 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 				public int playAudioOnDemand(FormEntryPrompt fep, SelectChoice select) {
 					// TODO Auto-generated method stub
 					return 0;
+				}
+
+				public void attachVideoPlayer(Player player) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void detachVideoPlayer(Player player) {
+					// TODO Auto-generated method stub
+					
 				}
 			};
 

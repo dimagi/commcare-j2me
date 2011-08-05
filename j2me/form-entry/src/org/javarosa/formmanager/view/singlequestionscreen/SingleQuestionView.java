@@ -18,7 +18,6 @@ package org.javarosa.formmanager.view.singlequestionscreen;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 
 import javax.microedition.lcdui.Image;
 
@@ -48,12 +47,12 @@ import org.javarosa.formmanager.view.widgets.GeoPointWidget;
 import org.javarosa.formmanager.view.widgets.WidgetFactory;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
-import org.javarosa.j2me.log.HandledThread;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.FramedForm;
+import de.enough.polish.ui.Screen;
 
 public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		HandledPCommandListener {
@@ -137,6 +136,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 	}
 
 	public void destroy() {
+		cleanUpResources();
 	}
 
 	public void show() {
@@ -160,14 +160,27 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		//clear guess
 		currentGuess = -1;
 		
+		cleanUpResources();
+
 		FormSummaryState summaryState = new FormSummaryState(controller);
 		summaryState.start();
+	}
+	
+	private void cleanUpResources() {
+		if(currentQuestionScreen != null) {
+			currentQuestionScreen.releaseMedia();
+		}
 	}
 
 	public void refreshView() {
 		if (model.getEvent() == FormEntryController.EVENT_QUESTION) {
 			FormEntryPrompt prompt = model.getQuestionPrompt();
+			SingleQuestionScreen last = currentQuestionScreen;
 			SingleQuestionScreen view = getView(prompt, this.goingForward);
+			
+			if(last != null && last != currentQuestionScreen) {
+				last.releaseMedia();
+			}
 			J2MEDisplay.setView(view);
 		}
 		else if (model.getEvent() == FormEntryController.EVENT_PROMPT_NEW_REPEAT) {
@@ -180,6 +193,9 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 									: "another ")
 							+ hierachy[hierachy.length - 1].getLongText() + "?");
 			repeatScreen.setCommandListener(this);
+			if(currentQuestionScreen != null) {
+				currentQuestionScreen.releaseMedia();
+			}
 			J2MEDisplay.setView(repeatScreen);
 		}
 	}
