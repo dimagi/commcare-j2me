@@ -26,6 +26,7 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.formmanager.view.IFormEntryView;
+import org.javarosa.utilities.media.MediaUtils;
 
 /**
  * Extension of {@link FormEntryController} for J2ME.
@@ -39,23 +40,16 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 	IFormEntryView view;
 	boolean quickEntry = true;
 	
+	private static Reference curAudRef = null;
+	private static String curAudioURI;
+	
+	protected static boolean playAudioIfAvailable = true;
+	
 	private static int POUND_KEYCODE = Canvas.KEY_POUND;
 	
 	
 	/** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
 	private boolean audioFailFast = true;
-	
-    /////////AUDIO PLAYBACK
-	static Player audioPlayer;
-	protected static boolean playAudioIfAvailable = true;
-	protected static final int AUDIO_SUCCESS = 1;
-	protected static final int AUDIO_NO_RESOURCE = 2;
-	protected static final int AUDIO_ERROR = 3;
-	protected static final int AUDIO_DISABLED = 4;
-	protected static final int AUDIO_BUSY = 5;
-	protected static final int AUDIO_NOT_RECOGNIZED = 6;
-	private static Reference curAudRef = null;
-	private static String curAudioURI;
 	
 	String extraKeyMode;
 	
@@ -235,7 +229,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
      * @return
      */
 	public int playAudio(FormEntryPrompt fep,SelectChoice select){
-		if (!playAudioIfAvailable) return AUDIO_DISABLED;
+		if (!playAudioIfAvailable) return MediaUtils.AUDIO_DISABLED;
 		
 		String textID;
 		curAudioURI = null;
@@ -243,83 +237,23 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 			if (fep.getAudioText() != null) {
 				curAudioURI = fep.getAudioText();
 			} else {
-				return AUDIO_NO_RESOURCE;
+				return MediaUtils.AUDIO_NO_RESOURCE;
 			}	
 		}else{
 			textID = select.getTextID();
-			if(textID == null || textID == "") return AUDIO_NO_RESOURCE;
+			if(textID == null || textID == "") return MediaUtils.AUDIO_NO_RESOURCE;
 			
 			if (fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO) != null) {
 				curAudioURI = fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO);
 			} else {
-				return AUDIO_NO_RESOURCE;
+				return MediaUtils.AUDIO_NO_RESOURCE;
 			}
 		}
 		
 		//No idea why this is a member variable...
-		return playAudio(curAudioURI);
+		return MediaUtils.playAudio(curAudioURI);
 	}
 	
-	public int playAudio(String jrRefURI) {
-		curAudioURI = jrRefURI;
-		int retcode = AUDIO_SUCCESS;
-		try {
-			curAudRef = ReferenceManager._().DeriveReference(curAudioURI);
-			String format = getFileFormat(curAudioURI);
-
-			if(format == null) return AUDIO_NOT_RECOGNIZED;
-			if(audioPlayer == null){
-				audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
-				audioPlayer.start();
-			}else{
-				audioPlayer.deallocate();
-				audioPlayer.close();
-				audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
-				audioPlayer.start();
-			}
-			
-		} catch (InvalidReferenceException ire) {
-			retcode = AUDIO_ERROR;
-			if(audioFailFast)throw new RuntimeException("Invalid Reference Exception when attempting to play audio at URI:"+ curAudioURI + "Exception msg:"+ire.getMessage());
-			System.err.println("Invalid Reference Exception when attempting to play audio at URI:"+ curAudioURI + "Exception msg:"+ire.getMessage());
-		} catch (IOException ioe) {
-			retcode = AUDIO_ERROR;
-			if(audioFailFast) throw new RuntimeException("IO Exception (input cannot be read) when attempting to play audio stream with URI:"+ curAudioURI + "Exception msg:"+ioe.getMessage());
-			System.err.println("IO Exception (input cannot be read) when attempting to play audio stream with URI:"+ curAudioURI + "Exception msg:"+ioe.getMessage());
-		} catch (MediaException e) {
-			retcode = AUDIO_ERROR;
-			if(audioFailFast) throw new RuntimeException("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
-			System.err.println("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
-		}
-		return retcode;
-
-	}
-	
-	private static String getFileFormat(String fpath){
-//		Wave audio files: audio/x-wav
-//		AU audio files: audio/basic
-//		MP3 audio files: audio/mpeg
-//		MIDI files: audio/midi
-//		Tone sequences: audio/x-tone-seq
-//		MPEG video files: video/mpeg
-//		Audio 3GPP files (.3gp) audio/3gpp
-//		Audio AMR files (.amr) audio/amr
-//		Audio AMR (wideband) files (.awb) audio/amr-wb
-//		Audio MIDI files (.mid or .midi) audio/midi
-//		Audio MP3 files (.mp3) audio/mpeg
-//		Audio MP4 files (.mp4) audio/mp4
-//		Audio WAV files (.wav) audio/wav audio/x-wav
-		
-		if(fpath.indexOf(".mp3") > -1) return "audio/mp3";
-		if(fpath.indexOf(".wav") > -1) return "audio/x-wav";
-		if(fpath.indexOf(".amr") > -1) return "audio/amr";
-		if(fpath.indexOf(".awb") > -1) return "audio/amr-wb";
-		if(fpath.indexOf(".mp4") > -1) return "audio/mp4";
-		if(fpath.indexOf(".aac") > -1) return "audio/aac";
-		if(fpath.indexOf(".3gp") > -1) return "audio/3gpp";
-		if(fpath.indexOf(".au") > -1) return "audio/basic";
-		throw new RuntimeException("COULDN'T FIND FILE FORMAT");
-	}
 
 	public boolean isEntryOptimized() {
 		return quickEntry;

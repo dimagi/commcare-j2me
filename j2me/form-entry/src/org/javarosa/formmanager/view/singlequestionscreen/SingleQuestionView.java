@@ -48,6 +48,7 @@ import org.javarosa.formmanager.view.widgets.WidgetFactory;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
+import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Displayable;
@@ -366,7 +367,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			}
 			J2MEDisplay.showError("Validation failure", constraintMsg, image);
 			if(constraintAudio != null) {
-				this.controller.playAudio(constraintAudio);
+				MediaUtils.playAudio(constraintAudio);
 			}
 		} else if (result == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 			String txt = Localization.get("view.sending.RequiredQuestion");

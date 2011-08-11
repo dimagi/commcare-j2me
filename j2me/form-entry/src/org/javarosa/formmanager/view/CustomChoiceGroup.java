@@ -4,15 +4,16 @@
 package org.javarosa.formmanager.view;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.MoreUIAccess;
+import de.enough.polish.ui.Screen;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.StyleSheet;
-import de.enough.polish.ui.UiAccess;
 
 /**
  * @author ctsims
@@ -30,15 +31,11 @@ public class CustomChoiceGroup extends ChoiceGroup {
 	
 	//Do this better
 	public CustomChoiceGroup(String s, int choiceType, boolean autoSelect, boolean numericNavigation) {
-		super(s,choiceType);
-		this.choiceType = choiceType;
-		this.autoSelect = autoSelect;
-		this.numericNavigation = numericNavigation;
-		this.touched = !numericNavigation;
+		this(s,choiceType,autoSelect,numericNavigation,null);
 	}
 
 	public CustomChoiceGroup(String s, int choiceType, boolean autoSelect, boolean numericNavigation, Style style) {
-		super(s,choiceType, style);
+		super(s,choiceType, new String[0], null, style, true);
 		this.choiceType = choiceType;
 		this.autoSelect = autoSelect;
 		this.numericNavigation = numericNavigation;
@@ -232,13 +229,54 @@ public class CustomChoiceGroup extends ChoiceGroup {
 		public void setLastSelected(int index) {
 			this.lastSelected = index;
 		}
-		
+
 		public void touch() {
 			if(!touched) {
 				this.itemStyle = StyleSheet.getStyle("listitem");
 				this.changeChildStyles("uninitializedListItem", "listitem");
 				this.changeChildStyles("cgEmptyFocus", "cgItemFocused");
 				touched = true;
+			}
+		}
+		
+		public void setImplicit(Screen screen) {
+			this.autoFocusEnabled = true;
+			this.screen = screen;
+		}
+		
+		private void disableNumericNav() {
+			numericNavigation = false;
+			touch();
+		}
+		
+		
+		//TODO: Hate this duplication, not sure if there's a cleaner way to get around
+		//how polish does this, though
+		public int append(String stringPart, Image imagePart) {
+			if(numericNavigation) {
+				//#style uninitializedListItem
+				int index =  super.append(stringPart, imagePart);
+				if(index >= 9) {
+					disableNumericNav();
+				}
+				return index;
+			} else {
+				//#style listitem
+				return super.append(stringPart, imagePart);
+			}
+		}
+
+		public int append(ChoiceItem item) {
+			if(numericNavigation) {
+				//#style uninitializedListItem
+				int index =  super.append(item);
+				if(index >= 9) {
+					disableNumericNav();
+				}
+				return index;
+			} else {
+				//#style listitem
+				return super.append(item);
 			}
 		}
 }

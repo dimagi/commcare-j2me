@@ -59,6 +59,7 @@ import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.log.HandledThread;
 import org.javarosa.j2me.view.J2MEDisplay;
+import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
@@ -866,7 +867,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 					while(new Date().getTime() < time + 300);
 					J2MEDisplay.showError(at, m, alIm);
 					if(aURI != null) {
-						Chatterbox.this.controller.playAudio(aURI);
+						MediaUtils.playAudio(aURI);
 					}
 				}
 				
