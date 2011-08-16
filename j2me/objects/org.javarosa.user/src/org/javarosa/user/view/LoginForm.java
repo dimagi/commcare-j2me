@@ -44,7 +44,7 @@ public class LoginForm extends FramedForm {
 	//#endif
 
 	public final static Command CMD_CANCEL_LOGIN = new Command(Localization.get("menu.Exit"),
-			Command.SCREEN, DEFAULT_COMMAND_PRIORITY);
+			Command.EXIT, DEFAULT_COMMAND_PRIORITY);
 	public final static Command CMD_LOGIN_BUTTON = new Command(Localization.get("menu.Login"),
 			Command.ITEM, DEFAULT_COMMAND_PRIORITY);
 
