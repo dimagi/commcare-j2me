@@ -12,6 +12,8 @@ import javax.microedition.media.Player;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
+import org.javarosa.j2me.view.J2MEDisplay;
 
 public class MediaUtils {
 	
@@ -155,8 +157,15 @@ public class MediaUtils {
 				retcode = AUDIO_ERROR;
 				System.err.println("IO Exception (input cannot be read) when attempting to play audio stream with URI:"+ curAudioURI + "Exception msg:"+ioe.getMessage());
 			} catch (MediaException e) {
+				//TODO: We need to figure out how to deal with silent stuff correctly
+				//Logger.log("auderme", e.getMessage());
+				//J2MEDisplay.showError(null, "Phone is on silent!");
+
 				retcode = AUDIO_ERROR;
 				System.err.println("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
+			} catch(SecurityException e) {
+				//Logger.log("auderse", e.getMessage());
+				//J2MEDisplay.showError(null, "Phone is on silent!");
 			}
 			return retcode;
 		}
