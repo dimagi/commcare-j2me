@@ -177,6 +177,11 @@ public class CustomChoiceGroup extends ChoiceGroup {
 		//currently ready to be selected.
 		protected boolean handleKeyPressed(int keyCode, int gameAction){
 			
+			//We might want to handle number keys if we aren't focussed, but we don't want to handle anything else
+			if(!this.isFocused && !isNumKey(keyCode)) {
+				return false;
+			}
+			
 			//In numeric navigation mode, so we only want to allow navigation with those keys, and
 			//hide other cues
 			if(numericNavigation) {
@@ -200,6 +205,10 @@ public class CustomChoiceGroup extends ChoiceGroup {
 					int index = keyCode-Canvas.KEY_NUM1;
 					if(index < this.itemsList.size()){
 						doAudio(index,true);
+						if(this.parent != null && this.parent instanceof Container) {
+							Container c = (Container)this.parent;
+							c.focusChild(c.indexOf(this));
+						}
 						super.focusChild(index);
 					}else{
 						return super.handleKeyPressed(keyCode,gameAction);
