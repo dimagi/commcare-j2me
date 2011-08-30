@@ -13,6 +13,8 @@ import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 public class MediaUtils {
@@ -140,15 +142,12 @@ public class MediaUtils {
 				String format = getFileFormat(curAudioURI);
 
 				if(format == null) return AUDIO_NOT_RECOGNIZED;
-				if(audioPlayer == null){
-					audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
-					audioPlayer.start();
-				}else{
+				if(audioPlayer != null){
 					audioPlayer.deallocate();
 					audioPlayer.close();
-					audioPlayer = Manager.createPlayer(curAudRef.getLocalURI());
-					audioPlayer.start();
 				}
+				audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
+				audioPlayer.start();
 				
 			} catch (InvalidReferenceException ire) {
 				retcode = AUDIO_ERROR;
@@ -197,4 +196,31 @@ public class MediaUtils {
 		}
 
 		
+		public static Player getPlayerLoose(Reference reference) throws MediaException, IOException {
+			Player thePlayer;
+			
+	        try{ 
+	        	thePlayer = Manager.createPlayer(reference.getLocalURI());
+		        return thePlayer;
+	        } catch(MediaException e) {
+	        	if(!FormManagerProperties.LOOSE_MEDIA_YES.equals(PropertyManager._().getSingularProperty(FormManagerProperties.LOOSE_MEDIA))) {
+	        		throw e;
+	        	}
+	        	Reference[] refs = reference.probeAlternativeReferences();
+	        	for(Reference ref : refs) {
+	        		if(ref.doesBinaryExist()) {
+	        			try{
+	        				//TODO: Make sure you create a player of the right type somehow (video/audio), don't want
+	        				//to accidentally send back an audio player of a video file
+	        				thePlayer = Manager.createPlayer(ref.getLocalURI());
+	    	    	        return thePlayer;
+	        			}catch(MediaException oe) {
+	        				//also bad file, keep trying
+	        			} 
+	        		}
+	        	}
+	        	throw e;
+	        }
+		}
+
 }
