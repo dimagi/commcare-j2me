@@ -27,6 +27,7 @@ import java.util.Vector;
 import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
+import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.xpath.IExprDataType;
 import org.javarosa.xpath.XPathException;
@@ -69,7 +70,7 @@ public class XPathEvalTest extends TestCase {
 		XPathExpression xpe = null;
 		boolean exceptionExpected = (expected instanceof XPathException);
 		if (ec == null) {
-			ec = new EvaluationContext();
+			ec = new EvaluationContext(model);
 		}
 		
 		try {
@@ -105,15 +106,16 @@ public class XPathEvalTest extends TestCase {
 	public void doTests () {
 		EvaluationContext ec = getFunctionHandlers();
 		
+		FormInstance instance = createTestInstance();
+		
 		/* unsupporteds */
 		testEval("/union | /expr", null, null, new XPathUnsupportedException());
 		testEval("/descendant::blah", null, null, new XPathUnsupportedException());
 		testEval("/cant//support", null, null, new XPathUnsupportedException());
 		testEval("/text()", null, null, new XPathUnsupportedException());
 		testEval("/namespace:*", null, null, new XPathUnsupportedException());
-		testEval("/blah[5]", null, null, new XPathUnsupportedException());
-		testEval("(filter-expr)[5]", null, null, new XPathUnsupportedException());
-		testEval("(filter-expr)/path", null, null, new XPathUnsupportedException());
+		testEval("(filter-expr)[5]", instance, null, new XPathUnsupportedException());
+		testEval("(filter-expr)/data", instance, null, new XPathUnsupportedException());
 		/* numeric literals */
 		testEval("5", null, null, new Double(5.0));
 		testEval("555555.555", null, null, new Double(555555.555));
@@ -403,7 +405,6 @@ public class XPathEvalTest extends TestCase {
 			fail("Custom function handler did not successfully send data to external source");
 		
 		/* fetching from model */
-//		FormInstance dm1 = newDataModel();
 //		testEval("/", dm1, null, "");
 //		testEval("/non-existent", dm1, null, "");
 //		
@@ -514,8 +515,16 @@ public class XPathEvalTest extends TestCase {
 		return q;
 	}
 	*/
+	
+	public FormInstance createTestInstance() {
+		TreeElement data = new TreeElement("data");
+		data.addChild(new TreeElement("path"));
+		FormInstance instance = new FormInstance(data);
+		return instance;
+	}
+	
 	private EvaluationContext getFunctionHandlers () {
-		EvaluationContext ec = new EvaluationContext();
+		EvaluationContext ec = new EvaluationContext(null);
 		final Class[][] allPrototypes = {
 				{Double.class, Double.class},
 				{Double.class},
@@ -675,7 +684,7 @@ public class XPathEvalTest extends TestCase {
 	}
 	
 	private EvaluationContext getVariableContext() {
-		EvaluationContext ec = new EvaluationContext();
+		EvaluationContext ec = new EvaluationContext(null);
 		
 		ec.setVariable("var_float_five", new Float(5.0));
 		ec.setVariable("var_string_five", "five");
