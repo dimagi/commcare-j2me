@@ -48,10 +48,6 @@ public class MessageWidget extends ExpandedWidget {
 		return new StringData("OK");
 	}
 
-	public void reset () {
-		super.reset();
-		ok = null;
-	}
 	public int getNextMode () {
 		return ExpandedWidget.NEXT_ON_MANUAL;
 	}

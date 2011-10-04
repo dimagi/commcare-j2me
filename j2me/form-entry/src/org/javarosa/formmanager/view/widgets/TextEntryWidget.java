@@ -21,6 +21,7 @@ import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.services.Logger;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
@@ -81,6 +82,9 @@ public class TextEntryWidget extends ExpandedWidget {
 			}
 		} catch (UnpivotableExpressionException e) {
 			// No big deal
+		} catch(Exception e) {
+			// Not a vital feature for now, don't break on its account
+			Logger.exception("pivot", e);
 		}
 		
 		
