@@ -142,7 +142,8 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 
 	public void show() {
 		controller.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-		if(!controller.isEntryOptimized()) {
+		//TODO: RE-enable a way to use the summary screen here.
+		if(false) {
 			showFormSummary();
 		}
 		else {

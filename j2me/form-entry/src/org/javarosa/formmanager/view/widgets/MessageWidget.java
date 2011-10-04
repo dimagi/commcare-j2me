@@ -22,7 +22,6 @@ import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Container;
@@ -37,51 +36,12 @@ import de.enough.polish.ui.UiAccess;
  * @author ctsims
  *
  */
-public class MessageWidget implements IWidgetStyleEditable {
-	private StringItem prompt;
+public class MessageWidget extends ExpandedWidget {
 	private StringItem ok;
 	
-	private ImageItem imItem;
-	private Container fullPrompt;
-	private int scrHeight,scrWidth;
-	
-	private FormMultimediaController multimediaController;
-
 	public MessageWidget () {
-		reset();
-	}
-
-	public void initWidget (FormEntryPrompt fep, Container c) {
-		//#style container
-		UiAccess.setStyle(c); //it is dubious whether this works properly; Chatterbox.babysitStyles() takes care of this for now
-		
-		//#style questiontext
-		fullPrompt= new Container(false);
-		
-		//#style prompttext
-		prompt = new StringItem(null, null);
-		fullPrompt.add(prompt);
 		//#style button
 		ok = new StringItem(null, Localization.get("button.Next"));
-		scrHeight = J2MEDisplay.getScreenHeight(ExpandedWidget.fallback);
-		scrWidth = J2MEDisplay.getScreenWidth(ExpandedWidget.fallback);
-
-		
-		c.add(fullPrompt);
-		c.add(ok);
-	}
-
-	public void refreshWidget (FormEntryPrompt fep, int changeFlags) {
-		ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight-16,scrWidth-16);
-		if(newImItem!=null){
-			detachImage();
-			fullPrompt.add(newImItem);
-			imItem = newImItem;
-		}
-		if(multimediaController != null){
-			multimediaController.playAudioOnLoad(fep);
-		}
-		prompt.setText(fep.getLongText());
 	}
 
 	public IAnswerData getData () {
@@ -89,48 +49,36 @@ public class MessageWidget implements IWidgetStyleEditable {
 	}
 
 	public void reset () {
-		detachImage();
-		prompt = null;
+		super.reset();
 		ok = null;
 	}
-
-	public boolean focus () {
-		//do nothing special
-		return false;
-	}
-	
 	public int getNextMode () {
 		return ExpandedWidget.NEXT_ON_MANUAL;
 	}
 	
-	public Item getInteractiveWidget () {
-		return ok;
-	}
-	
-	public int widgetType () {
+
+	public int widgetType() {
 		return Constants.CONTROL_TRIGGER;
 	}
 
-	public int getPinnableHeight() {
-		return prompt.getContentHeight();
+	protected IAnswerData getAnswerTemplate() {
+		return new StringData();
 	}
 
-	
-	public void registerMultimediaController(FormMultimediaController controller) {
-		this.multimediaController = controller;
-	}
-	
-	
-	private void detachImage() {
-		if(imItem!=null){
-			fullPrompt.remove(imItem);	//replace an already existing image
-			imItem.releaseResources();
-			imItem = null;
-		}
+	protected Item getEntryWidget(FormEntryPrompt prompt) {
+		return ok;
 	}
 
-	public void releaseMedia() {
+	protected void updateWidget(FormEntryPrompt prompt) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	protected void setWidgetValue(Object o) {
+		//Nope. Not a thing.		
+	}
+
+	protected IAnswerData getWidgetValue() {
+		return new StringData("OK");
 	}
 }
