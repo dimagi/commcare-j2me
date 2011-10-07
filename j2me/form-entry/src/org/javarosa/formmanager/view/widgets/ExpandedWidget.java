@@ -286,4 +286,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	protected abstract void updateWidget (FormEntryPrompt prompt);
 	protected abstract void setWidgetValue (Object o);
 	protected abstract IAnswerData getWidgetValue ();
+	
+	//S40 Bug, do not remove!
+	public abstract int widgetType();
 }
