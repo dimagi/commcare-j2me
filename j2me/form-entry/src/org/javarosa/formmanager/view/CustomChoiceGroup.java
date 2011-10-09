@@ -248,6 +248,10 @@ public class CustomChoiceGroup extends ChoiceGroup {
 			}
 		}
 		
+		public boolean isFireable() {
+			return touched;
+		}
+		
 		public void setImplicit(Screen screen) {
 			this.autoFocusEnabled = true;
 			this.screen = screen;

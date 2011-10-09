@@ -168,6 +168,10 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		summaryState.start();
 	}
 	
+	private void exit() {
+		controller.abort();
+	}
+	
 	private void cleanUpResources() {
 		if(currentQuestionScreen != null) {
 			currentQuestionScreen.releaseMedia();
@@ -224,6 +228,8 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				processModelEvent(event);
 			} else if (command == currentQuestionScreen.viewAnswersCommand) {
 				viewAnswers();
+			} else if (command == currentQuestionScreen.exitCommand) {
+				exit();
 			} else if (command == GeoPointWidget.captureCommand) {
 				try {
 					controller.suspendActivity(FormEntryState.MEDIA_LOCATION);
@@ -310,7 +316,11 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				currentGuess = 0;
 				nextEvent = controller.stepToNextEvent();
 			} else {
-				viewAnswers();
+				if(controller.isEntryOptimized()) {
+					viewAnswers();
+				} else {
+					exit();
+				}
 			}
 			break;
 		case FormEntryController.EVENT_END_OF_FORM:
