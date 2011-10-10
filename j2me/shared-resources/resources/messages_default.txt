@@ -233,3 +233,15 @@ zh=Chinese
 
 #OQPS Messages
 formentry.invalid.input=Invalid Value ${0} Entered
+
+#Input keys when hacked in
+polish.TextField.charactersKey1=.,!?¿:/()@_-+1'\";
+polish.TextField.charactersKey2=abc2
+polish.TextField.charactersKey3=def3
+polish.TextField.charactersKey4=ghi4
+polish.TextField.charactersKey5=jkl5
+polish.TextField.charactersKey6=mno6
+polish.TextField.charactersKey7=pqrs7
+polish.TextField.charactersKey8=tuv8
+polish.TextField.charactersKey9=wxyz9
+polish.TextField.charactersKey0= 0

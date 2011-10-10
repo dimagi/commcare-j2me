@@ -128,8 +128,6 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 	}
 	
 	public void start () {
-		Logger.log("timing", "start: " + new Date().getTime());
-
 		loadEntities();
 
 		if(entities.isEmpty() && bailOnEmpty && selView.newMode == EntitySelectView.NEW_DISALLOWED) {
@@ -139,7 +137,6 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 		
 		selView.init();
 		showList();
-		Logger.log("timing", "end: " + new Date().getTime());
 	}
 
 	private void loadEntities () {
@@ -225,8 +222,12 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 	
 	public void itemSelected (int i) {
 		Entity<E> entity = entities.elementAt(i);
-		EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entityStorage);
-		psdp.show();
+		if(entity.getHeaders(true) ==null) {
+			entityChosen(this.getRecordID(i));
+		} else {
+			EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entityStorage);
+			psdp.show();
+		}
 	}
 	
 	public void entityChosen (int entityID) {
