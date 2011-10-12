@@ -128,7 +128,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			currentQuestionScreen.addLanguageCommands(model.getLanguages());
 		}
 		
-		if(currentGuess != -1) {
+		if(currentGuess != -1 && controller.isEntryOptimized()) {
 			currentQuestionScreen.configureProgressBar(currentGuess,numQuestions);
 		}
 		

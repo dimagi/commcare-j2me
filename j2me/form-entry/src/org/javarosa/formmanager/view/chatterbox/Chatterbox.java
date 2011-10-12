@@ -248,9 +248,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     }
 
     private void initProgressBar () {
-        //#style progressbar
-        progressBar = new Gauge(null, false, model.getNumQuestions(), 0);
-        append(Graphics.BOTTOM, progressBar);
+    	//CTS: Oct 11, 2011 - Progress bar is no longer included in Sense interface mode
+    	if(controller.isEntryOptimized()) {
+    		//#style progressbar
+    		progressBar = new Gauge(null, false, model.getNumQuestions(), 0);
+    		append(Graphics.BOTTOM, progressBar);
+    	}
     }
     
     private void step(int event) {
@@ -394,9 +397,11 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     			this.container.setScrollHeight(prevheight);
     		}
     			
-    		//FIXME: no!
-    		progressBar.setMaxValue(model.getNumQuestions());
-    		progressBar.setValue(questionIndexes.size());    		
+        	if(controller.isEntryOptimized()) {
+	    		//FIXME: no!
+	    		progressBar.setMaxValue(model.getNumQuestions());
+	    		progressBar.setValue(questionIndexes.size());    		
+        	}
     	}
     	
     	//If there's only one thing on the screen, back is a meaningless
@@ -527,7 +532,10 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     	if(!model.isReadOnlyMode()) {
 	    	controller.jumpToIndex(FormIndex.createEndOfFormIndex());
 	    	babysitStyles();
-			progressBar.setValue(progressBar.getMaxValue());
+	    	
+	    	if(controller.isEntryOptimized()) {
+	    		progressBar.setValue(progressBar.getMaxValue());
+	    	}
 			
 			repaint();
 			
