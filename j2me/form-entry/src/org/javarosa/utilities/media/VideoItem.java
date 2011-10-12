@@ -116,13 +116,52 @@ public class VideoItem extends CustomItem {
   	  	  	  	
 	}
 
+	
+	boolean playing = false;
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
         	if(player != null) {
         		//center stuff
         		width = rightBorder - leftBorder;
         		int offsetX = (width - cw) / 2;
 	        	vc.setDisplayLocation(x + offsetX, y);
-        	}
+	        	if(player.getState() != Player.STARTED) {
+	        		playing = false;
+    	        	vc.setVisible(false);
+
+	        		int mx = x + offsetX;
+	        		int my = y;
+	        		
+	        		int mw = vc.getDisplayWidth();
+	        		int mh = vc.getDisplayHeight();
+	        		
+	        		
+	        		int hi = (int)Math.floor(.2 * mh);
+	        		int fh = mh - hi * 2;
+	        		
+	        		//int fw = mw  - wi * 2;
+		        	//int wi = (int)Math.floor(.2 * mw);
+	        		int fw = (int)Math.floor(.9 * fh);
+	        		
+		        	int wi = (mw - fw)/2;		        	
+		        	
+		        	
+		        	int wu = (int)Math.floor(fw / 5.0);
+		        	int hu = (int)Math.floor(fh / 7.0);
+		        	
+		        	g.setColor(0, 0, 0);
+		        	
+		        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
+		        	g.fillRect(mx + wi + 3 * wu, my + hi, wu, fh);
+		        	
+		        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
+		        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
+	        	} else {
+	        		if(!playing) {
+	        			playing = true;
+	        			vc.setVisible(true);
+	        		}
+	        	}
+	        }
 	}
 	
 	public int getPreferredWidth() { 
