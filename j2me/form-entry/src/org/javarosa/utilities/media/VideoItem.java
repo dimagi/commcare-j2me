@@ -4,17 +4,20 @@
 package org.javarosa.utilities.media;
 
 import java.io.IOException;
+import java.util.Vector;
 
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
 
+import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.CustomItem;
@@ -77,6 +80,28 @@ public class VideoItem extends CustomItem {
 			      if(event == PlayerListener.END_OF_MEDIA) {
 			    	  //Anything?
 			          }
+			      
+			      boolean invalidate = false;
+			      if(event == PlayerListener.STOPPED) {
+			    	  if(playing) {
+			    		  invalidate = true;
+			    	  }
+			    	  playing = false;
+			    	  if(vc != null) {
+			    		  vc.setVisible(false);
+			    	  }
+			      } else if (event== PlayerListener.STARTED) {
+			    	  if(!playing) {
+			    		  invalidate = true;
+			    	  }
+			    	  playing = true;
+			    	  if(vc != null) {
+			    		  vc.setVisible(true);
+			    	  }
+			      }
+			      if(invalidate) {
+			    	  VideoItem.this.repaintFully();
+			      }
 			}
       	  
         });
@@ -124,10 +149,14 @@ public class VideoItem extends CustomItem {
         		width = rightBorder - leftBorder;
         		int offsetX = (width - cw) / 2;
 	        	vc.setDisplayLocation(x + offsetX, y);
-	        	if(player.getState() != Player.STARTED) {
-	        		playing = false;
+	        	if(!playing) {
     	        	vc.setVisible(false);
+    	        	
+    	        	Font f = g.getFont();
+    	        	int fnth = f.getHeight();
 
+    	        	
+    	        	//Calculate margins and locations
 	        		int mx = x + offsetX;
 	        		int my = y;
 	        		
@@ -135,7 +164,7 @@ public class VideoItem extends CustomItem {
 	        		int mh = vc.getDisplayHeight();
 	        		
 	        		
-	        		int hi = (int)Math.floor(.2 * mh);
+	        		int hi = Math.max((int)Math.floor(.2 * mh), fnth);
 	        		int fh = mh - hi * 2;
 	        		
 	        		//int fw = mw  - wi * 2;
@@ -148,6 +177,7 @@ public class VideoItem extends CustomItem {
 		        	int wu = (int)Math.floor(fw / 5.0);
 		        	int hu = (int)Math.floor(fh / 7.0);
 		        	
+		        	//Draw us a big 'ol hash
 		        	g.setColor(0, 0, 0);
 		        	
 		        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
@@ -155,12 +185,27 @@ public class VideoItem extends CustomItem {
 		        	
 		        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
 		        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
-	        	} else {
-	        		if(!playing) {
-	        			playing = true;
-	        			vc.setVisible(true);
-	        		}
-	        	}
+		        	
+		        	
+		        	String top = Localization.get("video.playback.top");
+		        	String bottom = Localization.get("video.playback.bottom");
+		        	
+		        	
+		        	int tw = f.stringWidth(top);
+		        	int bw = f.stringWidth(bottom);
+		        	
+		        	int tx = (mw - tw)/2 + mx;
+		        	int tyo = (hi - fnth) /2;
+		        	int ty = my + tyo;
+		        	
+		        	
+		        	g.drawString(top, tx, ty, Graphics.TOP | Graphics.LEFT);
+		        	
+		        	int bx = (mw - bw)/2 + mx;
+		        	int by = (my + mh - hi) + tyo;
+
+		        	g.drawString(bottom, bx, by, Graphics.TOP | Graphics.LEFT);
+	        	} 
 	        }
 	}
 	

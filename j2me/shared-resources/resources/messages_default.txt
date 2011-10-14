@@ -248,3 +248,6 @@ polish.TextField.charactersKey0= 0
 
 #User registration
 menu.send.later=Send Later
+
+video.playback.top=Press
+video.playback.bottom=For Play/Pause
