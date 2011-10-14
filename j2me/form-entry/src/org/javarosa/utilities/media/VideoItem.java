@@ -120,7 +120,7 @@ public class VideoItem extends CustomItem {
   	  	//The formats involved in video scale somewhat oddly (3gp specifically), and don't actually give
   	  	//the right values here. We really want to scale if possible.
   	  	
-  	  	int optimal = J2MEDisplay.getScreenWidth(240) * 3 / 4;
+  	  	int optimal = J2MEDisplay.getScreenWidth(240) * 95 / 100;
   	  	
   	  	//We'd optimally like to be around 3/4 of the screen's width, if available.
 

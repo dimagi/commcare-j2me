@@ -316,7 +316,9 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				currentGuess = 0;
 				nextEvent = controller.stepToNextEvent();
 			} else {
-				if(controller.isEntryOptimized()) {
+				//TODO: Re-add this workflow
+				//if(controller.isEntryOptimized()) {
+				if(false) {
 					viewAnswers();
 				} else {
 					exit();
