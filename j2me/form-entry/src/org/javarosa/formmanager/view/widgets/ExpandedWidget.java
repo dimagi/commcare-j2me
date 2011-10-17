@@ -235,6 +235,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	
 	public void releaseMedia() {
 		detachVideo();
+		detachImage();
 	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {
