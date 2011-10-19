@@ -36,6 +36,7 @@ import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
+import de.enough.polish.ui.MoreUIAccess;
 import de.enough.polish.ui.Style;
 
 public class ChatterboxWidget extends Container implements IQuestionWidget, HandledPItemStateListener, HandledPItemCommandListener {
@@ -170,6 +171,53 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		}
 		this.focusChild(this.itemsList.size()-1);
 	}
+	
+	public int getRelativeScrollYOffset() {
+		if (!this.enableScrolling && this.parent instanceof Container) {
+			
+			// Clayton Sims - Feb 9, 2009 : Had to go through and modify this code again.
+			// The offsets are now accumulated through all of the parent containers, not just
+			// one.
+			Item walker = this.parent;
+			int offset = 0;
+			
+			//Walk our parent containers and accumulate their offsets.
+			while(walker instanceof Container) {
+				// Clayton Sims - Apr 3, 2009 : 
+				// If the container can scroll, it's relativeY is useless, it's in a frame and
+				// the relativeY isn't actually applicable.
+				// Actually, this should almost certainly _just_ break out of the loop if
+				// we hit something that scrolls, but if we have multiple scrolling containers
+				// nested, someone _screwed up_.
+				if(!MoreUIAccess.isScrollingContainer((Container)walker)) {
+					offset += walker.relativeY;
+				}
+				walker = walker.getParent();
+			}
+			
+			//The value returned here (The + offest part) is the fix.
+			int absOffset = ((Container)this.parent).getScrollYOffset() + this.relativeY + offset;
+			
+			return absOffset;
+			
+			// Clayton Sims - Feb 10, 2009 : Rolled back because it doesn't work on the 3110c, apparently!
+			// Fixing soon.
+			//return ((Container)this.parent).getScrollYOffset() + this.relativeY + this.parent.relativeY;
+		}
+		int offset = this.targetYOffset;
+		//#ifdef polish.css.scroll-mode
+			if (!this.scrollSmooth) {
+				offset = this.yOffset;
+			}
+		//#endif
+		return offset;
+	}
+	
+	//Do not try to scroll yourself. Signal upwards that you're part of something else
+	public int getScrollHeight() {
+		return -1;
+	}
+
 	
 	private void detachWidget () {
 		Item widget = expandedStyle.getInteractiveWidget();

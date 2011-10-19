@@ -69,8 +69,8 @@ public class VideoItem extends CustomItem {
         
         videoRef = ReferenceManager._().DeriveReference(URI);
         
-        player = Manager.createPlayer(videoRef.getLocalURI());
-
+        player = MediaUtils.getPlayerLoose(videoRef);
+        
         player.addPlayerListener(new PlayerListener() {
 
 			public void playerUpdate(Player arg0, String event, Object arg2) {
@@ -218,4 +218,5 @@ public class VideoItem extends CustomItem {
 			e.printStackTrace();
 		}
 	}
+	
 }
