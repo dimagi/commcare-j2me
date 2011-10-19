@@ -559,7 +559,7 @@ alertcontent {
 }
 
 .patselSelectedRow extends patselRow {
-	background-color: focusedBackground;
+	background-color: selectedBg;
 	border {
 		type: drop-shadow;
 		inner-color: #000;
