@@ -117,6 +117,9 @@ public class VideoItem extends CustomItem {
   	  	pw = vc.getSourceWidth();
   	  	ph = vc.getSourceHeight();
   	  	
+  	  	vw = vc.getSourceWidth();
+  	  	vh = vc.getSourceHeight();  	  	
+  	  	
   	  	//The formats involved in video scale somewhat oddly (3gp specifically), and don't actually give
   	  	//the right values here. We really want to scale if possible.
   	  	
@@ -124,20 +127,17 @@ public class VideoItem extends CustomItem {
   	  	
   	  	//We'd optimally like to be around 3/4 of the screen's width, if available.
 
-  	  	if(optimal > pw) {
+  	  	//if(optimal > pw) {
   	  		//we can only scale up to 2x
+  	  	
   	  		double scale = Math.min(2.0, (optimal * 1.0 / pw));
   	  		
+  	  		//228 186
   	  		pw = (int)Math.floor(pw * scale);
   	  		ph = (int)Math.floor(ph * scale);
-  	  	}
-  	  	
+  	  	//}
   	  	
         player.prefetch();
-
-        
-  	  	vh = vc.getSourceHeight();
-  	  	vw = vc.getSourceWidth();
   	  	  	  	
 	}
 
@@ -188,7 +188,9 @@ public class VideoItem extends CustomItem {
 		        	
 		        	
 		        	String top = Localization.get("video.playback.top");
+		        	//String top = "lw: " + vc.getSourceWidth() + " lh: " + vc.getSourceHeight();
 		        	String bottom = Localization.get("video.playback.bottom");
+		        	//String bottom = "cw: " + cw + " ch: " + ch; 
 		        	
 		        	
 		        	int tw = f.stringWidth(top);
@@ -265,6 +267,25 @@ public class VideoItem extends CustomItem {
 	  		w = availWidth;
 	  		h = (int)Math.floor(h * ratio);
   	  	}
+  	  	
+   	   //try to get a clean scale if you can
+   	   int numTries = 10;
+   	   int curPw = w % 2 == 1 ? w + 1: w;
+   	   for(int i = 0; i < numTries ; ++i) {
+  	  		double curScale = Math.min(2.0, (curPw*1.0) / vw );
+  	  		
+  	  		double resultHeight = vh * curScale;
+  	  		double floored = Math.floor(resultHeight);
+  	  		if(resultHeight == floored && (int)floored % 2 == 0 && (int)floored <= h) {
+  	  			w  = curPw;
+  	  			h = (int)floored;
+  	  			break;
+  	  		}
+  	  		
+  	  		curPw -= 2;
+  	  		
+  	  		i++;
+   	   }
 
   	  	cw = w;
   	  	ch = h;
