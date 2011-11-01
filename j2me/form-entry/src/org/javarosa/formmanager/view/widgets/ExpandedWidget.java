@@ -23,6 +23,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
+import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
@@ -82,8 +83,12 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		fullPrompt.add(prompt);
 		
 		entryWidget = getEntryWidget(fep);
-		//#style textBox
-		UiAccess.setStyle(entryWidget);
+		
+		//UUUUGLY
+		if(this.widgetType() != Constants.CONTROL_TRIGGER) { 
+			//#style textBox
+			UiAccess.setStyle(entryWidget);
+		}
 		
 		c.add(fullPrompt);
 		c.add(entryWidget);
@@ -230,6 +235,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	
 	public void releaseMedia() {
 		detachVideo();
+		detachImage();
 	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {
@@ -281,4 +287,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	protected abstract void updateWidget (FormEntryPrompt prompt);
 	protected abstract void setWidgetValue (Object o);
 	protected abstract IAnswerData getWidgetValue ();
+	
+	//S40 Bug, do not remove!
+	public abstract int widgetType();
 }

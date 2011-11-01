@@ -31,10 +31,12 @@ import org.javarosa.entity.api.EntitySelectController;
 import org.javarosa.entity.model.Entity;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
 
 public class EntitySelectDetailPopup<E extends Persistable> extends Form implements HandledCommandListener {
 	EntitySelectController<E> psa;
@@ -72,9 +74,18 @@ public class EntitySelectDetailPopup<E extends Persistable> extends Form impleme
 	
 	public void loadData() {
 		for (int i = 0; i < data.length; i++) {
-			//TODO: make these styles dynamically configurable as well (like on the main list view)
+			
 			//#style patselDetailRow
 			Container c = new Container(false);
+			int screenwidth = J2MEDisplay.getScreenWidth(240);
+			
+			int first = (int)Math.floor(screenwidth * .35);
+			int second = (int)Math.floor(screenwidth * .65);
+			
+			//Dynamically assign column space based on phone screen
+			c.getStyle().addAttribute("columns", new Integer(2));
+			c.getStyle().addAttribute("columns-width", first + "," + second);
+			
 			c.add(new StringItem("", headers[i] + ":"));
 			c.add(new StringItem("", data[i]));
 			if("phone".equals(forms[i])) {

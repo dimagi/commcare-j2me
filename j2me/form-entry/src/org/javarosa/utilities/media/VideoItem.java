@@ -4,17 +4,20 @@
 package org.javarosa.utilities.media;
 
 import java.io.IOException;
+import java.util.Vector;
 
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
 
+import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.CustomItem;
@@ -77,6 +80,28 @@ public class VideoItem extends CustomItem {
 			      if(event == PlayerListener.END_OF_MEDIA) {
 			    	  //Anything?
 			          }
+			      
+			      boolean invalidate = false;
+			      if(event == PlayerListener.STOPPED) {
+			    	  if(playing) {
+			    		  invalidate = true;
+			    	  }
+			    	  playing = false;
+			    	  if(vc != null) {
+			    		  vc.setVisible(false);
+			    	  }
+			      } else if (event== PlayerListener.STARTED) {
+			    	  if(!playing) {
+			    		  invalidate = true;
+			    	  }
+			    	  playing = true;
+			    	  if(vc != null) {
+			    		  vc.setVisible(true);
+			    	  }
+			      }
+			      if(invalidate) {
+			    	  VideoItem.this.repaintFully();
+			      }
 			}
       	  
         });
@@ -92,37 +117,98 @@ public class VideoItem extends CustomItem {
   	  	pw = vc.getSourceWidth();
   	  	ph = vc.getSourceHeight();
   	  	
+  	  	vw = vc.getSourceWidth();
+  	  	vh = vc.getSourceHeight();  	  	
+  	  	
   	  	//The formats involved in video scale somewhat oddly (3gp specifically), and don't actually give
   	  	//the right values here. We really want to scale if possible.
   	  	
-  	  	int optimal = J2MEDisplay.getScreenWidth(240) * 3 / 4;
+  	  	int optimal = J2MEDisplay.getScreenWidth(240) * 95 / 100;
   	  	
   	  	//We'd optimally like to be around 3/4 of the screen's width, if available.
 
-  	  	if(optimal > pw) {
+  	  	//if(optimal > pw) {
   	  		//we can only scale up to 2x
+  	  	
   	  		double scale = Math.min(2.0, (optimal * 1.0 / pw));
   	  		
+  	  		//228 186
   	  		pw = (int)Math.floor(pw * scale);
   	  		ph = (int)Math.floor(ph * scale);
-  	  	}
-  	  	
+  	  	//}
   	  	
         player.prefetch();
-
-        
-  	  	vh = vc.getSourceHeight();
-  	  	vw = vc.getSourceWidth();
   	  	  	  	
 	}
 
+	
+	boolean playing = false;
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
         	if(player != null) {
         		//center stuff
         		width = rightBorder - leftBorder;
         		int offsetX = (width - cw) / 2;
 	        	vc.setDisplayLocation(x + offsetX, y);
-        	}
+	        	if(!playing) {
+    	        	vc.setVisible(false);
+    	        	
+    	        	Font f = g.getFont();
+    	        	int fnth = f.getHeight();
+
+    	        	
+    	        	//Calculate margins and locations
+	        		int mx = x + offsetX;
+	        		int my = y;
+	        		
+	        		int mw = vc.getDisplayWidth();
+	        		int mh = vc.getDisplayHeight();
+	        		
+	        		
+	        		int hi = Math.max((int)Math.floor(.2 * mh), fnth);
+	        		int fh = mh - hi * 2;
+	        		
+	        		//int fw = mw  - wi * 2;
+		        	//int wi = (int)Math.floor(.2 * mw);
+	        		int fw = (int)Math.floor(.9 * fh);
+	        		
+		        	int wi = (mw - fw)/2;		        	
+		        	
+		        	
+		        	int wu = (int)Math.floor(fw / 5.0);
+		        	int hu = (int)Math.floor(fh / 7.0);
+		        	
+		        	//Draw us a big 'ol hash
+		        	g.setColor(0, 0, 0);
+		        	
+		        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
+		        	g.fillRect(mx + wi + 3 * wu, my + hi, wu, fh);
+		        	
+		        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
+		        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
+		        	
+		        	
+		        	String top = Localization.get("video.playback.top");
+		        	//String top = "lw: " + vc.getSourceWidth() + " lh: " + vc.getSourceHeight();
+		        	String bottom = Localization.get("video.playback.bottom");
+		        	//String bottom = "cw: " + cw + " ch: " + ch; 
+		        	
+		        	
+		        	int tw = f.stringWidth(top);
+		        	int bw = f.stringWidth(bottom);
+		        	
+		        	int tx = (mw - tw)/2 + mx;
+		        	int tyo = (hi - fnth) /2;
+		        	int ty = my + tyo;
+		        	
+		        	
+		        	g.drawString(top, tx, ty, Graphics.TOP | Graphics.LEFT);
+		        	
+		        	int bx = (mw - bw)/2 + mx;
+		        	int by = (my + mh - hi) + tyo;
+
+		        	g.drawString(bottom, bx, by, Graphics.TOP | Graphics.LEFT);
+	        	} 
+	        }
 	}
 	
 	public int getPreferredWidth() { 
@@ -181,6 +267,25 @@ public class VideoItem extends CustomItem {
 	  		w = availWidth;
 	  		h = (int)Math.floor(h * ratio);
   	  	}
+  	  	
+   	   //try to get a clean scale if you can
+   	   int numTries = 10;
+   	   int curPw = w % 2 == 1 ? w + 1: w;
+   	   for(int i = 0; i < numTries ; ++i) {
+  	  		double curScale = Math.min(2.0, (curPw*1.0) / vw );
+  	  		
+  	  		double resultHeight = vh * curScale;
+  	  		double floored = Math.floor(resultHeight);
+  	  		if(resultHeight == floored && (int)floored % 2 == 0 && (int)floored <= h) {
+  	  			w  = curPw;
+  	  			h = (int)floored;
+  	  			break;
+  	  		}
+  	  		
+  	  		curPw -= 2;
+  	  		
+  	  		i++;
+   	   }
 
   	  	cw = w;
   	  	ch = h;

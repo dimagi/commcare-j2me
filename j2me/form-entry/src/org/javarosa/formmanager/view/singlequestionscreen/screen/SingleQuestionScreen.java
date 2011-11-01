@@ -52,6 +52,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	// GUI elements
 	public Command previousCommand;
 	//public Command nextCommand;
+	public Command exitCommand;
 	public Command viewAnswersCommand;
 	public Command languageSubMenu;
 	public Command[] languageCommands;
@@ -59,7 +60,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	Command[] itemCommandQueue;
 
 	public static Command nextItemCommand = new Command(Localization
-			.get("menu.Next"), Command.OK, 1);
+			.get("menu.Next"), Command.SCREEN, 1);
 	
 	//#style button
 	public StringItem nextItem = new StringItem(null, Localization
@@ -134,14 +135,17 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 				Command.BACK, 2);
 		viewAnswersCommand = new Command(Localization.get("menu.ViewAnswers"),
 				Command.SCREEN, 3);
+		
+		exitCommand = new Command(Localization.get("menu.Exit"),Command.EXIT, 2);
 
 		this.addCommand(previousCommand);
+		this.addCommand(exitCommand);
 		this.addCommand(viewAnswersCommand);
 		this.addCommand(nextItemCommand);
 	}
 
 	public void addNavigationWidgets() {
-		if(this.widget.getNextMode() != ExpandedWidget.NEXT_ON_MANUAL) {
+		if(this.widget.getNextMode() != ExpandedWidget.NEXT_ON_MANUAL && this.widget.getNextMode()  != ExpandedWidget.NEXT_ON_ENTRY) {
 			this.append(nextItem);
 			nextItem.setDefaultCommand(nextItemCommand); // add Command to Item.
 		}
