@@ -39,7 +39,7 @@ public class RegisterUserController<M extends TransportMessage> implements Trans
 	private static final Command RETRY = new Command(Localization.get("command.retry"),Command.OK, 1);
 	private static final Command CANCEL = new Command(Localization.get("command.cancel"), Command.CANCEL,1);
 	
-	private static final Command OK = new Command(Localization.get("menu.send.later"), Command.CANCEL,1);
+	private static final Command OK = new Command(Localization.get("menu.ok"), Command.CANCEL,1);
 	private static final Command SEND_LATER = new Command(Localization.get("menu.send.later"), Command.CANCEL,1);
 	
 
