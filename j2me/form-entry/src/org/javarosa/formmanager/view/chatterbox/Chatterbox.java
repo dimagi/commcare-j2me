@@ -198,12 +198,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     
     private void setUpCommands () {
     	backCommand = new Command(Localization.get("command.back"), Command.BACK, 2);
-    	exitNoSaveCommand = new Command(Localization.get("command.exit"), Command.EXIT, 4);
+    	exitNoSaveCommand = new Command(Localization.get("command.exit"), Command.EXIT, 2);
     	exitSaveCommand = new Command(Localization.get("command.saveexit"), Command.SCREEN, 4);
     	saveCommand = new Command(Localization.get("command.save"), Command.SCREEN, 4);
         
         if (multiLingual) {
-        	languageSubMenu = new Command(Localization.get("command.language"), Command.SCREEN, 2);
+        	languageSubMenu = new Command(Localization.get("command.language"), Command.SCREEN, 4);
         	populateLanguages();
         }
         
@@ -242,23 +242,32 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     		} catch(NoLocalizedTextException nlte) {
     			//nothing. Just don't have a way to check for this yet.
     		}
-    		languageCommands[i] = new Command(label, Command.SCREEN, 3);
+    		languageCommands[i] = new Command(label, Command.SCREEN, 4);
     		localeCommandMap[i] = availableLocales[i];
     	}
     }
 
     private void initProgressBar () {
     	//CTS: Oct 11, 2011 - Progress bar is no longer included in Sense interface mode
-    	if(controller.isEntryOptimized()) {
+    	//CTS: Nov 11, 2011 - Disabling this behavior in 1.3, it's causing layout issues.
+    	//if(controller.isEntryOptimized()) {
     		//#style progressbar
     		progressBar = new Gauge(null, false, model.getNumQuestions(), 0);
     		append(Graphics.BOTTOM, progressBar);
-    	}
+    	//}
     }
     
     private void step(int event) {
+    	step(event, false);
+    }
+    
+    private void step(int event, boolean backwards) {
     	switch(event) {
     	case FormEntryController.EVENT_BEGINNING_OF_FORM:
+    		if(backwards) {
+    			//we've stepped out of the form. Bail.
+    			controller.abort();
+    		}
     		break;
     	case FormEntryController.EVENT_END_OF_FORM:
     		formComplete();
@@ -397,20 +406,17 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     			this.container.setScrollHeight(prevheight);
     		}
     			
-        	if(controller.isEntryOptimized()) {
+        	//CTS: Nov 11, 2011 - Disabling this behavior in 1.3, it's causing layout issues.
+        	//if(controller.isEntryOptimized()) {
 	    		//FIXME: no!
 	    		progressBar.setMaxValue(model.getNumQuestions());
 	    		progressBar.setValue(questionIndexes.size());    		
-        	}
+        	//}
     	}
     	
-    	//If there's only one thing on the screen, back is a meaningless
-    	//and confusing no-op. Don't show it.
-    	if(this.questionIndexes.size() <= 1) {
-    		this.removeCommand(backCommand);
-    	} else {
-    		addBackCommand();
-    	}
+    	//CTS: Nov 11, 2011 - actually we want to mimic OQPS here and display back on the first question but use
+    	//it to exit the form instead.
+    	addBackCommand();
     	
     	//UI hacks ho!
     	babysitStyles();
@@ -533,9 +539,9 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 	    	controller.jumpToIndex(FormIndex.createEndOfFormIndex());
 	    	babysitStyles();
 	    	
-	    	if(controller.isEntryOptimized()) {
+	    	//if(controller.isEntryOptimized()) {
 	    		progressBar.setValue(progressBar.getMaxValue());
-	    	}
+	    	//}
 			
 			repaint();
 			
@@ -588,7 +594,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     			deleteInterstitial = false;
 				jumpToQuestion(this.activeQuestionIndex);
     		} else {
-    			step(controller.stepToPreviousEvent());
+    			step(controller.stepToPreviousEvent(), true);
     		}
     	} else if (command == exitNoSaveCommand) {
     		controller.abort();

@@ -73,7 +73,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		//blankSlateStyle = this.getStyle();
 
 		this.cbox = cbox;
-		this.nextCommand = new Command(Localization.get("command.next"), Command.ITEM, 1);
+		this.nextCommand = new Command(Localization.get("command.next"), Command.ITEM, 3);
         this.prompt = prompt;
         
 		this.collapsedStyle = collapsedStyle;
