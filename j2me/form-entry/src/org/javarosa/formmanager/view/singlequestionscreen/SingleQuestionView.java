@@ -128,7 +128,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			currentQuestionScreen.addLanguageCommands(model.getLanguages());
 		}
 		
-		if(currentGuess != -1) {
+		if(currentGuess != -1 && controller.isEntryOptimized()) {
 			currentQuestionScreen.configureProgressBar(currentGuess,numQuestions);
 		}
 		
@@ -142,7 +142,8 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 
 	public void show() {
 		controller.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-		if(!controller.isEntryOptimized()) {
+		//TODO: RE-enable a way to use the summary screen here.
+		if(false) {
 			showFormSummary();
 		}
 		else {
@@ -165,6 +166,10 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 
 		FormSummaryState summaryState = new FormSummaryState(controller);
 		summaryState.start();
+	}
+	
+	private void exit() {
+		controller.abort();
 	}
 	
 	private void cleanUpResources() {
@@ -223,6 +228,8 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				processModelEvent(event);
 			} else if (command == currentQuestionScreen.viewAnswersCommand) {
 				viewAnswers();
+			} else if (command == currentQuestionScreen.exitCommand) {
+				exit();
 			} else if (command == GeoPointWidget.captureCommand) {
 				try {
 					controller.suspendActivity(FormEntryState.MEDIA_LOCATION);
@@ -309,7 +316,13 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				currentGuess = 0;
 				nextEvent = controller.stepToNextEvent();
 			} else {
-				viewAnswers();
+				//TODO: Re-add this workflow
+				//if(controller.isEntryOptimized()) {
+				if(false) {
+					viewAnswers();
+				} else {
+					exit();
+				}
 			}
 			break;
 		case FormEntryController.EVENT_END_OF_FORM:

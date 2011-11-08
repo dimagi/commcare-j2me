@@ -17,12 +17,14 @@
 package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.Constants;
+import org.javarosa.core.model.condition.pivot.ConstraintHint;
+import org.javarosa.core.model.condition.pivot.RangeHint;
 import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.services.Logger;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.TextField;
@@ -68,25 +70,34 @@ public class TextEntryWidget extends ExpandedWidget {
 		
 		//See if we can get the max length of the constraint to limit entry options
 		try {
-			StringLengthRangeHint hint = new StringLengthRangeHint();
-			prompt.requestConstraintHint(hint);
-			
-			StringData maxexample = hint.getMax();
-			if(maxexample != null) {
-				int length = ((String)maxexample.getValue()).length();
-				if(!hint.isMaxInclusive()) {
-					length = -1;
-				}
-				textField.setMaxSize(length);
-			}
+			textField.setMaxSize(guessMaxStringLength(prompt));
 		} catch (UnpivotableExpressionException e) {
 			// No big deal
+		} catch(Exception e) {
+			// Not a vital feature for now, don't break on its account
+			Logger.exception("pivot", e);
 		}
 		
 		
 		return wec.wrapEntryWidget(textField);
 	}
 	
+	protected int guessMaxStringLength(FormEntryPrompt prompt) throws UnpivotableExpressionException{
+		StringLengthRangeHint hint = new StringLengthRangeHint();
+		prompt.requestConstraintHint(hint);
+		
+		StringData maxexample = hint.getMax();
+		
+		if(maxexample != null) {
+			int length = maxexample.uncast().getString().length();
+			if(!hint.isMaxInclusive()) {
+				length -= 1;
+			}
+			return length;
+		}
+		throw new UnpivotableExpressionException();
+	}
+
 	public Item getInteractiveWidget() {
 		return wec.wrapInteractiveWidget(super.getInteractiveWidget());
 	}

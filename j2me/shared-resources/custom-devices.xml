@@ -21,6 +21,13 @@ at large.
 		<parent>Nokia/6085</parent>
 	</device>
 	
+	<device types="nokia s40 customkeys">
+		<identifier>Nokia/S40-custom-keys</identifier>
+		<capability name="customkeys" value="true" />
+		<features>javarosa</features>
+		<parent>Nokia/6085</parent> 
+	</device>
+	
 	<device types="nokia s40">
 		<identifier>Nokia/S40-generic</identifier>
 		<features>javarosa</features>
@@ -88,6 +95,13 @@ at large.
 	<device types="sun nonroman">
 		<identifier>Generic/International</identifier>
 		<capability name="international" value="true" />
+		<features>javarosa</features>
+		<parent>Generic/AnyPhone</parent>
+	</device>
+	
+	<device types="sun customkeys">
+		<identifier>Generic/CustomKeys</identifier>
+		<capability name="customkeys" value="true" />
 		<features>javarosa</features>
 		<parent>Generic/AnyPhone</parent>
 	</device>

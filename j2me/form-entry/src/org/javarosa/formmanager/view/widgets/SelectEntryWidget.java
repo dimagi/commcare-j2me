@@ -43,8 +43,8 @@ import de.enough.polish.ui.Item;
  */
 public abstract class SelectEntryWidget extends ExpandedWidget {
 	private int style;
-	private boolean autoSelect;
-	private boolean numericNavigation;
+	protected boolean autoSelect;
+	protected boolean numericNavigation;
 	protected FormEntryPrompt prompt;
 	
 	private CustomChoiceGroup choicegroup;
