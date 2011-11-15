@@ -29,6 +29,7 @@ import org.javarosa.core.model.IDataReference;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.utils.ITreeVisitor;
@@ -237,7 +238,7 @@ public class QuestionDataElementTests extends TestCase{
 			public void visit(FormInstance tree) {
 				dispatchedWrong.bool = true;
 			}
-			public void visit(TreeElement element) {
+			public void visit(AbstractTreeElement element) {
 				visitorAccepted.bool = true;
 			}
 		};

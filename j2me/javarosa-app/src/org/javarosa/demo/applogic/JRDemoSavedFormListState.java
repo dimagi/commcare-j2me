@@ -4,8 +4,7 @@ import java.io.IOException;
 
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.StorageManager;
+import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.demo.activity.savedformlist.JRDemoSavedFormListController;
 import org.javarosa.demo.activity.savedformlist.JRDemoSavedFormListTransitions;
 import org.javarosa.formmanager.utility.FormDefFetcher;
@@ -29,7 +28,7 @@ public class JRDemoSavedFormListState implements JRDemoSavedFormListTransitions{
 		JRDemoFormTransportState send;
 		try {
 			//Link to the FormDef so we can find the appropriate submission profile
-			FormDefFetcher fd = new FormDefFetcher(new ModelRmsRetrievalMethod(data), JRDemoContext._().getPreloaders(), JRDemoContext._().getFuncHandlers());
+			FormDefFetcher fd = new FormDefFetcher(new ModelRmsRetrievalMethod(data), JRDemoContext._().getPreloaders(), JRDemoContext._().getFuncHandlers(), new InstanceInitializationFactory());
 			SubmissionProfile profile = fd.getFormDef().getSubmissionProfile();
 			send = new JRDemoFormTransportState(data, profile, data.getID()) {
 

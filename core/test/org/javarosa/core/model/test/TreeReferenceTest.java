@@ -46,6 +46,7 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.model.xform.XPathReference;
 
 public class TreeReferenceTest extends TestCase {
 	
@@ -105,13 +106,14 @@ public class TreeReferenceTest extends TestCase {
 		return aSuite;
 	}
 	
-	public final static int NUM_TESTS = 4;
+	public final static int NUM_TESTS = 5;
 	public void doTest (int i) {
 		switch (i) {
 		case 1: testSerialization(); break;
 		case 2: testParentage(); break;
 		case 3: testClones(); break;
 		case 4: testIntersection(); break;
+		case 5: contextualization(); break;
 		}
 	}
 	
@@ -144,5 +146,20 @@ public class TreeReferenceTest extends TestCase {
 		if(!ace.intersect(acd).equals(ac)) { fail("intersect(/a/c/d,/a/c/e) should result in /a/c");}
 		if(!ace.intersect(b).equals(root)) { fail("intersect(/a/c/e, /b) should result in /");}
 		if(!dot.intersect(dot).equals(root)) { fail("intersect(.,.) should result in /");}
+	}
+	
+	public void contextualization() {
+		TreeReference abc = XPathReference.getPathExpr("/a/b/c").getReference();
+		TreeReference ab = XPathReference.getPathExpr("/a/b").getReference();
+		TreeReference floatc = XPathReference.getPathExpr("c").getReference();
+		TreeReference floatc2 = XPathReference.getPathExpr("./c").getReference();
+		
+		TreeReference testabc = floatc.contextualize(ab);
+		TreeReference testabc2 = floatc2.contextualize(ab);
+		TreeReference invalid = floatc.contextualize(floatc2);
+		
+		if(!abc.equals(testabc)) { fail("context: ./b didn't evaluate to " + ab.toString(true) + ", but rather to " + testabc.toString(true)); }
+		if(!abc.equals(testabc2)) { fail("context: ./b didn't evaluate to " + ab.toString(true) + ", but rather to " + testabc2.toString(true)); }
+		if(invalid != null) { fail("was succesfully able to contextualize against an ambiguous reference. Result was: " + invalid.toString(true));}
 	}
 }

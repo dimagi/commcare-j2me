@@ -7,6 +7,7 @@ import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
+import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.core.model.utils.IPreloadHandler;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -53,7 +54,7 @@ public class JRDemoFormEntryState extends FormEntryState {
 
 		Vector<IPreloadHandler> preloaders = JRDemoContext._().getPreloaders();
 		Vector<IFunctionHandler> funcHandlers = JRDemoContext._().getFuncHandlers();
-		FormDefFetcher fetcher = new FormDefFetcher(new RMSRetreivalMethod(formID), preloaders, funcHandlers);
+		FormDefFetcher fetcher = new FormDefFetcher(new RMSRetreivalMethod(formID), preloaders, funcHandlers, new InstanceInitializationFactory());
 		FormDef form = fetcher.getFormDef();
 		
 		JrFormEntryController controller =  new JrFormEntryController(new JrFormEntryModel(form));

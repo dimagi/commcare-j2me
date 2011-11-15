@@ -217,6 +217,10 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 		}
 		return data.get(key);
 	}
+	
+	public Hashtable getProperties() {
+		return data;
+	}
 
 	public FormInstance exportData() {
 		FormInstance dm = RestoreUtils.createDataModel(this);

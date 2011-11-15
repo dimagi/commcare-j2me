@@ -7,7 +7,7 @@ import java.util.Stack;
 import java.util.Vector;
 
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.instance.TreeElement;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.utils.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageFullException;
@@ -38,13 +38,13 @@ public class UserModelProcessor implements IInstanceProcessor {
 	 * @see org.javarosa.core.model.utils.IInstanceProcessor#processInstance(org.javarosa.core.model.instance.FormInstance)
 	 */
 	public void processInstance(FormInstance tree) {
-		Vector<TreeElement> registrationNodes = scrapeForRegistrations(tree);
+		Vector<AbstractTreeElement> registrationNodes = scrapeForRegistrations(tree);
 		int failures = 0;
 		int parsed = 0;
 		
 		String messages = "";
 		
-		for(TreeElement element : registrationNodes) {
+		for(AbstractTreeElement element : registrationNodes) {
 			try {
 				parseRegistration(element);
 				parsed++;
@@ -71,7 +71,7 @@ public class UserModelProcessor implements IInstanceProcessor {
 		return user;
 	}
 	
-	private void parseRegistration(TreeElement head) throws MalformedUserModelException, StorageFullException {
+	private void parseRegistration(AbstractTreeElement head) throws MalformedUserModelException, StorageFullException {
 		
 		String username = getString(getChild(head, "username"),head);
 		String password = getString(getChild(head, "password"),head);
@@ -87,10 +87,10 @@ public class UserModelProcessor implements IInstanceProcessor {
 			}
 		}
 		
-		TreeElement data = getChild(head,"user_data");
+		AbstractTreeElement data = getChild(head,"user_data");
 		
 		for(int i = 0; i < data.getNumChildren(); ++i) {
-			TreeElement datum = data.getChildAt(i);
+			AbstractTreeElement datum = data.getChildAt(i);
 			if(!datum.isRelevant()) {
 				continue;
 			}
@@ -122,15 +122,15 @@ public class UserModelProcessor implements IInstanceProcessor {
 		}
 	}
 	
-	private TreeElement getChild(TreeElement parent, String name) throws MalformedUserModelException{
-		Vector<TreeElement> v = parent.getChildrenWithName(name);
+	private AbstractTreeElement getChild(AbstractTreeElement parent, String name) throws MalformedUserModelException{
+		Vector<AbstractTreeElement> v = parent.getChildrenWithName(name);
 		if(v.isEmpty()) {
 			throw new MalformedUserModelException("Expected a node '" + name + "' in element: " + parent.getName());
 		} else if(v.size() > 1) {
 			throw new MalformedUserModelException("Too many children named: '" + name + "' in element: " + parent.getName());
 		}
 		
-		TreeElement e = v.elementAt(0);
+		AbstractTreeElement e = v.elementAt(0);
 		
 		if(!e.isRelevant()) {
 			throw new MalformedUserModelException("Expected a node '" + name + "' in element: " + parent.getName());
@@ -139,7 +139,7 @@ public class UserModelProcessor implements IInstanceProcessor {
 		return e;
 	}
 	
-	private String getString(TreeElement element, TreeElement parent) throws MalformedUserModelException {
+	private String getString(AbstractTreeElement element, AbstractTreeElement parent) throws MalformedUserModelException {
 
 		
 		if(element.getValue() == null) {
@@ -149,7 +149,7 @@ public class UserModelProcessor implements IInstanceProcessor {
 		return element.getValue().uncast().getString();
 	}
 	
-	private String getStringOrNull(TreeElement element, TreeElement parent) {
+	private String getStringOrNull(AbstractTreeElement element, AbstractTreeElement parent) {
 
 		
 		if(element.getValue() == null) {
@@ -161,14 +161,14 @@ public class UserModelProcessor implements IInstanceProcessor {
 	
 	
 	
-	private Vector<TreeElement> scrapeForRegistrations(FormInstance tree) {
-		Stack<TreeElement> stack = new Stack<TreeElement>();
-		Vector<TreeElement> registrations = new Vector<TreeElement>();
+	private Vector<AbstractTreeElement> scrapeForRegistrations(FormInstance tree) {
+		Stack<AbstractTreeElement> stack = new Stack<AbstractTreeElement>();
+		Vector<AbstractTreeElement> registrations = new Vector<AbstractTreeElement>();
 		
 		stack.push(tree.getRoot());
 		
 		while(!stack.empty()) {
-			TreeElement seeker = stack.pop();
+			AbstractTreeElement seeker = stack.pop();
 			
 			//TODO: Namespace support!
 			if(seeker.getName().equals(elementName) && seeker.isRelevant()) {
@@ -176,7 +176,7 @@ public class UserModelProcessor implements IInstanceProcessor {
 			}
 			
 			for(int i = 0; i < seeker.getNumChildren(); ++i) {
-				TreeElement child = seeker.getChildAt(i);
+				AbstractTreeElement child = seeker.getChildAt(i);
 				//Skip non-relevant kids
 				if(!child.isRelevant()) {
 					continue;

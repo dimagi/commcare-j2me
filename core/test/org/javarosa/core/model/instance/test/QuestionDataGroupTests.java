@@ -28,6 +28,7 @@ import java.io.IOException;
 import org.javarosa.core.model.IDataReference;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.utils.ITreeVisitor;
@@ -228,7 +229,7 @@ public class QuestionDataGroupTests extends TestCase {
 				dispatchedWrong.setValue(true);
 
 			}
-			public void visit(TreeElement element) {
+			public void visit(AbstractTreeElement element) {
 				visitorAccepted.setValue(true);
 			}
 		};

@@ -16,13 +16,13 @@
 
 package org.javarosa.formmanager.utility;
 
-import java.util.Hashtable;
 import java.util.Vector;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
+import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.core.model.utils.IPreloadHandler;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
@@ -31,19 +31,21 @@ public class FormDefFetcher {
 	IFormDefRetrievalMethod fetcher;
 	Vector<IPreloadHandler> preloadHandlers;
 	Vector<IFunctionHandler> funcHandlers;
+	InstanceInitializationFactory factory;
 	
 	FormInstance instance;
 	
 	public FormDefFetcher(IFormDefRetrievalMethod retriever,
-			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers) {
+			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
 		this.fetcher = retriever;
 		this.preloadHandlers = preloadHandlers;
 		this.funcHandlers = funcHandlers;
+		this.factory = factory;
 	}
 	
 	public FormDefFetcher(IFormDefRetrievalMethod retriever, int instanceId,
-			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers) {
-		this(retriever, preloadHandlers, funcHandlers);
+			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
+		this(retriever, preloadHandlers, funcHandlers, factory);
 		loadModel(instanceId);
 	}
 	
@@ -61,7 +63,7 @@ public class FormDefFetcher {
 		//A lot of this should probably not be with the form.
 		initPreloadHandlers(form);
 		form.setEvaluationContext(initEvaluationContext(new EvaluationContext(null)));
-		form.initialize(instance == null);
+		form.initialize(instance == null, factory);
 		
 		return form;
 	}

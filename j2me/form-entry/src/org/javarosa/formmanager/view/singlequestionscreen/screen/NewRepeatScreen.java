@@ -33,10 +33,10 @@ public class NewRepeatScreen extends FramedForm {
 				Item.PLAIN);
 		//#style button
 		StringItem yesItem = new StringItem(null, Localization
-				.get("button.Yes"), Item.BUTTON);
+				.get("yes"), Item.BUTTON);
 		yesItem.setDefaultCommand(yesCommand);
 		//#style button
-		StringItem noItem = new StringItem(null, Localization.get("button.No"),
+		StringItem noItem = new StringItem(null, Localization.get("no"),
 				Item.BUTTON);
 		noItem.setDefaultCommand(noCommand);
 

@@ -8,6 +8,7 @@ import java.util.Vector;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
+import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.core.model.utils.IPreloadHandler;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.formmanager.api.FormEntryState;
@@ -53,7 +54,7 @@ public abstract class CreateUserFormEntryState extends FormEntryState implements
 	 * @see org.javarosa.formmanager.api.FormEntryState#getController()
 	 */
 	protected JrFormEntryController getController() {
-		FormDefFetcher fetcher = new FormDefFetcher(new NamespaceRetrievalMethod(formName), preloaders, funcHandlers);
+		FormDefFetcher fetcher = new FormDefFetcher(new NamespaceRetrievalMethod(formName), preloaders, funcHandlers, new InstanceInitializationFactory());
 		JrFormEntryController controller = new JrFormEntryController(new JrFormEntryModel(fetcher.getFormDef()));
 		controller.setView(new Chatterbox(Localization.get("user.create.header"),controller));
 		return controller;
