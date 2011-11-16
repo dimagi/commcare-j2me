@@ -172,7 +172,7 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 	public TreeElement getAttribute(String namespace, String name) {
 		if(name.equals("case-id")) {
 			TreeElement caseid = TreeElement.constructAttributeElement(null, name);
-			if(caseId != null) { cache();}
+			if(caseId == null) { cache();}
 			caseid.setValue(new StringData(caseId));
 			caseid.setParent(this);
 			return caseid;

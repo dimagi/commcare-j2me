@@ -7,7 +7,6 @@ import java.util.Vector;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.instance.AbstractTreeElement;
-import org.javarosa.core.model.instance.ExternalTreeElement;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.instance.utils.ITreeVisitor;
