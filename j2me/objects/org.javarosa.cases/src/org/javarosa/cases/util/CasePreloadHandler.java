@@ -68,6 +68,9 @@ public class CasePreloadHandler implements IPreloadHandler {
 		} else {
 			Object retVal = c.getProperty(preloadParams);
 			if(retVal instanceof String) {
+				if(retVal.equals("")) {
+					return null;
+				}
 				return new UncastData((String)retVal);
 			}
 			return PreloadUtils.wrapIndeterminedObject(retVal);
