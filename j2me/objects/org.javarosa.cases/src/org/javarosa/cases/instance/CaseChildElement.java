@@ -269,6 +269,7 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 		cached.setAttribute(null, "case-id", c.getCaseId());
 		cached.setAttribute(null, "external-id", c.getExternalId());
 		cached.setAttribute(null, "type", c.getTypeId());
+		cached.setAttribute(null, "status", c.isClosed() ? "closed" : "open");
 		
 		TreeElement scratch = new TreeElement("name");
 		scratch.setAnswer(new StringData(c.getName()));
@@ -277,10 +278,6 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 		
 		scratch = new TreeElement("date-opened");
 		scratch.setAnswer(new DateData(c.getDateOpened()));
-		cached.addChild(scratch);
-		
-		scratch = new TreeElement("status");
-		scratch.setAnswer(new StringData(c.isClosed() ? "closed" : "open"));
 		cached.addChild(scratch);
 		
 		for(Enumeration en = c.getProperties().keys();en.hasMoreElements();) {
