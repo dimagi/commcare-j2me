@@ -132,7 +132,10 @@ public class FormEntryPrompt extends FormEntryCaption {
 	    				}
 	    			}
 	    			
-	    			selection.addElement(choice.selection());
+                    //Dynamic selections may result in options being gone
+                    if(choice != null) {
+	    			    selection.addElement(choice.selection());
+                    }
 	    		}
 	    		
 	    		//convert to IAnswerData
