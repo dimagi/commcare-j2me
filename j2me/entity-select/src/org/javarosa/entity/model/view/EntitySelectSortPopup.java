@@ -32,7 +32,7 @@ import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Item;
 
-public class EntitySelectSortPopup<E extends Persistable> extends Form implements HandledCommandListener, HandledPItemStateListener {
+public class EntitySelectSortPopup<E> extends Form implements HandledCommandListener, HandledPItemStateListener {
 	private EntitySelectView<E> psv;
 	private EntitySelectController<E> psa;
 	private Entity<E> entityPrototype;

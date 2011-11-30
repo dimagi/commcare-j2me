@@ -34,7 +34,7 @@ import org.javarosa.core.services.storage.Persistable;
  *
  * @param <E> underlying entity type
  */
-public abstract class Entity <E extends Persistable> {
+public abstract class Entity <E> {
 	
 	/**
 	 * All selectable entities must implement persistable, as the activity iterates over a
@@ -66,9 +66,12 @@ public abstract class Entity <E extends Persistable> {
 	 * @param e
 	 */
 	public final void readEntity (E e) {
-		this.recordID = e.getID();
+		//HAAAaaaaccck
+		this.recordID = readEntityId(e);
 		loadEntity(e);
 	}
+	
+	protected abstract int readEntityId(E e);
 	
 	/**
 	 * Cache certain fields from the entity. See readEntity()

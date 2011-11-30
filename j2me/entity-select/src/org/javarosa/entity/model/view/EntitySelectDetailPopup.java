@@ -18,17 +18,14 @@ package org.javarosa.entity.model.view;
 
 
 
-import java.util.Vector;
-
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 
 import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.Persistable;
 import org.javarosa.entity.api.EntitySelectController;
 import org.javarosa.entity.model.Entity;
+import org.javarosa.entity.model.EntitySet;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
@@ -36,9 +33,8 @@ import org.javarosa.j2me.view.J2MEDisplay;
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Form;
 import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.Style;
 
-public class EntitySelectDetailPopup<E extends Persistable> extends Form implements HandledCommandListener {
+public class EntitySelectDetailPopup<E> extends Form implements HandledCommandListener {
 	EntitySelectController<E> psa;
 	
 	int recordID;
@@ -51,14 +47,14 @@ public class EntitySelectDetailPopup<E extends Persistable> extends Form impleme
 	
 	Command[] phoneCallouts;
 	
-	public EntitySelectDetailPopup (EntitySelectController<E> psa, Entity<E> entity, IStorageUtility storage) {
+	public EntitySelectDetailPopup (EntitySelectController<E> psa, Entity<E> entity, EntitySet<E> set) {
 		super(Localization.get("entity.detail.title", new String[] {entity.entityType()}));
 		
 		this.psa = psa;
 		
 		recordID = entity.getRecordID();
 		headers = entity.getHeaders(true);
-		data = entity.getLongFields((E)storage.read(recordID));
+		data = entity.getLongFields(set.get(recordID));
 		forms = entity.getLongForms(false);
 		
 		phoneCallouts = new Command[data.length];

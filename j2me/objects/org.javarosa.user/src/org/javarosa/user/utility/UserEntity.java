@@ -46,6 +46,10 @@ public class UserEntity extends Entity<User> {
 	public UserEntity factory() {
 		return new UserEntity();
 	}
+	
+	public int readEntityId(User u) {
+		return u.getID();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.javarosa.patient.select.activity.IEntity#readEntity(java.lang.Object)

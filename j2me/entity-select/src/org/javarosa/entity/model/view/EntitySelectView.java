@@ -48,7 +48,7 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 
-public class EntitySelectView<E extends Persistable> extends FramedForm implements HandledPItemStateListener, HandledCommandListener, ProgressIndicator {
+public class EntitySelectView<E> extends FramedForm implements HandledPItemStateListener, HandledCommandListener, ProgressIndicator {
 	
 	private int MAX_ROWS_ON_SCREEN = 10;
 

@@ -15,19 +15,15 @@ package org.javarosa.entity.api;
  * the License.
  */
 
-import java.util.Date;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Displayable;
 
-import org.javarosa.core.api.State;
-import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.storage.EntityFilter;
-import org.javarosa.core.services.storage.IStorageIterator;
-import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.Persistable;
+import org.javarosa.core.util.Iterator;
 import org.javarosa.entity.api.transitions.EntitySelectTransitions;
 import org.javarosa.entity.model.Entity;
+import org.javarosa.entity.model.EntitySet;
 import org.javarosa.entity.model.view.EntitySelectDetailPopup;
 import org.javarosa.entity.model.view.EntitySelectView;
 import org.javarosa.j2me.view.J2MEDisplay;
@@ -76,12 +72,12 @@ import org.javarosa.j2me.view.ProgressIndicator;
  *    will be used to select
  */
 
-public class EntitySelectController <E extends Persistable> implements ProgressIndicator{
+public class EntitySelectController <E> implements ProgressIndicator{
 	private EntitySelectTransitions transitions;
 	
 	private EntitySelectView<E> selView;
 	
-	protected IStorageUtility entityStorage;
+	protected EntitySet<E> entitySet;
 	private Entity<E> entityPrototype;
 	
 	protected boolean immediatelySelectNewlyCreated;
@@ -92,12 +88,12 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 	int progress = 0;
 	int count =1;
 	
-	public EntitySelectController (String title, IStorageUtility entityStorage, Entity<E> entityPrototype) {
-		this(title, entityStorage, entityPrototype, EntitySelectView.NEW_IN_LIST, true, false);
+	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype) {
+		this(title, set, entityPrototype, EntitySelectView.NEW_IN_LIST, true, false);
 	}
 	
-	public EntitySelectController (String title, IStorageUtility entityStorage, Entity<E> entityPrototype, int newMode, boolean immediatelySelectNewlyCreated) {
-		this(title, entityStorage, entityPrototype, newMode, immediatelySelectNewlyCreated, false);
+	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype, int newMode, boolean immediatelySelectNewlyCreated) {
+		this(title, set, entityPrototype, newMode, immediatelySelectNewlyCreated, false);
 	}
 
 	/**
@@ -112,9 +108,9 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 	 * @param bailOnEmpty if true, immediately exit the activity via the 'empty' transition if there are no entities
 	 *    in the set and creating new entities is disabled
 	 */
-	public EntitySelectController (String title, IStorageUtility entityStorage, Entity<E> entityPrototype,
+	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype,
 			int newMode, boolean immediatelySelectNewlyCreated, boolean bailOnEmpty) {
-		this.entityStorage = entityStorage;
+		this.entitySet = set;
 		this.entityPrototype = entityPrototype;
 
 		this.immediatelySelectNewlyCreated = immediatelySelectNewlyCreated;
@@ -141,33 +137,18 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 
 	private void loadEntities () {
 		entities = new Vector<Entity<E>>();
-		EntityFilter<? super E> filter = entityPrototype.getFilter();
+		
+		//CTS: 11/28/2011 - Filters are deprecated. Filters should be placed
+		//directly in the entity set.
+		//EntityFilter<? super E> filter = entityPrototype.getFilter();
 		
 		progress = 0;
-		count = entityStorage.getNumRecords();
+		count = entitySet.getCount();
 		
-		IStorageIterator ei = entityStorage.iterate();
+		Iterator<E> ei = entitySet.iterate();
 		while (ei.hasMore()) {
 			E obj = null;
-			
-			if (filter == null) {
-				obj = (E)ei.nextRecord();
-			} else {
-				//Get the iterator without advancing
-				int id = ei.peekID();
-				
-				int preFilt = filter.preFilter(id, null);
-				
-				if (preFilt != EntityFilter.PREFILTER_EXCLUDE) {
-					E candidateObj = (E)ei.nextRecord();
-					if (preFilt == EntityFilter.PREFILTER_INCLUDE || filter.matches(candidateObj)) {
-						obj = candidateObj;
-					}
-				} else {
-					//make sure that we advance the iterator
-					ei.nextID();
-				}
-			}
+			obj = ei.nextRecord();
 			
 			if (obj != null) {
 				loadEntity(obj);
@@ -191,7 +172,7 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 		if (immediatelySelectNewlyCreated) {
 			entityChosen(newEntityID);
 		} else {
-			E obj = (E)entityStorage.read(newEntityID);
+			E obj = entitySet.get(newEntityID);
 			loadEntity(obj);
 			selView.refresh(newEntityID);
 			showList();
@@ -225,7 +206,7 @@ public class EntitySelectController <E extends Persistable> implements ProgressI
 		if(entity.getHeaders(true) ==null) {
 			entityChosen(this.getRecordID(i));
 		} else {
-			EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entityStorage);
+			EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entitySet);
 			psdp.show();
 		}
 	}

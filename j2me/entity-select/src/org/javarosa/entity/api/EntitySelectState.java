@@ -20,7 +20,7 @@ import org.javarosa.entity.api.transitions.EntitySelectTransitions;
  * the License.
  */
 
-public abstract class EntitySelectState <E extends Persistable> implements EntitySelectTransitions, State {
+public abstract class EntitySelectState <E> implements EntitySelectTransitions, State {
 	
 	protected EntitySelectController<E> controller;
 	
