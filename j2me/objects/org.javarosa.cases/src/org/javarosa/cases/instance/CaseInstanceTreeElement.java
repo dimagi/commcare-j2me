@@ -70,8 +70,17 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 		if(multiplicity == TreeReference.INDEX_TEMPLATE) {
 			return null;
 		}
+		
 		//name is always "case", so multiplicities are the only relevant component here
-		if(name.equals("case")) { getCases(); return cases.elementAt(multiplicity);}
+		if(name.equals("case")) { 
+			getCases();
+			if(cases.size() == 0) {
+				//If we have no cases, we still need to be able to return a template element so as to not
+				//break xpath evaluation
+				return CaseChildElement.TemplateElement(this);
+			}
+			return cases.elementAt(multiplicity);
+		}
 		return null;
 	}
 

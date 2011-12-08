@@ -319,4 +319,9 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 		return new String[] {"case-id", "case-type", "external-id"};
 	}
 
+	public void setIndex(String indexName, String string) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

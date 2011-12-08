@@ -42,6 +42,34 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 		this.storage = storage;
 	}
 	
+	/*
+	 * Template constructor (For elements that need to create reference nodesets but never look up values)
+	 */
+	private CaseChildElement(AbstractTreeElement<CaseChildElement> parent) {
+		//Template
+		this.parent = parent;
+		this.recordId = TreeReference.INDEX_TEMPLATE;
+		this.mult = TreeReference.INDEX_TEMPLATE;
+		this.caseId = null;
+		
+		cached = new TreeElement();
+		cached = new TreeElement("case");
+		cached.setMult(this.mult);
+		
+		cached.setAttribute(null, "case_id", "");
+		cached.setAttribute(null, "case_type", "");
+		cached.setAttribute(null, "status", "");
+		
+		TreeElement scratch = new TreeElement("case_name");
+		scratch.setAnswer(null);
+		cached.addChild(scratch);
+		
+		
+		scratch = new TreeElement("date_opened");
+		scratch.setAnswer(null);
+		cached.addChild(scratch);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.javarosa.core.model.instance.AbstractTreeElement#isLeaf()
 	 */
@@ -170,7 +198,7 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 	 * @see org.javarosa.core.model.instance.AbstractTreeElement#getAttribute(java.lang.String, java.lang.String)
 	 */
 	public TreeElement getAttribute(String namespace, String name) {
-		if(name.equals("case-id")) {
+		if(name.equals("case_id")) {
 			TreeElement caseid = TreeElement.constructAttributeElement(null, name);
 			if(caseId == null) { cache();}
 			caseid.setValue(new StringData(caseId));
@@ -185,7 +213,7 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 	 * @see org.javarosa.core.model.instance.AbstractTreeElement#getAttributeValue(java.lang.String, java.lang.String)
 	 */
 	public String getAttributeValue(String namespace, String name) {
-		if(name.equals("case-id")) {
+		if(name.equals("case_id")) {
 			return caseId;
 		}
 		cache();
@@ -258,7 +286,7 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 			return;
 		}
 		if(recordId == -1) {
-			Vector<Integer> ids = storage.getIDsForValue("case-id",caseId);
+			Vector<Integer> ids = storage.getIDsForValue("case_id",caseId);
 			recordId = ids.elementAt(0).intValue();
 		}
 		Case c = (Case)storage.read(recordId);
@@ -266,24 +294,22 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 		cached = new TreeElement("case");
 		cached.setMult(this.mult);
 		
-		cached.setAttribute(null, "case-id", c.getCaseId());
-		cached.setAttribute(null, "external-id", c.getExternalId());
-		cached.setAttribute(null, "type", c.getTypeId());
+		cached.setAttribute(null, "case_id", c.getCaseId());
+		cached.setAttribute(null, "case_type", c.getTypeId());
 		cached.setAttribute(null, "status", c.isClosed() ? "closed" : "open");
 		
-		TreeElement scratch = new TreeElement("name");
+		TreeElement scratch = new TreeElement("case_name");
 		scratch.setAnswer(new StringData(c.getName()));
 		cached.addChild(scratch);
 		
 		
-		scratch = new TreeElement("date-opened");
+		scratch = new TreeElement("date_opened");
 		scratch.setAnswer(new DateData(c.getDateOpened()));
 		cached.addChild(scratch);
 		
 		for(Enumeration en = c.getProperties().keys();en.hasMoreElements();) {
 			String key = (String)en.nextElement();
 			scratch = new TreeElement(key);
-			//scratch.setAttribute(null, "key", key);
 			Object temp = c.getProperty(key);
 			if(temp instanceof String) {
 				scratch.setValue(new UncastData((String)temp));
@@ -293,19 +319,16 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 			cached.addChild(scratch);
 		}
 		
-//		//So there's a template at least
-//		if(c.getProperties().size() == 0) {
-//			scratch = new TreeElement("datum");
-//			scratch.setAttribute(null, "key", "dummy");
-//			scratch.setValue(null);
-//			cached.addChild(scratch);
-//		}
-		
 		cached.setParent(this.parent);
 	}
 
 	public boolean isRelevant() {
 		return true;
+	}
+
+	public static CaseChildElement TemplateElement(AbstractTreeElement<CaseChildElement> parent) {
+		CaseChildElement template = new CaseChildElement(parent);
+		return template;
 	}
 
 }
