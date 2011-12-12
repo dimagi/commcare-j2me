@@ -16,8 +16,7 @@
 
 package org.javarosa.j2me.view;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
+
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
@@ -26,6 +25,9 @@ import javax.microedition.midlet.MIDlet;
 
 import org.javarosa.core.api.State;
 import org.javarosa.j2me.log.HandledThread;
+
+import de.enough.polish.ui.Alert;
+import de.enough.polish.ui.AlertType;
 
 public class J2MEDisplay {
 	private static Display display;
@@ -79,7 +81,29 @@ public class J2MEDisplay {
 	
 	public static Alert showError (String title, String message, Image image, Displayable next, CommandListener customListener) {
 		//#style mailAlert
-		final Alert alert = new Alert(title, message, image, AlertType.ERROR);
+		final Alert alert = new Alert(title, message, image, AlertType.ERROR) {
+			{
+				getKeyStates();
+			}
+			
+			/* (non-Javadoc)
+			 * @see de.enough.polish.ui.Screen#handleKeyPressed(int, int)
+			 */
+			protected boolean handleKeyPressed(int keyCode, int gameAction) {
+				return super.handleKeyPressed(keyCode, gameAction);
+			}
+			
+			/* (non-Javadoc)
+			 * @see de.enough.polish.ui.Screen#handleKeyReleased(int, int)
+			 */
+			protected boolean handleKeyReleased(int keyCode, int gameAction) {
+				if(this.getKeyStates() > 0) {
+					return super.handleKeyReleased(keyCode, gameAction);
+				}
+				return true;
+			}
+		};
+
 		alert.setTimeout(Alert.FOREVER);
 
 		if (customListener != null) {
@@ -94,7 +118,9 @@ public class J2MEDisplay {
 			setView(alert);
 		} else {
 			loading.cancelLoading();
-			display.setCurrent(alert, next);
+			//#if !polish.LibraryBuild
+			//# display.setCurrent(alert, next);
+			//#endif
 		}
 		
 		return alert;
