@@ -63,6 +63,7 @@ import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
@@ -886,7 +887,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 				}
 				
 			};
-			new HandledThread(r).start();
+            Display.getInstance().callSerially(new HandledThread(r));
 			alertTitle = null;
 			msg = null;
 			alertImage = null;
