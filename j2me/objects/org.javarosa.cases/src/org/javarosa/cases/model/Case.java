@@ -23,27 +23,18 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import org.javarosa.core.model.Constants;
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.core.model.data.SelectMultiData;
-import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.instance.TreeElement;
-import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.model.util.restorable.Restorable;
-import org.javarosa.core.model.util.restorable.RestoreUtils;
 import org.javarosa.core.services.storage.IMetaData;
 import org.javarosa.core.services.storage.Persistable;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.ExtWrapList;
 import org.javarosa.core.util.externalizable.ExtWrapMapPoly;
 import org.javarosa.core.util.externalizable.ExtWrapNullable;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.j2me.storage.rms.Secure;
-import org.javarosa.xform.util.XFormAnswerDataParser;
 
 /**
  * NOTE: All new fields should be added to the case class using the "data" class,
@@ -54,12 +45,11 @@ import org.javarosa.xform.util.XFormAnswerDataParser;
  * @date Mar 19, 2009 
  *
  */
-public class Case implements Persistable, Restorable, IMetaData, Secure {
+public class Case implements Persistable, IMetaData, Secure {
 	public static String STORAGE_KEY = "CASE";
 	
 	private String typeId;
 	private String id;
-	private String extId;
 	private String name;
 	
 	private boolean closed = false;
@@ -69,6 +59,8 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 	int recordId;
 
 	Hashtable data = new Hashtable();
+	
+	Vector<CaseIndex> indices = new Vector<CaseIndex>();
 	
 	/**
 	 * NOTE: This constructor is for serialization only.
@@ -155,14 +147,6 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 	public String getCaseId() {
 		return id;
 	}
-
-	public void setExternalId (String extId) {
-		this.extId = extId;
-	}
-	
-	public String getExternalId () {
-		return extId;
-	}
 	
 	/**
 	 * @return the dateOpened
@@ -184,11 +168,11 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 	public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
 		typeId = ExtUtil.readString(in);
 		id = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
-		extId = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 		name = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 		closed = ExtUtil.readBool(in);
 		dateOpened = (Date)ExtUtil.read(in, new ExtWrapNullable(Date.class), pf);
 		recordId = ExtUtil.readInt(in);
+		indices = (Vector<CaseIndex>)ExtUtil.read(in, new ExtWrapList(CaseIndex.class));
 		data = (Hashtable)ExtUtil.read(in, new ExtWrapMapPoly(String.class, true), pf);
 	}
 
@@ -198,13 +182,12 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 	public void writeExternal(DataOutputStream out) throws IOException {
 		ExtUtil.writeString(out, typeId);
 		ExtUtil.writeString(out, ExtUtil.emptyIfNull(id));
-		ExtUtil.writeString(out, ExtUtil.emptyIfNull(extId));
 		ExtUtil.writeString(out, ExtUtil.emptyIfNull(name));
 		ExtUtil.writeBool(out, closed);
 		ExtUtil.write(out, new ExtWrapNullable(dateOpened));
 		ExtUtil.writeNumeric(out, recordId);
+		ExtUtil.write(out, new ExtWrapList(indices));
 		ExtUtil.write(out, new ExtWrapMapPoly(data));
-
 	}
 	
 	public void setProperty(String key, Object value) {
@@ -222,72 +205,8 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 		return data;
 	}
 
-	public FormInstance exportData() {
-		FormInstance dm = RestoreUtils.createDataModel(this);
-		RestoreUtils.addData(dm, "case-id", id);
-		RestoreUtils.addData(dm, "case-type-id", typeId);
-		RestoreUtils.addData(dm, "ext-id", extId);
-		RestoreUtils.addData(dm, "name", name);
-		RestoreUtils.addData(dm, "dateopened", dateOpened);
-		RestoreUtils.addData(dm, "closed", new Boolean(closed));
-		
-		for (Enumeration e = data.keys(); e.hasMoreElements(); ) {
-			String key = (String)e.nextElement();
-			RestoreUtils.addData(dm, "other/" + key + "/type", new Integer(RestoreUtils.getDataType(data.get(key))));
-			RestoreUtils.addData(dm, "other/" + key + "/data", data.get(key));
-		}
-				
-		return dm;
-
-	}
-
 	public String getRestorableType() {
 		return "case";
-	}
-
-	public void importData(FormInstance dm) {
-		id = (String)RestoreUtils.getValue("case-id", dm);
-		typeId = (String)RestoreUtils.getValue("case-type-id", dm);		
-		extId = (String)RestoreUtils.getValue("ext-id", dm);		
-		name = (String)RestoreUtils.getValue("name", dm);		
-		dateOpened = (Date)RestoreUtils.getValue("dateopened", dm);		
-        closed = RestoreUtils.getBoolean(RestoreUtils.getValue("closed", dm));
-        
-        
-        // Clayton Sims - Apr 14, 2009 : NOTE: this is unfortunate, but we need 
-        // to be able to unparse.
-        //XFormAnswerDataSerializer s = new XFormAnswerDataSerializer();
-        TreeElement e = dm.resolveReference(RestoreUtils.absRef("other", dm));
-        for (int i = 0; i < e.getNumChildren(); i++) {
-        	TreeElement child = e.getChildAt(i);
-        	String name = child.getName();
-        	int dataType = ((Integer)RestoreUtils.getValue("other/"+name+"/type", dm)).intValue();
-        	String flatval = (String)RestoreUtils.getValue("other/"+ name+"/data", dm);
-        	if(flatval == null) {
-        		flatval = "";
-        	}
-        	IAnswerData interpreted = XFormAnswerDataParser.getAnswerData(flatval, dataType);
-        	if(interpreted != null) {
-        		Object value = interpreted.getValue();
-        		if(dataType == Constants.DATATYPE_CHOICE_LIST) {
-        			value = new SelectMultiData((Vector)value);
-        		}
-        		data.put(name, value);
-        	}
-        }
-	}
-
-	public void templateData(FormInstance dm, TreeReference parentRef) {
-		RestoreUtils.applyDataType(dm, "case-id", parentRef, String.class);
-		RestoreUtils.applyDataType(dm, "case-type-id", parentRef, String.class);
-		RestoreUtils.applyDataType(dm, "ext-id", parentRef, String.class);
-		RestoreUtils.applyDataType(dm, "name", parentRef, String.class);
-		RestoreUtils.applyDataType(dm, "dateopened", parentRef, Date.class);
-		RestoreUtils.applyDataType(dm, "closed", parentRef, Boolean.class);
-		
-		RestoreUtils.applyDataType(dm, "other/*/type", parentRef, Integer.class);
-		
-		// other/* defaults to string
 	}
 
 	public Hashtable getMetaData() {
@@ -308,20 +227,28 @@ public class Case implements Persistable, Restorable, IMetaData, Secure {
 			return id;
 		} else if (fieldName.equals("case-type")) {
 			return typeId;
-		} else if (fieldName.equals("external-id")) {
-			return extId;
 		} else {
 			throw new IllegalArgumentException("No metadata field " + fieldName  + " in the case storage system");
 		}
 	}
 
 	public String[] getMetaDataFields() {
-		return new String[] {"case-id", "case-type", "external-id"};
+		return new String[] {"case-id", "case-type"};
 	}
 
-	public void setIndex(String indexName, String string) {
-		// TODO Auto-generated method stub
-		
+	public void setIndex(String indexName, String caseType, String indexValue) {
+		CaseIndex index = new CaseIndex(indexName, caseType, indexValue);
+		//remove existing indices at this name
+		for(CaseIndex i : this.indices) {
+			if(i.getName().equals(indexName)) {
+				this.indices.removeElement(i);
+				break;
+			}
+		}
+		this.indices.addElement(index);
 	}
-
+	
+	public Vector<CaseIndex> getIndices() {
+		return indices;
+	}
 }

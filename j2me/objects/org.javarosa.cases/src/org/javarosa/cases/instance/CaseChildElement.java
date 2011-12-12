@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 import org.javarosa.cases.model.Case;
+import org.javarosa.cases.model.CaseIndex;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
@@ -280,7 +281,8 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 	private boolean isCached() {
 		return cached != null;
 	}
-	
+
+	//TODO: THIS IS NOT THREAD SAFE
 	private void cache() {
 		if(isCached()) {
 			return;
@@ -289,23 +291,24 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 			Vector<Integer> ids = storage.getIDsForValue("case_id",caseId);
 			recordId = ids.elementAt(0).intValue();
 		}
+		TreeElement cacheBuilder = new TreeElement("case"); 
 		Case c = (Case)storage.read(recordId);
 		caseId = c.getCaseId();
-		cached = new TreeElement("case");
-		cached.setMult(this.mult);
+		cacheBuilder = new TreeElement("case");
+		cacheBuilder.setMult(this.mult);
 		
-		cached.setAttribute(null, "case_id", c.getCaseId());
-		cached.setAttribute(null, "case_type", c.getTypeId());
-		cached.setAttribute(null, "status", c.isClosed() ? "closed" : "open");
+		cacheBuilder.setAttribute(null, "case_id", c.getCaseId());
+		cacheBuilder.setAttribute(null, "case_type", c.getTypeId());
+		cacheBuilder.setAttribute(null, "status", c.isClosed() ? "closed" : "open");
 		
 		TreeElement scratch = new TreeElement("case_name");
 		scratch.setAnswer(new StringData(c.getName()));
-		cached.addChild(scratch);
+		cacheBuilder.addChild(scratch);
 		
 		
 		scratch = new TreeElement("date_opened");
 		scratch.setAnswer(new DateData(c.getDateOpened()));
-		cached.addChild(scratch);
+		cacheBuilder.addChild(scratch);
 		
 		for(Enumeration en = c.getProperties().keys();en.hasMoreElements();) {
 			String key = (String)en.nextElement();
@@ -316,10 +319,44 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 			} else {
 				scratch.setValue(PreloadUtils.wrapIndeterminedObject(temp));
 			}
-			cached.addChild(scratch);
+			cacheBuilder.addChild(scratch);
 		}
 		
-		cached.setParent(this.parent);
+		//TODO: Extract this pattern
+		TreeElement index = new TreeElement("index") {
+			public TreeElement getChild(String name, int multiplicity) {
+				TreeElement child = super.getChild(name, multiplicity);
+				
+				//TODO: Skeeeetchy, this is not a good way to do this,
+				//should extract pattern instead.
+				
+				//If we haven't finished caching yet, we can safely not return
+				//something useful here, so we can construct as normal.
+				if(cached == null) {
+					return child;
+				}
+				if(multiplicity >= 0 && child == null) {
+					TreeElement emptyNode = new TreeElement(name);
+					this.addChild(emptyNode);
+					emptyNode.setParent(this);
+					return emptyNode;
+				}
+				return child;
+			}
+		}; 
+		
+		Vector<CaseIndex> indices = c.getIndices();
+		for(CaseIndex i : indices) {
+			scratch = new TreeElement(i.getName());
+			scratch.setAttribute(null, "case_type", i.getTargetType());
+			scratch.setValue(new UncastData(i.getTarget()));
+			index.addChild(scratch);
+		}
+		cacheBuilder.addChild(index);
+		
+		cacheBuilder.setParent(this.parent);
+		
+		cached = cacheBuilder;
 	}
 
 	public boolean isRelevant() {

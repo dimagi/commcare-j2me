@@ -57,6 +57,8 @@ public class User implements Persistable, Restorable, IMetaData
 	
 	private boolean rememberMe = false;
 	
+	private String syncToken;
+	
 	/** String -> String **/
 	private Hashtable<String,String> properties = new Hashtable<String,String>(); 
 
@@ -83,6 +85,7 @@ public class User implements Persistable, Restorable, IMetaData
 		this.recordId = ExtUtil.readInt(in);
 		this.uniqueId = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 		this.rememberMe = ExtUtil.readBool(in);
+		this.syncToken = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 		this.properties = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class), pf);
 	}
 
@@ -92,6 +95,7 @@ public class User implements Persistable, Restorable, IMetaData
 		ExtUtil.writeNumeric(out, recordId);
 		ExtUtil.writeString(out, ExtUtil.emptyIfNull(uniqueId));
         ExtUtil.writeBool(out, rememberMe);
+        ExtUtil.writeString(out, ExtUtil.emptyIfNull(syncToken));
 		ExtUtil.write(out, new ExtWrapMap(properties));
 	}
 
@@ -237,6 +241,14 @@ public class User implements Persistable, Restorable, IMetaData
 
 	public String[] getMetaDataFields() {
 		return new String[] {META_UID, META_USERNAME, META_ID};
+	}
+
+	public String getLastSyncToken() {
+		return syncToken;
+	}
+	
+	public void setLastSyncToken(String syncToken) {
+		this.syncToken = syncToken;
 	}
 	
 }

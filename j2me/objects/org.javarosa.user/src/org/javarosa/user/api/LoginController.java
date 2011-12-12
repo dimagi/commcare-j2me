@@ -3,12 +3,11 @@
  */
 package org.javarosa.user.api;
 
-import javax.microedition.lcdui.Alert;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
-import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
@@ -18,6 +17,7 @@ import org.javarosa.user.model.User;
 import org.javarosa.user.view.LoginForm;
 import org.javarosa.utilities.media.MediaUtils;
 
+import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.StringItem;
 
