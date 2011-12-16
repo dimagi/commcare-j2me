@@ -30,6 +30,8 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 	
 	private Vector<CaseChildElement> cases;
 	
+	TreeElementCache cache = new TreeElementCache(200);
+	
 	public CaseInstanceTreeElement(AbstractTreeElement instanceRoot, IStorageUtilityIndexed storage, String[] caseIDs) {
 		this(instanceRoot, storage);
 		this.caseRecords = caseIDs;
@@ -38,6 +40,10 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 	public CaseInstanceTreeElement(AbstractTreeElement instanceRoot, IStorageUtilityIndexed storage) {
 		this.instanceRoot= instanceRoot;
 		this.storage = storage;
+	}
+	
+	public void rebase(AbstractTreeElement instanceRoot) {
+		this.instanceRoot = instanceRoot;
 	}
 	
 	/* (non-Javadoc)
@@ -124,14 +130,14 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 		if(caseRecords != null) {
 			int i = 0;
 			for(String id : caseRecords) {
-				cases.addElement(new CaseChildElement(this, -1, id, i, storage));
+				cases.addElement(new CaseChildElement(this, -1, id, i, storage, cache));
 				++i;
 			}
 		} else {
 			int mult = 0;
 			for(IStorageIterator i = storage.iterate(); i.hasMore();) {
 				int id = i.nextID();
-				cases.addElement(new CaseChildElement(this, id, null, mult, storage));
+				cases.addElement(new CaseChildElement(this, id, null, mult, storage, cache));
 				mult++;
 			}
 			
