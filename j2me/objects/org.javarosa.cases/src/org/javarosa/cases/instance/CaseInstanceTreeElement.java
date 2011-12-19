@@ -40,6 +40,7 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 	public CaseInstanceTreeElement(AbstractTreeElement instanceRoot, IStorageUtilityIndexed storage) {
 		this.instanceRoot= instanceRoot;
 		this.storage = storage;
+		storage.setReadOnly();
 	}
 	
 	public void rebase(AbstractTreeElement instanceRoot) {
@@ -102,7 +103,16 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 		}
 		
 	}
+	
+	int numRecords = -1;
 
+	public boolean hasChildren() {
+		if(getNumChildren() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.javarosa.core.model.instance.AbstractTreeElement#getNumChildren()
 	 */
@@ -110,7 +120,10 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 		if(caseRecords != null) {
 			return caseRecords.length;
 		} else {
-			return storage.getNumRecords();
+			if(numRecords == -1) {
+				numRecords = storage.getNumRecords();
+			}
+			return numRecords;
 		}
 	}
 

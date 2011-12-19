@@ -119,6 +119,10 @@ public class CaseChildElement implements AbstractTreeElement<TreeElement> {
 	public Vector getChildrenWithName(String name) {
 		return cache().getChildrenWithName(name);
 	}
+	
+	public boolean hasChildren() {
+		return true;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.javarosa.core.model.instance.AbstractTreeElement#getNumChildren()

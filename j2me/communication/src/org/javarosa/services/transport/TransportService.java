@@ -214,8 +214,13 @@ public class TransportService {
 			Logger.log("send-all", "start; " + messages.size() + " msgs");
 			
 			if (messages.size() > 0) {
-				SENDER.init(messages, CACHE(), listener);
-				SENDER.send();
+				try {
+					SENDER.init(messages, CACHE(), listener);
+					SENDER.send();
+				} finally {
+					//Make _damn_ sure we remove the listener hook. Otherwise memory can't be cleared up 
+					SENDER.uninit();
+				}
 			}
 		}
 	}
