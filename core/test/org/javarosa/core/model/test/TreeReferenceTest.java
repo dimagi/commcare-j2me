@@ -21,31 +21,7 @@ import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
-import java.util.Vector;
-
-import org.javarosa.core.model.Constants;
-import org.javarosa.core.model.FormElementStateListener;
-import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.IDataReference;
-import org.javarosa.core.model.IFormElement;
-import org.javarosa.core.model.QuestionDef;
-import org.javarosa.core.model.SelectChoice;
-import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.reference.InvalidReferenceException;
-import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.reference.ResourceReferenceFactory;
-import org.javarosa.core.reference.RootTranslator;
-import org.javarosa.core.services.PrototypeManager;
-import org.javarosa.core.services.locale.Localizer;
-import org.javarosa.core.services.locale.TableLocaleSource;
-import org.javarosa.core.test.FormParseInit;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.form.api.FormEntryCaption;
-import org.javarosa.form.api.FormEntryController;
-import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.model.xform.XPathReference;
 
 public class TreeReferenceTest extends TestCase {
@@ -109,9 +85,9 @@ public class TreeReferenceTest extends TestCase {
 	public final static int NUM_TESTS = 5;
 	public void doTest (int i) {
 		switch (i) {
-		case 1: testSerialization(); break;
-		case 2: testParentage(); break;
-		case 3: testClones(); break;
+		case 1: testClones(); break;
+		case 2: testSerialization(); break;
+		case 3: testParentage(); break;
 		case 4: testIntersection(); break;
 		case 5: contextualization(); break;
 		}
@@ -158,8 +134,8 @@ public class TreeReferenceTest extends TestCase {
 		TreeReference testabc2 = floatc2.contextualize(ab);
 		TreeReference invalid = floatc.contextualize(floatc2);
 		
-		if(!abc.equals(testabc)) { fail("context: ./b didn't evaluate to " + ab.toString(true) + ", but rather to " + testabc.toString(true)); }
-		if(!abc.equals(testabc2)) { fail("context: ./b didn't evaluate to " + ab.toString(true) + ", but rather to " + testabc2.toString(true)); }
+		if(!abc.equals(testabc)) { fail("context: c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc.toString(true)); }
+		if(!abc.equals(testabc2)) { fail("context: ./c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc2.toString(true)); }
 		if(invalid != null) { fail("was succesfully able to contextualize against an ambiguous reference. Result was: " + invalid.toString(true));}
 	}
 }

@@ -30,7 +30,7 @@ public class CaseInstanceTreeElement implements AbstractTreeElement<CaseChildEle
 	
 	private Vector<CaseChildElement> cases;
 	
-	TreeElementCache cache = new TreeElementCache(200);
+	TreeElementCache cache = new TreeElementCache(300);
 	
 	public CaseInstanceTreeElement(AbstractTreeElement instanceRoot, IStorageUtilityIndexed storage, String[] caseIDs) {
 		this(instanceRoot, storage);

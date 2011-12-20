@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.Vector;
 
 import org.javarosa.core.model.instance.TreeElement;
+import org.javarosa.core.util.DataUtil;
 
 /**
  * @author ctsims
@@ -27,11 +28,11 @@ public class TreeElementCache {
 	}
 
 	public boolean hasEntry(int recordId) {
-		return cache.containsKey(new Integer(recordId));
+		return cache.containsKey(DataUtil.integer(recordId));
 	}
 
 	public TreeElement retrieve(int recordId) {
-		return cache.get(new Integer(recordId));
+		return cache.get(DataUtil.integer(recordId));
 	}
 
 	public void register(int recordId, TreeElement item) {

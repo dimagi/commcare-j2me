@@ -78,7 +78,7 @@ public class XPathEvalTest extends TestCase {
 		} catch (XPathSyntaxException xpse) { }
 		
 		if (xpe == null) {
-			fail("Null expression or syntax error");
+			fail("Null expression or syntax error " + expr);
 		}
 		
 		try {
