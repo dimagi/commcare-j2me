@@ -166,8 +166,8 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     }
     
     public void show () {
-    	initGUI();
     	J2MEDisplay.setView(this);
+    	initGUI();
     }
     
     public void show (FormIndex index) {

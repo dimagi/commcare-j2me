@@ -82,6 +82,9 @@ public class UserModelProcessor implements IInstanceProcessor {
 		if(u == null) {
 			u = new User(username,password, uuid);
 		} else {
+			if(!u.getUsername().equals(username)) {
+				u.setUsername(username);
+			}
 			if(!u.getPassword().equals(password)) {
 				u.setPassword(password);
 			}
