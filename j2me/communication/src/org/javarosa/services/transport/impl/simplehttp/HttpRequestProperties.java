@@ -33,6 +33,7 @@ public class HttpRequestProperties {
 		for(String header : expectedHeaders) {
 			ret.setRequestProperty(header, getHeaderHelper(conn, header));
 		}
+		
 		return ret;
 	}
 	
@@ -59,10 +60,10 @@ public class HttpRequestProperties {
 	}
 	
 	public HttpRequestProperties(String method, int contentLength) {
-		this(method, contentLength, null);
+		this(method, contentLength, null, null);
 	}
 	
-	public HttpRequestProperties(String method, int contentLength, String orApiVersion) {
+	public HttpRequestProperties(String method, int contentLength, String orApiVersion, Hashtable<String, String> customHeaders) {
 		
 		properties = new Hashtable<String, String>();
 		
@@ -86,6 +87,12 @@ public class HttpRequestProperties {
 		
 		if(!HttpConnection.GET.equals(method) && contentLength != -1) {
 			properties.put("Content-Length", String.valueOf(contentLength));
+		}
+		if(customHeaders != null) {
+			for(Enumeration en = customHeaders.keys() ; en.hasMoreElements() ;) {
+				String key = (String)en.nextElement();
+				properties.put(key, customHeaders.get(key));
+			}
 		}
 	}
 	

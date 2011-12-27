@@ -167,7 +167,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 */
 	public HttpRequestProperties getRequestProperties() {
 		//TODO: Possibly actually count content length here
-		return new HttpRequestProperties(this.getMethod(), -1, "1.0");
+		return new HttpRequestProperties(this.getMethod(), -1, "1.0", null);
 	}
 
 	public InputStream getContentStream() {

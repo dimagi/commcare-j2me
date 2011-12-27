@@ -6,6 +6,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -17,6 +19,7 @@ import org.javarosa.core.services.Logger;
 import org.javarosa.core.util.StreamsUtil;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.ExtWrapMap;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.BasicTransportMessage;
@@ -49,6 +52,8 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	
 	private HttpRequestProperties responseProperties;
 	
+	private Hashtable<String,String> customHeaders;
+	
 	/**
 	 * Http connection method.
 	 */
@@ -58,9 +63,11 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 
 	public SimpleHttpTransportMessage() {
 		//ONLY FOR SERIALIZATION
+		customHeaders = new Hashtable<String,String>();
 	}
 	
 	public SimpleHttpTransportMessage(String url) {
+		this();
 		this.url = url;
 		this.setHttpConnectionMethod(HttpConnection.GET);
 	}
@@ -70,6 +77,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @param destinationURL
 	 */
 	public SimpleHttpTransportMessage(String str, String url) {
+		this();
 		content = str.getBytes();
 		this.url = url;
 	}
@@ -79,6 +87,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @param destinationURL
 	 */
 	public SimpleHttpTransportMessage(byte[] str, String url) {
+		this();
 		content = str;
 		this.url = url;
 	}
@@ -89,12 +98,13 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @throws IOException
 	 */
 	public SimpleHttpTransportMessage(InputStream is, String url) throws IOException {
+		this();
 		content = StreamsUtil.readFromStream(is, -1);
 		this.url = url;
 	}
 
 	public HttpRequestProperties getRequestProperties() {
-		return new HttpRequestProperties(this.getConnectionMethod(), this.getContentLength(), orApiVersion);
+		return new HttpRequestProperties(this.getConnectionMethod(), this.getContentLength(), orApiVersion, customHeaders);
 	}
 	
 	public HttpRequestProperties getResponseProperties() {
@@ -390,7 +400,9 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	}
 
 	
-	
+	public void setHeader(String header, String value) {
+		this.customHeaders.put(header, value);
+	}
 	
 	
 	public String toString() {
@@ -406,6 +418,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		responseCode = (int)ExtUtil.readNumeric(in);
 		responseBody = ExtUtil.nullIfEmpty(ExtUtil.readBytes(in));
 		content = ExtUtil.readBytes(in);
+		customHeaders = (Hashtable<String, String>) ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
 	}
 		
 	public void writeExternal(DataOutputStream out) throws IOException {
@@ -414,6 +427,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		ExtUtil.writeNumeric(out,responseCode);
 		ExtUtil.writeBytes(out, ExtUtil.emptyIfNull(responseBody));
 		ExtUtil.writeBytes(out, content);
+		ExtUtil.write(out, new ExtWrapMap(customHeaders));
 	}
 	
 }
