@@ -48,6 +48,8 @@ import org.javarosa.j2me.storage.rms.Secure;
 public class Case implements Persistable, IMetaData, Secure {
 	public static String STORAGE_KEY = "CASE";
 	
+	public static String INDEX_CASE_ID = "case-id";
+	
 	private String typeId;
 	private String id;
 	private String name;
@@ -223,7 +225,7 @@ public class Case implements Persistable, IMetaData, Secure {
 	}
 
 	public Object getMetaData(String fieldName) {
-		if (fieldName.equals("case-id")) {
+		if (fieldName.equals(INDEX_CASE_ID)) {
 			return id;
 		} else if (fieldName.equals("case-type")) {
 			return typeId;
@@ -233,7 +235,7 @@ public class Case implements Persistable, IMetaData, Secure {
 	}
 
 	public String[] getMetaDataFields() {
-		return new String[] {"case-id", "case-type"};
+		return new String[] {INDEX_CASE_ID, "case-type"};
 	}
 
 	public void setIndex(String indexName, String caseType, String indexValue) {
