@@ -166,8 +166,11 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     }
     
     public void show () {
-    	J2MEDisplay.setView(this);
+    	//Pre-set the screen for the main container. Otherwise commands for items won't 
+    	//show up correctly until this is shown. 
+    	UiAccess.setItemScreen(this.container, this);
     	initGUI();
+    	J2MEDisplay.setView(this);
     }
     
     public void show (FormIndex index) {
@@ -850,8 +853,6 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 		//things have been computed. These should happen after a paint.
 		
 		computeHeaders();
-		//bar.setHeight(this.getAvailableHeight());
-		//bar.requestInit();
 		raiseAlert();
 	}
 
