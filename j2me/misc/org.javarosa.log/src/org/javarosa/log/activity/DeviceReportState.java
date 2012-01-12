@@ -26,6 +26,7 @@ import org.javarosa.core.util.TrivialTransitions;
 import org.javarosa.j2me.log.StatusReportException;
 import org.javarosa.j2me.log.XmlStatusProvider;
 import org.javarosa.j2me.log.XmlStreamLogSerializer;
+import org.javarosa.j2me.view.ProgressIndicator;
 import org.javarosa.log.util.LogReportUtils;
 import org.javarosa.log.util.LogWriter;
 import org.javarosa.services.transport.TransportListener;
@@ -46,7 +47,7 @@ import org.xmlpull.v1.XmlSerializer;
  * @author ctsims
  *
  */
-public abstract class DeviceReportState implements State, TrivialTransitions, TransportListener {
+public abstract class DeviceReportState implements State, TrivialTransitions, TransportListener, ProgressIndicator {
 
 	public static boolean activated = false;
 	
@@ -125,6 +126,18 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 			Logger.exception("exception while trying to send logs; dumped", e);
 		}
 		done();
+	}
+	
+	public int getIndicatorsProvided() {
+		return ProgressIndicator.INDICATOR_STATUS;
+	}
+	
+	public String getCurrentLoadingStatus() {
+		return "Sending Device Report";
+	}
+	
+	public double getProgress() {
+		return -1;
 	}
 
 	public abstract String getDestURL();

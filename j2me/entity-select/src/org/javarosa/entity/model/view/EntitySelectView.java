@@ -632,6 +632,14 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		return (double)progress / count;
 	}
 
+	public String getCurrentLoadingStatus() {
+		return null;
+	}
+
+	public int getIndicatorsProvided() {
+		return ProgressIndicator.INDICATOR_PROGRESS;
+	}
+
 	
 //#if polish.hasPointerEvents
 //#

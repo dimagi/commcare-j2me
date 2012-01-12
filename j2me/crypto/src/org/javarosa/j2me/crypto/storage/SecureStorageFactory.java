@@ -5,9 +5,9 @@ package org.javarosa.j2me.crypto.storage;
 
 import org.javarosa.core.services.storage.IStorageFactory;
 import org.javarosa.core.services.storage.IStorageUtility;
+import org.javarosa.core.services.storage.Secure;
 import org.javarosa.j2me.crypto.util.CryptoSession;
 import org.javarosa.j2me.storage.rms.RMSStorageUtilityIndexed;
-import org.javarosa.j2me.storage.rms.Secure;
 
 /**
  * @author ctsims
