@@ -184,15 +184,15 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	}
 	
 	private void createDeviceLogSubreport(XmlSerializer o, Vector errors) throws IOException {
+		o.startTag(XMLNS, "log_subreport");
 		try {
 			Logger.log("logsend", Logger._().logSize() + " entries");
-			o.startTag(XMLNS, "log_subreport");
 			logSerializer = new XmlStreamLogSerializer(o, XMLNS);
 			Logger._().serializeLogs(logSerializer);
-			o.endTag(XMLNS, "log_subreport");
 		} catch(Exception e) {
 			logError(errors, new StatusReportException(e,"log_subreport","Exception when writing device log report."));
 		}
+		o.endTag(XMLNS, "log_subreport");
 	}
 	
 	private void createRmsSubreport(XmlSerializer o, Vector errors) throws IOException {
