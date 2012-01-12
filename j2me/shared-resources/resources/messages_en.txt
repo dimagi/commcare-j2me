@@ -47,7 +47,6 @@ menu.retry=Retry
 
 
 button.Next=Next
-button.No=NO
 
 question.SendNow=Send data now?
 
