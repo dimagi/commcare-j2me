@@ -57,7 +57,6 @@ settings.language=Language
 
 
 button.Next=Done
-button.No=NO
 
 question.SendNow=Send data now?
 
@@ -193,8 +192,8 @@ case.id=ID
 case.date.opened=Date Opened
 case.status=Currently Open
 
-yes=Yes
-no=No
+button.Yes=Yes
+button.No=No
 date.unknown=unknown
 
 log.submit.url=Log Submit URL

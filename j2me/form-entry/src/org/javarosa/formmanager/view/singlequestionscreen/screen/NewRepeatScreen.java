@@ -29,6 +29,8 @@ public class NewRepeatScreen extends FramedForm {
 	 * Add initial view items to form
 	 */
 	protected void createView() {
+		
+		//#style questiontext
 		StringItem addNewQuestion = new StringItem(null,promptText,
 				Item.PLAIN);
 		//#style button
