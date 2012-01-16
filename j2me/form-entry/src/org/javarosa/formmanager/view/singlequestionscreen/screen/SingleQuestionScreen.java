@@ -59,7 +59,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	
 	Command[] itemCommandQueue;
 
-	public static Command nextItemCommand = new Command(Localization
+	public Command nextItemCommand = new Command(Localization
 			.get("menu.Next"), Command.SCREEN, 1);
 	
 	//#style button
