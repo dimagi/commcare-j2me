@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Stack;
 import java.util.Vector;
 
 import org.javarosa.core.model.Constants;
@@ -48,10 +49,12 @@ import org.javarosa.core.model.util.restorable.RestoreUtils;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.locale.Localizer;
 import org.javarosa.core.services.locale.TableLocaleSource;
+import org.javarosa.core.util.Interner;
 import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.core.util.externalizable.PrototypeFactoryDeprecated;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.xform.util.InterningKXmlParser;
 import org.javarosa.xform.util.XFormAnswerDataParser;
 import org.javarosa.xform.util.XFormSerializer;
 import org.javarosa.xform.util.XFormUtils;
@@ -278,11 +281,13 @@ public class XFormParser {
 	
 	public static Document getXMLDocument(Reader reader)  {
 		Document doc = new Document();
-
+		
+		Interner interner = new Interner();
 		try{
-			KXmlParser parser = new KXmlParser();
+			InterningKXmlParser parser = new InterningKXmlParser(interner);
 			parser.setInput(reader);
 			parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
+			
 			doc.parse(parser);
 		}  catch (XmlPullParserException e) {
 		    String errorMsg = "XML Syntax Error at Line: " + e.getLineNumber() +", Column: "+ e.getColumnNumber()+ "!";
@@ -304,6 +309,44 @@ public class XFormParser {
 			System.out.println("Error closing reader");
 			e.printStackTrace();
 		}
+
+		Stack<Element> q = new Stack<Element>();
+		
+		q.push(doc.getRootElement());
+		while(!q.isEmpty()) {
+			Element e = q.pop();
+			boolean[] toRemove = new boolean[e.getChildCount()*2];
+			String accumulate = "";
+			for(int i = 0 ; i < e.getChildCount(); ++i ){
+				int type = e.getType(i);
+				if(type == Element.TEXT) {
+					String text = e.getText(i);
+					accumulate += text;
+					toRemove[i] = true;
+				} else {
+					if(type ==Element.ELEMENT) {
+						q.addElement(e.getElement(i));
+					}
+					String accstr = accumulate.trim();
+					if(accstr.length() != 0) {
+						e.addChild(i, Element.TEXT, interner.intern(accumulate));
+						accumulate = "";
+						++i;
+					} else {
+						accumulate = "";
+					}
+				}
+			}
+			if(accumulate.trim().length() != 0) {
+				e.addChild(Element.TEXT, interner.intern(accumulate));
+			}
+			for(int i = e.getChildCount() - 1; i >= 0 ; i-- ){
+				if(toRemove[i]) {
+					e.removeChild(i);
+				}
+			}
+		}
+		interner.release();
 		
 		return doc;
 	}
