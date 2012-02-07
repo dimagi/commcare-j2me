@@ -78,6 +78,10 @@ public class TextEntryWidget extends ExpandedWidget {
 			Logger.exception("pivot", e);
 		}
 		
+		if("numeric".equals(prompt.getAppearanceHint())) {
+			textField.setConstraints(TextField.NUMERIC);
+		}
+		
 		
 		return wec.wrapEntryWidget(textField);
 	}
