@@ -872,12 +872,13 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 	String audioURI;
 	private void raiseAlert() {
 		if(alertTitle != null || msg != null) {
-			final String at = alertTitle;
-			final String m = msg;
-			final Image alIm = alertImage;
-			final String aURI = audioURI;
-			final long time = new Date().getTime();
 			Runnable r = new Runnable() {
+				String at = alertTitle;
+				String m = msg;
+				Image alIm = alertImage;
+				String aURI = audioURI;
+				long time = new Date().getTime();
+
 	
 				public void run() {
 					J2MEDisplay.showError(at, m, alIm);
@@ -887,7 +888,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 				}
 				
 			};
-			Display.getInstance().callSerially(new HandledThread(r));
+			new HandledThread(r).start();
 			alertTitle = null;
 			msg = null;
 			alertImage = null;
