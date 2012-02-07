@@ -12,10 +12,8 @@ import javax.microedition.media.Player;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.formmanager.properties.FormManagerProperties;
-import org.javarosa.j2me.view.J2MEDisplay;
 
 public class MediaUtils {
 	
@@ -36,7 +34,11 @@ public class MediaUtils {
 	
 	private static boolean IMAGE_DEBUG_MODE = false;
 	public static Image getImage(String URI){
-		if(URI != null && !URI.equals("")){
+
+		//We need to make sure we have memory available if it exists, because we're going to be allocating huuuge
+		//chunks, and that might fail even if those chunks would be available if we collected.
+		Runtime.getRuntime().gc();
+		if(URI != null && !URI.equals("")){			
 			try {
 				Reference ref = ReferenceManager._().DeriveReference(URI);
 				InputStream is = ref.getStream();
@@ -67,6 +69,10 @@ public class MediaUtils {
 	  */
 
 	  public static Image resizeImage(Image src, int newWidth, int newHeight) {
+	  	  //We need to make sure we have memory available if it exists, because we're going to be allocating huuuge
+ 		  //chunks, and that might fail even if those chunks would be available if we collected.
+		  Runtime.getRuntime().gc();
+		  
 	      int srcWidth = src.getWidth();
 	      int srcHeight = src.getHeight();
 	      Image tmp = Image.createImage(newWidth, srcHeight);
