@@ -232,7 +232,7 @@ public class ExtUtil {
 	}
 	
 	public static String readString (DataInputStream in) throws IOException {
-		return in.readUTF();
+		return in.readUTF().intern();
 	}
 	
 	public static Date readDate (DataInputStream in) throws	IOException {
