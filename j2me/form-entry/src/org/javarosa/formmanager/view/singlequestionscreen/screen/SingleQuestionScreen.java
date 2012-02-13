@@ -29,8 +29,11 @@ import org.javarosa.formmanager.view.widgets.ExpandedWidget;
 import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.j2me.view.J2MEDisplay;
 
+import de.enough.polish.event.EventListener;
+import de.enough.polish.event.EventManager;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
+import de.enough.polish.ui.Display;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
@@ -211,6 +214,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
 		//Clear key states
 		this.getKeyStates();
+		boolean wasLoaded = loaded;
 		loaded = false;
 		synchronized(itemCommandQueue) {
 			if(itemCommandQueue[0] != null) {
@@ -220,7 +224,18 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 				return true;
 			}
 		}
-		return super.handleKeyReleased(keyCode, gameAction);
+		boolean outcome = super.handleKeyReleased(keyCode, gameAction);
+		//#if !(polish.TextField.useDirectInput == true)
+		if(outcome == false) {
+			if(wasLoaded && widget.getNextMode() == ExpandedWidget.NEXT_ON_SELECT) {
+				//I bet there is a better way to trigger this using the normal event processing
+				//queue
+				this.commandAction(nextItemCommand, widget.getInteractiveWidget());
+				return true;
+			}
+		}
+		//#endif
+		return outcome;
 	}
 
 	public void refreshWidget(int changeFlags) {
