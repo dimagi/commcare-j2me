@@ -18,15 +18,20 @@ package org.javarosa.formmanager.view.widgets;
 
 import java.util.Date;
 
+import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.TimeData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.DateField;
 import de.enough.polish.ui.Item;
 
 public class TimeEntryWidget extends ExpandedWidget {
+	
+	public TimeEntryWidget() {
+		super();
+	}
+	
 	public int getNextMode () {
 		return ExpandedWidget.NEXT_ON_ENTRY;
 	}
@@ -35,7 +40,6 @@ public class TimeEntryWidget extends ExpandedWidget {
 		//#style textBox
 		return new DateField(null, DateField.TIME);
 	}
-	
 
 	private DateField dateField () {
 		return (DateField)entryWidget;    
@@ -49,13 +53,18 @@ public class TimeEntryWidget extends ExpandedWidget {
 
 	protected IAnswerData getWidgetValue () {
 		Date d = dateField().getDate();
-		return (d == null ? null : new TimeData(d));
+		if(d == null) {
+			return null;
+		}
+		return new TimeData(d);
 	}
-
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
+	 */
 	public int widgetType() {
-		// TODO Auto-generated method stub
-		return 0;
+		return Constants.CONTROL_INPUT;
 	}
 	
 	protected IAnswerData getAnswerTemplate() {
