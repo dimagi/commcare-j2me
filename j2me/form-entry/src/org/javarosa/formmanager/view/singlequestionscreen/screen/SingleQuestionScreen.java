@@ -16,6 +16,7 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Gauge;
 import javax.microedition.lcdui.Graphics;
 
@@ -29,11 +30,8 @@ import org.javarosa.formmanager.view.widgets.ExpandedWidget;
 import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.j2me.view.J2MEDisplay;
 
-import de.enough.polish.event.EventListener;
-import de.enough.polish.event.EventManager;
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;
-import de.enough.polish.ui.Display;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemCommandListener;
@@ -45,6 +43,7 @@ import de.enough.polish.ui.UiAccess;
 
 public class SingleQuestionScreen extends FramedForm implements ItemCommandListener, ItemStateListener, IQuestionWidget {
 
+	private static int POUND_KEYCODE = Canvas.KEY_POUND;
 	protected FormEntryPrompt prompt;
 	private Gauge progressBar;
     
@@ -224,7 +223,18 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 				return true;
 			}
 		}
-		boolean outcome = super.handleKeyReleased(keyCode, gameAction);
+		boolean outcome = false;
+		
+		//#if javarosa.supresscycle
+		if(keyCode == POUND_KEYCODE) {
+			outcome = false;
+		} else {
+			outcome = super.handleKeyReleased(keyCode, gameAction);
+		}
+		//#else
+		//# boolean outcome = super.handleKeyReleased(keyCode, gameAction);
+		//#endif
+
 		//#if !(polish.TextField.useDirectInput == true)
 		if(outcome == false) {
 			if(wasLoaded && widget.getNextMode() == ExpandedWidget.NEXT_ON_SELECT) {
