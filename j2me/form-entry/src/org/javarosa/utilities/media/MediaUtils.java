@@ -12,6 +12,7 @@ import javax.microedition.media.Player;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 
@@ -38,12 +39,12 @@ public class MediaUtils {
 		//We need to make sure we have memory available if it exists, because we're going to be allocating huuuge
 		//chunks, and that might fail even if those chunks would be available if we collected.
 		Runtime.getRuntime().gc();
-		if(URI != null && !URI.equals("")){			
+		if(URI != null && !URI.equals("")){
+			InputStream is = null;
 			try {
 				Reference ref = ReferenceManager._().DeriveReference(URI);
-				InputStream is = ref.getStream();
+				is = ref.getStream();
 				Image i = Image.createImage(is);
-				is.close();
 				return i;
 			} catch (IOException e) {
 				System.out.println("IOException for URI:"+URI);
@@ -55,6 +56,20 @@ public class MediaUtils {
 				ire.printStackTrace();
 				if(IMAGE_DEBUG_MODE) throw new RuntimeException("Invalid Reference for image at: " +URI);
 				return null;
+			} catch(OutOfMemoryError oome) {
+				if(IMAGE_DEBUG_MODE) { throw new RuntimeException("ERROR! Not enough memory to load image: "+URI); }
+				else {
+					Logger.log("OOM", "Loading image: " + URI );
+					return null;
+				}
+			} finally {
+				try{
+					if(is != null) {
+						is.close();
+					}
+				} catch(IOException e) {
+					//These are the dumbest blocks...
+				}
 			}
 		} else{
 			return null;
