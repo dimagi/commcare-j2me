@@ -360,6 +360,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 			processModelEvent(event);
 		} else if (result == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
 			String constraintMsg = model.getQuestionPrompt().getConstraintText(answer);
+			if(constraintMsg == null || constraintMsg == "") { constraintMsg = Localization.get("form.entry.constraint.msg"); }
 			String constraintImage = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, answer);
 			String constraintAudio = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, answer);
 			
@@ -378,13 +379,13 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 					Logger.exception(e);
 				}
 			}
-			J2MEDisplay.showError("Validation failure", constraintMsg, image);
+			J2MEDisplay.showError(null, constraintMsg, image);
 			if(constraintAudio != null) {
 				MediaUtils.playAudio(constraintAudio);
 			}
 		} else if (result == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 			String txt = Localization.get("view.sending.RequiredQuestion");
-			J2MEDisplay.showError("Question Required", txt);
+			J2MEDisplay.showError(null, txt);
 		}
 	}
 

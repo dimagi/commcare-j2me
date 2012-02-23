@@ -77,7 +77,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 	private static int POUND_KEYCODE = Canvas.KEY_POUND;
     private static final String PROMPT_REQUIRED_QUESTION = Localization.get("view.sending.RequiredQuestion");
 
-	private static final String PROMPT_DEFAULT_CONSTRAINT_VIOL = "Answer is outside of the allowed range";
+	private static final String PROMPT_DEFAULT_CONSTRAINT_VIOL = Localization.get("form.entry.constraint.msg");
 	
     public static int KEY_CENTER_LETS_HOPE = -5;
     

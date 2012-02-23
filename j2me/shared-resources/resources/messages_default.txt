@@ -250,3 +250,5 @@ menu.send.later=Send Later
 
 video.playback.top=Press
 video.playback.bottom=For Play/Pause
+
+form.entry.constraint.msg=Answer is outside of the allowed range

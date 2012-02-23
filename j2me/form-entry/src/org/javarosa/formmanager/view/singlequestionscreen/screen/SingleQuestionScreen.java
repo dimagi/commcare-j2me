@@ -175,6 +175,20 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 		J2MEDisplay.setView(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#showNotify()
+	 */
+	public void showNotify() {
+		super.showNotify();
+		synchronized(itemCommandQueue) {
+			if(itemCommandQueue[0] != null) {
+				CommandListener listener = this.getCommandListener();
+				listener.commandAction(itemCommandQueue[0], this);
+				itemCommandQueue[0] = null;
+			}
+		}
+	}
+
 	public void itemStateChanged(Item item) {
 		if(item.equals(widget.getInteractiveWidget())) {
 			this.callCommandListener(nextItemCommand);
