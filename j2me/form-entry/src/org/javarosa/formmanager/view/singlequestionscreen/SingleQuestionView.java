@@ -96,10 +96,10 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				captionCount++;
 				String captionText = caption.getLongText();
 				if(captionText != null) {
-					groupTitle += caption.getLongText();
-
-					if ((caption.getIndex().getInstanceIndex() > -1) && (captionCount < captionHierarchy.length)) {
-							groupTitle += " #" + (caption.getMultiplicity() + 1);
+					if(caption.repeats()) { 
+						groupTitle += caption.getRepetitionText(false);
+					} else {
+						groupTitle += caption.getLongText();
 					}
 
 					groupTitle += ": ";
