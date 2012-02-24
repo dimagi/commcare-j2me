@@ -175,6 +175,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 		J2MEDisplay.setView(this);
 	}
 
+	boolean isBackgrounded = true;
 	/* (non-Javadoc)
 	 * @see de.enough.polish.ui.Screen#showNotify()
 	 */
@@ -187,6 +188,15 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 				itemCommandQueue[0] = null;
 			}
 		}
+		isBackgrounded = false;
+	}
+
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#hideNotify()
+	 */
+	public void hideNotify() {
+		super.hideNotify();
+		isBackgrounded = true;
 	}
 
 	public void itemStateChanged(Item item) {
@@ -194,9 +204,9 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 			this.callCommandListener(nextItemCommand);
 		}
 	}
-		
+	
 	public void commandAction(Command c, Item item) {
-		if(loaded && (this.getKeyStates() & UiAccess.FIRE_PRESSED) != 0) {
+		if(isBackgrounded || (loaded && (this.getKeyStates() & UiAccess.FIRE_PRESSED) != 0)) {
 			//we're still in the middle of input, delay the outcome until it's done.
 			synchronized(itemCommandQueue) {
 				itemCommandQueue[0] = c;
