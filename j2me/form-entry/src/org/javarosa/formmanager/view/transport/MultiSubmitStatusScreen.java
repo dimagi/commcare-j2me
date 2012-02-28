@@ -202,7 +202,13 @@ public class MultiSubmitStatusScreen extends Form implements
 	}
 	
 	private void constructFinalMessage(TransportMessage transportMessage) {
-		String message = finalResponse + "\n";
+		String message;
+		if(responder.hasSummativeResponse()) {
+			//I _hate_ this chain. It is stupid;
+			message = responder.getSummativeReseponse();
+		} else {
+			message = finalResponse + "\n";
+		}
 		if(failed > 0) { 
 			message += Localization.get("sending.status.failures", new String[]{String.valueOf(failed)}) + "\n";
 		}

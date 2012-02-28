@@ -22,5 +22,15 @@ public interface TransportResponseProcessor {
 	 * @return
 	 */
 	String getResponseMessage (TransportMessage message);
+
+	/**
+	 * @return true if this processor can create a fully summative response for all of the processed data
+	 */
+	boolean hasSummativeResponse();
+
+	/**
+	 * @return A string containing all of the compiled responses if possible (hasSummativeResponse is true)
+	 */
+	String getSummativeReseponse();
 	
 }
