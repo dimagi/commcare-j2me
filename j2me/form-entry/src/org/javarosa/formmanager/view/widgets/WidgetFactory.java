@@ -93,8 +93,20 @@ public class WidgetFactory {
 			break;	
 		}
 
-		if (expandedStyle == null) { //catch types text, null, unsupported
+		if (expandedStyle == null) { //catch types text, null, unsupported			
 			expandedStyle = new TextEntryWidget();
+			
+			if("numeric".equals(appearanceAttr)) {
+				//#if polish.TextField.useDirectInput == true && !polish.blackberry
+				//if possible, use the correct input type (numbers generally)
+				//# ((TextEntryWidget)expandedStyle).setConstraint(TextField.MODE_NUMBERS);
+				//#else
+				//We can only use decimal if supported by the current environment (midp entry
+				//only supports things parseable by actual datatypes)
+				((TextEntryWidget)expandedStyle).setConstraint(TextField.DECIMAL);
+				//#endif
+			}
+			
 			if(controlType == Constants.CONTROL_SECRET) {
 				((TextEntryWidget)expandedStyle).setConstraint(TextField.PASSWORD);
 			}

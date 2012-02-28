@@ -17,8 +17,6 @@
 package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.Constants;
-import org.javarosa.core.model.condition.pivot.ConstraintHint;
-import org.javarosa.core.model.condition.pivot.RangeHint;
 import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
@@ -77,11 +75,6 @@ public class TextEntryWidget extends ExpandedWidget {
 			// Not a vital feature for now, don't break on its account
 			Logger.exception("pivot", e);
 		}
-		
-		if("numeric".equals(prompt.getAppearanceHint())) {
-			textField.setConstraints(TextField.NUMERIC);
-		}
-		
 		
 		return wec.wrapEntryWidget(textField);
 	}

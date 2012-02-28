@@ -20,7 +20,6 @@ import org.javarosa.core.model.condition.pivot.IntegerRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
-import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.data.UncastData;
 import org.javarosa.form.api.FormEntryPrompt;
 
@@ -45,7 +44,6 @@ public class NumericEntryWidget extends TextEntryWidget {
 		TextField tf = textField();
 		int clearNumberType = tf.getConstraints() & ~(TextField.DECIMAL + TextField.NUMERIC);
 		tf.setConstraints( clearNumberType | (isDecimal ? TextField.DECIMAL : TextField.NUMERIC));
-		//UiAccess.setInputMode(tf,UiAccess.MODE_NUMBERS);
 		
 		return super.getEntryWidget(prompt);
 	}
