@@ -415,8 +415,11 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		}
 	}
 		
+	boolean loaded = false;
 	//needs no exception wrapping
 	protected boolean handleKeyPressed(int keyCode, int gameAction) {
+		loaded = true;
+		
 		//Supress these actions, letting the propogates screws up scrolling on some platforms.
 		if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 			return true;
@@ -425,10 +428,22 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		}
 		return super.handleKeyPressed(keyCode, gameAction);
 	}
+	
+	/* (non-Javadoc)
+	 * @see de.enough.polish.ui.Screen#hideNotify()
+	 */
+	public void hideNotify() {
+		super.hideNotify();
+		loaded = false;
+	}
+
 
 	protected boolean handleKeyReleased(int keyCode, int gameAction) {
+		//because we're manually processing these, we need to replicate some
+		//of the structure we'd normally use for dealing with down/up events
+		//across native input/etc.
+		if(loaded) {
 		try {
-		
 			if (gameAction == Canvas.UP && keyCode != Canvas.KEY_NUM2) {
 				stepIndex(false);
 				refreshList();
@@ -444,6 +459,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 
 		} catch (Exception e) {
 			Logger.die("gui-keyup", e);
+		}
 		}
 			
 		return super.handleKeyReleased(keyCode, gameAction);
