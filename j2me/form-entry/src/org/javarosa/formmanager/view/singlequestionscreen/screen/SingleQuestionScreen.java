@@ -256,7 +256,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 			outcome = super.handleKeyReleased(keyCode, gameAction);
 		}
 		//#else
-		//# boolean outcome = super.handleKeyReleased(keyCode, gameAction);
+		//# outcome = super.handleKeyReleased(keyCode, gameAction);
 		//#endif
 
 		//#if !(polish.TextField.useDirectInput == true)
