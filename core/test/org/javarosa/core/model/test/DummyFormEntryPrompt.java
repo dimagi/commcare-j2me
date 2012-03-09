@@ -18,7 +18,7 @@ public class DummyFormEntryPrompt extends FormEntryPrompt {
 		return textId;
 	}
 	
-	protected Localizer localizer() {
+	public Localizer localizer() {
 		return localizer;
 	}
 	
