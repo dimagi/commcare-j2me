@@ -63,22 +63,24 @@ public class MultiSubmitStatusScreen extends Form implements
 	
 	private TransportResponseProcessor responder;
 	private boolean silenceable;
+	private String cancelText;
 	
 	public MultiSubmitStatusScreen(CommandListener listener, TransportResponseProcessor responder) {
-		this(listener, responder, true);
+		this(listener, responder, true, null);
 	}
 	
 	/**
 	 * @param listener
 	 * @param modelIDs
 	 */
-	public MultiSubmitStatusScreen(CommandListener listener, TransportResponseProcessor responder, boolean silenceable) {
+	public MultiSubmitStatusScreen(CommandListener listener, TransportResponseProcessor responder, boolean silenceable, String cancelText) {
 		//#style submitPopup
 		super(Localization.get("sending.status.title"));
 
 		setCommandListener(listener);
 
 		this.silenceable = silenceable;
+		this.cancelText = cancelText;
 		if (silenceable) {
 			setOKCommand();
 		}
@@ -90,7 +92,7 @@ public class MultiSubmitStatusScreen extends Form implements
 	}
 
 	private void setOKCommand() {
-		addCommand(new Command(Localization.get("menu.ok"), Command.OK, 1));		
+		addCommand(new Command(cancelText == null ? Localization.get("menu.ok") : cancelText, Command.OK, 1));		
 	}
 	
 	public void reinit(String[] ids) {
