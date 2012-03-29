@@ -35,6 +35,9 @@ colors {
 	requiredColor: 	#FF7F50;
 	requiredColorFocus: #DC143C;
 	headerColor: 	#D9D9D9;
+	
+	entitydetailheaderColor: blue;
+	entitydetailvalueColor: white;
 }
 
 .loginView {
@@ -626,16 +629,6 @@ alertcontent {
 
 /** ------------   Popup Style   -----------------**/
 
-.patselDetailRow {
-    font-size: small;
-	columns: 2;
-	//#if javarosa.patientselect.formfactor == nokia-s40
-	columns-width: 40,85;
-	//#else
-	columns-width: 80,150;
-	//#endif
-}
-
 .patselSortPopup {
     margin-right: 15;
 	margin-left: 15;
@@ -738,4 +731,18 @@ alertcontent {
 
 .leftLabel {
 	font-face: proportional;
+}
+
+.patselDetailLabel {
+    font-size: small;
+    background-color: entitydetailheaderColor;
+}
+
+.patselDetailData {
+    font-size: small;
+    background-color: entitydetailvalueColor;
+}
+
+.patselDetailContainer {
+
 }

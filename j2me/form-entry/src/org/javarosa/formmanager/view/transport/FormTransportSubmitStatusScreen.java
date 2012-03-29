@@ -53,6 +53,7 @@ public class FormTransportSubmitStatusScreen extends Form implements
 		setCommandListener(listener);
 		this.responder = responder;
 		
+		//#style submitText
 		this.msg = new StringItem(null, Localization.get("sending.status.going"));
 		append(new Spacer(80, 0));
 		append(this.msg);

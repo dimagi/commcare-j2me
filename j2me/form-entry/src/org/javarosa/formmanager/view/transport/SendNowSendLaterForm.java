@@ -62,6 +62,7 @@ public class SendNowSendLaterForm extends FramedForm {
 			this.cg.append(Localization.get("sending.view.later"), null);
 			append(this.cg);
 		} else {
+			//#style submitText
 			StringItem message = new StringItem(null, Localization.get("sending.view.done"));
 			this.append(message);
 			
