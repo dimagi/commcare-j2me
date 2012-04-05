@@ -6,10 +6,10 @@ import org.javarosa.services.transport.TransportMessage;
 
 public abstract class CompletedFormOptionsState implements CompletedFormOptionsTransitions, State {
 
-	protected TransportMessage message;
+	protected String messageId;
 	
-	public CompletedFormOptionsState (TransportMessage message) {
-		this.message = message;
+	public CompletedFormOptionsState (String messageId) {
+		this.messageId = messageId;
 	}
 	
 	public void start () {
@@ -19,7 +19,7 @@ public abstract class CompletedFormOptionsState implements CompletedFormOptionsT
 	}
 	
 	protected CompletedFormOptionsController getController () {
-		return new CompletedFormOptionsController(message);
+		return new CompletedFormOptionsController(messageId);
 	}
 	
 }
