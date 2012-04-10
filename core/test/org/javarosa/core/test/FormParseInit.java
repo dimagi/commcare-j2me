@@ -1,10 +1,6 @@
 package org.javarosa.core.test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Calendar;
+import java.io.InputStream;
 import java.util.Vector;
 
 import org.javarosa.core.form.api.test.TextFormTests;
@@ -12,13 +8,9 @@ import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.GroupDef;
 import org.javarosa.core.model.QuestionDef;
-import org.javarosa.core.model.test.FormDefTest;
-import org.javarosa.core.model.test.QuestionDefTest;
-import org.javarosa.core.services.locale.Localizer;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
-import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.xform.util.XFormUtils;
 
 /* TODO
@@ -41,7 +33,7 @@ import org.javarosa.xform.util.XFormUtils;
 
 
 public class FormParseInit {
-	private String FORM_NAME = new String("C:\\eclipse_workspaces/javarosa/javarosa/j2me/buildfiles/test/resources/ImageSelectTester.xhtml");
+	private String FORM_NAME = new String("/ImageSelectTester.xhtml");
 	private FormDef xform;
 	private FormEntryController fec;
 	private FormEntryModel femodel;
@@ -91,27 +83,26 @@ public class FormParseInit {
 	}
 	
 	public void init(){
-		String xf_name = FORM_NAME; 			
-		FileInputStream is;
-		try {
-			is = new FileInputStream(xf_name);
-		} catch (FileNotFoundException e) {
-			System.err.println("Error: the file '" + xf_name
-					+ "' could not be found!");
-			throw new RuntimeException("Error: the file '" + xf_name
-					+ "' could not be found!");
-		}
-		
-		// Parse the form
-		xform = XFormUtils.getFormFromInputStream(is);
-		
-		femodel = new FormEntryModel(xform);
-		fec = new FormEntryController(femodel);
-		
-		if( xform == null ) {
-			System.out.println("\n\n==================================\nERROR: XForm has failed validation!!");
-		} else {
-		}
+		String xf_name = FORM_NAME;
+			
+			InputStream is = this.getClass().getResourceAsStream(xf_name);
+			
+			if(is == null) {
+				System.err.println("Error: the file '" + xf_name
+						+ "' could not be found!");
+				throw new RuntimeException("Error: the file '" + xf_name
+						+ "' could not be found!");
+			}
+			// Parse the form
+			xform = XFormUtils.getFormFromInputStream(is);
+			
+			femodel = new FormEntryModel(xform);
+			fec = new FormEntryController(femodel);
+			
+			if( xform == null ) {
+				System.out.println("\n\n==================================\nERROR: XForm has failed validation!!");
+			} else {
+			}
 	}
 	
 

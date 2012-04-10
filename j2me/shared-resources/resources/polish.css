@@ -746,3 +746,10 @@ alertcontent {
 .patselDetailContainer {
 
 }
+.entityDetailScreen {
+	background-color: white;
+}
+
+.submitText {
+	margin: 20;
+}
