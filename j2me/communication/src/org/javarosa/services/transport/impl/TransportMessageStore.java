@@ -162,7 +162,8 @@ public class TransportMessageStore implements TransportCache {
 					try {
 						//I don't think we can simply grab the lock, since it's needed
 						//by the actual storage processes
-						int first = recent.iterate().nextID();
+						IStorageIterator it = recent.iterate();
+						int first = it.nextID();
 						recent.remove(first);
 						
 						//ITERATOR IS NOW INVALID
@@ -240,12 +241,13 @@ public class TransportMessageStore implements TransportCache {
 		// cache the counts first
 		for(IStorageIterator en = storage(Q_STORENAME).iterate(); en.hasMore() ;) {
 			TransportMessage message = (TransportMessage)en.nextRecord();
-			if (message.getStatus() == TransportMessageStatus.QUEUED)
+			if (message.getStatus() == TransportMessageStatus.QUEUED) {
 				queued++;
-			if (message.getStatus() == TransportMessageStatus.CACHED)
+			} if (message.getStatus() == TransportMessageStatus.CACHED) {
 				cached++;
-			if (message.getStatus() == TransportMessageStatus.SENT)
+			} if (message.getStatus() == TransportMessageStatus.SENT) {
 				throw new RuntimeException("Sent message in the queue");
+			}
 		}
 		this.cachedCounts.put(Integer.toString(TransportMessageStatus.CACHED),
 				new Integer(cached));

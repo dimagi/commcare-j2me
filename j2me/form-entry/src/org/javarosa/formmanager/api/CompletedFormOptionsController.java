@@ -13,7 +13,6 @@ import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.log.HandledItemStateListener;
 import org.javarosa.j2me.view.J2MEDisplay;
-import org.javarosa.services.transport.TransportMessage;
 
 /**
  * @author ctsims
@@ -21,15 +20,15 @@ import org.javarosa.services.transport.TransportMessage;
  */
 public class CompletedFormOptionsController implements HandledCommandListener, HandledItemStateListener {
 	protected CompletedFormOptionsTransitions transitions;
-	protected TransportMessage message;
+	protected String messageId;
 	protected SendNowSendLaterForm view;
 	
-	public CompletedFormOptionsController(TransportMessage message) {
-		this(message, false);
+	public CompletedFormOptionsController(String messageId) {
+		this(messageId, false);
 	}
 	
-	public CompletedFormOptionsController(TransportMessage message, boolean cacheAutomatically) {
-		this.message = message;
+	public CompletedFormOptionsController(String messageId, boolean cacheAutomatically) {
+		this.messageId = messageId;
 		view = new SendNowSendLaterForm(this, this, cacheAutomatically);
 	}
 
@@ -49,15 +48,15 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
 		//If we're just on the acknowledgment screen, we always want 
 		//to just skip.
 		if(c == view.commandOk) {
-			transitions.skipSend(message);
+			transitions.skipSend(messageId);
 			return;
 		}
 		
 		int choice = view.getCommandChoice();
 		if(choice == SendNowSendLaterForm.SEND_NOW_DEFAULT) {
-			transitions.sendData(message);
+			transitions.sendData(messageId);
 		} else if(choice == SendNowSendLaterForm.SEND_LATER) {
-			transitions.skipSend(message);
+			transitions.skipSend(messageId);
 		}
 	}
 
@@ -68,12 +67,12 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
 	public void _itemStateChanged(Item i) {
 		switch (view.getCommandChoice()) {
 		case SendNowSendLaterForm.SEND_NOW_DEFAULT:
-			transitions.sendData(message);
+			transitions.sendData(messageId);
 			break;
 		case SendNowSendLaterForm.SEND_LATER:
 			//Since caching and sending later are now part of the queue, we need
 			//to let the transition have the data now. Possibly revisit this later.
-			transitions.skipSend(message);
+			transitions.skipSend(messageId);
 			break;
 		}
 	}

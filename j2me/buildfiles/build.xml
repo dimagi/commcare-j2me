@@ -64,6 +64,7 @@
 		<!-- Get the resource files which'll be used -->
 		<fileset id="jr.resources" dir="${basedir}/../">
 			<include name="**/resources/*.txt"/>
+			<include name="**/resources/*.x*ml/"/>
 		</fileset>
 		
 		<mkdir dir="dist"/>

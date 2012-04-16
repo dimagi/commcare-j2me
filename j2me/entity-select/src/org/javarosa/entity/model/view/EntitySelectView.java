@@ -17,7 +17,9 @@
 package org.javarosa.entity.model.view;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
@@ -375,18 +377,9 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 								applyStyle(str, STYLE_CELL);
 								row.add(str);
 							} else {
-								try {
-							//#style patselCell
-							ImageItem img = new ImageItem("", Image.createImage(ReferenceManager._().DeriveReference(uri).getStream()),ImageItem.LAYOUT_CENTER,"img");
-							applyStyle(img, STYLE_CELL);
-							row.add(img);
-							} catch (IOException e) {
-							e.printStackTrace();
-							throw new RuntimeException("IO Exception while reading an image item for Entity Select");
-						} catch (InvalidReferenceException e) {
-							e.printStackTrace();
-							throw new RuntimeException("Invalid reference while trying to create an image for Entity Select: " + e.getReferenceString());
-						}
+								Item img = getImageItem(uri);
+								applyStyle(img, STYLE_CELL);
+								row.add(img);
 						}
 					}
 				}
@@ -396,6 +389,56 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		}
 
 		setActiveFrame(Graphics.BOTTOM);
+	}
+
+	Hashtable<String, Image> imageCache;
+	private Item getImageItem(String uri) {
+		if(imageCache == null) {
+			imageCache = new Hashtable<String, Image>();
+		}
+		
+		//TODO: Resizing. Do we have enough information for pixel dimensions?
+		
+		InputStream is = null;
+		try {
+			Image image;
+			
+			//See if we already have this image;
+			if(imageCache.containsKey(uri)) {
+				image = imageCache.get(uri);
+			} else {
+				//If not, try to fetch it
+				is = ReferenceManager._().DeriveReference(uri).getStream();
+				image = Image.createImage(is);
+				
+				if(image != null) {
+					//Store it for the rest of this view
+					imageCache.put(uri, image); 
+				}
+			}
+			
+			//#style patselImageCell?, patselCell
+			return new ImageItem("",image,ImageItem.LAYOUT_CENTER  | ImageItem.LAYOUT_VCENTER,"img");
+		} catch (InvalidReferenceException e) {
+			//Invalid reference is much worse than IOException, but still not sure if this is the right call.
+			e.printStackTrace();
+			throw new RuntimeException("Invalid reference while trying to create an image for Entity Select: " + e.getReferenceString());
+		} catch (IOException e) {			
+			//Don't throw a trace for every one. Will be slooooooow.
+		} finally {
+			try {
+				if( is != null) {
+					is.close();
+				}
+			} catch(IOException e) {
+				//this is the dumbest exception that can be thrown
+			}
+		}
+		
+		//Just return something blank for now
+		
+		//#style patselCell
+		return new StringItem("",""); 
 	}
 
 	private static final int STYLE_TITLE = 0;

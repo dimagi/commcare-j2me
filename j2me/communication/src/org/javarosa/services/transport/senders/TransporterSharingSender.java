@@ -86,6 +86,8 @@ public class TransporterSharingSender {
 
 	public void uninit() {
 		listener = null;
+		messages.removeAllElements();
+		System.out.println("Send all unsent completed. Message queue emptied");
 	}
 	
 }

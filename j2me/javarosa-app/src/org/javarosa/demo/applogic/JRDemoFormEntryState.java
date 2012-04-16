@@ -1,6 +1,5 @@
 package org.javarosa.demo.applogic;
 
-import java.io.IOException;
 import java.util.Vector;
 
 import org.javarosa.core.model.FormDef;
@@ -17,7 +16,6 @@ import org.javarosa.demo.util.JRDemoFormEntryViewFactory;
 import org.javarosa.demo.util.JRDemoUtil;
 import org.javarosa.formmanager.api.CompletedFormOptionsState;
 import org.javarosa.formmanager.api.FormEntryState;
-import org.javarosa.formmanager.api.FormTransportState;
 import org.javarosa.formmanager.api.JrFormEntryController;
 import org.javarosa.formmanager.api.JrFormEntryModel;
 import org.javarosa.formmanager.utility.FormDefFetcher;
@@ -89,10 +87,12 @@ public class JRDemoFormEntryState extends FormEntryState {
 
 				TransportMessage message = JRDemoContext._().buildMessage(instanceData, profile);
 				
-				CompletedFormOptionsState completed = new CompletedFormOptionsState(message) {
+				CompletedFormOptionsState completed = new CompletedFormOptionsState(message.getCacheIdentifier()) {
 	
-					public void sendData(TransportMessage message) {
+					public void sendData(String messageId) {
 						
+						//TODO: Get Message Using message ID
+						TransportMessage message = null;
 						JRDemoFormTransportState send = new JRDemoFormTransportState(message, record) {
 							public void done() {
 								JRDemoUtil.goToList(cameFromFormList);
@@ -106,7 +106,7 @@ public class JRDemoFormEntryState extends FormEntryState {
 						send.start();
 					}
 	
-					public void skipSend(TransportMessage message) {
+					public void skipSend(String message) {
 						// Message should already be cached.
 						abort();
 					}

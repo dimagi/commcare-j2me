@@ -76,4 +76,8 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
 		return new String[] { "cache-id" };
 	}
 
+	public void clean() {
+		m = null;		
+	}
+
 }

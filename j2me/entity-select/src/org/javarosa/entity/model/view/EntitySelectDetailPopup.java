@@ -48,6 +48,7 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
 	Command[] phoneCallouts;
 	
 	public EntitySelectDetailPopup (EntitySelectController<E> psa, Entity<E> entity, EntitySet<E> set) {
+		//#style entityDetailScreen
 		super(Localization.get("entity.detail.title", new String[] {entity.entityType()}));
 		
 		this.psa = psa;
@@ -71,24 +72,29 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
 	public void loadData() {
 		for (int i = 0; i < data.length; i++) {
 			
-			//#style patselDetailRow
-			Container c = new Container(false);
-			int screenwidth = J2MEDisplay.getScreenWidth(240);
-			
-			int first = (int)Math.floor(screenwidth * .35);
-			int second = (int)Math.floor(screenwidth * .65);
-			
-			//Dynamically assign column space based on phone screen
-			c.getStyle().addAttribute("columns", new Integer(2));
-			c.getStyle().addAttribute("columns-width", first + "," + second);
-			
-			c.add(new StringItem("", headers[i] + ":"));
-			c.add(new StringItem("", data[i]));
-			if("phone".equals(forms[i])) {
-				phoneCallouts[i] = new Command("Call " + data[i], Command.SCREEN, 3);
-				this.addCommand(phoneCallouts[i]);
+			if("".equals(data[i])) {
+				continue;
 			}
-			append(c);
+			
+			//#style patselDetailContainer
+			Container c = new Container(false);
+			
+			//#style patselDetailLabel
+			StringItem titleItem = new StringItem("", headers[i]);
+			c.add(titleItem);
+			
+			//#style patselDetailData
+			StringItem dataItem = new StringItem("", data[i]);
+			c.add(dataItem);
+			
+			this.append(c);
+			
+			if("phone".equals(forms[i])) {
+				phoneCallouts[i] = new Command("Call " + headers[i], Command.SCREEN, 3);
+				if(data[i] != "") {
+					this.addCommand(phoneCallouts[i]);
+				}
+			}
 		}
 	}
 	
