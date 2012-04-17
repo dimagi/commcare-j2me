@@ -88,8 +88,10 @@ public class XPathEvalTest extends TestCase {
 			if (exceptionExpected) {
 				fail("Expected exception, expression : " + expr);
 			} else if ((result instanceof Double && expected instanceof Double)) {
-				if (Math.abs(((Double)result).doubleValue() - ((Double)expected).doubleValue()) > 1.0e-12) {
-					fail("Doubles outside of tolerance");
+				Double o = ((Double)result).doubleValue();
+				Double t = ((Double)expected).doubleValue();
+				if (Math.abs(o - t )> 1.0e-12) {
+					fail("Doubles outside of tolerance [" + o + "," + t + " ]");
 				}
 			} else if (!expected.equals(result)) {
 				fail("Did not get expected result for expression: " + expr);
@@ -255,6 +257,11 @@ public class XPathEvalTest extends TestCase {
 		testEval("selected('apple', 'ovoid')", null, null, Boolean.FALSE);
 		testEval("selected('', 'apple')", null, null, Boolean.FALSE);
 		/* operators */
+		
+		testEval("min(5.5, 0.5)" , null, null, new Double(0.5));
+		testEval("min(5.5)" , null, null, new Double(5.5));
+		testEval("date(min(date('2012-02-05'), date('2012-01-01')))" , null, null, DateUtils.parseDate("2012-01-01"));
+		
 		testEval("5.5 + 5.5" , null, null, new Double(11.0));
 		testEval("0 + 0" , null, null, new Double(0.0));
 		testEval("6.1 - 7.8" , null, null, new Double(-1.7));
