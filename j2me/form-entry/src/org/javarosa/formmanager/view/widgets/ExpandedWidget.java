@@ -209,8 +209,14 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	}
 	
 	protected IAnswerData cast(IAnswerData data) {
+		if(data == null) { return null; }
+		
+		Class template  = getAnswerTemplate().getClass();
 		if(data instanceof UncastData) {
 			return getAnswerTemplate().cast((UncastData)data);
+		} else if(!template.isAssignableFrom(data.getClass())) {
+			System.out.println("Casting type " + data.getClass().getName() + " to type " + template.getName());
+			return getAnswerTemplate().cast(data.uncast());
 		} else {
 			return data;
 		}
