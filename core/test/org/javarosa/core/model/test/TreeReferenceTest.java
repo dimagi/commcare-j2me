@@ -127,15 +127,22 @@ public class TreeReferenceTest extends TestCase {
 	public void contextualization() {
 		TreeReference abc = XPathReference.getPathExpr("/a/b/c").getReference();
 		TreeReference ab = XPathReference.getPathExpr("/a/b").getReference();
+		TreeReference ac = XPathReference.getPathExpr("/a/c").getReference();
+		
 		TreeReference floatc = XPathReference.getPathExpr("c").getReference();
 		TreeReference floatc2 = XPathReference.getPathExpr("./c").getReference();
+		TreeReference backc = XPathReference.getPathExpr("../c").getReference();
 		
 		TreeReference testabc = floatc.contextualize(ab);
 		TreeReference testabc2 = floatc2.contextualize(ab);
+		TreeReference testac = backc.contextualize(ab);
+		
 		TreeReference invalid = floatc.contextualize(floatc2);
 		
 		if(!abc.equals(testabc)) { fail("context: c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc.toString(true)); }
 		if(!abc.equals(testabc2)) { fail("context: ./c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc2.toString(true)); }
+		if(!ac.equals(testac)) { fail("context: ../c didn't evaluate to " + ac.toString(true) + ", but rather to " + testac.toString(true)); }
 		if(invalid != null) { fail("was succesfully able to contextualize against an ambiguous reference. Result was: " + invalid.toString(true));}
 	}
 }
+
