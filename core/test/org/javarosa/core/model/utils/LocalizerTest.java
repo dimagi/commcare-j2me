@@ -814,22 +814,31 @@ public class LocalizerTest extends TestCase  {
 		
 		l.registerLocaleResource("locale1", firstLocale);
 		l.registerLocaleResource("locale2", secondLocale);
-		
+		firstLocale.startEditing();
 		firstLocale.setLocaleMapping("id1", "text1");
+		firstLocale.stopEditing();
 		testSerialize(l, "locales with data 1");
+		firstLocale.startEditing();
 		firstLocale.setLocaleMapping("id2", "text2");
+		firstLocale.stopEditing();
 		testSerialize(l, "locales with data 2");
 		
+		secondLocale.startEditing();
 		secondLocale.setLocaleMapping("id1", "text1");
 		secondLocale.setLocaleMapping("id2", "text2");
 		secondLocale.setLocaleMapping("id3", "text3");
+		secondLocale.stopEditing();
 		testSerialize(l, "locales with data 3");
 		
+		secondLocale.startEditing();
 		secondLocale.setLocaleMapping("id2", null);
+		secondLocale.stopEditing();
 		testSerialize(l, "locales with data 4");
 		
+		finalLocale.startEditing();
 		finalLocale.setLocaleMapping("id1", "text1");
 		finalLocale.setLocaleMapping("id4", "text4");
+		finalLocale.stopEditing();
 		l.registerLocaleResource("locale3", finalLocale);
 		testSerialize(l, "locales with data 5");
 		
