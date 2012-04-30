@@ -450,7 +450,7 @@ public class LocalizerTest extends TestCase  {
 		if (!l.hasMapping(TEST_LOCALE, "textID")) {
 			fail("Localizer does not contain newly added text mapping");
 		}
-		if (!"text".equals((String)l.getLocaleData(TEST_LOCALE).get("textID"))) {
+		if (!"text".equals(l.getLocaleData(TEST_LOCALE).get("textID").render())) {
 			fail("Newly added text mapping does not match source");
 		}
 	}
@@ -472,7 +472,7 @@ public class LocalizerTest extends TestCase  {
 		if (!l.hasMapping(TEST_LOCALE, "textID")) {
 			fail("Localizer does not contain overwritten text mapping");
 		}
-		if (!"newText".equals((String)l.getLocaleData(TEST_LOCALE).get("textID"))) {
+		if (!"newText".equals(l.getLocaleData(TEST_LOCALE).get("textID").render())) {
 			fail("Newly overwritten text mapping does not match source");
 		}
 	}
