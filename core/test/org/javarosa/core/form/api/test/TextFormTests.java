@@ -221,11 +221,9 @@ public class TextFormTests extends TestCase {
 		TableLocaleSource table = new TableLocaleSource();
 		l.addAvailableLocale("locale");
 		l.setDefaultLocale("locale");
-		table.startEditing();
 		table.setLocaleMapping("prompt;long", "loc: long text");
 		table.setLocaleMapping("prompt;short", "loc: short text");
 		table.setLocaleMapping("help", "loc: help text");
-		table.stopEditing();
 		l.registerLocaleResource("locale", table);
 		
 		l.setLocale("locale");
