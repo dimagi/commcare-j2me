@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.core.model.utils;
+package org.javarosa.core.model.utils.test;
 
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
@@ -61,7 +61,7 @@ public class LocalizerTest extends TestCase  {
 		return aSuite;
 	}
 
-	public final int NUM_TESTS = 30;
+	public final int NUM_TESTS = 31;
 	public void testMaster (int testID) {
 		//System.out.println("running " + testID);
 		
@@ -96,10 +96,11 @@ public class LocalizerTest extends TestCase  {
 		case 28: testSerialization(); break;
 		case 29: testLinearSub(); break;
 		case 30: testHashSub(); break;
+		case 31: testFallbacks(); break;
 		
 		}
 	}
-	
+
 	private void testSerialize (Localizer l, String msg) {
 		PrototypeFactory pf = new PrototypeFactory();
 		pf.addClass(TableLocaleSource.class);
@@ -859,5 +860,36 @@ public class LocalizerTest extends TestCase  {
 		assertEquals(Localizer.processArguments("${sec},${fir}",h), S+","+F);
 		assertEquals(Localizer.processArguments("${empty}",h), "${empty}");
 		assertEquals(Localizer.processArguments("${fir},${fir},${also first}",h), F+","+F+","+F);
+	}
+	
+	
+	private void testFallbacks() {
+		Localizer localizer =  new Localizer(true,true);
+		
+		localizer.addAvailableLocale("one");
+		localizer.addAvailableLocale("two");
+		
+		TableLocaleSource firstLocale = new TableLocaleSource();
+		firstLocale.setLocaleMapping("data", "val");
+		firstLocale.setLocaleMapping("data2", "vald2");
+		localizer.registerLocaleResource("one", firstLocale);
+		
+		TableLocaleSource secondLocale = new TableLocaleSource();
+		firstLocale.setLocaleMapping("data", "val2");
+		localizer.registerLocaleResource("two", secondLocale);
+		localizer.setDefaultLocale("one");
+		
+		localizer.setLocale("two");
+		
+		String text = localizer.getText("data2");
+		assertEquals("fallback", text, "vald2");
+		String shouldBeNull = localizer.getText("noexist");
+		assertNull("Localizer didn't return null value", shouldBeNull);
+		
+		localizer.setToDefault();
+		
+		shouldBeNull = localizer.getText("noexist");
+		assertNull("Localizer didn't return null value", shouldBeNull);
+		assertNull("Localizer didn't return null value", shouldBeNull);
 	}
 }
