@@ -72,7 +72,7 @@ public class ChatterboxWidgetFactory {
 		int controlType = prompt.getControlType();
 		int dataType = prompt.getDataType();
 		
-		String appearanceAttr = prompt.getPromptAttributes();
+		String appearanceAttr = prompt.getAppearanceHint();
 		
 		collapsedStyle = new CollapsedWidget();
 		((CollapsedWidget)collapsedStyle).setSeekable(this.readOnly);
