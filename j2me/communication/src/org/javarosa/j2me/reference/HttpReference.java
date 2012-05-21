@@ -35,7 +35,14 @@ public class HttpReference implements Reference {
 	public InputStream getStream() throws IOException {
 		HttpConnection connection = (HttpConnection)Connector.open(URI);
 		connection.setRequestMethod(HttpConnection.GET);
-		return connection.openInputStream();
+		InputStream httpStream = connection.openInputStream();
+
+		//This actually signals the connection to close as soon as the input stream
+		//does, which we need, since after we pass it out, we have no way to manage
+		//the connection.
+		connection.close();
+		
+		return httpStream;
 	}
 	
 	public String getURI() {
