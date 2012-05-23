@@ -28,7 +28,6 @@ import org.javarosa.xform.util.XFormAnswerDataSerializer;
  */
 public class UserModelProcessor implements IInstanceProcessor {
 	
-	private static final String XMLNS = "http://openrosa.org/user-registration";
 	private static final String elementName = "registration";
 	private  User user;
 	
