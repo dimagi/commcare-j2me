@@ -186,11 +186,12 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * @see org.javarosa.services.transport.Transporter#send()
 	 */
 	public void send() {
+		HttpConnection connection = null;
 		try {
 			
 			//Open the connection assuming either cached credentials
 			//or no Authentication
-			HttpConnection connection = getConnection();
+			connection = getConnection();
 			int response = connection.getResponseCode();
 			
 			if (response == HttpConnection.HTTP_UNAUTHORIZED) {
@@ -222,6 +223,14 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 			e.printStackTrace();
 			this.setStatus(TransportMessageStatus.FAILED);
 			this.setFailureReason(WrappedException.printException(e));
+		} finally {
+			if(connection != null ){
+				try {
+					connection.close();
+				} catch (IOException e) {
+					//shouldn't matter at this point
+				}
+			}
 		}
 	}
 	
