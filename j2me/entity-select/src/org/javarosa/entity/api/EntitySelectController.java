@@ -19,6 +19,7 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Displayable;
 
+import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.EntityFilter;
 import org.javarosa.core.util.Iterator;
 import org.javarosa.entity.api.transitions.EntitySelectTransitions;
@@ -251,10 +252,10 @@ public class EntitySelectController <E> implements ProgressIndicator{
 		return (double)progress / count;
 	}
 	public String getCurrentLoadingStatus() {
-		return null;
+		return Localization.get("loading.screen.message");
 	}
 
 	public int getIndicatorsProvided() {
-		return ProgressIndicator.INDICATOR_PROGRESS;
+		return ProgressIndicator.INDICATOR_PROGRESS | ProgressIndicator.INDICATOR_STATUS;
 	}
 }
