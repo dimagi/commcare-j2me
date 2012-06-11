@@ -27,19 +27,13 @@ import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.formmanager.view.chatterbox.extendedwidget.chart.WHOWeightTemplate;
 import org.javarosa.model.GraphDataGroup;
-import org.javarosa.xform.parse.GraphElementHandler;
 import org.javarosa.xform.parse.XFormParser;
 
 public class ExtendedWidgetsModule implements IModule {
 	
 	public void registerModule() {
 		
-		GraphElementHandler graphHandler = new GraphElementHandler();
-		graphHandler.registerGraphType(WHOWeightTemplate.WHO_WEIGHT_TEMPLATE_NAME);
-		XFormParser.registerHandler("graph", graphHandler);
 		XFormParser.addDataType("recordset", GraphDataGroup.GRAPH_DATA_ID);
 		XFormParser.addModelPrototype(GraphDataGroup.GRAPH_DATA_ID, new GraphDataGroup());		
 		
