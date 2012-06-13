@@ -171,6 +171,10 @@ public class User implements Persistable, Restorable, IMetaData
 		return (String)this.properties.get(key);
 	}
 	
+	public Hashtable<String, String> getProperties() {
+		return this.properties;
+	}
+	
 	public String getRestorableType() {
 		return "user";
 	}
