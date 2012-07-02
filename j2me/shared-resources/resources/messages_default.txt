@@ -252,3 +252,7 @@ video.playback.top=Press
 video.playback.bottom=For Play/Pause
 
 form.entry.constraint.msg=Answer is outside of the allowed range
+form.entry.badnum=Invalid number ${0}, cannot be converted to type ${1}
+form.entry.badnum.dec=Invalid decimal number ${0}.
+form.entry.badnum.int=Invalid integer number, ${0}. Must be between 2^-31 and 2^31. Try a long or double for this data.
+form.entry.badnum.long=Invalid long number, ${0}. Must be between 2^64 and -2^64.

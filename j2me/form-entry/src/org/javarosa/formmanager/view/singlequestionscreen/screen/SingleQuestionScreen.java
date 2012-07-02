@@ -22,6 +22,7 @@ import javax.microedition.lcdui.Graphics;
 
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.JrFormEntryController;
@@ -110,7 +111,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 
 	}
 
-	public IAnswerData getWidgetValue() {
+	public IAnswerData getWidgetValue() throws InvalidDataException {
 		return widget.getData();
 	}
 	

@@ -28,10 +28,10 @@ import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.UncastData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 import org.javarosa.utilities.media.VideoItem;
@@ -177,7 +177,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		}
 	}
 
-	public IAnswerData getData () {
+	public IAnswerData getData () throws InvalidDataException{
 		return getWidgetValue();
 	}
 
@@ -292,7 +292,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	protected abstract Item getEntryWidget (FormEntryPrompt prompt);
 	protected abstract void updateWidget (FormEntryPrompt prompt);
 	protected abstract void setWidgetValue (Object o);
-	protected abstract IAnswerData getWidgetValue ();
+	protected abstract IAnswerData getWidgetValue () throws InvalidDataException;
 	
 	//S40 Bug, do not remove!
 	public abstract int widgetType();

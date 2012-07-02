@@ -18,9 +18,13 @@ package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.condition.pivot.IntegerRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
+import org.javarosa.core.model.data.DecimalData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
+import org.javarosa.core.model.data.LongData;
 import org.javarosa.core.model.data.UncastData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
+import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
 
 import de.enough.polish.ui.Item;
@@ -53,7 +57,7 @@ public class NumericEntryWidget extends TextEntryWidget {
 		super.setWidgetValue(template.uncast().getString());
 	}
 	
-	protected IAnswerData getWidgetValue () {
+	protected IAnswerData getWidgetValue () throws InvalidDataException {
 		String s = textField().getString();
 		
 		if (s == null || s.equals("")) {
@@ -61,9 +65,19 @@ public class NumericEntryWidget extends TextEntryWidget {
 		}
 		try {
 			return template.cast(new UncastData(s));
-		} catch (NumberFormatException nfe) {
-			System.err.println("Non-numeric data in numeric entry field!");
-			return template.cast(new UncastData("-999999"));
+		} catch (IllegalArgumentException iae) {
+			String message;
+			//See if we can provide good details
+			if(template instanceof LongData) {
+				message = Localization.get("form.entry.badnum.long", new String[] {s});
+			} else if(template instanceof IntegerData) {
+				message = Localization.get("form.entry.badnum.int", new String[] {s});
+			} else if(template instanceof DecimalData) {
+				message = Localization.get("form.entry.badnum.dec", new String[] {s});
+			} else {
+				message = Localization.get("form.entry.badnum", new String[] {s, template.getClass().getName()});
+			}
+			throw new InvalidDataException(message, new UncastData(s));
 		}
 	}
 	

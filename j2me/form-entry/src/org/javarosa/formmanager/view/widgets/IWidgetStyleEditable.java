@@ -17,6 +17,7 @@
 package org.javarosa.formmanager.view.widgets;
 
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.formmanager.api.FormMultimediaController;
 
 import de.enough.polish.ui.Item;
@@ -31,8 +32,9 @@ public interface IWidgetStyleEditable extends IWidgetStyle {
 	 * widget is tied to. If this widget represents a question or concept that is not meant to collect input, return null.
 	 * 
 	 * @return currently entered question data; null if not applicable
+	 * @throws InvalidDataException 
 	 */
-	IAnswerData getData ();
+	IAnswerData getData () throws InvalidDataException;
 	
 	//handle custom widget focusing. return whether any focusing was performed (thus needing repaint)
 	boolean focus ();

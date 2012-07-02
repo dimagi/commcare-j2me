@@ -32,6 +32,8 @@ import org.javarosa.core.api.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.GroupDef;
 import org.javarosa.core.model.IFormElement;
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
@@ -63,7 +65,6 @@ import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;
-import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
@@ -652,7 +653,11 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     private void commitAndSave () {
        	ChatterboxWidget frame = (activeIsInterstitial ? null : activeFrame());
     	if (frame != null) {
-    		controller.answerQuestion(this.model.getFormIndex(), frame.getData());
+    		try {
+    			controller.answerQuestion(this.model.getFormIndex(), frame.getData());
+    		} catch(InvalidDataException ide) {
+    			//TODO: Do whatever we would on a constraint violation here
+    		}
     	}
     	//TODO: DEAL;
     	controller.saveAndExit(true);
@@ -668,11 +673,19 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     		return;
     	}
     	if (activeIsInterstitial) {
-    		if (frame.getData() == null) {
+    		IAnswerData frameData;
+			try {
+				frameData = frame.getData();
+			} catch (InvalidDataException e) {
+				//Interstitial questions are internal to the engine, if this happens
+				//it's a structural bug with the program;
+				throw new IllegalArgumentException("Couldn't acquire answer data from source" + e.getMessage());
+			}
+    		if (frameData == null) {
     			this.queueError(null, PROMPT_REQUIRED_QUESTION, null, null);
     			return;
     		}
-    		String answer = ((Selection)frame.getData().getValue()).getValue();
+    		String answer = ((Selection)frameData.getValue()).getValue();
     		
     		if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR != model.getRepeatStructure()) {
     		
@@ -717,13 +730,34 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 
     		}
     	} else {
-    		int status = controller.answerQuestion(this.model.getFormIndex(), frame.getData());
+    		IAnswerData data;
+			try {
+				data = frame.getData();
+			} catch (InvalidDataException e) {
+				//We can't know whether this failed due to a violation of the question
+				//constraint, so if there's a message, display it.
+				IAnswerData uncast = e.getUncastStandin();
+				
+	    		String msg = frame.getPrompt().getConstraintText(uncast);
+	    		if(msg == null) {
+		    		this.queueError(null, e.getMessage(), null, null);
+					return;
+	    		}
+	    		else {
+	    			String image = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, uncast);
+	    			String audio = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, uncast);
+	    			this.queueError(null, msg, image, audio);
+	    			return;
+	    		}
+	    		
+			}
+    		int status = controller.answerQuestion(this.model.getFormIndex(), data);
 	    	if (status == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 	        	this.queueError(null, PROMPT_REQUIRED_QUESTION, null, null);
 	    	} else if (status == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
-	    		String msg = frame.getPrompt().getConstraintText(frame.getData());
-	    		String image = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, frame.getData());
-	    		String audio = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, frame.getData());
+	    		String msg = frame.getPrompt().getConstraintText(data);
+	    		String image = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, data);
+	    		String audio = frame.getPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, data);
 	    		this.queueError(null, msg != null ? msg : PROMPT_DEFAULT_CONSTRAINT_VIOL, image, audio);
 	     	} else {
 	     		step(controller.stepToNextEvent());

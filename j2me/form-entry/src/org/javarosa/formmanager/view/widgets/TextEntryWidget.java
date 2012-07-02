@@ -21,6 +21,7 @@ import org.javarosa.core.model.condition.pivot.StringLengthRangeHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.services.Logger;
 import org.javarosa.form.api.FormEntryPrompt;
 
@@ -109,7 +110,7 @@ public class TextEntryWidget extends ExpandedWidget {
 		textField().setString((String)o);
 	}
 
-	protected IAnswerData getWidgetValue () {
+	protected IAnswerData getWidgetValue () throws InvalidDataException {
 		String s = textField().getString();
 		return (s == null || s.equals("") ? null : new StringData(s));
 	}

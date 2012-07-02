@@ -18,6 +18,7 @@ package org.javarosa.formmanager.view.chatterbox.widget;
 
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.IQuestionWidget;
@@ -111,7 +112,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 		}
 	}
 
-	public IAnswerData getData () {
+	public IAnswerData getData () throws InvalidDataException {
 		if (viewState == VIEW_EXPANDED) {
 			return expandedStyle.getData();
 		} else {

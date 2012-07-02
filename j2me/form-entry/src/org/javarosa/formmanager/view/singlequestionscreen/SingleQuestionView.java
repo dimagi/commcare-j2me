@@ -23,6 +23,7 @@ import javax.microedition.lcdui.Image;
 
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
@@ -296,10 +297,16 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 	}
 
 	private void switchViewLanguage() {
-		IAnswerData answer = currentQuestionScreen.getWidgetValue();
+		//TODO: This isn't a great way to do this, since we can't handle some constraint violations
+		//Instead, save this value in a different way in the interim.
+		IAnswerData answer = null;
+		try {
+			answer = currentQuestionScreen.getWidgetValue();
+		} catch (InvalidDataException e) {
+			e.printStackTrace();
+		}
 		this.goingForward = true;
-		controller.answerQuestion(controller.getModel().getFormIndex(),
-				answer);
+		controller.answerQuestion(controller.getModel().getFormIndex(), answer);
 		refreshView();
 	}
 	
@@ -357,41 +364,50 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 	}
 
 	private void answerQuestion() {
-		IAnswerData answer = currentQuestionScreen.getWidgetValue();
+		IAnswerData answer;
+		try {
+			answer = currentQuestionScreen.getWidgetValue();
+		} catch (InvalidDataException e1) {
+			throwConstraintViolation(e1.getUncastStandin(), e1.getMessage());
+			return;
+		}
 		this.goingForward = true;
-		int result = controller.answerQuestion(controller.getModel()
-				.getFormIndex(), answer);
+		int result = controller.answerQuestion(controller.getModel().getFormIndex(), answer);
 		if (result == FormEntryController.ANSWER_OK) {
 			int event = controller.stepToNextEvent();
 			processModelEvent(event);
 		} else if (result == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
-			String constraintMsg = model.getQuestionPrompt().getConstraintText(answer);
-			if(constraintMsg == null || constraintMsg == "") { constraintMsg = Localization.get("form.entry.constraint.msg"); }
-			String constraintImage = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, answer);
-			String constraintAudio = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, answer);
-			
-			Image image = null;
-			
-			if(constraintImage != null) {
-				try {
-					Reference ref = ReferenceManager._().DeriveReference(constraintImage);
-				
-					InputStream is = ref.getStream();
-					image = Image.createImage(is);
-					is.close();
-				} catch (InvalidReferenceException e) {
-					Logger.exception(e);
-				} catch (IOException e) {
-					Logger.exception(e);
-				}
-			}
-			J2MEDisplay.showError(null, constraintMsg, image);
-			if(constraintAudio != null) {
-				MediaUtils.playAudio(constraintAudio);
-			}
+			throwConstraintViolation(answer, Localization.get("form.entry.constraint.msg"));
 		} else if (result == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
 			String txt = Localization.get("view.sending.RequiredQuestion");
 			J2MEDisplay.showError(null, txt);
+		}
+	}
+	
+	private void throwConstraintViolation(IAnswerData answer, String backupMessage) { 
+		String constraintMsg = model.getQuestionPrompt().getConstraintText(answer);
+		if(constraintMsg == null || constraintMsg == "") { constraintMsg = backupMessage; }
+		String constraintImage = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, answer);
+		String constraintAudio = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, answer);
+		
+		Image image = null;
+		
+		if(constraintImage != null) {
+			try {
+				Reference ref = ReferenceManager._().DeriveReference(constraintImage);
+			
+				InputStream is = ref.getStream();
+				image = Image.createImage(is);
+				is.close();
+			} catch (InvalidReferenceException e) {
+				Logger.exception(e);
+			} catch (IOException e) {
+				Logger.exception(e);
+			}
+		}
+		J2MEDisplay.showError(null, constraintMsg, image);
+		if(constraintAudio != null) {
+			MediaUtils.playAudio(constraintAudio);
 		}
 	}
 
