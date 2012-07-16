@@ -107,6 +107,7 @@ public class VideoItem extends CustomItem {
         });
         // realize the player
         player.realize();
+        MediaUtils.crankAudio(player);
         vc = (VideoControl)player.getControl("VideoControl");
         if(vc == null) {
         	//ERROR!

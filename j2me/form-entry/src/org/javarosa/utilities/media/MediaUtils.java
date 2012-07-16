@@ -5,9 +5,11 @@ import java.io.InputStream;
 
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
+import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.control.VolumeControl;
 
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
@@ -168,6 +170,8 @@ public class MediaUtils {
 					audioPlayer.close();
 				}
 				audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
+				audioPlayer.realize();
+				crankAudio(audioPlayer);
 				audioPlayer.start();
 				
 			} catch (InvalidReferenceException ire) {
@@ -242,6 +246,20 @@ public class MediaUtils {
 	        	}
 	        	throw e;
 	        }
+		}
+
+
+		public static Player crankAudio(Player thePlayer) {
+			if(thePlayer == null) { return thePlayer; }
+			for(Control control : thePlayer.getControls()) {
+				//Set up our player if we can, depending on what controls are available;
+				if(control instanceof VolumeControl) {
+					VolumeControl vc = (VolumeControl)control;
+					Logger.log("media","Old Volume level: " + vc.getLevel());
+					vc.setLevel(100);
+				}
+			}
+			return thePlayer;
 		}
 
 }
