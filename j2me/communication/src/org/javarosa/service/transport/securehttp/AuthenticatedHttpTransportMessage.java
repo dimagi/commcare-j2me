@@ -9,7 +9,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
-import java.util.Enumeration;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
@@ -20,6 +19,7 @@ import org.javarosa.core.services.transport.payload.IDataPayload;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.BasicTransportMessage;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
@@ -50,14 +50,20 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	IDataPayload payload;
 	
 	HttpRequestProperties responseProperties;
+	private SecurityFailureListener listener;
 	
-	private AuthenticatedHttpTransportMessage(String URL, HttpAuthenticator authenticator) {
+	private AuthenticatedHttpTransportMessage(String URL, HttpAuthenticator authenticator, SecurityFailureListener listener) {
 		this.setCreated(new Date());
 		this.setStatus(TransportMessageStatus.QUEUED);
 		this.URL = URL;
 		this.authenticator = authenticator;
+		this.listener = listener;
 	}
 	
+	
+	public static AuthenticatedHttpTransportMessage AuthenticatedHttpRequest(String URL, HttpAuthenticator authenticator) {
+		return AuthenticatedHttpRequest(URL, authenticator, null);
+	}
 	/**
 	 * Creates a message which will perform an HTTP GET Request to the server referenced at
 	 * the given URL. 
@@ -67,8 +73,8 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * request.
 	 * @return A new authenticated HTTP message ready for sending.
 	 */
-	public static AuthenticatedHttpTransportMessage AuthenticatedHttpRequest(String URL, HttpAuthenticator authenticator) {
-		return new AuthenticatedHttpTransportMessage(URL, authenticator);
+	public static AuthenticatedHttpTransportMessage AuthenticatedHttpRequest(String URL, HttpAuthenticator authenticator, SecurityFailureListener listener) {
+		return new AuthenticatedHttpTransportMessage(URL, authenticator, listener);
 	}
 	
 	/**
@@ -82,7 +88,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * @return A new authenticated HTTP message ready for sending.
 	 */
 	public static AuthenticatedHttpTransportMessage AuthenticatedHttpPOST(String URL, IDataPayload payload, HttpAuthenticator authenticator) {
-		AuthenticatedHttpTransportMessage message = new AuthenticatedHttpTransportMessage(URL, authenticator);
+		AuthenticatedHttpTransportMessage message = new AuthenticatedHttpTransportMessage(URL, authenticator, null);
 		message.payload = payload;
 		return message;
 	}
@@ -323,23 +329,30 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * @throws IOException
 	 */
 	private HttpConnection getConnection() throws IOException {
-		HttpConnection conn = (HttpConnection) Connector.open(this.getUrl());
-		if (conn == null)
-			throw new RuntimeException("Null conn in getConnection()");
-
-		HttpRequestProperties requestProps = this.getRequestProperties();
-		if (requestProps == null) {
-			throw new RuntimeException("Null message.getRequestProperties() in getConnection()");
+		try {
+			HttpConnection conn = (HttpConnection) Connector.open(this.getUrl());
+			if (conn == null)
+				throw new RuntimeException("Null conn in getConnection()");
+	
+			HttpRequestProperties requestProps = this.getRequestProperties();
+			if (requestProps == null) {
+				throw new RuntimeException("Null message.getRequestProperties() in getConnection()");
+			}
+			requestProps.configureConnection(conn);
+			
+			//Retrieve either the response auth header, or the cached guess
+			String authorization = this.getAuthString();
+			if(authorization != null) {
+				conn.setRequestProperty("Authorization", authorization);
+			}
+	
+			return conn;
+		} catch(SecurityException se) {
+			if(this.listener != null) {
+				listener.onSecurityException(se);
+			}
+			throw new IOException("Couldn't retrieve data from " + this.getUrl() + " due to lack of permissions.");
 		}
-		requestProps.configureConnection(conn);
-		
-		//Retrieve either the response auth header, or the cached guess
-		String authorization = this.getAuthString();
-		if(authorization != null) {
-			conn.setRequestProperty("Authorization", authorization);
-		}
-
-		return conn;
 	}
 
 	protected class InputStreamC extends InputStream {

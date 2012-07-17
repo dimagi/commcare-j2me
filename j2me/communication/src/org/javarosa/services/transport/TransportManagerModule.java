@@ -6,12 +6,9 @@ package org.javarosa.services.transport;
 import org.javarosa.core.api.IModule;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.PrototypeManager;
-import org.javarosa.core.services.storage.IStorageFactory;
-import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
-import org.javarosa.core.services.storage.WrappingStorageUtility;
+import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
 import org.javarosa.j2me.reference.HttpRoot;
-import org.javarosa.j2me.storage.rms.RMSStorageUtilityIndexed;
 import org.javarosa.services.transport.impl.TransportMessageSerializationWrapper;
 import org.javarosa.services.transport.impl.TransportMessageStore;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
@@ -21,6 +18,16 @@ import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessag
  *
  */
 public class TransportManagerModule implements IModule {
+	
+	SecurityFailureListener listener;
+	
+	public TransportManagerModule() {
+		
+	}
+	
+	public TransportManagerModule(SecurityFailureListener listener) {
+		this.listener = listener;
+	}
 
 	/* (non-Javadoc)
 	 * @see org.javarosa.core.api.IModule#registerModule()
@@ -39,7 +46,7 @@ public class TransportManagerModule implements IModule {
 		
 		StorageManager.registerWrappedStorage(TransportMessageStore.Q_STORENAME, TransportMessageStore.Q_STORENAME, new TransportMessageSerializationWrapper());
 		StorageManager.registerWrappedStorage(TransportMessageStore.RECENTLY_SENT_STORENAME, TransportMessageStore.RECENTLY_SENT_STORENAME, new TransportMessageSerializationWrapper());
-		ReferenceManager._().addReferenceFactory(new HttpRoot());
+		ReferenceManager._().addReferenceFactory(new HttpRoot(listener));
 		TransportService.init();
 	}
 
