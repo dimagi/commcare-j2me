@@ -188,6 +188,12 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 				last.releaseMedia();
 			}
 			J2MEDisplay.setView(view);
+			
+			//CTS - 7/25/2012 <- Backported from 2.0
+			//There's a bug in Polish where sometimes showNotify won't get
+			//triggered if we're in a callout to a native screen. Make
+			//sure those events go through.
+			view.showNotify();
 		}
 		else if (model.getEvent() == FormEntryController.EVENT_PROMPT_NEW_REPEAT) {
 			FormEntryCaption[] hierachy = model.getCaptionHierarchy(model
