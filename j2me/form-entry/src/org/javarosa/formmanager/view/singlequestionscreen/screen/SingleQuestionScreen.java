@@ -113,6 +113,11 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	}
 	
 	public void configureProgressBar(int cur, int total) {
+		//CTS: Quick workaround
+		if(cur > total) {
+			cur = total;
+		}
+		
 		if(progressBar == null) {
 			//#style progressbar
 			progressBar = new Gauge(null, false, total, cur);
