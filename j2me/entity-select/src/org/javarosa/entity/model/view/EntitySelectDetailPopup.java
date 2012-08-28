@@ -28,7 +28,6 @@ import org.javarosa.entity.model.Entity;
 import org.javarosa.entity.model.EntitySet;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Form;
@@ -90,7 +89,7 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
 			this.append(c);
 			
 			if("phone".equals(forms[i])) {
-				phoneCallouts[i] = new Command("Call " + headers[i], Command.SCREEN, 3);
+				phoneCallouts[i] = new Command(Localization.get("command.call",new String[]{headers[i]}), Command.SCREEN, 3);
 				if(data[i] != "") {
 					this.addCommand(phoneCallouts[i]);
 				}
