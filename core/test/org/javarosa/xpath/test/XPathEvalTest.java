@@ -321,6 +321,17 @@ public class XPathEvalTest extends TestCase {
 		testEval("'abc' < 'abcd'" , null, null, Boolean.FALSE); //no string comparison: converted to NaN
 		testEval("date('2001-12-26') > date('2001-12-25')" , null, null, Boolean.TRUE);
 		testEval("date('1969-07-20') < date('1969-07-21')" , null, null, Boolean.TRUE);
+		
+		testEval("double(date('2004-05-01T05:00:00')) > double(date('2004-05-01T02:00:00'))" , null, null, Boolean.TRUE);
+		testEval("not(double(date('2004-05-01T05:00:00')) < double(date('2004-05-01T02:00:00')))" , null, null, Boolean.TRUE);
+		testEval("not(double(date('2004-05-01T05:00:00')) = double(date('2004-05-01T02:00:00')))" , null, null, Boolean.TRUE);
+		testEval("double(date('2004-05-01T04:00:00')) < double(date('2004-05-01T016:00:00'))" , null, null, Boolean.TRUE);
+		
+		testEval("(double(date('2004-05-01T07:00:00')) - double(date('2004-05-01T03:00:00'))) < (6.0 div 24) " , null, null, Boolean.TRUE);
+		testEval("(double(date('2004-05-01T07:00:00')) - double(date('2004-05-01T00:30:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
+		testEval("(double(date('2004-05-03T07:00:00')) - double(date('2004-05-01T03:00:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
+		
+		
 		testEval("false() and false() < true()" , null, null, Boolean.FALSE);
 		testEval("(false() and false()) < true()" , null, null, Boolean.TRUE);
 		testEval("6 < 7 - 4" , null, null, Boolean.FALSE);
