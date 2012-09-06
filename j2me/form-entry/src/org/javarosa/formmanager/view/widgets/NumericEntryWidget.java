@@ -58,8 +58,7 @@ public class NumericEntryWidget extends TextEntryWidget {
 	}
 	
 	protected IAnswerData getWidgetValue () throws InvalidDataException {
-		String s = textField().getString();
-		
+		String s = textField().getString().trim();
 		if (s == null || s.equals("")) {
 			return null;
 		}
