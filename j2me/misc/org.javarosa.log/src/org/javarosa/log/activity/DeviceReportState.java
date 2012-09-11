@@ -184,27 +184,29 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	}
 	
 	private void createTransportSubreport(XmlSerializer o, Vector errors) throws IOException {
+		o.startTag(XMLNS, "transport_subreport");
+		o.startTag(XMLNS, "number_unsent");
 		try {
-			o.startTag(XMLNS, "transport_subreport");
-			o.startTag(XMLNS, "number_unsent");
 			o.text(String.valueOf(TransportService.getCachedMessagesSize()));
-			o.endTag(XMLNS, "number_unsent");
-			o.endTag(XMLNS, "transport_subreport");
 		}
 		catch(Exception e) {
 			logError(errors, new StatusReportException(e,"transport_subreport","Exception retrieving transport subreport"));
+		} finally {
+			o.endTag(XMLNS, "number_unsent");
+			o.endTag(XMLNS, "transport_subreport");
 		}
 	}
 	
 	private void createDeviceLogSubreport(XmlSerializer o, Vector errors) throws IOException {
+		Logger.log("logsend", Logger._().logSize() + " entries");
+		o.startTag(XMLNS, "log_subreport");
 		try {
-			Logger.log("logsend", Logger._().logSize() + " entries");
-			o.startTag(XMLNS, "log_subreport");
 			logSerializer = new XmlStreamLogSerializer(o, XMLNS);
 			Logger._().serializeLogs(logSerializer);
-			o.endTag(XMLNS, "log_subreport");
 		} catch(Exception e) {
 			logError(errors, new StatusReportException(e,"log_subreport","Exception when writing device log report."));
+		} finally {
+			o.endTag(XMLNS, "log_subreport");
 		}
 	}
 	
