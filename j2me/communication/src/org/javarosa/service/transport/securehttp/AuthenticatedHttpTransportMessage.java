@@ -13,6 +13,7 @@ import java.util.Date;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
+import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.log.WrappedException;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.transport.payload.IDataPayload;
@@ -160,7 +161,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * from the previous deliver attempt
 	 */
 	public InputStream getResponse() {
-		return response;
+		return new BufferedInputStream(response);
 	}
 	
 	public HttpRequestProperties getReponseProperties() {
