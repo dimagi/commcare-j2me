@@ -14,9 +14,9 @@ import javax.microedition.io.HttpConnection;
 import javax.microedition.pki.Certificate;
 import javax.microedition.pki.CertificateException;
 
+import org.javarosa.core.io.StreamsUtil;
 import org.javarosa.core.log.WrappedException;
 import org.javarosa.core.services.Logger;
-import org.javarosa.core.util.StreamsUtil;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapMap;
