@@ -29,6 +29,7 @@ import org.javarosa.j2me.log.StatusReportException;
 import org.javarosa.j2me.log.XmlStatusProvider;
 import org.javarosa.j2me.log.XmlStreamLogSerializer;
 import org.javarosa.j2me.view.ProgressIndicator;
+import org.javarosa.log.util.DeviceReportElement;
 import org.javarosa.log.util.LogReportUtils;
 import org.javarosa.log.util.LogWriter;
 import org.javarosa.services.transport.TransportListener;
@@ -57,7 +58,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	
 	private static final int LOG_ROLLOVER_SIZE = 750;
 	
-	private static final String XMLNS = "http://code.javarosa.org/devicereport";
+	public static final String XMLNS = "http://code.javarosa.org/devicereport";
 	
 	private int reportFormat;
 	private long now;
@@ -91,6 +92,10 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		force = true;
 	}
 
+	Vector<DeviceReportElement> elements = new Vector<DeviceReportElement>();
+	public void addSubReport(DeviceReportElement element) {
+		this.elements.addElement(element);
+	}
 	
 	public void start() {
 		//ensure that this activity is only run once per boot of the application
@@ -171,6 +176,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		o.startTag(XMLNS, "device_report");
 		
 
+		try {
 		addHeader(o, errors);
 		writeUserReport(o, errors);
 		createDeviceLogSubreport(o, errors);
@@ -179,14 +185,18 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 			createRmsSubreport(o, errors);
 			//This is really not helpful.
 			//createPropertiesSubreport(o, errors);
+			for(DeviceReportElement subReport : elements) {
+				subReport.writeToDeviceReport(o);
+			}
 		}
 
 		if(errors.size() > 0) {
 			logErrors(o, errors);
 		}
-		
-		o.endTag(XMLNS, "device_report");
-		o.endDocument();
+		}finally {
+			o.endTag(XMLNS, "device_report");
+			o.endDocument();
+		}
 	}
 	
 	private void addHeader(XmlSerializer o, Vector errors) throws IOException {
@@ -228,7 +238,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		}
 	}
 	
-	private static void writeText(XmlSerializer serializer, String element, String text) throws IllegalArgumentException, IllegalStateException, IOException {
+	public static void writeText(XmlSerializer serializer, String element, String text) throws IllegalArgumentException, IllegalStateException, IOException {
 		serializer.startTag(XMLNS,element);
 		try {
 	        serializer.text(text == null ? "" : text);
