@@ -19,6 +19,8 @@ import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.properties.IPropertyRules;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
+import org.javarosa.core.services.storage.IStorageIterator;
+import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.services.storage.StorageUtilAccessor;
 import org.javarosa.core.services.storage.WrappingStorageUtility;
@@ -27,6 +29,7 @@ import org.javarosa.j2me.log.StatusReportException;
 import org.javarosa.j2me.log.XmlStatusProvider;
 import org.javarosa.j2me.log.XmlStreamLogSerializer;
 import org.javarosa.j2me.view.ProgressIndicator;
+import org.javarosa.log.util.DeviceReportElement;
 import org.javarosa.log.util.LogReportUtils;
 import org.javarosa.log.util.LogWriter;
 import org.javarosa.services.transport.TransportListener;
@@ -35,6 +38,7 @@ import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.simplehttp.StreamingHTTPMessage;
 import org.javarosa.services.transport.senders.SenderThread;
+import org.javarosa.user.model.User;
 import org.kxml2.io.KXmlSerializer;
 import org.xmlpull.v1.XmlSerializer;
 
@@ -50,10 +54,11 @@ import org.xmlpull.v1.XmlSerializer;
 public abstract class DeviceReportState implements State, TrivialTransitions, TransportListener, ProgressIndicator {
 
 	public static boolean activated = false;
+	private boolean force = true;
 	
 	private static final int LOG_ROLLOVER_SIZE = 750;
 	
-	private static final String XMLNS = "http://code.javarosa.org/devicereport";
+	public static final String XMLNS = "http://code.javarosa.org/devicereport";
 	
 	private int reportFormat;
 	private long now;
@@ -62,6 +67,9 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	private int dailyPending;
 	
 	private StreamLogSerializer logSerializer;
+	protected String fileNameWrittenTo;
+	
+	protected Vector<String[]> errors;
 	
 	/**
 	 * Create a behind-the-scenes Device Reporting state which manages all operations 
@@ -77,11 +85,21 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		//Pick the most verbose pending report.
 		this.reportFormat = Math.max(dailyPending,weeklyPending);
 	}
+	
+	public DeviceReportState(int reportFormat) {
+		now = new Date().getTime();
+		this.reportFormat = reportFormat;
+		force = true;
+	}
 
+	Vector<DeviceReportElement> elements = new Vector<DeviceReportElement>();
+	public void addSubReport(DeviceReportElement element) {
+		this.elements.addElement(element);
+	}
 	
 	public void start() {
 		//ensure that this activity is only run once per boot of the application
-		if (activated) {
+		if (activated && !force) {
 			Logger.log("device-report", "short-circuit");
 			done();
 			return;
@@ -99,6 +117,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		}
 		
 		try {
+			errors = new Vector();
 			TransportMessage message = new StreamingHTTPMessage(getDestURL()) {
 				public void _writeBody(OutputStream os) throws IOException {
 					KXmlSerializer serializer = new KXmlSerializer();
@@ -109,23 +128,32 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 			
 			logSerializer = null;
 			Logger.log("device-report", "attempting to send");
-			SenderThread s = TransportService.send(message);
 			
-			//We have no way of knowing whether the message will get 
-			//off the phone successfully if it can get cached, the
-			//logs are in the transport layer's hands at that point.
-			if(message.isCacheable()) {
-				onSuccess();
+			if(force) {
+				//We should be in a background thread anyway
+				message = TransportService.sendBlocking(message);
+				this.onStatusChange(message);
+				done();
+			} else {
+				SenderThread s = TransportService.send(message);
+				s.addListener(this);
+				
+				//We have no way of knowing whether the message will get 
+				//off the phone successfully if it can get cached, the
+				//logs are in the transport layer's hands at that point.
+				if(message.isCacheable()) {
+					onSuccess();
+				}
+			
+				done();
 			}
-			
-			s.addListener(this);
 		} catch (Exception e) {
 			// Don't let this code break the application, ever.
 			e.printStackTrace();
-			dumpLogFallback();
+			dumpLogFallback(!force);
 			Logger.exception("exception while trying to send logs; dumped", e);
+			done();
 		}
-		done();
 	}
 	
 	public int getIndicatorsProvided() {
@@ -147,22 +175,28 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		o.setPrefix("", XMLNS);
 		o.startTag(XMLNS, "device_report");
 		
-		Vector errors = new Vector();
 
+		try {
 		addHeader(o, errors);
+		writeUserReport(o, errors);
 		createDeviceLogSubreport(o, errors);
 		createTransportSubreport(o, errors);
 		if(reportFormat == LogReportUtils.REPORT_FORMAT_FULL) {
 			createRmsSubreport(o, errors);
-			createPropertiesSubreport(o, errors);
+			//This is really not helpful.
+			//createPropertiesSubreport(o, errors);
+			for(DeviceReportElement subReport : elements) {
+				subReport.writeToDeviceReport(o);
+			}
 		}
 
 		if(errors.size() > 0) {
 			logErrors(o, errors);
 		}
-		
-		o.endTag(XMLNS, "device_report");
-		o.endDocument();
+		}finally {
+			o.endTag(XMLNS, "device_report");
+			o.endDocument();
+		}
 	}
 	
 	private void addHeader(XmlSerializer o, Vector errors) throws IOException {
@@ -170,47 +204,84 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 		String reportDate = DateUtils.formatDate(new Date(), DateUtils.FORMAT_HUMAN_READABLE_SHORT);
 		String appVersion = PropertyManager._().getSingularProperty("app-version");
 		
-		o.startTag(XMLNS, "device_id");
-		o.text(deviceId);
-		o.endTag(XMLNS, "device_id");
-
-		o.startTag(XMLNS, "report_date");
-		o.text(reportDate);
-		o.endTag(XMLNS, "report_date");
-
-		o.startTag(XMLNS, "app_version");
-		o.text(appVersion);
-		o.endTag(XMLNS, "app_version");
+		writeText(o, "device_id", deviceId);
+		writeText(o, "report_date", reportDate);
+		writeText(o, "app_version", appVersion);
 	}
 	
-	private void createTransportSubreport(XmlSerializer o, Vector errors) throws IOException {
+	private void writeUserReport(XmlSerializer serializer, Vector errors) throws IllegalArgumentException, IllegalStateException, IOException {
+		IStorageUtility<User> userStorage = StorageManager.getStorage(User.STORAGE_KEY);
+		serializer.startTag(XMLNS, "user_subreport");
+		try{
+			for(IStorageIterator<User> it = userStorage.iterate(); it.hasMore();) {
+				User u = it.nextRecord();
+				try {					
+					writeUser(serializer, errors, u);
+				} catch(Exception e) {
+					logError(errors, new StatusReportException(e,"user_subreport","Error writing user : " + u.getUsername() + "|" + u.getUniqueId()));
+				}
+			}
+		} finally {
+			serializer.endTag(XMLNS, "user_subreport");
+		}
+		
+	}
+	
+	private void writeUser(XmlSerializer serializer, Vector errors, User user) throws IllegalArgumentException, IllegalStateException, IOException {
+		serializer.startTag(XMLNS, "user");
+		try{
+	        writeText(serializer, "username", user.getUsername());
+	        writeText(serializer, "user_id", user.getUniqueId());
+	        writeText(serializer, "sync_token", user.getLastSyncToken());
+		} finally {
+			serializer.endTag(XMLNS, "user");
+		}
+	}
+	
+	public static void writeText(XmlSerializer serializer, String element, String text) throws IllegalArgumentException, IllegalStateException, IOException {
+		serializer.startTag(XMLNS,element);
 		try {
-			o.startTag(XMLNS, "transport_subreport");
-			o.startTag(XMLNS, "number_unsent");
+	        serializer.text(text == null ? "" : text);
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			serializer.endTag(XMLNS,element);
+		}
+	}
+
+
+	
+	private void createTransportSubreport(XmlSerializer o, Vector errors) throws IOException {
+		o.startTag(XMLNS, "transport_subreport");
+		o.startTag(XMLNS, "number_unsent");
+		try {
 			o.text(String.valueOf(TransportService.getCachedMessagesSize()));
-			o.endTag(XMLNS, "number_unsent");
-			o.endTag(XMLNS, "transport_subreport");
 		}
 		catch(Exception e) {
 			logError(errors, new StatusReportException(e,"transport_subreport","Exception retrieving transport subreport"));
+		} finally {
+			o.endTag(XMLNS, "number_unsent");
+			o.endTag(XMLNS, "transport_subreport");
 		}
 	}
 	
 	private void createDeviceLogSubreport(XmlSerializer o, Vector errors) throws IOException {
+		Logger.log("logsend", Logger._().logSize() + " entries");
+		o.startTag(XMLNS, "log_subreport");
 		try {
-			Logger.log("logsend", Logger._().logSize() + " entries");
-			o.startTag(XMLNS, "log_subreport");
 			logSerializer = new XmlStreamLogSerializer(o, XMLNS);
 			Logger._().serializeLogs(logSerializer);
-			o.endTag(XMLNS, "log_subreport");
 		} catch(Exception e) {
 			logError(errors, new StatusReportException(e,"log_subreport","Exception when writing device log report."));
+		} finally {
+			o.endTag(XMLNS, "log_subreport");
 		}
 	}
 	
 	private void createRmsSubreport(XmlSerializer o, Vector errors) throws IOException {
 		o.startTag(XMLNS, "rms_subreport");
 		
+		try {
 		String[] utils = StorageManager.listRegisteredUtilities();
 		for(int i = 0 ; i < utils.length ; ++ i) {
 			//TODO: This is super hacky, revisit it 
@@ -226,19 +297,23 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 					logError(errors, sre);
 				}
 			}
-		}
+		} 
+		} finally { 
 
-		o.endTag(XMLNS, "rms_subreport");
+			o.endTag(XMLNS, "rms_subreport");
+		}
 	}
 	
 	
 	private void createPropertiesSubreport(XmlSerializer o, Vector errors) throws IOException {
 		o.startTag(XMLNS, "properties_subreport");
+		try {
 		Vector rules = PropertyManager._().getRules();
 		for(Enumeration en = rules.elements(); en.hasMoreElements();) {
 			IPropertyRules ruleset = (IPropertyRules)en.nextElement();
 			for(Enumeration pen = ruleset.allowableProperties().elements(); pen.hasMoreElements() ;) {
 				String propertyName = (String)pen.nextElement();
+				
 				try {
 					Vector list = PropertyManager._().getProperty(propertyName);
 					if(list != null) {
@@ -260,35 +335,43 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 						}
 						
 						o.startTag(XMLNS, "property");
-						o.attribute(null, "name", propertyName);
-						if (humanName != null) {
-							o.startTag(XMLNS, "title");
-							o.text(humanName);
-							o.endTag(XMLNS, "title");
+						try {
+							o.attribute(null, "name", propertyName);
+							
+							if (humanName != null) {
+								writeText(o, "title", humanName);
+							}
+							writeText(o, "value", valueXml);
+						} finally {
+							o.endTag(XMLNS, "property");
 						}
-						o.startTag(XMLNS, "value");
-						o.text(valueXml);
-						o.endTag(XMLNS, "value");
-						o.startTag(XMLNS, "property");
 					}
 				} catch (NoSuchElementException nsee) {
 					//Don't sweat it, not important.
 				}
 			}
 		}
-		o.endTag(XMLNS, "properties_subreport");
+		} finally {
+			o.endTag(XMLNS, "properties_subreport");
+		}
 	}
 	
 	private void logErrors(XmlSerializer o, Vector errors) throws IOException {
 		o.startTag(XMLNS, "report_errors");
-		for (Enumeration e = errors.elements(); e.hasMoreElements(); ) {
-			String[] err = (String[])e.nextElement();
-			o.startTag(XMLNS, "report_error");
-			o.attribute(null, "report", err[0]);
-			o.text(err[1]);
-			o.endTag(XMLNS, "report_error");
+		try {
+			for (Enumeration e = errors.elements(); e.hasMoreElements(); ) {
+				String[] err = (String[])e.nextElement();
+				o.startTag(XMLNS, "report_error");
+				try {
+					o.attribute(null, "report", err[0]);
+					o.text(err[1]);
+				} finally {
+					o.endTag(XMLNS, "report_error");
+				}
+			}
+		} finally {
+			o.endTag(XMLNS, "report_errors");
 		}
-		o.endTag(XMLNS, "report_errors");
 	}
 	
 	private void logError(Vector errors, StatusReportException sre) {
@@ -307,6 +390,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 			//logs yet, since we needed to wait for success in order
 			//to know they'd get off the phone.
 			if(!message.isCacheable()) {
+				//otherwise we did this before
 				onSuccess();
 			}
 		} else {
@@ -337,16 +421,17 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 				fallback = false;
 			}
 		} catch(Exception e) {
-			dumpLogFallback();
+			dumpLogFallback(true);
 			return ;
 		}
 		//We keep this outside so that the exception handling is reasonable.
-		if(fallback) {
-			dumpLogFallback();
+		if(fallback || force) {
+			//Only purge this way if we didn't force the send
+			dumpLogFallback(!force);
 		}
 	}
 	
-	private void dumpLogFallback() {
+	private void dumpLogFallback(boolean purge) {
 		String dumpRef = "";
 		boolean success = false;
 		try{
@@ -365,20 +450,26 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 			e.printStackTrace();
 		}
 		
+		if(purge) {
 		try{
-			//No matter _what_, clear the logs if a logger is registered
-			if(Logger._() == null) {
-				System.out.println("Logger is null. Must have failed to initailize");
+				//No matter _what_, clear the logs if a logger is registered
+				if(Logger._() == null) {
+					System.out.println("Logger is null. Must have failed to initailize");
+				}
+				Logger._().clearLogs(); //don't need to use LogPurger, since we're not in a background thread
+				
+				Logger.log("log", "archived logs to file: " + dumpRef);
+				if (!success) {
+					Logger.log("log", "archive failed! logs lost!!");
+				}
+			} catch(Exception e) {
+				//If this fails it's a serious problem, but not sure what to do about it.
+				e.printStackTrace();
 			}
-			Logger._().clearLogs(); //don't need to use LogPurger, since we're not in a background thread
-			
-			Logger.log("log", "archived logs to file: " + dumpRef);
-			if (!success) {
-				Logger.log("log", "archive failed! logs lost!!");
-			}
-		} catch(Exception e) {
-			//If this fails it's a serious problem, but not sure what to do about it.
-			e.printStackTrace();
+		}
+		
+		if(success) {
+			fileNameWrittenTo = dumpRef;
 		}
 	}
 	

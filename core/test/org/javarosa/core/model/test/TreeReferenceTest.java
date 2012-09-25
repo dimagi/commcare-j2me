@@ -37,6 +37,9 @@ public class TreeReferenceTest extends TestCase {
 	
 	TreeReference dot;
 	
+	TreeReference a2;
+	TreeReference a2ext;
+	
 	
 	public TreeReferenceTest(String name, TestMethod rTestMethod) {
 		super(name, rTestMethod);
@@ -65,6 +68,11 @@ public class TreeReferenceTest extends TestCase {
 		
 		dot = TreeReference.selfRef();
 		dotc = dot.extendRef("c", TreeReference.DEFAULT_MUTLIPLICITY);
+		
+		a2 = root.extendRef("a", 2);
+		a2ext = root.extendRef("a", -1);
+		a2ext.setInstanceName("external");
+		
 	}
 	
 	public Test suite() {
@@ -143,6 +151,9 @@ public class TreeReferenceTest extends TestCase {
 		if(!abc.equals(testabc2)) { fail("context: ./c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc2.toString(true)); }
 		if(!ac.equals(testac)) { fail("context: ../c didn't evaluate to " + ac.toString(true) + ", but rather to " + testac.toString(true)); }
 		if(invalid != null) { fail("was succesfully able to contextualize against an ambiguous reference. Result was: " + invalid.toString(true));}
+		
+		TreeReference a2extc = a2ext.contextualize(a2);
+		if(a2extc.getMultLast() == 2) { fail("Treeref from named instance wrongly accepted multiplicity context from root instance");} 
 	}
 }
 

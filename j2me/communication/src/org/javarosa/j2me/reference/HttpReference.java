@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 
+import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.reference.Reference;
 
 /**
@@ -42,6 +43,7 @@ public class HttpReference implements Reference {
 		try {
 			HttpConnection connection = (HttpConnection)Connector.open(URI);
 			connection.setRequestMethod(HttpConnection.GET);
+			
 			InputStream httpStream = connection.openInputStream();
 			
 			//This actually signals the connection to close as soon as the input stream
@@ -49,7 +51,9 @@ public class HttpReference implements Reference {
 			//the connection.
 			connection.close();
 			
-			return httpStream;
+			//Buffer our stream, since reading small units at a time from the network
+			//increases the likelihood of network errors
+			return new BufferedInputStream(httpStream);
 		} catch(SecurityException se) {
 			if(this.listener != null) {
 				listener.onSecurityException(se);
