@@ -255,7 +255,6 @@ public class MediaUtils {
 				//Set up our player if we can, depending on what controls are available;
 				if(control instanceof VolumeControl) {
 					VolumeControl vc = (VolumeControl)control;
-					Logger.log("media","Old Volume level: " + vc.getLevel());
 					vc.setLevel(100);
 				}
 			}
