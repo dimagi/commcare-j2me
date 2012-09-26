@@ -40,7 +40,7 @@ public class WidgetFactory {
 				pw(controlType, (NumericEntryWidget)expandedStyle);
 				break;
 			case Constants.DATATYPE_LONG:
-				expandedStyle = new NumericEntryWidget(false, new DecimalData());
+				expandedStyle = new NumericEntryWidget(false, new LongData());
 				pw(controlType, (NumericEntryWidget)expandedStyle);
 				break;
 			case Constants.DATATYPE_DECIMAL:

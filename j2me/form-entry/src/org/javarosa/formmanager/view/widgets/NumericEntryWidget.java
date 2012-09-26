@@ -58,12 +58,12 @@ public class NumericEntryWidget extends TextEntryWidget {
 	}
 	
 	protected IAnswerData getWidgetValue () throws InvalidDataException {
-		String s = textField().getString().trim();
+		String s = textField().getString();
 		if (s == null || s.equals("")) {
 			return null;
 		}
 		try {
-			return template.cast(new UncastData(s));
+			return template.cast(new UncastData(s.trim()));
 		} catch (IllegalArgumentException iae) {
 			String message;
 			//See if we can provide good details
