@@ -108,8 +108,8 @@ at large.
 	
 	<device>
 		<identifier>BlackBerry/45</identifier>
-		<!-- Can't be used until the j2meunit library issue is resolved -->
-		<features>javarosa</features>
+		<!--  can't actually roll stuff into these builds as-is, so need to re-evaluate -->
+		<!-- features>javarosa</features -->
 		<parent>BlackBerry/4.5</parent>
 	</device>
 	
