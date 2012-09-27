@@ -53,9 +53,10 @@
 				destDir="${device.dir.dist}">
 				
 				<libraries>
-					<!-- The J2MEUnit Library is causing problems with blackberry builds. It should probably be moved 
-					     somewhere where it won't be included by default (as it isn't necessary for deployed apps -->
-					<library dir="${dir.lib}"/>
+					<library dir="${dir.lib}" unless="polish.blackberry"/>
+					<library file="${dir.lib}/bouncycastle-lw.jar" if="polish.blackberry"/>
+					<library file="${dir.lib}/regexp-me.jar" if="polish.blackberry"/>
+					<library file="${dir.lib}/kxml2-2.3.0.jar" if="polish.blackberry"/>
 					<!--library file="${dir.lib}${file.separator}kxml2-2.3.0.jar"/-->
 					<!--library file="${dir.lib}${file.separator}regexp-me.jar"/-->
 				</libraries>
