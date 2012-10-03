@@ -50,13 +50,27 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
 		
 		sortField = new ChoiceGroup("", Choice.EXCLUSIVE);
 
-		String[] sortFields = entityPrototype.getSortFields();
-		String[] sortFieldNames = entityPrototype.getSortFieldNames();
-		for (int i = 0; i < sortFieldNames.length; i++) {
-			sortField.append(sortFieldNames[i], null);
-			if (sortFields[i].equals(psv.getSortField())) {
-				sortField.setSelectedIndex(i, true);
+		int[] sortFields = entityPrototype.getSortFields();
+		int[] sorted = psv.getSortOrder();
+
+		int toChoose = -1;
+		for (int i = 0; i < sortFields.length; i++) {
+			String name = entityPrototype.getSortFieldName(sortFields[i]);
+			for(int j = 0 ; j < sorted.length ; ++j ){
+				if (sortFields[i] == sorted[j]) {
+					if(j == 0) {
+						toChoose = i;
+					}
+					
+					if(sorted.length > 1) {
+						name = (j+1) + ") " + name;
+					}
+				}
 			}
+			sortField.append(name, null);
+		}
+		if(toChoose != -1) {
+			sortField.setSelectedIndex(toChoose, true);
 		}
 		
 		append(sortField);
@@ -89,7 +103,7 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
 
 	public void _itemStateChanged(Item item) {
 		if (item == sortField) {
-			psv.changeSort(entityPrototype.getSortFields()[sortField.getSelectedIndex()]);
+			psv.changeSort(new int[] {entityPrototype.getSortFields()[sortField.getSelectedIndex()]});
 			psa.showList();
 		}
 	}

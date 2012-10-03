@@ -116,19 +116,19 @@ public class UserEntity extends Entity<User> {
 		return false;
 	}
 	
-	public String[] getSortFields () {
-		return new String[] {"NAME"};
+	public int[] getSortFields () {
+		return new int[] {0};
 	}
 	
-	public String[] getSortFieldNames () {
-		return new String[] {Localization.get("user.entity.username")};
+	public String getSortFieldName (int key) {
+		return Localization.get("user.entity.username");
 	}
 	
-	public Object getSortKey (String fieldKey) {
-		if (fieldKey.equals("NAME")) {
+	public Object getSortKey (int key) {
+		if (key == 0) {
 			return getName();
 		} else {
-			throw new RuntimeException("Sort Key [" + fieldKey + "] is not supported by this entity");
+			throw new RuntimeException("Sort Key [" + 0 + "] is not supported by this entity");
 		}
 	}
 
