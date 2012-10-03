@@ -652,7 +652,19 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		return (a == b ? 0 : (a < b ? -1 : 1));
 	}
 	
+	/**
+	 * For sorting purposes, NaN is the lowest possible number. 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	private int compareFloat (double a, double b) {
+		if(Double.isNaN(a)) {
+			if(Double.isNaN(b)) { return 0; }
+			else { return -1; }
+		} else if(Double.isNaN(b)) {
+			return 1;
+		}
 		return (a == b ? 0 : (a < b ? -1 : 1));
 	}
 	
