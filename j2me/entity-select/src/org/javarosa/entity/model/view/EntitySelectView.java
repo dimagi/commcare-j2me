@@ -363,7 +363,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 				String[] rowData = padCells(controller.getDataFields(rowID),"");
 				
 				for (int j = 0; j < rowData.length; j++) {
-					if(colFormat[j] == null) {
+					if(colFormat[j] == null || "".equals(colFormat[j])) {
 						//#style patselCell
 						StringItem str = new StringItem("", rowData[j]);
 						applyStyle(str, STYLE_CELL);
@@ -611,7 +611,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		Object valA = eA.getSortKey(sortField);
 		Object valB = eB.getSortKey(sortField);
 		
-		return compareVal(valA, valB);
+		return compareVal(valA, valB) * (entityPrototype.isSortAscending(sortField) ? 1 : -1);
 	}
 	
 	private int compareVal (Object valA, Object valB) {

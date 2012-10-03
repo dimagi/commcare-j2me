@@ -221,6 +221,16 @@ public abstract class Entity <E> {
 	}
 	
 	/**
+	 * Returns the orientation that the specified field should be sorted in 
+	 * 
+	 * @param fieldKey The key to be sorted
+	 * @return true if the field should be sorted in ascending order. False otherwise
+	 */
+	public boolean isSortAscending(String fieldKey) {
+		return true;
+	}
+	
+	/**
 	 * Get the entity filter. Only entities that satisfy the filter will be included in the activity.
 	 * Returning null means no filtering will be done.
 	 * 
