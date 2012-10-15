@@ -23,4 +23,9 @@ public interface LoginTransitions {
 	
 	public void exit();
 
+	/**
+	 * Navigate to utilities that may be useful without a login. 
+	 */
+	public void tools();
+
 }

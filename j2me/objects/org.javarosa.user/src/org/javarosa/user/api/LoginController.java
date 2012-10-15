@@ -39,14 +39,14 @@ public class LoginController implements HandledCommandListener {
 	}
 	public LoginController(String[] extraText, String passwordFormat, boolean showDemo) {
 		this.extraText = extraText;
-		view = new LoginForm(Localization.get("form.login.login"), this.extraText, showDemo);
+		view = new LoginForm(Localization.get("form.login.login"), this.extraText, showDemo, true);
 		view.setCommandListener(this);
 		view.setPasswordMode(passwordFormat);
 	}
 	
 	public LoginController(String title, String image, String[] extraText, String passwordFormat, boolean showDemo) {
 		this.extraText = extraText;
-		view = new LoginForm(null, this.extraText, showDemo);
+		view = new LoginForm(null, this.extraText, showDemo, true);
 		view.setCommandListener(this);
 		view.setPasswordMode(passwordFormat);
 		
@@ -88,6 +88,8 @@ public class LoginController implements HandledCommandListener {
 			}
 			performCustomUserValidation();
 
+		} else if(c == LoginForm.CMD_TOOLS) {
+			transitions.tools();
 		}
 
 		//#if javarosa.login.demobutton

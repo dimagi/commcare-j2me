@@ -47,6 +47,9 @@ public class LoginForm extends FramedForm {
 			Command.CANCEL, 2);
 	public final static Command CMD_LOGIN_BUTTON = new Command(Localization.get("menu.Login"),
 			Command.ITEM, DEFAULT_COMMAND_PRIORITY);
+	
+	public final static Command  CMD_TOOLS = new Command(Localization.get("menu.Tools"),
+			Command.ITEM, 4);
 
 	private StringItem loginButton;
 	private TextField usernameField;
@@ -56,6 +59,8 @@ public class LoginForm extends FramedForm {
 
 	private String[] extraText;
 	private boolean demoEnabled = true;
+
+	private boolean toolsEnabled;
 	
 	public LoginForm() {
 		//#style loginView
@@ -77,11 +82,12 @@ public class LoginForm extends FramedForm {
 	 * @param title
 	 * @param extraText
 	 */
-	public LoginForm(String title, String[] extraText, boolean demoEnabled) {
+	public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled) {
 		//#style loginView
 		super(title);
 		this.extraText = extraText;
 		this.demoEnabled = demoEnabled;
+		this.toolsEnabled = toolsEnabled;
 		init();
 	}
 
@@ -153,6 +159,9 @@ public class LoginForm extends FramedForm {
 		}
 		//#endif
 
+		if(toolsEnabled) {
+			addCommand(CMD_TOOLS);
+		}
 		// put the extra text if it's been set
 		if(this.extraText != null) {
 			for (int i = 0; i < extraText.length; i++) {
