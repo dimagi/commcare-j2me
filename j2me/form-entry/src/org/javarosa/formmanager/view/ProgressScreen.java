@@ -36,6 +36,7 @@ public class ProgressScreen extends Form{
 	
 	public ProgressScreen(String title, String msg, CommandListener cmdListener, boolean continuous) {
 		super(title);
+		//#style focused
 		progressbar = new Gauge(msg, false, Gauge.INDEFINITE, continuous ? Gauge.CONTINUOUS_RUNNING : 0);
 		
 		addCommand(CMD_CANCEL);
