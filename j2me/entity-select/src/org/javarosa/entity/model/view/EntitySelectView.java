@@ -318,7 +318,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		container.clear();
 		
 
-		this.setTitle(baseTitle + " (" + numMatches() + ")");
+		this.setTitle(Localization.get("entity.title.layout", new String[] {baseTitle, String.valueOf(numMatches())}));
 		
 		//#style patselTitleRowContainer
 		Container title = new Container(false);

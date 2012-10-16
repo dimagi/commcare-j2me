@@ -27,7 +27,7 @@ polish.command.back=Back
 # RSS commands:
 polish.rss.command.select=Show
 polish.rss.command.followlink=Go
-
+entity.title.layout=${0} (${1})
 
 
 #Javarosa-specific
