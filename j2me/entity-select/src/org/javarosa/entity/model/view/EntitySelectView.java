@@ -77,7 +77,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 	
 	private int firstIndex;
 	protected int selectedIndex;
-	private String sortField;
+	private int[] sortOrder;
 	
 	private Style headerStyle;
 	private Style rowStyle;
@@ -95,7 +95,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		this.entityPrototype = entityPrototype;
 		this.newMode = newMode;
 		
-		this.sortField = getDefaultSortField();
+		this.sortOrder = getDefaultSortOrder();
 		
 		tf = new TextField(Localization.get("entity.find") + " ", "", 20, TextField.ANY);
 		
@@ -109,7 +109,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
         exitCmd = new Command(Localization.get("command.cancel"), Command.CANCEL, 4);
         sortCmd = new Command(Localization.get("entity.command.sort"), Command.SCREEN, 3);
         addCommand(exitCmd);
-        if (getNumSortFields() > 1) {
+        if (this.getNumSortFields() > 1) {
         	addCommand(sortCmd);
         }
         if (newMode == NEW_IN_MENU) {
@@ -363,7 +363,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 				String[] rowData = padCells(controller.getDataFields(rowID),"");
 				
 				for (int j = 0; j < rowData.length; j++) {
-					if(colFormat[j] == null) {
+					if(colFormat[j] == null || "".equals(colFormat[j])) {
 						//#style patselCell
 						StringItem str = new StringItem("", rowData[j]);
 						applyStyle(str, STYLE_CELL);
@@ -527,21 +527,30 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		if (item == tf) {
 			refresh();
 		}
-	}	
+	}
 	
-	public void changeSort (String sortField) {
-		this.sortField = sortField;
+	private int getNumSortFields () {
+		int[] fields = entityPrototype.getSortFields();
+		return (fields == null ? 0 : fields.length);
+	}
+	
+	public void changeSort (int[] sortOrder) {
+		this.sortOrder = sortOrder;
 		refresh();
 	}
 	
-	public String getSortField () {
-		return sortField;
+	public int[] getSortOrder () {
+		return sortOrder;
 	}
 	
 	//can't believe i'm writing a .. sort function
 	private void sortRows () {
 		count = rowIDs.size();
-		mergeSort(rowIDs);
+		if(getSortOrder().length == 0) {
+			return;
+		} else {
+			mergeSort(rowIDs);
+		}
 	}
 	
 	//Start: SORT Code
@@ -604,14 +613,15 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 	//END: Sort code
 
 	private int compare (Entity<E> eA, Entity<E> eB) {
-		if (sortField == null) {
-			return 0;
+		
+		for(int i = 0 ; i < sortOrder.length ; ++i) {
+			Object valA = eA.getSortKey(sortOrder[i]);
+			Object valB = eB.getSortKey(sortOrder[i]);
+			
+			int cmp = compareVal(valA, valB) * (entityPrototype.isSortAscending(sortOrder[i]) ? 1 : -1);
+			if(cmp != 0 ) { return cmp; }
 		}
-		
-		Object valA = eA.getSortKey(sortField);
-		Object valB = eB.getSortKey(sortField);
-		
-		return compareVal(valA, valB);
+		return 0;
 	}
 	
 	private int compareVal (Object valA, Object valB) {
@@ -652,7 +662,19 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		return (a == b ? 0 : (a < b ? -1 : 1));
 	}
 	
+	/**
+	 * For sorting purposes, NaN is the lowest possible number. 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	private int compareFloat (double a, double b) {
+		if(Double.isNaN(a)) {
+			if(Double.isNaN(b)) { return 0; }
+			else { return -1; }
+		} else if(Double.isNaN(b)) {
+			return 1;
+		}
 		return (a == b ? 0 : (a < b ? -1 : 1));
 	}
 	
@@ -660,13 +682,8 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		return a.compareTo(b);
 	}
 	
-	private int getNumSortFields () {
-		String[] fields = entityPrototype.getSortFields();
-		return (fields == null ? 0 : fields.length);
-	}
-	
-	private String getDefaultSortField () {
-		return (getNumSortFields() == 0 ? null : entityPrototype.getSortFields()[0]);
+	private int[] getDefaultSortOrder () {
+		return entityPrototype.getDefaultSortOrder();
 	}
 	
 	public void commandAction(Command c, Displayable d) {

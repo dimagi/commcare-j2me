@@ -258,3 +258,4 @@ form.entry.badnum.int=Invalid integer number, ${0}. Must be between 2^-31 and 2^
 form.entry.badnum.long=Invalid long number, ${0}. Must be between 2^64 and -2^64.
 
 command.call=Call ${0}
+menu.Tools=Tools

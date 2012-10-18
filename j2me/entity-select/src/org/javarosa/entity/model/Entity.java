@@ -181,8 +181,17 @@ public abstract class Entity <E> {
 	 * 
 	 * @return list of keys for sort fields
 	 */
-	public String[] getSortFields () {
-		return new String[] {"DEFAULT"};
+	public int[] getSortFields () {
+		return new int[0];
+	}
+	
+	/**
+	 * Get a list of what the default sort orderings should be for this entity
+	 * @return An array of indices into the getSortFields() array specifying
+	 * the order in which sorting should be applied by default
+	 */
+	public int[] getDefaultSortOrder() {
+		return new int[0];
 	}
 	
 	/**
@@ -193,8 +202,8 @@ public abstract class Entity <E> {
 	 * 
 	 * @return list of sort field titles
 	 */
-	public String[] getSortFieldNames () {
-		return new String[] {"Record ID"};
+	public String getSortFieldName (int key) {
+		return null;
 	}
 		
 	/**
@@ -212,12 +221,18 @@ public abstract class Entity <E> {
 	 * @throws RuntimeException if fieldKey is not in the list of available sort fields
 	 * @throws ClassCastException if a consistent type is not always returned for the same fieldKey
 	 */
-	public Object getSortKey (String fieldKey) {
-		if (fieldKey.equals("DEFAULT")) {
-			return new Integer(recordID);
-		} else {
-			throw new RuntimeException("Sort Key [" + fieldKey + "] is not supported by this entity");
-		}
+	public Object getSortKey (int key) {
+		throw new RuntimeException("No sort keys have been defined for this entity");
+	}
+	
+	/**
+	 * Returns the orientation that the specified field should be sorted in 
+	 * 
+	 * @param fieldKey The key to be sorted
+	 * @return true if the field should be sorted in ascending order. False otherwise
+	 */
+	public boolean isSortAscending(int key) {
+		return true;
 	}
 	
 	/**
