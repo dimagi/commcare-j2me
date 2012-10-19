@@ -148,24 +148,26 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	
 	public void refreshWidget (FormEntryPrompt fep, int changeFlags) {
 		
-		//Look for and attach an image if one exists
-		ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight/2,scrWidth-16); //width and height have been disabled!
-		if(newImItem!=null){
-			detachImage();
-			fullPrompt.add(newImItem);
-			imItem = newImItem;
+		if(changeFlags == FormElementStateListener.CHANGE_INIT) {
+			//Look for and attach an image if one exists
+			ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight/2,scrWidth-16); //width and height have been disabled!
+			if(newImItem!=null){
+				detachImage();
+				fullPrompt.add(newImItem);
+				imItem = newImItem;
+			}
+			
+			//Look for and attach an image if one exists
+			VideoItem newVItem = ExpandedWidget.getVideoItem(fep);
+			if(newVItem!=null){
+				detachVideo();
+				getMultimediaController().attachVideoPlayer(newVItem.getPlayer());
+				fullPrompt.add(newVItem);
+				vItem = newVItem;
+			}
+			
+			getMultimediaController().playAudioOnLoad(fep);
 		}
-		
-		//Look for and attach an image if one exists
-		VideoItem newVItem = ExpandedWidget.getVideoItem(fep);
-		if(newVItem!=null){
-			detachVideo();
-			getMultimediaController().attachVideoPlayer(newVItem.getPlayer());
-			fullPrompt.add(newVItem);
-			vItem = newVItem;
-		}
-		
-		getMultimediaController().playAudioOnLoad(fep);
 			
 		prompt.setText(fep.getLongText());
 		updateWidget(fep);
