@@ -184,6 +184,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	public void reset () {
 		detachImage();
 		detachVideo();
+		getMultimediaController().stopAudio();
 		prompt = null;
 		entryWidget = null;
 	}
@@ -242,6 +243,9 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	public void releaseMedia() {
 		detachVideo();
 		detachImage();
+		//This call _Really_ needs to happen _before_ new stuff is called, because
+		//we're using a centralized player, which isn't great.
+		getMultimediaController().stopAudio();
 	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {
@@ -274,6 +278,11 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 				}
 
 				public void detachVideoPlayer(Player player) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void stopAudio() {
 					// TODO Auto-generated method stub
 					
 				}

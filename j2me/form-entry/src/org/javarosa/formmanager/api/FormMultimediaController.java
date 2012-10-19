@@ -67,4 +67,9 @@ public interface FormMultimediaController {
 	 * @param player The player
 	 */
 	public void detachVideoPlayer(Player player);
+
+	/**
+	 * Stop any audio associated with this item.
+	 */
+	public void stopAudio();
 }
