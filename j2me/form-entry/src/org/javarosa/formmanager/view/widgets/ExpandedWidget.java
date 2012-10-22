@@ -148,24 +148,26 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	
 	public void refreshWidget (FormEntryPrompt fep, int changeFlags) {
 		
-		//Look for and attach an image if one exists
-		ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight/2,scrWidth-16); //width and height have been disabled!
-		if(newImItem!=null){
-			detachImage();
-			fullPrompt.add(newImItem);
-			imItem = newImItem;
+		if(changeFlags == FormElementStateListener.CHANGE_INIT) {
+			//Look for and attach an image if one exists
+			ImageItem newImItem = ExpandedWidget.getImageItem(fep,scrHeight/2,scrWidth-16); //width and height have been disabled!
+			if(newImItem!=null){
+				detachImage();
+				fullPrompt.add(newImItem);
+				imItem = newImItem;
+			}
+			
+			//Look for and attach an image if one exists
+			VideoItem newVItem = ExpandedWidget.getVideoItem(fep);
+			if(newVItem!=null){
+				detachVideo();
+				getMultimediaController().attachVideoPlayer(newVItem.getPlayer());
+				fullPrompt.add(newVItem);
+				vItem = newVItem;
+			}
+			getMultimediaController().playAudioOnLoad(fep);
+			mediaAttached = true;
 		}
-		
-		//Look for and attach an image if one exists
-		VideoItem newVItem = ExpandedWidget.getVideoItem(fep);
-		if(newVItem!=null){
-			detachVideo();
-			getMultimediaController().attachVideoPlayer(newVItem.getPlayer());
-			fullPrompt.add(newVItem);
-			vItem = newVItem;
-		}
-		
-		getMultimediaController().playAudioOnLoad(fep);
 			
 		prompt.setText(fep.getLongText());
 		updateWidget(fep);
@@ -182,8 +184,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	}
 
 	public void reset () {
-		detachImage();
-		detachVideo();
+		releaseMedia();
 		prompt = null;
 		entryWidget = null;
 	}
@@ -239,9 +240,17 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		}
 	}
 	
+	boolean mediaAttached = false;
 	public void releaseMedia() {
-		detachVideo();
-		detachImage();
+			detachVideo();
+			detachImage();
+			
+		if(mediaAttached) {
+			//This call _Really_ needs to happen _before_ new stuff is called, because
+			//we're using a centralized player, which isn't great.
+			getMultimediaController().stopAudio();
+			mediaAttached = false;
+		}
 	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {
@@ -274,6 +283,11 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 				}
 
 				public void detachVideoPlayer(Player player) {
+					// TODO Auto-generated method stub
+					
+				}
+
+				public void stopAudio() {
 					// TODO Auto-generated method stub
 					
 				}

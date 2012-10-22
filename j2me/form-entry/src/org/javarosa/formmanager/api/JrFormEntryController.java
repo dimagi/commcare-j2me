@@ -284,4 +284,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 		}
 	}
 
+	public void stopAudio() {
+		MediaUtils.stopAudio();
+	}
+
 }

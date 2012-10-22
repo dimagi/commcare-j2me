@@ -22,6 +22,8 @@ public class MediaUtils {
 	
     /////////AUDIO PLAYBACK
 	
+	private final static Object audioLock = new Object();
+	
 	//We only really every want to play audio through one centralized player, so we'll keep a static
 	//instance
 	private static Player audioPlayer;
@@ -158,40 +160,42 @@ public class MediaUtils {
 	  
 	  
 		public static int playAudio(String jrRefURI) {
-			String curAudioURI = jrRefURI;
-			int retcode = AUDIO_SUCCESS;
-			try {
-				Reference curAudRef = ReferenceManager._().DeriveReference(curAudioURI);
-				String format = getFileFormat(curAudioURI);
-
-				if(format == null) return AUDIO_NOT_RECOGNIZED;
-				if(audioPlayer != null){
-					audioPlayer.deallocate();
-					audioPlayer.close();
+			synchronized(audioLock) {
+				String curAudioURI = jrRefURI;
+				int retcode = AUDIO_SUCCESS;
+				try {
+					Reference curAudRef = ReferenceManager._().DeriveReference(curAudioURI);
+					String format = getFileFormat(curAudioURI);
+	
+					if(format == null) return AUDIO_NOT_RECOGNIZED;
+					if(audioPlayer != null){
+						audioPlayer.deallocate();
+						audioPlayer.close();
+					}
+					audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
+					audioPlayer.realize();
+					crankAudio(audioPlayer);
+					audioPlayer.start();
+					
+				} catch (InvalidReferenceException ire) {
+					retcode = AUDIO_ERROR;
+					System.err.println("Invalid Reference Exception when attempting to play audio at URI:"+ curAudioURI + "Exception msg:"+ire.getMessage());
+				} catch (IOException ioe) {
+					retcode = AUDIO_ERROR;
+					System.err.println("IO Exception (input cannot be read) when attempting to play audio stream with URI:"+ curAudioURI + "Exception msg:"+ioe.getMessage());
+				} catch (MediaException e) {
+					//TODO: We need to figure out how to deal with silent stuff correctly
+					//Logger.log("auderme", e.getMessage());
+					//J2MEDisplay.showError(null, "Phone is on silent!");
+	
+					retcode = AUDIO_ERROR;
+					System.err.println("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
+				} catch(SecurityException e) {
+					//Logger.log("auderse", e.getMessage());
+					//J2MEDisplay.showError(null, "Phone is on silent!");
 				}
-				audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
-				audioPlayer.realize();
-				crankAudio(audioPlayer);
-				audioPlayer.start();
-				
-			} catch (InvalidReferenceException ire) {
-				retcode = AUDIO_ERROR;
-				System.err.println("Invalid Reference Exception when attempting to play audio at URI:"+ curAudioURI + "Exception msg:"+ire.getMessage());
-			} catch (IOException ioe) {
-				retcode = AUDIO_ERROR;
-				System.err.println("IO Exception (input cannot be read) when attempting to play audio stream with URI:"+ curAudioURI + "Exception msg:"+ioe.getMessage());
-			} catch (MediaException e) {
-				//TODO: We need to figure out how to deal with silent stuff correctly
-				//Logger.log("auderme", e.getMessage());
-				//J2MEDisplay.showError(null, "Phone is on silent!");
-
-				retcode = AUDIO_ERROR;
-				System.err.println("Media format not supported! Uri: "+ curAudioURI + "Exception msg:"+e.getMessage());
-			} catch(SecurityException e) {
-				//Logger.log("auderse", e.getMessage());
-				//J2MEDisplay.showError(null, "Phone is on silent!");
+				return retcode;
 			}
-			return retcode;
 		}
 		
 		private static String getFileFormat(String fpath){
@@ -259,6 +263,22 @@ public class MediaUtils {
 				}
 			}
 			return thePlayer;
+		}
+
+
+		public static void stopAudio() {
+			synchronized(audioLock) {
+				if(audioPlayer != null){
+					try {
+						audioPlayer.stop();
+					} catch (MediaException e) {
+						e.printStackTrace();
+					}
+					audioPlayer.deallocate();
+					audioPlayer.close();
+				}
+				audioPlayer = null;
+			}
 		}
 
 }
