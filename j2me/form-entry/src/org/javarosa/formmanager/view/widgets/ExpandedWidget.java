@@ -165,8 +165,8 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 				fullPrompt.add(newVItem);
 				vItem = newVItem;
 			}
-			
 			getMultimediaController().playAudioOnLoad(fep);
+			mediaAttached = true;
 		}
 			
 		prompt.setText(fep.getLongText());
@@ -184,9 +184,7 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 	}
 
 	public void reset () {
-		detachImage();
-		detachVideo();
-		getMultimediaController().stopAudio();
+		releaseMedia();
 		prompt = null;
 		entryWidget = null;
 	}
@@ -242,12 +240,17 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		}
 	}
 	
+	boolean mediaAttached = false;
 	public void releaseMedia() {
-		detachVideo();
-		detachImage();
-		//This call _Really_ needs to happen _before_ new stuff is called, because
-		//we're using a centralized player, which isn't great.
-		getMultimediaController().stopAudio();
+			detachVideo();
+			detachImage();
+			
+		if(mediaAttached) {
+			//This call _Really_ needs to happen _before_ new stuff is called, because
+			//we're using a centralized player, which isn't great.
+			getMultimediaController().stopAudio();
+			mediaAttached = false;
+		}
 	}
 
 	public void registerMultimediaController(FormMultimediaController controller) {

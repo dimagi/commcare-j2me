@@ -183,11 +183,14 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 		if (model.getEvent() == FormEntryController.EVENT_QUESTION) {
 			FormEntryPrompt prompt = model.getQuestionPrompt();
 			SingleQuestionScreen last = currentQuestionScreen;
-			SingleQuestionScreen view = getView(prompt, this.goingForward);
-			
-			if(last != null && last != currentQuestionScreen) {
+			//ctsims - We used to also create the screen first, and test
+			//whether it was equal to the current view, but that didn't
+			//seem to be possible, and this fixes some memory/timing issues
+			if(last != null) {
 				last.releaseMedia();
 			}
+			SingleQuestionScreen view = getView(prompt, this.goingForward);
+
 			J2MEDisplay.setView(view);
 			
 			//CTS - 2/24/2012
