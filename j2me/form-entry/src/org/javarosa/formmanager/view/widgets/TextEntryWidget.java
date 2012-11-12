@@ -111,8 +111,8 @@ public class TextEntryWidget extends ExpandedWidget {
 	}
 
 	protected IAnswerData getWidgetValue () throws InvalidDataException {
-		String s = textField().getString();
-		return (s == null || s.equals("") ? null : new StringData(s.trim()));
+		String s = textField().getString().trim();
+		return (s == null || s.equals("") ? null : new StringData(s));
 	}
 	
 	/*

@@ -64,6 +64,7 @@ public class MultiSubmitStatusScreen extends Form implements
 	private TransportResponseProcessor responder;
 	private boolean silenceable;
 	private String cancelText;
+	private Command cancelCmd; 
 	
 	public MultiSubmitStatusScreen(CommandListener listener, TransportResponseProcessor responder) {
 		this(listener, responder, true, null);
@@ -81,6 +82,8 @@ public class MultiSubmitStatusScreen extends Form implements
 
 		this.silenceable = silenceable;
 		this.cancelText = cancelText;
+		cancelCmd = new Command(cancelText == null ? Localization.get("menu.ok") : cancelText, Command.OK, 1);
+
 		if (silenceable) {
 			setOKCommand();
 		}
@@ -92,7 +95,7 @@ public class MultiSubmitStatusScreen extends Form implements
 	}
 
 	private void setOKCommand() {
-		addCommand(new Command(cancelText == null ? Localization.get("menu.ok") : cancelText, Command.OK, 1));		
+		addCommand(cancelCmd);		
 	}
 	
 	public void reinit(String[] ids) {
@@ -221,6 +224,11 @@ public class MultiSubmitStatusScreen extends Form implements
 			message = Localization.get("sending.status.failed");
 		}
 		this.msg.setText(message);
+		if(this.cancelText != null) { 
+			this.removeCommand(cancelCmd);
+			cancelCmd = new Command(Localization.get("menu.ok"), Command.OK, 1);
+			this.setOKCommand();
+		}
 	}
 
 	private String getResponseMessage (TransportMessage message) {
