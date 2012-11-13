@@ -1,5 +1,6 @@
 package org.javarosa.utilities.media;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -11,6 +12,7 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.VolumeControl;
 
+import org.javarosa.core.io.StreamsUtil;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
@@ -173,6 +175,11 @@ public class MediaUtils {
 						audioPlayer.close();
 					}
 					audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
+					
+					//Sometimes there's just no audio player
+					if(audioPlayer == null) {
+						return AUDIO_DISABLED;
+					}
 					audioPlayer.realize();
 					crankAudio(audioPlayer);
 					audioPlayer.start();

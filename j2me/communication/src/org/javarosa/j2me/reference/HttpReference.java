@@ -41,19 +41,26 @@ public class HttpReference implements Reference {
 	
 	public InputStream getStream() throws IOException {
 		try {
-			HttpConnection connection = (HttpConnection)Connector.open(URI);
+			final HttpConnection connection = (HttpConnection)Connector.open(URI);
 			connection.setRequestMethod(HttpConnection.GET);
 			
 			InputStream httpStream = connection.openInputStream();
 			
-			//This actually signals the connection to close as soon as the input stream
-			//does, which we need, since after we pass it out, we have no way to manage
-			//the connection.
-			connection.close();
-			
 			//Buffer our stream, since reading small units at a time from the network
 			//increases the likelihood of network errors
-			return new BufferedInputStream(httpStream);
+			return new BufferedInputStream(httpStream) {
+				/* (non-Javadoc)
+				 * @see java.io.InputStream#close()
+				 */
+				public void close() throws IOException {
+					//Some platforms were having issues with the connection close semantics
+					//where it was supposed to close the connection when the stream was closed,
+					//so we'll go ahead and move this here.
+					connection.close();
+					
+					super.close();
+				}
+			};
 		} catch(SecurityException se) {
 			if(this.listener != null) {
 				listener.onSecurityException(se);
