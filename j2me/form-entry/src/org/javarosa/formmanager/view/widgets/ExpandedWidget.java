@@ -32,8 +32,8 @@ import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
+import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
-import org.javarosa.utilities.media.MediaUtils;
 import org.javarosa.utilities.media.VideoItem;
 
 import de.enough.polish.ui.Container;
@@ -102,14 +102,14 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		String IaltText;
 
 		IaltText = fep.getShortText();
-		Image im = MediaUtils.getImage(fep.getImageText());
+		Image im = ImageUtils.getImage(fep.getImageText());
 		if(im!=null){
 			
 			//scale
-			int[] newDimension = MediaUtils.getNewDimensions(im, height, width);
+			int[] newDimension = ImageUtils.getNewDimensions(im, height, width);
 			
 			if(newDimension[0] != height || newDimension[1] != width) {
-				im = MediaUtils.resizeImage(im, newDimension[1], newDimension[0]);
+				im = ImageUtils.resizeImage(im, newDimension[1], newDimension[0]);
 			}
 			
 			ImageItem imItem = new ImageItem(null,im, ImageItem.LAYOUT_CENTER | ImageItem.LAYOUT_VCENTER, IaltText);
