@@ -286,12 +286,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     
     //make given question active; deal with all necessary questions in between
     private void jumpToQuestion (FormIndex questionIndex) {
-    	System.out.println(this.questionIndexes.toString());
     	
     	boolean newRepeat = false;
     	
-    	if (questionIndex.isInForm() && !model.isIndexRelevant(questionIndex))
-			throw new IllegalStateException();
+    	if (questionIndex.isInForm() && !model.isIndexRelevant(questionIndex)) {
+			throw new IllegalStateException("Attempt to jump to irrelevant index!");
+    	}
 
 		// Determine what should and shouldn't be pinned.
     	updatePins(questionIndex);
