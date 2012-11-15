@@ -11,11 +11,11 @@ import javax.microedition.lcdui.Graphics;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.api.transitions.LoginTransitions;
 import org.javarosa.user.model.User;
 import org.javarosa.user.view.LoginForm;
-import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.ImageItem;
@@ -52,7 +52,7 @@ public class LoginController implements HandledCommandListener {
 		
 		if(image != null) {
 			//#style loginImage?
-			view.append(Graphics.TOP, new ImageItem(null, MediaUtils.getImage(image), ImageItem.LAYOUT_CENTER, ""));
+			view.append(Graphics.TOP, new ImageItem(null, ImageUtils.getImage(image), ImageItem.LAYOUT_CENTER, ""));
 		}
 		
 		if(title != null) {

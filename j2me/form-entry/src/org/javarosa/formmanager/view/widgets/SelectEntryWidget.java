@@ -22,9 +22,8 @@ import org.javarosa.core.model.SelectChoice;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.CustomChoiceGroup;
-import org.javarosa.utilities.media.MediaUtils;
+import org.javarosa.j2me.util.media.ImageUtils;
 
-import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.Item;
 
 /**
@@ -92,7 +91,7 @@ public abstract class SelectEntryWidget extends ExpandedWidget {
 	protected void updateWidget (FormEntryPrompt prompt) {
 		for (int i = 0; i < choiceGroup().size(); i++) {
 			SelectChoice sc = prompt.getSelectChoices().elementAt(i);
-			Image im = MediaUtils.getImage(prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_IMAGE));
+			Image im = ImageUtils.getImage(prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_IMAGE));
 
 			choiceGroup().getItem(i).setText(prompt.getSelectChoiceText(sc));
 			
