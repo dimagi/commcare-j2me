@@ -448,22 +448,18 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 		}
 		
 		public int available() throws IOException {
-			System.err.println("don't expect this to ever be called");
 			return is.available();
 		}
 		
 		public void mark(int rl) {
-			System.err.println("don't expect this to ever be called");
 			is.mark(rl);
 		}
 		
 		public void reset() throws IOException {
-			System.err.println("don't expect this to ever be called");
 			is.reset();
 		}
 		
 		public boolean markSupported() {
-			System.err.println("don't expect this to ever be called");
 			return is.markSupported();
 		}
 	}
