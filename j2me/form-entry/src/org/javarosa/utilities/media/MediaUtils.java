@@ -20,6 +20,10 @@ public class MediaUtils {
 	
 	private final static Object audioLock = new Object();
 	
+	
+	private static boolean isPaused = false;
+	private static String currentTag = null;
+	
 	//We only really every want to play audio through one centralized player, so we'll keep a static
 	//instance
 	private static Player audioPlayer;
@@ -31,6 +35,27 @@ public class MediaUtils {
 	public static final int AUDIO_BUSY = 5;
 	public static final int AUDIO_NOT_RECOGNIZED = 6;
 	  
+	public static int playOrPauseAudio(String jrRefURI, String tag) {
+		if(tag != null) {
+			if(attemptToPauseOrUnpauseAudio(tag)) {
+				return AUDIO_SUCCESS;
+			}
+		}
+		int ret = playAudio(jrRefURI);
+		if(ret == AUDIO_SUCCESS) {
+			currentTag = tag;
+		}
+		return ret;
+	}
+	
+	/**
+	 * Begin audio playback of the content at the uri. 
+	 * 
+	 * @param jrRefURI a JR reference to audio content
+	 * @param tag an optional tag to associate with this playback to 
+	 * allow it to be paused/resumed. 
+	 * @return One of the AUDIO_ return codes
+	 */
 		public static int playAudio(String jrRefURI) {
 			synchronized(audioLock) {
 				String curAudioURI = jrRefURI;
@@ -40,10 +65,11 @@ public class MediaUtils {
 					String format = getFileFormat(curAudioURI);
 	
 					if(format == null) return AUDIO_NOT_RECOGNIZED;
-					if(audioPlayer != null){
-						audioPlayer.deallocate();
-						audioPlayer.close();
-					}
+					
+					//So there's an unfortunate issue where media which isn't associated (and won't play)
+					//can result in audio being stopped when alternate selections are made, but we won't
+					//worry about that for now
+					stopAudio();
 					audioPlayer = MediaUtils.getPlayerLoose(curAudRef);
 					
 					//Sometimes there's just no audio player
@@ -53,7 +79,6 @@ public class MediaUtils {
 					audioPlayer.realize();
 					crankAudio(audioPlayer);
 					audioPlayer.start();
-					
 				} catch (InvalidReferenceException ire) {
 					retcode = AUDIO_ERROR;
 					System.err.println("Invalid Reference Exception when attempting to play audio at URI:"+ curAudioURI + "Exception msg:"+ire.getMessage());
@@ -143,8 +168,15 @@ public class MediaUtils {
 		}
 
 
+		/**
+		 * Stops playback of any audio currently playing, and deallocates
+		 * any associated players or state associated with the current
+		 * audio.
+		 */
 		public static void stopAudio() {
 			synchronized(audioLock) {
+				currentTag = null;
+				isPaused = false;
 				if(audioPlayer != null){
 					try {
 						audioPlayer.stop();
@@ -155,6 +187,81 @@ public class MediaUtils {
 					audioPlayer.close();
 				}
 				audioPlayer = null;
+			}
+		}
+
+		/**
+		 * If there's currently an audio player playing associated with the tag, 
+		 * this will pause that audio. If audio is currently paused, playback will 
+		 * be resumed.
+		 * 
+		 * If audio hasn't started, is already finished, isn't associated with the tag, 
+		 * or otherwise isn't available to manipulate this method will do nothing and 
+		 * return false.
+		 * 
+		 * Paused audio will be completely removed/destroyed if there is a request
+		 * to play new audio or stop the current audio playback.
+		 * 
+		 * @param tag A string to associate specific audio playback. Cannot be 
+		 * null.
+		 * 
+		 * @return 
+		 */
+		public static boolean attemptToPauseOrUnpauseAudio(String tag) {
+			synchronized(audioLock) {
+				if(audioPlayer == null){
+					return false;
+				}
+				
+				//Make sure we're trying to pause or unpause the same thing as is
+				//currently paused
+				if(!tag.equals(currentTag)) {
+					//if not, there's nothing we can do
+					return false;
+				}
+				
+				if(isPaused) {
+					try {
+						//No matter what, clear the flag
+						isPaused = false;
+						
+						//double check we're in the right state
+						if(audioPlayer.getState() == Player.PREFETCHED) {
+							//restart playback
+							audioPlayer.start();
+							return true;
+						} else {
+							//something weird happened and the player isn't in the right place
+							//anymore. Just bail
+							return false;
+						}
+					} catch (MediaException e) {
+						//... weird. Something very bad happened here.
+						e.printStackTrace();
+						//We didn't do anything, so return false
+						return false;
+					}
+				} else {
+					if(audioPlayer.getState() == Player.STARTED) {
+						try {
+							audioPlayer.stop();
+							//Unfortunately, there's no way to know here whether we actually
+							//paused or just stopped playback, since it just ignores
+							//the request it finished in the tiny period between getstate 
+							//and stop, but just go with it (I think the behavior should look
+							//most the same either way)
+							isPaused = true;
+							return true;
+						} catch (MediaException e) {
+							e.printStackTrace();
+							//We boned something here. Clear out the whole state
+							stopAudio();
+							return false;
+						}
+					}
+				}
+				//Unless we explicitly returned false above, we didn't handle this
+				return false;
 			}
 		}
 

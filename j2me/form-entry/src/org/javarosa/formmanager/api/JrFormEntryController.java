@@ -233,9 +233,11 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 		
 		String textID;
 		curAudioURI = null;
+		String tag = null;
 		if (select == null) {
 			if (fep.getAudioText() != null) {
 				curAudioURI = fep.getAudioText();
+				tag = "#";
 			} else {
 				return MediaUtils.AUDIO_NO_RESOURCE;
 			}	
@@ -245,13 +247,14 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 			
 			if (fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO) != null) {
 				curAudioURI = fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO);
+				tag = String.valueOf(select.getIndex());
 			} else {
 				return MediaUtils.AUDIO_NO_RESOURCE;
 			}
 		}
 		
 		//No idea why this is a member variable...
-		return MediaUtils.playAudio(curAudioURI);
+		return MediaUtils.playOrPauseAudio(curAudioURI, tag);
 	}
 	
 
