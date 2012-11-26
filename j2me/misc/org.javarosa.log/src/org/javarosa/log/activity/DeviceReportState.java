@@ -54,7 +54,7 @@ import org.xmlpull.v1.XmlSerializer;
 public abstract class DeviceReportState implements State, TrivialTransitions, TransportListener, ProgressIndicator {
 
 	public static boolean activated = false;
-	private boolean force = true;
+	private boolean force = false;
 	
 	private static final int LOG_ROLLOVER_SIZE = 750;
 	
