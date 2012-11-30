@@ -334,7 +334,9 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 		this.append(title);
 		
 		if (listIsEmpty()) {
-			this.append( new StringItem("", "(" + Localization.get("entity.nomatch") + ")"));
+			String emptyText = controller.getRawResultCount() > 0 ? Localization.get("entity.nomatch") : Localization.get("entity.nodata");
+			
+			this.append( new StringItem("", "(" + emptyText + ")"));
 		}
 		
 		String[] colFormat = padCells(controller.getColumnFormat(false),null);

@@ -198,6 +198,10 @@ public class EntitySelectController <E> implements ProgressIndicator{
 		return matches;
 	}
 	
+	public int getRawResultCount() {
+		return entities.size();
+	}
+	
 	public void showList () {
 		selView.show();
 	}
