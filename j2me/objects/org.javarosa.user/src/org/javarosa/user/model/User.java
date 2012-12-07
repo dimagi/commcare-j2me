@@ -254,5 +254,17 @@ public class User implements Persistable, Restorable, IMetaData
 	public void setLastSyncToken(String syncToken) {
 		this.syncToken = syncToken;
 	}
+
+	static private User demo_user;
+	public static User FactoryDemoUser() {
+		if(demo_user == null) {
+			demo_user = new User();
+			demo_user.setUsername(User.DEMO_USER); // NOTE: Using a user type as a
+			// username also!
+			demo_user.setUserType(User.DEMO_USER);
+			demo_user.setUuid(User.DEMO_USER);
+		}
+		return demo_user;
+	}
 	
 }

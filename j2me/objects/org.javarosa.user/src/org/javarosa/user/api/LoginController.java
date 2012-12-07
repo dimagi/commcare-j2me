@@ -97,11 +97,7 @@ public class LoginController implements HandledCommandListener {
 			demoModeAlert = J2MEDisplay.showError(null, Localization.get("activity.login.demomode.intro"), null, null, this);
 		} else if (d == demoModeAlert) {
 			// returning from demo mode warning popup
-			User u = new User();
-			u.setUsername(User.DEMO_USER); // NOTE: Using a user type as a
-			// username also!
-			u.setUserType(User.DEMO_USER);
-			u.setUuid(User.DEMO_USER);
+			User u = User.FactoryDemoUser();
 			transitions.loggedIn(u, null);
 		}
 		//#endif
