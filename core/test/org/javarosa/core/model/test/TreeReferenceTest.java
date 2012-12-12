@@ -21,8 +21,13 @@ import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
+import java.util.Vector;
+
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.xpath.XPathParseTool;
+import org.javarosa.xpath.expr.XPathExpression;
+import org.javarosa.xpath.parser.XPathSyntaxException;
 
 public class TreeReferenceTest extends TestCase {
 	
@@ -39,6 +44,10 @@ public class TreeReferenceTest extends TestCase {
 	
 	TreeReference a2;
 	TreeReference a2ext;
+	
+	TreeReference apred;
+	TreeReference apredmatch;
+	TreeReference aprednot;
 	
 	
 	public TreeReferenceTest(String name, TestMethod rTestMethod) {
@@ -73,6 +82,26 @@ public class TreeReferenceTest extends TestCase {
 		a2ext = root.extendRef("a", -1);
 		a2ext.setInstanceName("external");
 		
+		apred = a.clone();
+		apredmatch = a.clone();
+		aprednot = a.clone();
+		
+		try {
+			Vector<XPathExpression> apreds = new Vector<XPathExpression>();
+			apreds.add(XPathParseTool.parseXPath("../b = 'test'"));
+			apred.addPredicate(0, apreds);
+			
+			Vector<XPathExpression> amatchpreds = new Vector<XPathExpression>();
+			amatchpreds.add(XPathParseTool.parseXPath("../b = 'test'"));
+			apredmatch.addPredicate(0, amatchpreds);
+			
+			Vector<XPathExpression> anotpreds = new Vector<XPathExpression>();
+			anotpreds.add(XPathParseTool.parseXPath("../b = 'fail'"));
+			aprednot.addPredicate(0, anotpreds);
+		} catch (XPathSyntaxException e) {
+			fail("Bad tests! Rewrite xpath expressions for predicate tests");
+		}
+		
 	}
 	
 	public Test suite() {
@@ -90,7 +119,7 @@ public class TreeReferenceTest extends TestCase {
 		return aSuite;
 	}
 	
-	public final static int NUM_TESTS = 5;
+	public final static int NUM_TESTS = 6;
 	public void doTest (int i) {
 		switch (i) {
 		case 1: testClones(); break;
@@ -98,6 +127,7 @@ public class TreeReferenceTest extends TestCase {
 		case 3: testParentage(); break;
 		case 4: testIntersection(); break;
 		case 5: contextualization(); break;
+		case 6: testPredicates(); break;
 		}
 	}
 	
@@ -154,6 +184,11 @@ public class TreeReferenceTest extends TestCase {
 		
 		TreeReference a2extc = a2ext.contextualize(a2);
 		if(a2extc.getMultLast() == 2) { fail("Treeref from named instance wrongly accepted multiplicity context from root instance");} 
+	}
+	
+	public void testPredicates() {
+		if(!apred.equals(apredmatch)) {fail("/a[..b = 'test'] Did not equal itself!");}
+		if(apred.equals(aprednot)) {fail("/a[..b = 'test'] was equal to /a[..b = 'fail']");}
 	}
 }
 
