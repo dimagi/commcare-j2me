@@ -375,6 +375,9 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	}
 	
 	private void logError(Vector errors, StatusReportException sre) {
+		if(sre.getParent() != null) {
+			sre.getParent().printStackTrace();
+		}
 		errors.addElement(new String[] {sre.getReportName(), sre.getMessage()});
 	}
 	
