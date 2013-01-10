@@ -4,10 +4,15 @@
 package org.javarosa.user.api;
 
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
@@ -16,6 +21,7 @@ import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.api.transitions.LoginTransitions;
 import org.javarosa.user.model.User;
 import org.javarosa.user.view.LoginForm;
+import org.javarosa.utilities.media.MediaUtils;
 
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.ImageItem;
@@ -94,6 +100,15 @@ public class LoginController implements HandledCommandListener {
 
 		//#if javarosa.login.demobutton
 		else if (c == LoginForm.CMD_DEMO_BUTTON) {
+			try{
+				Reference demoWarning = ReferenceManager._().DeriveReference(Localization.get("demo.warning.filepath"));
+				if(demoWarning.doesBinaryExist()) {
+					MediaUtils.playAudio(demoWarning.getURI());
+				}
+			}
+			catch(Exception e){
+				// no warning audio file specified
+			}
 			demoModeAlert = J2MEDisplay.showError(null, Localization.get("activity.login.demomode.intro"), null, null, this);
 		} else if (d == demoModeAlert) {
 			// returning from demo mode warning popup
