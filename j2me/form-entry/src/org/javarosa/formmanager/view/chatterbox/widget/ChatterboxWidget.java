@@ -265,7 +265,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 
 	public void _itemStateChanged(Item i) {
 		//debugging
-    	System.out.println("cw: item state");
+    	System.out.println("cw2: item state");
     	if (i instanceof ChoiceGroup) {
     		ChoiceGroup cg = (ChoiceGroup)i;
     		System.out.println(cg.size());
