@@ -100,15 +100,9 @@ public class LoginController implements HandledCommandListener {
 
 		//#if javarosa.login.demobutton
 		else if (c == LoginForm.CMD_DEMO_BUTTON) {
-			try{
-				Reference demoWarning = ReferenceManager._().DeriveReference(Localization.get("demo.warning.filepath"));
-				if(demoWarning.doesBinaryExist()) {
-					MediaUtils.playAudio(demoWarning.getURI());
-				}
-			}
-			catch(Exception e){
-				// no warning audio file specified
-			}
+
+			MediaUtils.playAudio(Localization.get("demo.warning.filepath"));
+			
 			demoModeAlert = J2MEDisplay.showError(null, Localization.get("activity.login.demomode.intro"), null, null, this);
 		} else if (d == demoModeAlert) {
 			// returning from demo mode warning popup
