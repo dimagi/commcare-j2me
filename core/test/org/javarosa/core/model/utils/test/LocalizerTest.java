@@ -551,10 +551,21 @@ public class LocalizerTest extends TestCase  {
 		TableLocaleSource firstLocale = new TableLocaleSource();
 		TableLocaleSource secondLocale = new TableLocaleSource();
 		
+		if (j / 2 == 0 || "default".equals(ourLocale))
+			firstLocale.setLocaleMapping("textID", "text:" + ourLocale + ":base");
+		if (j % 2 == 0 || "default".equals(ourLocale))
+			firstLocale.setLocaleMapping("textID;form", "text:" + ourLocale + ":form");
+			
+		if (otherLocale != null) {
+			if (k / 2 == 0 || "default".equals(otherLocale))
+				secondLocale.setLocaleMapping("textID", "text:" + otherLocale + ":base");
+			if (k % 2 == 0 || "default".equals(otherLocale))
+				secondLocale.setLocaleMapping("textID;form", "text:" + otherLocale + ":form");	
+		}
+		
 		l.addAvailableLocale(ourLocale);
 		l.registerLocaleResource(ourLocale, firstLocale);
 		
-		l.setLocale(ourLocale);
 		if (otherLocale != null) {
 			l.addAvailableLocale(otherLocale);
 			l.registerLocaleResource(otherLocale, secondLocale);
@@ -563,17 +574,7 @@ public class LocalizerTest extends TestCase  {
 			l.setDefaultLocale("default");
 		}
 		
-		if (j / 2 == 0)
-			firstLocale.setLocaleMapping("textID", "text:" + ourLocale + ":base");
-		if (j % 2 == 0)
-			firstLocale.setLocaleMapping("textID;form", "text:" + ourLocale + ":form");
-			
-		if (otherLocale != null) {
-			if (k / 2 == 0)
-				secondLocale.setLocaleMapping("textID", "text:" + otherLocale + ":base");
-			if (k % 2 == 0)
-				secondLocale.setLocaleMapping("textID;form", "text:" + otherLocale + ":form");	
-		}
+		l.setLocale(ourLocale);
 		
 		return l;	
 	}
