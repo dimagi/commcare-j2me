@@ -140,14 +140,10 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 				Command.SCREEN, 3);
 		
 		exitCommand = new Command(Localization.get("menu.Exit"),Command.EXIT, 2);
-		
-		boolean inSenseMode = fec.isEntryOptimized();
-		
+
 		this.addCommand(previousCommand);
 		this.addCommand(exitCommand);
-		if(!inSenseMode){
-			this.addCommand(viewAnswersCommand);
-		}
+		this.addCommand(viewAnswersCommand);
 		this.addCommand(nextItemCommand);
 	}
 
