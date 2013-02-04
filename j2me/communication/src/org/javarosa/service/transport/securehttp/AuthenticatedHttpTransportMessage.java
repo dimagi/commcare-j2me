@@ -231,7 +231,10 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 			this.setStatus(TransportMessageStatus.FAILED);
 			this.setFailureReason(WrappedException.printException(e));
 		} finally {
-			if(connection != null ){
+			//CTS - New: Don't close the response if we got a stream here. the connection will be closed
+			//when the stream is. (some platforms dont' properly delay closing the connection until after
+			//the stream is).
+			if(connection != null && response == null){
 				try {
 					connection.close();
 				} catch (IOException e) {
@@ -295,7 +298,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 		return authentication;
 	}
 	
-	private void handleResponse(HttpConnection connection) throws IOException {
+	private void handleResponse(final HttpConnection connection) throws IOException {
 		int responseCode = connection.getResponseCode();
 		responseProperties = HttpRequestProperties.HttpResponsePropertyFactory(connection);
 		long responseLength = connection.getLength();
@@ -310,7 +313,19 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 			this.setStatus(TransportMessageStatus.SENT);
 			
 			//Wire up the input stream from the connection to the message.
-			this.setResponseStream(new InputStreamC(connection.openInputStream(), responseLength, this.getTag()));
+			this.setResponseStream(new InputStreamC(connection.openInputStream(), responseLength, this.getTag()) {
+				/* (non-Javadoc)
+				 * @see java.io.InputStream#close()
+				 */
+				public void close() throws IOException {
+					//Some platforms were having issues with the connection close semantics
+					//where it was supposed to close the connection when the stream was closed,
+					//so we'll go ahead and move this here.
+					connection.close();
+					
+					super.close();
+				}
+			});
 		} else {
 			this.setStatus(TransportMessageStatus.FAILED);
 			this.setResponseCode(responseCode);
@@ -318,6 +333,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 			//We'll assume that any failures come with a message which is sufficiently
 			//small that they can be fit into memory.
 			byte[] response = StreamUtil.readFully(connection.openInputStream());
+			connection.close();
 			String reason = responseCode + ": " + new String(response);
 			reason = PropertyUtils.trim(reason, 400);
 			this.setFailureReason(reason);
