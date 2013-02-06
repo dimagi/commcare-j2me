@@ -143,7 +143,11 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 
 		this.addCommand(previousCommand);
 		this.addCommand(exitCommand);
-		this.addCommand(viewAnswersCommand);
+		boolean inSenseMode = !fec.isEntryOptimized();
+		System.out.println("!!! - inSenseMode: " + inSenseMode);
+		if(!inSenseMode){
+			this.addCommand(viewAnswersCommand);
+		}
 		this.addCommand(nextItemCommand);
 	}
 
