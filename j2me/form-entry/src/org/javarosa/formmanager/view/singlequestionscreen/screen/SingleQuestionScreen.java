@@ -66,8 +66,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 			.get("menu.Next"), Command.SCREEN, 1);
 	
 	//#style button
-	public StringItem nextItem = new StringItem(null, Localization
-			.get("button.Next"), Item.BUTTON);
+	public StringItem nextItem = new StringItem(null, Localization.get("button.Next"), Item.BUTTON);
 	
 	public SingleQuestionScreen(FormEntryPrompt prompt, String groupName, Style style) {
 		super(groupName, style);
@@ -152,7 +151,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 	}
 
 	public void addNavigationWidgets() {
-		if(this.widget.getNextMode() != ExpandedWidget.NEXT_ON_MANUAL && this.widget.getNextMode()  != ExpandedWidget.NEXT_ON_ENTRY) {
+		if(this.widget.getNextMode() != ExpandedWidget.NEXT_ON_MANUAL && this.widget.getNextMode()  != ExpandedWidget.NEXT_ON_ENTRY && !fec.isMinimal()) {
 			this.append(nextItem);
 			nextItem.setDefaultCommand(nextItemCommand); // add Command to Item.
 		}

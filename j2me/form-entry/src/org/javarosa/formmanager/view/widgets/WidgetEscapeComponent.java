@@ -35,7 +35,6 @@ public class WidgetEscapeComponent implements IWidgetComponentWrapper {
 	public WidgetEscapeComponent() {
 		//#style button
 		 nextItem = new StringItem(null,Localization.get("button.Next"),Item.BUTTON) {
-			 
 			 	//Pass up events that might be relevant and that we didn't process
 				protected boolean handleKeyPressed(int keyCode, int gameAction){
 					if(!super.handleKeyPressed(keyCode, gameAction) && wrapped != null) {

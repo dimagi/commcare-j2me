@@ -122,6 +122,7 @@ public class JRDemoContext {
 	}
 	
 	private void setProperties() {
+		
 		final String POST_URL = midlet.getAppProperty("JRDemo-Post-Url");
 		final String FORM_URL = midlet.getAppProperty("Form-Server-Url");
 		final String VIEW_TYPE = midlet.getAppProperty("Default-View");

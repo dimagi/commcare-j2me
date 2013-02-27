@@ -63,6 +63,10 @@ public class SingleQuestionScreenFactory {
 			throw new IllegalStateException("No appropriate screen to render question");
 		}
 		
+		boolean isMinimal = "minimal".equals(prompt.getAppearanceHint());
+		
+		fec.setMinimal(isMinimal);
+		
 		widget.registerMultimediaController(mediacontroller);
 		screenToReturn = new SingleQuestionScreen(prompt, groupTitle, widget, fec, style);
 		

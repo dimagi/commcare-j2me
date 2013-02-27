@@ -39,6 +39,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 	FormEntryTransitions transitions;
 	IFormEntryView view;
 	boolean quickEntry = true;
+	boolean isMinimal = false;
 	
 	private static Reference curAudRef = null;
 	private static String curAudioURI;
@@ -57,12 +58,17 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 		this(model, FormManagerProperties.EXTRA_KEY_LANGUAGE_CYCLE, false, true);
 	}
 	
-	public JrFormEntryController(JrFormEntryModel model, String extraKeyMode, boolean audioFailFast, boolean quickEntry) {
+	public JrFormEntryController(JrFormEntryModel model, String extraKeyMode, boolean audioFailFast, boolean quickEntry){
+		this(model, extraKeyMode, audioFailFast, quickEntry, false);
+	}
+	
+	public JrFormEntryController(JrFormEntryModel model, String extraKeyMode, boolean audioFailFast, boolean quickEntry, boolean isMinimal) {
 		super(model);
 		tryToInitDefaultLanguage(model);
 		this.extraKeyMode = extraKeyMode;
 		this.audioFailFast = audioFailFast;
 		this.quickEntry = quickEntry;
+		this.isMinimal = isMinimal;
 		
     	//#if device.identifier == Sony-Ericsson/K610i
     	POUND_KEYCODE = Canvas.KEY_STAR;
@@ -289,6 +295,14 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 
 	public void stopAudio() {
 		MediaUtils.stopAudio();
+	}
+	
+	public void setMinimal(boolean isMinimal){
+		this.isMinimal = isMinimal;
+	}
+	
+	public boolean isMinimal(){
+		return this.isMinimal;
 	}
 
 }
