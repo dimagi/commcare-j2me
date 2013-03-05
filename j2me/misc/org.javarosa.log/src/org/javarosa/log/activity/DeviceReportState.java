@@ -436,18 +436,26 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 	
 	private void dumpLogFallback(boolean purge) {
 		String dumpRef = "";
+		long diff = -1;
+		long count = -1;
 		boolean success = false;
 		try{
 			dumpRef = "jr://file/jr_log_dump" + DateUtils.formatDateTime(new Date(), DateUtils.FORMAT_TIMESTAMP_SUFFIX) + ".log";
 			Reference ref = ReferenceManager._().DeriveReference(dumpRef);
 			if(!ref.isReadOnly()) {
 				success = true;
+				long then = System.currentTimeMillis();
 				try {
 					LogWriter writer = new LogWriter(ref.getOutputStream());
+					count = Logger._().logSize();
 					Logger._().serializeLogs(writer);
 				} catch (IOException ioe) {
 					success = false;
 				}
+				
+				long now = System.currentTimeMillis();
+				
+				diff = now - then;
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -465,6 +473,11 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 				if (!success) {
 					Logger.log("log", "archive failed! logs lost!!");
 				}
+				
+				if(diff != -1) {
+					Logger.log("log", "serialized  " + count + " logs to filesystem in (" + diff + "ms)");
+				}
+				
 			} catch(Exception e) {
 				//If this fails it's a serious problem, but not sure what to do about it.
 				e.printStackTrace();
