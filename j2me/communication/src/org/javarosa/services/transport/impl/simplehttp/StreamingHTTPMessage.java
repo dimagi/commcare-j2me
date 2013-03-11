@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import javax.microedition.io.HttpConnection;
 
 import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.transport.payload.IDataPayload;
 import org.javarosa.services.transport.TransportService;
 
 public abstract class StreamingHTTPMessage extends SimpleHttpTransportMessage {
@@ -50,11 +51,11 @@ public abstract class StreamingHTTPMessage extends SimpleHttpTransportMessage {
 		super.setHttpConnectionMethod(method);
 	}
 	
-	public byte[] getContent() {
+	public IDataPayload getContent() {
 		throw new RuntimeException("streaming messages have no static content!");
 	}
 
-	public int getContentLength() {
+	public long getContentLength() {
 		return -1;
 	}
 	

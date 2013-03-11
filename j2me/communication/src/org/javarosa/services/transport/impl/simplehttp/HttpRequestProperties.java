@@ -59,11 +59,11 @@ public class HttpRequestProperties {
 		date = 0;
 	}
 	
-	public HttpRequestProperties(String method, int contentLength) {
+	public HttpRequestProperties(String method, long contentLength) {
 		this(method, contentLength, null, null);
 	}
 	
-	public HttpRequestProperties(String method, int contentLength, String orApiVersion, Hashtable<String, String> customHeaders) {
+	public HttpRequestProperties(String method, long contentLength, String orApiVersion, Hashtable<String, String> customHeaders) {
 		
 		properties = new Hashtable<String, String>();
 		

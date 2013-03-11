@@ -177,7 +177,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 		return new HttpRequestProperties(this.getMethod(), -1, "1.0", null);
 	}
 
-	public InputStream getContentStream() {
+	public InputStream getContentStream() throws IOException {
 		if (payload == null) {
 			return new ByteArrayInputStream("".getBytes());
 		} else {

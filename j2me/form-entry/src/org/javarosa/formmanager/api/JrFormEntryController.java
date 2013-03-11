@@ -11,6 +11,8 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
+import org.javarosa.core.api.State;
+import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.utils.DateUtils;
@@ -26,6 +28,9 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.formmanager.view.IFormEntryView;
+import org.javarosa.j2me.services.DataCaptureServiceRegistry;
+import org.javarosa.j2me.services.LocationCaptureService;
+import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 
 /**

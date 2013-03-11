@@ -106,20 +106,20 @@ public class DigestAuthResponse implements AuthCacheRecord {
 		if(qop != DigestAuthResponse.QOP_AUTH_INT) {
 			HA2 = AuthUtils.MD5(method + ":" + uri);
 		} else {
-			InputStream stream = message.getContentStream();
-			String entityBody;
-			if(stream == null){ 
-				entityBody = MD5.toHex("".getBytes());
-			} else {
-				try {
-					entityBody = new MD5InputStream(stream).getHashCode();
-				} catch (IOException e) {
-					//Problem calculating MD5 from content stream
-					e.printStackTrace();
-					return null;
+			try {
+				InputStream stream = message.getContentStream();
+				String entityBody;
+				if(stream == null){ 
+					entityBody = MD5.toHex("".getBytes());
+				} else {
+						entityBody = new MD5InputStream(stream).getHashCode();
 				}
+				HA2 = AuthUtils.MD5(method + ":" + uri + ":" + entityBody);
+			} catch (IOException e) {
+				//Problem calculating MD5 from content stream
+				e.printStackTrace();
+				return null;
 			}
-			HA2 = AuthUtils.MD5(method + ":" + uri);
 		}
 		
 		if(qop == DigestAuthResponse.QOP_UNSPECIFIED) {

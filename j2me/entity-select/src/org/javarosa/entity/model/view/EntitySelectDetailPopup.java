@@ -18,19 +18,29 @@ package org.javarosa.entity.model.view;
 
 
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.entity.api.EntitySelectController;
 import org.javarosa.entity.model.Entity;
 import org.javarosa.entity.model.EntitySet;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.util.media.ImageUtils;
+import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Form;
+import de.enough.polish.ui.ImageItem;
+import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 
 public class EntitySelectDetailPopup<E> extends Form implements HandledCommandListener {
@@ -69,6 +79,9 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
 	}
 	
 	public void loadData() {
+		int scrHeight = J2MEDisplay.getScreenHeight(320);
+		int scrWidth = J2MEDisplay.getScreenWidth(240);
+
 		for (int i = 0; i < data.length; i++) {
 			
 			if("".equals(data[i])) {
@@ -82,9 +95,49 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
 			StringItem titleItem = new StringItem("", headers[i]);
 			c.add(titleItem);
 			
-			//#style patselDetailData
-			StringItem dataItem = new StringItem("", data[i]);
-			c.add(dataItem);
+			String text = data[i];
+			if("image".equals(forms[i])){
+				try {
+					Reference r =ReferenceManager._().DeriveReference(text);
+					Image im = null;
+					try {
+						im = Image.createImage(r.getStream());
+					} catch(OutOfMemoryError ome ){ 
+						ome.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if(im !=null){
+						int height = scrHeight/2;
+						int width = scrWidth-16;
+						//scale
+						int[] newDimension = ImageUtils.getNewDimensions(im, height, width);
+						
+						if(newDimension[0] != height || newDimension[1] != width) {
+							im = ImageUtils.resizeImage(im, newDimension[1], newDimension[0]);
+						}
+						
+						//#style patselDetailData
+						ImageItem imItem = new ImageItem(null,im, ImageItem.LAYOUT_CENTER | ImageItem.LAYOUT_VCENTER, "Cannot Display Image");
+						imItem.setLayout(Item.LAYOUT_CENTER);
+						c.add(imItem);
+					}else{
+						//#style patselDetailData
+						StringItem dataItem = new StringItem("", "Invalid Image: " + text);
+						c.add(dataItem);
+					}
+				} catch(InvalidReferenceException ire) {
+					//#style patselDetailData
+					StringItem dataItem = new StringItem("", "Invalid Image: " + text);
+					c.add(dataItem);
+				}
+
+			} else {
+				//#style patselDetailData
+				StringItem dataItem = new StringItem("", data[i]);
+				c.add(dataItem);
+			}
 			
 			this.append(c);
 			

@@ -13,6 +13,7 @@ import org.javarosa.model.xform.SMSSerializingVisitor;
 import org.javarosa.model.xform.XFormSerializingVisitor;
 import org.javarosa.model.xform.XPathReference;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+import org.javarosa.services.transport.impl.simplehttp.multipart.HttpHeaderAppendingVisitor;
 
 /**
  * @author ctsims
@@ -32,7 +33,10 @@ public class SubmissionTransportHelper {
 			String url = profile.getAction();
 		
 			IDataPayload payload = new XFormSerializingVisitor().createSerializedPayload(instance, profile.getRef());
-			SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(payload.getPayloadStream(),url);
+			HttpHeaderAppendingVisitor multiparter = new HttpHeaderAppendingVisitor();
+			payload = payload.accept(multiparter);
+			SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(payload,url);
+			message.setContentType(multiparter.getOverallContentType());
 			message.setCacheable(cacheable);
 			message.setOpenRosaApiVersion(null);
 			return message;

@@ -18,6 +18,7 @@ package org.javarosa.formmanager.view.widgets;
 
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.lcdui.Image;
 import javax.microedition.media.MediaException;
@@ -30,6 +31,7 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.UncastData;
 import org.javarosa.core.model.data.helper.InvalidDataException;
 import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.services.Logger;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.FormMultimediaController;
 import org.javarosa.j2me.util.media.ImageUtils;
@@ -177,6 +179,40 @@ public abstract class ExpandedWidget implements IWidgetStyleEditable {
 		if (data != null && changeFlags == FormElementStateListener.CHANGE_INIT) {
 			setWidgetValue(cast(data).getValue());
 		}
+	}
+	
+	protected ImageItem getImageItemForScreen(InputStream is) {
+		Image im = null;
+		try {
+			im = Image.createImage(is);
+		} catch(OutOfMemoryError ome ){ 
+			ome.printStackTrace();
+			Logger.die("GetImageOOM", new RuntimeException(ome.getMessage()));
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Logger.die("GetImageioe", e);
+		}
+		if(im !=null){
+			Logger.log("file", "got an image");
+			int height = scrHeight/2;
+			int width = scrWidth-16;
+			//scale
+			int[] newDimension = ImageUtils.getNewDimensions(im, height, width);
+			
+			if(newDimension[0] != height || newDimension[1] != width) {
+				im = ImageUtils.resizeImage(im, newDimension[1], newDimension[0]);
+			}
+			
+			Logger.log("file", "resized it");
+			ImageItem imItem = new ImageItem(null,im, ImageItem.LAYOUT_CENTER | ImageItem.LAYOUT_VCENTER, "Cannot Display Image");
+			imItem.setLayout(Item.LAYOUT_CENTER);
+			return imItem;
+		}else{
+			return null;
+		}
+		
 	}
 
 	public IAnswerData getData () throws InvalidDataException{

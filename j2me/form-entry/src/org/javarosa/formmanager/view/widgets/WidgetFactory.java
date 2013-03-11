@@ -86,7 +86,7 @@ public class WidgetFactory {
 			expandedStyle = new MessageWidget();
 			break;
 		case Constants.CONTROL_IMAGE_CHOOSE:
-			expandedStyle = new ImageChooserWidget();
+			expandedStyle = new QuickCameraWidget();
 			break;
 		case Constants.CONTROL_AUDIO_CAPTURE:
 			expandedStyle = new AudioCaptureWidget();

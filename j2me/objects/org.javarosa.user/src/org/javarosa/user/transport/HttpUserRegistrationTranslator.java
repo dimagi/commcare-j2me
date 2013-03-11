@@ -1,15 +1,12 @@
 package org.javarosa.user.transport;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Date;
 import java.util.Enumeration;
 
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.services.PropertyManager;
-import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
 import org.javarosa.services.transport.CommUtil;
 import org.javarosa.services.transport.UnrecognizedResponseException;
@@ -40,7 +37,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 	}
 	
 	public SimpleHttpTransportMessage getUserRegistrationMessage() throws IOException {
-		SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getStreamFromRegistration(createXmlRegistrationDoc(user)), registrationUrl);
+		SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getBodyFromRegistration(createXmlRegistrationDoc(user)), registrationUrl);
 		if("1.0".equals(orApiVersion)) {
 			message.setCacheable(true);
 		} else {
@@ -51,7 +48,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 		return message;
 	}
 	
-	private InputStream getStreamFromRegistration(Document registration) {
+	private byte[] getBodyFromRegistration(Document registration) {
 		 XmlSerializer ser = new KXmlSerializer();
 		 ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		 try {
@@ -63,8 +60,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 		}
 		//Note: If this gets too big, we can just write a wrapper to stream bytes one at a time
 		//to the array. It'll probably be the XML DOM itself which blows up the memory, though...
-		 ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
-		 return bis;
+		 return bos.toByteArray();
 
 	}
 	

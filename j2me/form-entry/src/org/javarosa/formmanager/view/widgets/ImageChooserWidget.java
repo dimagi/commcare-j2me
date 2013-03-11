@@ -21,7 +21,7 @@ import javax.microedition.lcdui.Command;
 import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.core.model.data.MultiPointerAnswerData;
+import org.javarosa.core.model.data.PointerAnswerData;
 import org.javarosa.form.api.FormEntryPrompt;
 
 import de.enough.polish.ui.Item;
@@ -37,7 +37,7 @@ import de.enough.polish.ui.StringItem;
 
 public class ImageChooserWidget extends ExpandedWidget {
 
-	private MultiPointerAnswerData data;
+	private PointerAnswerData data;
 	
 	private StringItem label;
 	
@@ -47,9 +47,9 @@ public class ImageChooserWidget extends ExpandedWidget {
 
 	
 	protected void setWidgetValue(Object o) {
-		IDataPointer[] castedO = (IDataPointer[]) o;
-		if (castedO != null && castedO.length > 0) {
-			data = new MultiPointerAnswerData((IDataPointer[]) o);
+		IDataPointer casted = (IDataPointer) o;
+		if (casted != null) {
+			data = new PointerAnswerData((IDataPointer) o);
 		} else {
 			data = null;
 		}
@@ -92,7 +92,7 @@ public class ImageChooserWidget extends ExpandedWidget {
 	}
 
 	protected IAnswerData getAnswerTemplate() {
-		return new MultiPointerAnswerData();
+		return new PointerAnswerData();
 	}
 
 }

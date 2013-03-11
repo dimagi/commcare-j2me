@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.microedition.io.Connector;
@@ -17,9 +15,12 @@ import javax.microedition.pki.CertificateException;
 import org.javarosa.core.io.StreamsUtil;
 import org.javarosa.core.log.WrappedException;
 import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.transport.payload.ByteArrayPayload;
+import org.javarosa.core.services.transport.payload.IDataPayload;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapMap;
+import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.BasicTransportMessage;
@@ -33,7 +34,7 @@ import org.javarosa.services.transport.impl.TransportMessageStatus;
 public class SimpleHttpTransportMessage extends BasicTransportMessage {
 
 	
-	private byte[] content;
+	private IDataPayload content;
 	/**
 	 * An http url, to which the message will be POSTed
 	 */
@@ -77,19 +78,24 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @param destinationURL
 	 */
 	public SimpleHttpTransportMessage(String str, String url) {
-		this();
-		content = str.getBytes();
-		this.url = url;
+		this(str.getBytes(), url);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.javarosa.services.transport.impl.BasicTransportMessage#setContentType(java.lang.String)
+	 */
+	public void setContentType(String contentType) {
+		super.setContentType(contentType);
+		this.setHeader("Content-Type", contentType);
 	}
 
 	/**
 	 * @param str
 	 * @param destinationURL
 	 */
-	public SimpleHttpTransportMessage(byte[] str, String url) {
-		this();
-		content = str;
+	public SimpleHttpTransportMessage(byte[] content, String url) {
 		this.url = url;
+		this.content = new ByteArrayPayload(content);
 	}
 
 	/**
@@ -97,9 +103,9 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @param destinationURL
 	 * @throws IOException
 	 */
-	public SimpleHttpTransportMessage(InputStream is, String url) throws IOException {
+	public SimpleHttpTransportMessage(IDataPayload payload, String url) throws IOException {
 		this();
-		content = StreamsUtil.readFromStream(is, -1);
+		this.content = payload;
 		this.url = url;
 	}
 
@@ -116,7 +122,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	}
 	
 
-	public byte[] getContent() {
+	protected IDataPayload getContent() {
 		return content;
 	}
 	
@@ -124,9 +130,9 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		this.orApiVersion = orApiVersion;
 	}
 	
-	public int getContentLength() {
+	public long getContentLength() {
 		if(this.getContent() != null) {
-			return getContent().length;
+			return getContent().getLength();
 		} else {
 			return -1;
 		}
@@ -185,11 +191,6 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 			setCacheable(false);
 		}
 	}
-
-	
-	
-	
-	
 	
 	public void send() {
 		HttpConnection conn = null;
@@ -334,19 +335,32 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	}
 
 	protected void writeBody(OutputStream os) throws IOException {
-		byte[] o = this.getContent();
-		if (o != null) {
-			if (o.length > TransportService.PAYLOAD_SIZE_REPORTING_THRESHOLD) {
-				Logger.log("send", "size " + o.length);
+		IDataPayload payload = this.getContent();
+		if (payload != null) {
+			long length = payload.getLength();
+			if (length > TransportService.PAYLOAD_SIZE_REPORTING_THRESHOLD) {
+				Logger.log("send", "size " + length);
 			}
-			System.out.println("content: " + new String(o));
+			
+//			InputStream stream = payload.getPayloadStream();
+//			try {
+//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//				StreamsUtil.writeFromInputToOutput(stream, baos);
+//				System.out.println("content: " + new String(baos.toByteArray()));
+//			} finally {
+//				try {
+//					stream.close();
+//				} catch(IOException e) {
+//					
+//				}
+//			}
 			
 			long[] tally = {0};
 			try {
-				StreamsUtil.writeToOutput(o, os, tally);
+				StreamsUtil.writeFromInputToOutput(payload.getPayloadStream(), os, tally);
 			} finally {
-				if (tally[0] != o.length) {
-					Logger.log("send", "only " + tally[0] + " of " + o.length);
+				if (tally[0] != length) {
+					Logger.log("send", "only " + tally[0] + " of " + length);
 				}
 			}
 		} else {
@@ -417,7 +431,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		url = ExtUtil.readString(in);
 		responseCode = (int)ExtUtil.readNumeric(in);
 		responseBody = ExtUtil.nullIfEmpty(ExtUtil.readBytes(in));
-		content = ExtUtil.readBytes(in);
+		content = (IDataPayload)ExtUtil.read(in, new ExtWrapTagged(), pf);
 		customHeaders = (Hashtable<String, String>) ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
 	}
 		
@@ -426,7 +440,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		ExtUtil.writeString(out,url);
 		ExtUtil.writeNumeric(out,responseCode);
 		ExtUtil.writeBytes(out, ExtUtil.emptyIfNull(responseBody));
-		ExtUtil.writeBytes(out, content);
+		ExtUtil.write(out, new ExtWrapTagged(content));
 		ExtUtil.write(out, new ExtWrapMap(customHeaders));
 	}
 	

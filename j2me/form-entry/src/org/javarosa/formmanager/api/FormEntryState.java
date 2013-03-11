@@ -22,7 +22,7 @@ import org.javarosa.j2me.view.J2MEDisplay;
  */
 public abstract class FormEntryState implements FormEntryTransitions, State, LocationReceiver {
 	
-	JrFormEntryController controller;
+	protected JrFormEntryController controller;
 	FormIndex capturing;
 	
 	public void start () {

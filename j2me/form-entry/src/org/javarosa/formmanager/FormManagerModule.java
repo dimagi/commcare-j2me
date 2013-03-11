@@ -18,8 +18,12 @@ package org.javarosa.formmanager;
 
 import org.javarosa.core.api.IModule;
 import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.formmanager.properties.FormManagerProperties;
+import org.javarosa.services.transport.impl.TransportMessageSerializationWrapper;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+import org.javarosa.utilities.media.ReferenceDataPointer;
 
 public class FormManagerModule implements IModule {
 
@@ -27,6 +31,8 @@ public class FormManagerModule implements IModule {
 	 * @see org.javarosa.core.api.IModule#registerModule()
 	 */
 	public void registerModule() {
+		String[] prototypes = new String[] { ReferenceDataPointer.class.getName()};
+		PrototypeManager.registerPrototypes(prototypes);	
 		PropertyManager._().addRules(new FormManagerProperties());
 	}
 
