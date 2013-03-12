@@ -162,6 +162,7 @@ public class QuickCameraWidget extends ExpandedWidget {
 		});
 		
 		c.add(retake);
+		c.requestDefocus(retake);
 		return c;
 	}
 	
