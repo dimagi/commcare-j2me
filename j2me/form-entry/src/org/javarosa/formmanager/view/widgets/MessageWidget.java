@@ -39,9 +39,14 @@ import de.enough.polish.ui.UiAccess;
 public class MessageWidget extends ExpandedWidget {
 	private StringItem ok;
 	
-	public MessageWidget () {
-		//#style button
-		ok = new StringItem(null, Localization.get("button.Next"));
+	public MessageWidget (boolean showButton) {
+		if(showButton) {
+			//#style button
+			ok = new StringItem(null, Localization.get("button.Next"));
+		} else {
+			//#style invisibleTrigger
+			ok = new StringItem(null, "");
+		}
 	}
 
 	public IAnswerData getData () {

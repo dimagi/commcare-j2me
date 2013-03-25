@@ -83,7 +83,7 @@ public class WidgetFactory {
 			expandedStyle = new TextEntryWidget();
 			break;
 		case Constants.CONTROL_TRIGGER:
-			expandedStyle = new MessageWidget();
+			expandedStyle = new MessageWidget(!"minimal".equals(appearanceAttr));
 			break;
 		case Constants.CONTROL_IMAGE_CHOOSE:
 			expandedStyle = new QuickCameraWidget();

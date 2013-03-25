@@ -151,6 +151,20 @@ focusHighlight extends focused {
 	background-color: buttonBgColor;
 }
 
+.invisibleTrigger {
+    padding: 0;
+    margin: 0;
+    max-height: 0px;
+    max-width: 0px;
+    focused-style: invisibleTriggerFocused;
+}
+
+.invisibleTriggerFocused {
+    padding: 0;
+    margin: 0;
+    max-height: 0px;
+    max-width: 0px;
+}
 .groupName {
 	font-color: black;
 	font-style: italic;
