@@ -46,6 +46,21 @@ at large.
 		<features>javarosa</features>
 		<parent>Nokia/6275i</parent> 
 	</device>
+	<device types="nokia s40 qwerty">
+		<identifier>Nokia/S40-qwerty</identifier>
+		<capability name="key.supportsAsciiKeyMap" value="true" />
+	    <capability name="polish.TextField.numerickeys.1" value="r" />
+	    <capability name="polish.TextField.numerickeys.2" value="t" />
+	    <capability name="polish.TextField.numerickeys.3" value="y" />
+	    <capability name="polish.TextField.numerickeys.4" value="f" />
+	    <capability name="polish.TextField.numerickeys.5" value="g" />
+	    <capability name="polish.TextField.numerickeys.6" value="h" />
+	    <capability name="polish.TextField.numerickeys.7" value="v" />
+	    <capability name="polish.TextField.numerickeys.8" value="b" />
+	    <capability name="polish.TextField.numerickeys.9" value="n" />
+	    <capability name="polish.TextField.numerickeys.0" value="m" />
+	    <parent>Nokia/S40-generic</parent>
+	</device>
 	
 	
 	<device types="nokia s60 qwerty">
