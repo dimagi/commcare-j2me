@@ -52,9 +52,12 @@ public class TransportMessageStore implements TransportCache {
 	 */
 	public TransportMessageStore() {
 		cachedCounts = new Hashtable();
+		Logger.log("transport", "Loading Message Stores");
 		storage(Q_STORENAME).repair();
 		storage(RECENTLY_SENT_STORENAME).repair();
+		Logger.log("transport", "Loaded Message Stores");
 		updateCachedCounts();
+		Logger.log("transport", "Updating cached counts");
 	}
 
 	/**
