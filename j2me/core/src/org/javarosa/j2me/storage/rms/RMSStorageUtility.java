@@ -162,7 +162,15 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 					//TODO: Try to return the record if possible?
 					return null;
 				}
-				
+				if(e instanceof Persistable){
+					if(((Persistable) e).getID() != id) {
+						int old = ((Persistable) e).getID();
+						((Persistable) e).setID(id);
+						if(old != -1) {
+							log("rms-storage",basename+": Record " +id + " is misindexed as " + old);
+						}
+					}
+				}
 				return e;
 			} else {
 				if(!nullOk) {
@@ -768,12 +776,17 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 					try {
 						E e = (E)getDataStore(loc.rmsID).readRecord(loc.recID, type);
 						if(e instanceof Persistable) {
-							((Persistable) e).setID(nextID);
-							getDataStore(loc.rmsID).updateRecord(loc.recID, ExtUtil.serialize(e));
+							if(((Persistable) e).getID() != nextID) {
+								//Update our record
+								((Persistable) e).setID(nextID);
+								if(!getDataStore(loc.rmsID).updateRecord(loc.recID, ExtUtil.serialize(e))) {
+									this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not update in place and couldn't be recovered");
+								}
+							}
 						}
 					} catch(Exception e) {
 						//There was a problem reading this object and it can't be recovered.
-						this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not be re-indexed[" + e.getClass() + ": " +  e.getMessage() + "] and was lost");
+						this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not be re-indexed[" + e.getClass() + ": " +  e.getMessage() + " and was lost");
 						continue;
 					}
 					
@@ -987,8 +1000,18 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 			int stores = -1;
 			for(String storeName : RecordStore.listRecordStores()) {
 				int number = getStoreNumber(storeName);
-				if(number > stores) {
-					stores = number;
+				if(number != -1) {
+					try {
+						RMS rms = rmsFactory.getDataRMS(dataStoreName(number), false);
+						rms.close();
+						
+						if(number > stores) {
+							stores = number;
+						}
+						
+					} catch (RecordStoreException rse) {
+
+					}
 				}
 			}
 			
