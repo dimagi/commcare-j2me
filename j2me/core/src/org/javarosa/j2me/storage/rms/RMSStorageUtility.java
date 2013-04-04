@@ -710,7 +710,7 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				
 				log("rms-repair", "Retrieving index table for repair");
 				
-				Hashtable idIndex = index.getIndexTable();
+				Hashtable<Integer, RMSRecordLoc> idIndex = index.getIndexTable();
 
 				//check index for entries where record does not exist in rms
 				Vector invalidIDs = new Vector();
@@ -758,13 +758,28 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				int nextID = idIndex.size() + 1;
 				
 				//Any records which exist in this table now represent values _unknown_ to the
-				//record store. We'll add them back (TODO: Maybe see whether some were
-				//part of a transaction and sohldn't be?)
+				//record store. We'll add them back
 				for(Enumeration en = realRecords.keys() ; en.hasMoreElements(); ) {
 					RMSRecordLoc loc = (RMSRecordLoc)en.nextElement();
+					
+					//We need to establish whether this record can be read successfully, since one
+					//possible reason it is not indexed is because it was a failed write. 
+					
+					try {
+						E e = (E)getDataStore(loc.rmsID).readRecord(loc.recID, type);
+						if(e instanceof Persistable) {
+							((Persistable) e).setID(nextID);
+							getDataStore(loc.rmsID).updateRecord(loc.recID, ExtUtil.serialize(e));
+						}
+					} catch(Exception e) {
+						//There was a problem reading this object and it can't be recovered.
+						this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not be re-indexed[" + e.getClass() + ": " +  e.getMessage() + "] and was lost");
+						continue;
+					}
+					
 					idIndex.put(new Integer(nextID), loc);
-					//TODO: The internal record ID's and Persistable record Id's won't necessarily
-					//match up after this op?
+
+					
 					this.log("rms-corrupt", "Re-Indexed record: " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")");
 					nextID++;
 					
@@ -791,7 +806,10 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				commitIndex(info, index);
 				setReserveBuffer(0);
 				setClean();
-				storageModified();	
+				storageModified();
+				
+				log("rms-repair", "Checking record store integrity");
+				checkAndRepairReadOnlyStorage();
 				
 				//check again
 				try {
@@ -800,6 +818,81 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				} catch (IllegalStateException ise2) {
 					log("rms-repair", "unable to repair storage utility!!!");
 					throw new IllegalStateException("Storage utility [" + basename + "] is corrupt and could not be repaired");
+				}
+			}
+		}
+	}
+	
+	public void checkAndRepairReadOnlyStorage() {
+		synchronized (getAccessLock()) {
+			
+			//We also want to clear out any corrupted record store locations. Optionally, this check is fast,
+			//maybe we should do it elsewhere?
+			for(int id = 0; id < datastores.length; id++) {
+				
+				//Make sure it's loaded
+				RMS datastore = getDataStore(id);
+				Vector<Integer> recordsToMove = new Vector<Integer>();
+				if(datastore.isReadOnly()) {
+					log("rms-repair", "Detected corrupt RMS: " + datastores[id].name + ". Migrating records");
+					//TODO: This should go in an index transaction so it's not incredibly slow 
+					
+					Hashtable<Integer, RMSRecordLoc> idIndex = index.getIndexTable();
+					//Still synchronized!
+					for(Enumeration en = idIndex.keys() ; en.hasMoreElements();) {
+						Integer key = (Integer)en.nextElement();
+						
+						if(idIndex.get(key).rmsID == id) {
+							recordsToMove.addElement(key);
+						}
+					}
+					
+					RMSStorageInfo info = this.getInfoRecord();
+					IdIndex storageIndex = index;
+					
+					boolean readyToDelete = true;
+					
+					if(recordsToMove.size() > 0) {
+						readyToDelete = false;
+						int recordsMoved = 0;
+						log("rms-repair", "Found " + recordsToMove.size() + "records to migrate");
+
+						for(Integer recordId : recordsToMove) {
+							byte[] b = this.readBytes(recordId);
+							RMSRecordLoc loc = this.addRecord(b, info);
+							if(loc.rmsID != id){
+								//Good
+								recordsMoved++;
+								//Put in the new record.
+								idIndex.put(recordId, loc);
+								//We won't try to delete the old record until 
+								//we've written everything
+							} else {
+								//Something's wrong.
+							}
+						}
+						
+						log("rms-repair", "Migrated " + recordsMoved + " records");
+						
+						
+						if(recordsMoved == recordsToMove.size()) {
+							//Commit changes.
+							storageIndex.beginChangeCommit(idIndex);
+							this.commitIndex(info, storageIndex);
+							readyToDelete = true;
+						}
+					}
+					
+					//All changes have been made and moved.	
+					if(readyToDelete) {
+						log("rms-repair", "Recreating busted RecordStore");
+						try {
+							datastores[id].recreate();
+							log("rms-repair", "Datastore: " + datastores[id].name + " succesfully recreated");
+						} catch(RecordStoreException rse) {
+							log("rms-repair", "Failed recreate/clear busted store: "+ rse.getMessage());
+						}
+					}
 				}
 			}
 		}
@@ -890,18 +983,18 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 		if(!infoRecordRecovered) {
 			RMSStorageInfo info = (RMSStorageInfo)ix.readRecord(STORAGE_INFO_REC_ID, RMSStorageInfo.class);
 			
-			//Figure out how many record stores we have
-			int stores = 0;
-			boolean failed = false;
-			while(!failed) {
-				try {
-					RMS rms = rmsFactory.getDataRMS(dataStoreName(stores), false);
-					stores++;
-					rms.close();
-				} catch (RecordStoreException rse) {
-					failed = true;
+			//Walk all of the current stores (we might have lost an earlier one)
+			int stores = -1;
+			for(String storeName : RecordStore.listRecordStores()) {
+				int number = getStoreNumber(storeName);
+				if(number > stores) {
+					stores = number;
 				}
 			}
+			
+			//It's 0 indexed currently, bump up
+			stores = stores+1;
+
 			info.numDataStores = stores;
 			log("storage-corrupt", indexStoreName() + ": Discovered " + stores + " RMS files");
 			
@@ -1085,6 +1178,7 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 		
 		for (iDatastore = info.numDataStores - 1; iDatastore >= 0; iDatastore--) {
 			RMS rs = getDataStore(iDatastore);
+			if(rs.isReadOnly()) { continue;}
 			int recID = rs.addRecord(data);
 
 			if (recID != -1) {
@@ -1160,7 +1254,9 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 		RMS data = datastores[i];
 		if (data == null) {
 			try {
-				data = rmsFactory.getDataRMS(dataStoreName(i), false);
+				//Changed to true since we can now clear out datastores and might have failed
+				//in the middle of doing so
+				data = rmsFactory.getDataRMS(dataStoreName(i), true);
 			} catch (RecordStoreException rse) {
 				throw new RuntimeException("Error opening data store " + i + "; " + rse.getMessage());
 			}
@@ -1283,6 +1379,25 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 			throw new IllegalArgumentException("Data stores can only be numbered 0 through " + MAX_DATA_STORES + " [" + i + "]");
 		}
 		return basename + "_" + DateUtils.intPad(i, 2);
+	}
+	
+	/**
+	 * Get the index of a datastore by it's name. If it is unrelated
+	 * to this storage, return -1; 
+	 * 
+	 * @param store The name of a potential store
+	 * @return -1 if the store is unrelated. An integer representing
+	 * its index into this storage otherwise.
+	 */
+	private int getStoreNumber(String store) {
+		try {
+			String base = basename + "_";
+			if(store.indexOf(base) == -1) { return -1; }
+			return Integer.parseInt(store.substring(base.length()));
+		} catch(Exception e ){
+			//TODO: This is kind of sloppy. NumberFormat only?
+			return -1;
+		}
 	}
 	
 	/**

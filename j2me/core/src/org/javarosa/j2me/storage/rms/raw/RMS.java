@@ -22,6 +22,9 @@ import org.javarosa.j2me.storage.rms.RMSRecordLoc;
 public class RMS {
 	public RecordStore rms; // the RecordStore object being wrapped
 	public String name; // the name of this RecordStore
+	
+	//If this datastore is read only due to corruption and should be replaced.
+	private boolean readOnly = false; 
 
 	/**
 	 * Open/create an RMS and wrap it
@@ -37,6 +40,38 @@ public class RMS {
 	public RMS(String name, boolean create) throws RecordStoreException {
 		this.name = name;
 		this.rms = RecordStore.openRecordStore(name, create);
+		
+		checkReadOnly();
+	}
+	
+	/**
+	 * Deletes and recreates this record store. Used to cycle Record Store 
+	 * namespaces when they have become corrupted.
+	 * 
+	 * @throws RecordStoreException
+	 */
+	public void recreate() throws RecordStoreException {
+		this.close();
+		RecordStore.deleteRecordStore(name);
+		this.rms = RecordStore.openRecordStore(name, true);
+	}
+
+	private void checkReadOnly() {
+		try {
+			rms.enumerateRecords(null, null, false).destroy();
+		} catch(Exception e) {
+			readOnly = true;
+		}
+	}
+	
+	/**
+	 * Check whether this record store is read only due to corruption.
+	 * 
+	 * @return true if the record store should not be used due to corruption.
+	 * False otherwise.
+	 */
+	public boolean isReadOnly() {
+		return readOnly;
 	}
 
 	public int addRecord(byte[] data) {
@@ -101,6 +136,7 @@ public class RMS {
 		} catch(RecordStoreNotOpenException e) {
 			
 		}  catch(ArrayIndexOutOfBoundsException oob) {
+			readOnly = true;
 			//Apparently Nokias throw this sometimes _instead_ of the invalid
 			//record ID exception! SOUNDS LEGIT, RIGHT?
 			//Just... just what the hell
