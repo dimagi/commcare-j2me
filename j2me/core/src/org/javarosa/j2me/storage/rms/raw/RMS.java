@@ -41,6 +41,7 @@ public class RMS {
 		this.name = name;
 		this.rms = RecordStore.openRecordStore(name, create);
 		
+		cycle();
 		checkReadOnly();
 	}
 	

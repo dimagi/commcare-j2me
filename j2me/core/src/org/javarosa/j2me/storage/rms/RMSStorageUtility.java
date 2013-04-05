@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.microedition.rms.InvalidRecordIDException;
 import javax.microedition.rms.RecordEnumeration;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
@@ -702,14 +703,15 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				//Enumerate all of the records which exist
 				for(int id = 0; id < datastores.length; ++ id) {
 					int numPossible = -1;
+					RMS datastore = getDataStore(id);
 					try {
-						numPossible = datastores[id].rms.getNumRecords();
+						numPossible = datastore.rms.getNumRecords();
 					} catch(Exception e) {
 						log("rms-repair", "Error getting num records(" + e.getClass() + ": " + e.getMessage() + ")");
 					}
 					log("rms-repair", "Enumerating recordStore: " + id + " to check " + numPossible + " records");
 					int old = realRecords.size();
-					datastores[id].listRecords(realRecords, id);
+					datastore.listRecords(realRecords, id);
 					log("rms-repair", "Located " + (realRecords.size() - old) + " records");
 				}
 				log("rms-repair", "Existing records enumerated");
@@ -1130,6 +1132,13 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 			
 			if (ix != null) {
 				this.index = new IdIndex(ix);
+				//make sure the index isn't corrutped.
+				try {
+					ix.rms.getRecordSize(RMSStorageUtility.ID_INDEX_REC_ID);
+				} catch (RecordStoreException e) {
+					//Corrupt index!
+					throw new IllegalStateException("RMS Index is corrupt");
+				}
 			} else {
 				initIndexStore();
 			}
