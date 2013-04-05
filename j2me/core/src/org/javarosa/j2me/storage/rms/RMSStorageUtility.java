@@ -776,16 +776,23 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 					//possible reason it is not indexed is because it was a failed write. 
 					
 					try {
+						//Make sure we can read this record.
 						E e = (E)getDataStore(loc.rmsID).readRecord(loc.recID, type);
-						if(e instanceof Persistable) {
-							if(((Persistable) e).getID() != nextID) {
-								//Update our record
-								((Persistable) e).setID(nextID);
-								if(!getDataStore(loc.rmsID).updateRecord(loc.recID, ExtUtil.serialize(e))) {
-									this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not update in place and couldn't be recovered");
-								}
-							}
-						}
+						
+						//In theory, we could re-index this persistable here. We'll skip that and 
+						//switch to doing so in real-time when we read the record and return it,
+						//which needs to happen carefully, but prevents a host of issues that
+						//can happen here.
+						
+//						if(e instanceof Persistable) {
+//							if(((Persistable) e).getID() != nextID) {
+//								//Update our record
+//								((Persistable) e).setID(nextID);
+//								if(!getDataStore(loc.rmsID).updateRecord(loc.recID, ExtUtil.serialize(e))) {
+//									this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not update in place and couldn't be recovered");
+//								}
+//							}
+//						}
 					} catch(Exception e) {
 						//There was a problem reading this object and it can't be recovered.
 						this.log("rms-corrupt", "Record : " + this.getName() + ": " + nextID + " => (" + loc.rmsID + "," + loc.recID + ")" + " could not be re-indexed[" + e.getClass() + ": " +  e.getMessage() + " and was lost");

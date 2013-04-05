@@ -77,7 +77,20 @@ public class WrappingStorageUtility implements IStorageUtilityIndexed {
 	}
 	
 	public Externalizable read(int id) {
-		return ((SerializationWrapper)storage.read(id)).getData();
+		Externalizable e =  ((SerializationWrapper)storage.read(id)).getData();
+		return idAdjust(e,id);
+	}
+
+	private Externalizable idAdjust(Externalizable e, int id) {
+		//When storage gets repaired sometimes this value doesn't end up reflecting the 
+		//same ID anymore! Which is very bad! 
+		if(e instanceof Persistable) {
+			if(((Persistable) e).getID() != id) {
+				//Set this ID in real time, then.
+				((Persistable) e).setID(id);
+			}
+		}
+		return e;
 	}
 
 	public void write(final Persistable p) throws StorageFullException {
@@ -122,7 +135,8 @@ public class WrappingStorageUtility implements IStorageUtilityIndexed {
 			}
 
 			public Externalizable nextRecord() {
-				return ((SerializationWrapper)baseIterator.nextRecord()).getData();
+				int id = this.peekID();
+				return idAdjust(((SerializationWrapper)baseIterator.nextRecord()).getData(), id);
 			}
 
 			public int numRecords() {

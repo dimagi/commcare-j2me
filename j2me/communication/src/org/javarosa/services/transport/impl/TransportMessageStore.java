@@ -75,7 +75,10 @@ public class TransportMessageStore implements TransportCache {
 	public Vector getCachedMessages() {
 		Vector cached = new Vector();
 		for(IStorageIterator en = storage(Q_STORENAME).iterate(); en.hasMore() ;) {
+			int id = en.peekID();
 			TransportMessage message = (TransportMessage)en.nextRecord();
+			int messageId = message.getID();
+			Logger.log("queued-message","it: " + id + ", m: " + messageId);
 			if (message.getStatus() == TransportMessageStatus.CACHED) {
 				cached.addElement(message);
 			} else {
