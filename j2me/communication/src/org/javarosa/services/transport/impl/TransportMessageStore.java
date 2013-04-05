@@ -52,12 +52,9 @@ public class TransportMessageStore implements TransportCache {
 	 */
 	public TransportMessageStore() {
 		cachedCounts = new Hashtable();
-		Logger.log("transport", "Loading Message Stores");
 		storage(Q_STORENAME).repair();
 		storage(RECENTLY_SENT_STORENAME).repair();
-		Logger.log("transport", "Loaded Message Stores");
 		updateCachedCounts();
-		Logger.log("transport", "Updating cached counts");
 	}
 
 	/**
@@ -75,10 +72,7 @@ public class TransportMessageStore implements TransportCache {
 	public Vector getCachedMessages() {
 		Vector cached = new Vector();
 		for(IStorageIterator en = storage(Q_STORENAME).iterate(); en.hasMore() ;) {
-			int id = en.peekID();
 			TransportMessage message = (TransportMessage)en.nextRecord();
-			int messageId = message.getID();
-			Logger.log("queued-message","it: " + id + ", m: " + messageId);
 			if (message.getStatus() == TransportMessageStatus.CACHED) {
 				cached.addElement(message);
 			} else {
