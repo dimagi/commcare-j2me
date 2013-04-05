@@ -881,6 +881,21 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 
 						for(Integer recordId : recordsToMove) {
 							byte[] b = this.readBytes(recordId);
+							
+							//This record might have gotten corrupted, since the store itself
+							//is bad, deserialize it and make sure we're in ok shape.
+							try {
+								//Make sure we can read this record.
+								ExtUtil.deserialize(b, type);
+							} catch(Exception e) {
+								//We can't, which is sad, but not recoverable
+								log("rms-repair", "Record: " + recordId + " is corrupted and not recoverable");
+								idIndex.remove(recordId);
+								recordsMoved++;
+								continue;
+							}
+								
+							
 							RMSRecordLoc loc = this.addRecord(b, info);
 							if(loc.rmsID != id){
 								//Good
@@ -946,13 +961,18 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 			//TODO: see if
 			//Get any of the living data if it's working
 			try {
-				storageInfo = ix.readRecord(STORAGE_INFO_REC_ID);
-			} catch(RuntimeException rse) {
+				byte[] si = ix.readRecord(STORAGE_INFO_REC_ID);
+				//and make sure we can read it
+				ExtUtil.deserialize(si, RMSStorageInfo.class);
+				storageInfo = si;
+			} catch(Exception rse) {
 				//corrupt
 			}
 			try {
-				indexData = ix.readRecord(ID_INDEX_REC_ID);
-			} catch(RuntimeException rse) {
+				byte[] id = ix.readRecord(ID_INDEX_REC_ID);
+				ExtUtil.deserialize(id, new ExtWrapMap(Integer.class, RMSRecordLoc.class));
+				indexData = id;
+			} catch(Exception rse) {
 				//corrupt
 			}
 			//Don't worry about the buffer or status...
@@ -992,7 +1012,7 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 		
 		boolean indexDataRecoverd = false;
 		if(indexData != null) {
-			ix.updateRecord(ID_INDEX_REC_ID, storageInfo, true);
+			ix.updateRecord(ID_INDEX_REC_ID, indexData, true);
 			indexDataRecoverd = true;
 		}
 		
@@ -1131,6 +1151,9 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 			RMS ix = null;
 			try {
 				ix = rmsFactory.getIndexRMS(indexStoreName(), false);
+				if(ix.isReadOnly()) {
+					throw new RuntimeException("Index Store may have been corrupted");
+				}
 			} catch (RecordStoreNotFoundException rsnfe) {
 				//do nothing; will create record store next
 			} catch (RecordStoreException rse) {
@@ -1145,6 +1168,13 @@ public class RMSStorageUtility<E extends Externalizable> implements IStorageUtil
 				} catch (RecordStoreException e) {
 					//Corrupt index!
 					throw new IllegalStateException("RMS Index is corrupt");
+				}
+				
+				try {
+					ix.rms.getRecordSize(RMSStorageUtility.RESERVE_BUFFER_REC_ID);
+				} catch (RecordStoreException e) {
+					//Corrupt index!
+					throw new IllegalStateException("Reserve Buffer is corrupt");
 				}
 			} else {
 				initIndexStore();
