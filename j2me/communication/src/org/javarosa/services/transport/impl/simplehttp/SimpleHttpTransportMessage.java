@@ -94,6 +94,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @param destinationURL
 	 */
 	public SimpleHttpTransportMessage(byte[] content, String url) {
+		this();
 		this.url = url;
 		this.content = new ByteArrayPayload(content);
 	}
