@@ -112,6 +112,14 @@ public class JrFormEntryController extends FormEntryController implements FormMu
 		this.transitions = transitions;
 	}
 	
+	/**
+	 * Handles the given key event, and returns a flag signifying whether 
+	 * the interface should continue trying to handle the event.
+	 * 
+	 * @param key The key that was pressed
+	 * @return true if the ui should stop handling this event. False if it
+	 * is ok to continue processing it.
+	 */
 	public boolean handleKeyEvent(int key) {
 		if(getModel().getForm().getLocalizer() != null && key == POUND_KEYCODE && !FormManagerProperties.EXTRA_KEY_AUDIO_PLAYBACK.equals(getExtraKeyMode())) {
     		cycleLanguage();
@@ -162,7 +170,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     		}
     		
     		playAudioOnDemand(fep);
-    		return true;
+    		//We can keep processing this. Audio plays in the background.
+    		return false;
     	}
 		return false;
 	}
