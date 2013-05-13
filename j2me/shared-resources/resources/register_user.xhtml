@@ -50,9 +50,7 @@
 					    <registering_phone_id/>
 					    <!--token/    UNUSED  -->
 					    
-					    <user_data>
-					    	<type key="user_type"/>
-					    </user_data>
+					    <user_data/>
 			      	</registration>
 			      	
 			      	<confirmpass/>
@@ -72,7 +70,6 @@
 			<bind nodeset="loadedguid" type="xsd:string" jr:preload="user" jr:preloadParams="uuid" />
 			<bind nodeset="freshguid" type="xsd:string" jr:preload="uid" jr:preloadParams="general" />
 			
-			<bind id="type" nodeset="registration/user_data/type" jr:preload="user" jr:preloadParams="user_type"/>
 		</model>
 
 	</h:head>
@@ -88,12 +85,6 @@
 		<secret ref="confirmpass">
 			<label ref="jr:itext('confirmpassword')"/>
 		</secret>
-		<select1 bind="type">
-			<label ref="jr:itext('usertype')"/>
-			<item><value>standard</value><label ref="jr:itext('user_normal')"/></item>
-			<item><value>admin</value><label ref="jr:itext('user_admin')"/></item>
-		</select1>
-
 	</h:body>
 
 </h:html>
