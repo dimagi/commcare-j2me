@@ -5,7 +5,6 @@ local.properties
 
 #compiled files and libraries
 *.class
-*.jar
 *.jad
 *.zip
 *.rar
