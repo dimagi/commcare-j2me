@@ -162,7 +162,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     	for (int i = 0; i < size(); i++) {
     		//As long as everything is collapsed, we should clear all relevant resources.
     		ChatterboxWidget cw = ((ChatterboxWidget)get(i));
-    		cw.setViewState(ChatterboxWidget.VIEW_COLLAPSED);    		
+    		cw.releaseResources();
     	}
     }
     
