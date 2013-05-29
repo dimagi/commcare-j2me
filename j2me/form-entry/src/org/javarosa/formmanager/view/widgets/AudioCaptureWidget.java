@@ -81,13 +81,6 @@ public class AudioCaptureWidget extends ExpandedWidget
 	
 	private void updateLabel()
 	{
-		if(label == null) 
-		{
-			label = new StringItem("", "");
-			// this command comes from the other constants file
-			Command recordCommand = new Command(org.javarosa.core.api.Constants.ACTIVITY_TYPE_GET_AUDIO, "Get Audio", Command.SCREEN, 0);
-			label.addCommand(recordCommand);
-		}
 		if(data == null)
 		{
 			label.setLabel("Use the menu to capture audio");
