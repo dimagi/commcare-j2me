@@ -119,9 +119,14 @@ public class QuickCameraWidget extends ExpandedWidget {
 			retake.setDefaultCommand(new Command("Snap", Command.ITEM, 1));
 			retake.setItemCommandListener(new ItemCommandListener() {
 				public void commandAction(Command c, Item item) {
-					IDataPointer data = current.snap();
-					setWidgetValue(data);
-					init();
+					try{
+						IDataPointer data = current.snap();
+						setWidgetValue(data);
+						init();
+					}
+					catch(SecurityException se){
+						se.printStackTrace();
+					}
 				}
 			});
 			wrapper.add(retake);
@@ -131,11 +136,11 @@ public class QuickCameraWidget extends ExpandedWidget {
 			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e.printStackTrace();	
 		} catch (InvalidReferenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} 
 		
 		return wrapper;
 	}
@@ -149,6 +154,8 @@ public class QuickCameraWidget extends ExpandedWidget {
 		} catch (IOException e) {
 			StringItem failed = new StringItem(null, "Failed to capture image");
 			c.add(failed);
+		} catch(SecurityException se){
+			se.printStackTrace();
 		}
 		
 		//#style button
@@ -156,8 +163,13 @@ public class QuickCameraWidget extends ExpandedWidget {
 		retake.setDefaultCommand(new Command("Retake", Command.ITEM, 1));
 		retake.setItemCommandListener(new ItemCommandListener() {
 			public void commandAction(Command c, Item item) {
-				QuickCameraWidget.this.clear();
-				init();
+				try{
+					QuickCameraWidget.this.clear();
+					init();
+				}
+				catch(SecurityException se){
+					se.printStackTrace();
+				}
 			}
 		});
 		

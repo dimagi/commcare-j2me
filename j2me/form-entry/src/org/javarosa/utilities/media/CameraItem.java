@@ -352,6 +352,8 @@ public class CameraItem extends CustomItem {
 			ReferenceDataPointer fdp = new ReferenceDataPointer(destination.getURI());
 		
 		return fdp;
+		} catch(SecurityException se){
+			return null;
 		} catch(Exception e) {
 			Logger.die("Camera", e);
 			return null;
