@@ -75,12 +75,14 @@ public class AudioCaptureWidget extends ExpandedWidget
 	//@Override
 	public int widgetType() 
 	{
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub\
 		return Constants.CONTROL_AUDIO_CAPTURE;
 	}
 	
 	private void updateLabel()
 	{
+		label = new StringItem("", "");
+		
 		if(data == null)
 		{
 			label.setLabel("Use the menu to capture audio");
