@@ -57,6 +57,12 @@ public class TransportService {
 	
 	private static final String CACHE_LOCK="CACHE_LOCK";
 	
+	/**
+	 * The maximum number of forms which can fail to send in a row before the submission
+	 * process is cancelled
+	 */
+	private static final int MAX_FAILURES = 5;
+	
 	public static final int PAYLOAD_SIZE_REPORTING_THRESHOLD = 15000;
 	
 	private static TransportMessageStore CACHE() {
@@ -215,7 +221,7 @@ public class TransportService {
 			
 			if (messages.size() > 0) {
 				try {
-					SENDER.init(messages, CACHE(), listener);
+					SENDER.init(messages, CACHE(), listener, MAX_FAILURES);
 					SENDER.send();
 				} finally {
 					//Make _damn_ sure we remove the listener hook. Otherwise memory can't be cleared up 
