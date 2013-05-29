@@ -77,7 +77,14 @@ public class GeoPointWidget extends ExpandedWidget {
 		
 		parent.addCommand(captureCommand);
 		parent.focusChild(0);
-		return wec.wrapEntryWidget(parent);
+		
+		// adding command manually to get Capture to appear in first item
+		
+		Item wrapper = wec.wrapEntryWidget(parent);
+		
+		wrapper.addCommand(captureCommand);
+		
+		return wrapper;
 	}
 	
 	public int getNextMode() {
