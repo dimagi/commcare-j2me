@@ -81,6 +81,7 @@ public class LoginController implements HandledCommandListener {
 	
 	// listener for the display
 	public void _commandAction(Command c, Displayable d) {
+		System.out.println("controller command action");
 		if (c == LoginForm.CMD_CANCEL_LOGIN) {
 			transitions.exit();
 		} else if (c == LoginForm.CMD_LOGIN_BUTTON) {

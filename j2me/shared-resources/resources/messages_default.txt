@@ -23,7 +23,7 @@ polish.command.followlink=Go
 # used by the HtmlBrowser for submitting a form:
 polish.command.submit=Submit
 # used by the RssBrowser for returning to the previous page:
-polish.command.back=Back
+polish.command.back=SRBack
 # RSS commands:
 polish.rss.command.select=Show
 polish.rss.command.followlink=Go
@@ -41,7 +41,7 @@ menu.Exit=Exit
 menu.Settings=Settings
 menu.SaveAndExit=Save and Exit
 menu.Next=Next
-menu.Back=Back
+menu.Back=SR2Back
 menu.ViewAnswers=View Answers
 menu.SendNow=Send Now
 menu.SendLater=Send Later (Save)
@@ -164,7 +164,7 @@ command.retry=Retry
 # -- Begin Entries on March 10, 2010 to complete localizations -- 
 
 command.ok=Ok
-command.back=Back
+command.back=SR3Back
 command.select=Select
 command.cancel=Cancel
 
