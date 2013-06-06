@@ -842,14 +842,13 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     	Item[] newHeaders = new Item[headers.size()];
     	headers.copyInto(newHeaders);
     	if((this.topFrame == null && headers.size() > 0) || (this.topFrame != null && !itemArraysEqual(newHeaders, this.topFrame.getItems()))) {
+    		int oldHeaderHeight = 0;
         	if(topFrame != null) {
+        		oldHeaderHeight = this.topFrame.getContentHeight();
         		this.topFrame.clear();
         	}
         	for(int i = 0 ; i < newHeaders.length ; ++i ) {
         		append(Graphics.TOP, newHeaders[i]);
-        	}
-        	if(newHeaders.length == 0) {
-        		this.calculateContentArea(0, 0,this.getWidth(), this.getHeight());
         	}
         	
         	if(this.topFrame != null) {
@@ -857,6 +856,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         		//Nuclear Option: Just figure everything out again.
         		//Might slow down bad phones. Not sure yet.
         		this.topFrame.requestFullInit();
+        	}
+        	
+        	if(newHeaders.length == 0) {
+        		int curOffset = this.getScrollYOffset();
+        		this.calculateContentArea(0, 0,this.getWidth(), this.getHeight());
+            	this.setScrollYOffset(curOffset + oldHeaderHeight, true);
         	}
     	}
     }
