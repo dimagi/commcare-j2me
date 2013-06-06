@@ -150,71 +150,7 @@ public class CameraItem extends CustomItem {
 	
 	boolean playing = false;
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-        	if(player != null) {
-        		//center stuff
-        		width = rightBorder - leftBorder;
-        		int offsetX = (width - cw) / 2;
-	        	vc.setDisplayLocation(x + offsetX, y);
-	        	if(!playing) {
-    	        	vc.setVisible(false);
-    	        	
-    	        	Font f = g.getFont();
-    	        	int fnth = f.getHeight();
-
-    	        	
-    	        	//Calculate margins and locations
-	        		int mx = x + offsetX;
-	        		int my = y;
-	        		
-	        		int mw = vc.getDisplayWidth();
-	        		int mh = vc.getDisplayHeight();
-	        		
-	        		
-	        		int hi = Math.max((int)Math.floor(.2 * mh), fnth);
-	        		int fh = mh - hi * 2;
-	        		
-	        		//int fw = mw  - wi * 2;
-		        	//int wi = (int)Math.floor(.2 * mw);
-	        		int fw = (int)Math.floor(.9 * fh);
-	        		
-		        	int wi = (mw - fw)/2;		        	
-		        	
-		        	
-		        	int wu = (int)Math.floor(fw / 5.0);
-		        	int hu = (int)Math.floor(fh / 7.0);
-		        	
-		        	//Draw us a big 'ol hash
-		        	g.setColor(0, 0, 0);
-		        	
-		        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
-		        	g.fillRect(mx + wi + 3 * wu, my + hi, wu, fh);
-		        	
-		        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
-		        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
-		        	
-		        	
-		        	String top = Localization.get("video.playback.top");
-		        	//String top = "lw: " + vc.getSourceWidth() + " lh: " + vc.getSourceHeight();
-		        	String bottom = Localization.get("video.playback.bottom");
-		        	//String bottom = "cw: " + cw + " ch: " + ch; 
-		        	
-		        	
-		        	int tw = f.stringWidth(top);
-		        	int bw = f.stringWidth(bottom);
-		        	
-		        	int tx = (mw - tw)/2 + mx;
-		        	int tyo = (hi - fnth) /2;
-		        	int ty = my + tyo;
-		        	
-		        	
-		        	g.drawString(top, tx, ty, Graphics.TOP | Graphics.LEFT);
-		        	
-		        	int bx = (mw - bw)/2 + mx;
-		        	int by = (my + mh - hi) + tyo;
-
-		        	g.drawString(bottom, bx, by, Graphics.TOP | Graphics.LEFT);
-	        	} 
-	        }
+		//removed "#" draw here, since it's never relevant
 	}
 	
 	public int getPreferredWidth() { 
