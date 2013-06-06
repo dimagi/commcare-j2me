@@ -150,7 +150,15 @@ public class CameraItem extends CustomItem {
 	
 	boolean playing = false;
 	protected void paintContent(int x, int y, int leftBorder, int rightBorder, Graphics g) {
-		//removed "#" draw here, since it's never relevant
+        	if(player != null) {
+        		//center stuff
+        		width = rightBorder - leftBorder;
+        		int offsetX = (width - cw) / 2;
+	        	vc.setDisplayLocation(x + offsetX, y);
+	        	if(!playing) {
+    	        	vc.setVisible(false);
+	        	} 
+	        }
 	}
 	
 	public int getPreferredWidth() { 
