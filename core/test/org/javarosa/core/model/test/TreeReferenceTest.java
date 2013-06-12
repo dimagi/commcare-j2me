@@ -119,7 +119,7 @@ public class TreeReferenceTest extends TestCase {
 		return aSuite;
 	}
 	
-	public final static int NUM_TESTS = 6;
+	public final static int NUM_TESTS = 7;
 	public void doTest (int i) {
 		switch (i) {
 		case 1: testClones(); break;
@@ -128,9 +128,11 @@ public class TreeReferenceTest extends TestCase {
 		case 4: testIntersection(); break;
 		case 5: contextualization(); break;
 		case 6: testPredicates(); break;
+		case 7: testGenericize(); break;
 		}
 	}
-	
+
+
 	public void testSerialization () {
 		//TODO: That ^
 	}
@@ -189,6 +191,17 @@ public class TreeReferenceTest extends TestCase {
 	public void testPredicates() {
 		if(!apred.equals(apredmatch)) {fail("/a[..b = 'test'] Did not equal itself!");}
 		if(apred.equals(aprednot)) {fail("/a[..b = 'test'] was equal to /a[..b = 'fail']");}
+	}
+	
+	
+	private void testGenericize() {
+		//Generic ref to generic attribute
+		TreeReference attributeRef = XPathReference.getPathExpr("/data/node/@attribute").getReference();
+		
+		//re-genericize
+		TreeReference genericRef = attributeRef.genericize();
+		
+		if(!attributeRef.equals(genericRef)) { fail("Genericize improperly converted " + attributeRef.toString(true) + " to " + genericRef.toString(true)); }
 	}
 }
 
