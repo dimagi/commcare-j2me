@@ -75,8 +75,8 @@ public class LoginForm extends FramedForm {
 
         public MyButton(Image image, String txt) {
         	super("");
+        	System.out.println("611 constructor");
             _image = image;
-            this.setLayout(Item.LAYOUT_CENTER);
         }
 
         // Button's image
@@ -93,7 +93,7 @@ public class LoginForm extends FramedForm {
             return _down;
         }
         
-        // Minimal button size = image size
+        // Minimal button size = image size	
         protected int getMinContentHeight() {
             return getImage().getHeight();
         }
@@ -116,17 +116,16 @@ public class LoginForm extends FramedForm {
             // Draw the image in the center of the button
             g.drawImage(getImage(), w/2, h/2, Graphics.HCENTER|Graphics.VCENTER);
             // Draw the borders
-            g.setColor(isDown()?0x000000:0xffffff);
+            g.setColor(0x000000);
             g.drawLine(0, 0, w, 0);
             g.drawLine(0, 0, 0, h);
-            g.setColor(isDown()?0xffffff:0x000000);
             g.drawLine(0, h-1, w, h-1);
             g.drawLine(w-1, 0, w-1, h);
         }
     }
 	
 	public LoginForm() {
-		//#style loginView
+			//#style loginView
 		super(Localization.get("form.login.login"));
 		init();
 	}
@@ -213,7 +212,9 @@ public class LoginForm extends FramedForm {
 		
 		try{
 			Image mImage = ImageUtils.getImage("jr://file/commcare/images/login.png");
+			
 			this.loginButton = new MyButton(mImage,Localization.get("form.login.login"));
+			this.loginButton.setLayout(Item.LAYOUT_CENTER);
 		}
 		catch (NoLocalizedTextException e){
 			System.out.println("couldn't find demo image path");
