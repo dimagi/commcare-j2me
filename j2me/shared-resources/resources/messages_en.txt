@@ -91,3 +91,6 @@ activity.locationcapture.Altitude=Altitude
 activity.locationcapture.Accuracy=Accuracy
 activity.locationcapture.capturelocationhint=Use a GPS to get location
 
+icon.login.path=jr://file/commcare/images/login.png
+icon.demo.path=jr://file/commcare/images/demo.png
+

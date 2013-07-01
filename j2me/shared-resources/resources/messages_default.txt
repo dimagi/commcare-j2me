@@ -261,3 +261,6 @@ command.call=Call ${0}
 menu.Tools=Tools
 
 entity.nodata=No Records
+
+icon.login.path=jr://file/commcare/images/login.png
+icon.demo.path=jr://file/commcare/images/demo.png

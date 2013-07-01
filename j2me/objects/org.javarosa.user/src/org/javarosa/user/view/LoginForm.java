@@ -16,11 +16,14 @@
 
 package org.javarosa.user.view;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -31,11 +34,11 @@ import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
 
-import de.enough.polish.ui.Canvas;
 import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 
 public class LoginForm extends FramedForm {
@@ -44,6 +47,11 @@ public class LoginForm extends FramedForm {
 
 	//#if javarosa.login.demobutton
 	private MyButton demoButton;
+	private MyButton loginButton;
+	
+	private StringItem regularDemoButton;
+	private StringItem regularLoginButton;
+	
 	public final static Command CMD_DEMO_BUTTON = new Command(Localization.get("menu.Demo"),
 			Command.ITEM, DEFAULT_COMMAND_PRIORITY);
 	//#endif
@@ -56,7 +64,7 @@ public class LoginForm extends FramedForm {
 	public final static Command  CMD_TOOLS = new Command(Localization.get("menu.Tools"),
 			Command.ITEM, 4);
 
-	private MyButton loginButton;
+
 	private TextField usernameField;
 	private TextField passwordField;
 	private IStorageUtility users;
@@ -67,6 +75,8 @@ public class LoginForm extends FramedForm {
 
 	private boolean toolsEnabled;
 	
+	private boolean imagesEnabled = true;
+	
 	class MyButton extends CustomItem {
 		
         private Image _image = null;
@@ -74,9 +84,12 @@ public class LoginForm extends FramedForm {
         private int _clicks = 0;
 
         public MyButton(Image image, String txt) {
-        	super("");
-        	System.out.println("611 constructor");
-            _image = image;
+        	this(image, txt, null);
+        }
+        
+        public MyButton(Image image, String txt, Style s) {
+        	super("", s);
+        	_image = image;
         }
 
         // Button's image
@@ -145,11 +158,16 @@ public class LoginForm extends FramedForm {
 	 * @param extraText
 	 */
 	public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled) {
+		this(title, extraText, demoEnabled, toolsEnabled, false);
+	}
+	
+	public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled, boolean imagesEnabled) {
 		//#style loginView
 		super(title);
 		this.extraText = extraText;
 		this.demoEnabled = demoEnabled;
 		this.toolsEnabled = toolsEnabled;
+		this.imagesEnabled = imagesEnabled;
 		init();
 	}
 
@@ -209,32 +227,52 @@ public class LoginForm extends FramedForm {
 		this.passwordField.setDefaultCommand(CMD_LOGIN_BUTTON);
 
 		// add the login button
-		
-		try{
-			Image mImage = ImageUtils.getImage("jr://file/commcare/images/login.png");
-			
-			this.loginButton = new MyButton(mImage,Localization.get("form.login.login"));
-			this.loginButton.setLayout(Item.LAYOUT_CENTER);
+		if(imagesEnabled){
+			try{
+				Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
+				//#style myButton
+				this.loginButton = new MyButton(mImage,Localization.get("form.login.login"));
+				this.loginButton.setLayout(Item.LAYOUT_CENTER);
+				this.loginButton.setLayout(Item.LAYOUT_CENTER);
+				append(this.loginButton);
+				this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
+			}
+/*			catch(IOException e){
+				System.out.println("couldn't find image at path: " + Localization.get("icon.login.path"));
+			}
+*/			catch (NoLocalizedTextException e){
+				System.out.println("couldn't find demo image path");
+			}
 		}
-		catch (NoLocalizedTextException e){
-			System.out.println("couldn't find demo image path");
+		else{
+			this.regularLoginButton = new StringItem(null, Localization.get("form.login.login"), Item.BUTTON);
+	 		append(this.regularLoginButton);
+	 		this.regularLoginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
 		}
-		this.loginButton.setLayout(Item.LAYOUT_CENTER);
-		append(this.loginButton);
-		this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
 
 		//#if javarosa.login.demobutton
 		if (demoEnabled) {
-			try{
-				Image mImage = ImageUtils.getImage("jr://file/commcare/images/demo.png");
-				this.demoButton = new MyButton(mImage,Localization.get("menu.Demo"));
+			if(imagesEnabled){
+				try{
+					Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
+					//#style myButton
+					this.demoButton = new MyButton(mImage,Localization.get("menu.Demo"));
+					append(this.demoButton);
+					this.demoButton.setLayout(Item.LAYOUT_CENTER);
+					this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
+				}
+/*				catch(IOException e){
+					System.out.println("couldn't find image at path: " + Localization.get("icon.demo.path"));
+				}
+*/				catch (NoLocalizedTextException e){
+					System.out.println("couldn't find demo image path");
+				}
 			}
-			catch (NoLocalizedTextException e){
-				System.out.println("couldn't find demo image path");
+			else{
+				this.regularDemoButton = new StringItem(null, Localization.get("menu.Demo"), Item.BUTTON);
+	 			append(this.regularDemoButton);
+	 			this.regularDemoButton.setDefaultCommand(CMD_DEMO_BUTTON);
 			}
-			append(this.demoButton);
-			this.demoButton.setLayout(Item.LAYOUT_CENTER);
-			this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
 		}
 		//#endif
 
@@ -368,9 +406,5 @@ public class LoginForm extends FramedForm {
 	}
 
 	// ------------------------
-
-	public MyButton getLoginButton() {
-		return this.loginButton;
-	}
 
 }
