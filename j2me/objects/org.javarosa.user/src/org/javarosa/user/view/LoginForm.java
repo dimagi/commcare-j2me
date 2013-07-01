@@ -75,7 +75,7 @@ public class LoginForm extends FramedForm {
 
 	private boolean toolsEnabled;
 	
-	private boolean imagesEnabled = true;
+	private boolean imagesEnabled = false;
 	
 	class MyButton extends CustomItem {
 		
@@ -237,10 +237,7 @@ public class LoginForm extends FramedForm {
 				append(this.loginButton);
 				this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
 			}
-/*			catch(IOException e){
-				System.out.println("couldn't find image at path: " + Localization.get("icon.login.path"));
-			}
-*/			catch (NoLocalizedTextException e){
+			catch (NoLocalizedTextException e){
 				System.out.println("couldn't find demo image path");
 			}
 		}
@@ -261,10 +258,7 @@ public class LoginForm extends FramedForm {
 					this.demoButton.setLayout(Item.LAYOUT_CENTER);
 					this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
 				}
-/*				catch(IOException e){
-					System.out.println("couldn't find image at path: " + Localization.get("icon.demo.path"));
-				}
-*/				catch (NoLocalizedTextException e){
+				catch (NoLocalizedTextException e){
 					System.out.println("couldn't find demo image path");
 				}
 			}
