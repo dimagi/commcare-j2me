@@ -4,20 +4,21 @@
 package org.javarosa.utilities.media;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
 
-import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.locale.Localization;
+import org.javarosa.core.util.NoLocalizedTextException;
+import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.CustomItem;
@@ -38,6 +39,13 @@ public class VideoItem extends CustomItem {
 	Reference videoRef;
 	
 	VideoControl vc;
+	
+	Image hashKeyImage = null;
+	
+	String top;
+	String bottom;
+	
+	String imageLocation;
 
 	   private Player player;
 	   void defplayer() throws MediaException {
@@ -139,7 +147,15 @@ public class VideoItem extends CustomItem {
   	  	//}
   	  	
         player.prefetch();
-  	  	  	  	
+        
+    	top = Localization.get("video.playback.top");
+    	bottom = Localization.get("video.playback.bottom");
+    	
+    	try {
+    		imageLocation = Localization.get("video.playback.hashkey.path");
+    	} catch(NoLocalizedTextException nlte) {
+    		
+    	}
 	}
 
 	
@@ -178,21 +194,32 @@ public class VideoItem extends CustomItem {
 		        	int wu = (int)Math.floor(fw / 5.0);
 		        	int hu = (int)Math.floor(fh / 7.0);
 		        	
-		        	//Draw us a big 'ol hash
-		        	g.setColor(0, 0, 0);
+		        	if(hashKeyImage == null) {
+		        		hashKeyImage = ImageUtils.getImage(imageLocation);
+		        		if(hashKeyImage != null){
+		        			
+		        			//scale
+		        			int[] newDimension = ImageUtils.getNewDimensions(hashKeyImage, fw,fh);
+		        			
+		        			if(newDimension[0] != height || newDimension[1] != width) {
+		        				hashKeyImage = ImageUtils.resizeImage(hashKeyImage, newDimension[1], newDimension[0]);
+		        			}
+		        		}
+		        	}
 		        	
-		        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
-		        	g.fillRect(mx + wi + 3 * wu, my + hi, wu, fh);
+		        	if(hashKeyImage != null) {
+		        		g.drawImage(hashKeyImage, mx + wi + fw / 2, my + hi + fh / 2, Graphics.HCENTER  | Graphics.VCENTER);
+		        	} else {
 		        	
-		        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
-		        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
-		        	
-		        	
-		        	String top = Localization.get("video.playback.top");
-		        	//String top = "lw: " + vc.getSourceWidth() + " lh: " + vc.getSourceHeight();
-		        	String bottom = Localization.get("video.playback.bottom");
-		        	//String bottom = "cw: " + cw + " ch: " + ch; 
-		        	
+			        	//Draw us a big 'ol hash
+			        	g.setColor(0, 0, 0);
+			        	
+			        	g.fillRect(mx + wi + wu, my + hi, wu, fh);
+			        	g.fillRect(mx + wi + 3 * wu, my + hi, wu, fh);
+			        	
+			        	g.fillRect(mx + wi, my + hi + 2 * hu, fw, hu);
+			        	g.fillRect(mx + wi, my + hi + 4 * hu, fw, hu);
+		        	}		        	
 		        	
 		        	int tw = f.stringWidth(top);
 		        	int bw = f.stringWidth(bottom);
