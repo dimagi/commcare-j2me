@@ -169,7 +169,7 @@ public class LoginForm extends FramedForm {
 			try{
 				Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
 				//#style myButton
-				this.loginButton = new ImageButton(mImage,Localization.get("form.login.login"));
+				this.loginButton = new ImageButton(mImage);
 				this.loginButton.setLayout(Item.LAYOUT_CENTER);
 				this.loginButton.setLayout(Item.LAYOUT_CENTER);
 				append(this.loginButton);
@@ -191,7 +191,7 @@ public class LoginForm extends FramedForm {
 				try{
 					Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
 					//#style myButton
-					this.demoButton = new ImageButton(mImage,Localization.get("menu.Demo"));
+					this.demoButton = new ImageButton(mImage);
 					append(this.demoButton);
 					this.demoButton.setLayout(Item.LAYOUT_CENTER);
 					this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);

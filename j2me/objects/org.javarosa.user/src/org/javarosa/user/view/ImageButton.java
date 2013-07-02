@@ -12,11 +12,11 @@ class ImageButton extends CustomItem {
     private boolean _down = false;
     private int _clicks = 0;
 
-    public ImageButton(Image image, String txt) {
-    	this(image, txt, null);
+    public ImageButton(Image image) {
+    	this(image, null);
     }
     
-    public ImageButton(Image image, String txt, Style s) {
+    public ImageButton(Image image, Style s) {
     	super("", s);
     	_image = image;
     }
