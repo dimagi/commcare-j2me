@@ -45,16 +45,14 @@ public class LoginForm extends FramedForm {
 
 	private final static int DEFAULT_COMMAND_PRIORITY = 3;
 
-	//#if javarosa.login.demobutton
-	private MyButton demoButton;
-	private MyButton loginButton;
+	private ImageButton demoButton;
+	private ImageButton loginButton;
 	
 	private StringItem regularDemoButton;
 	private StringItem regularLoginButton;
 	
 	public final static Command CMD_DEMO_BUTTON = new Command(Localization.get("menu.Demo"),
 			Command.ITEM, DEFAULT_COMMAND_PRIORITY);
-	//#endif
 
 	public final static Command CMD_CANCEL_LOGIN = new Command(Localization.get("menu.Exit"),
 			Command.CANCEL, 2);
@@ -76,66 +74,6 @@ public class LoginForm extends FramedForm {
 	private boolean toolsEnabled;
 	
 	private boolean imagesEnabled = false;
-	
-	class MyButton extends CustomItem {
-		
-        private Image _image = null;
-        private boolean _down = false;
-        private int _clicks = 0;
-
-        public MyButton(Image image, String txt) {
-        	this(image, txt, null);
-        }
-        
-        public MyButton(Image image, String txt, Style s) {
-        	super("", s);
-        	_image = image;
-        }
-
-        // Button's image
-        public void setImage(Image image) {
-            _image = image;
-            repaint();
-        }
-        public Image getImage() {
-            return _image;
-        }
-        
-        // Is the button currently down?
-        public boolean isDown() {
-            return _down;
-        }
-        
-        // Minimal button size = image size	
-        protected int getMinContentHeight() {
-            return getImage().getHeight();
-        }
-        protected int getMinContentWidth() {
-            return getImage().getWidth();
-        }
-        // Preferred button size = image size + borders
-        protected int getPrefContentHeight(int width) {
-            return getImage().getHeight()+2;
-        }
-        protected int getPrefContentWidth(int height) {
-            return getImage().getWidth()+2;
-        }
-
-        // Button painting procedure
-        protected void paint(Graphics g, int w, int h) {
-            // Fill the button with grey color - background 
-            g.setColor(0, 0, 0);
-            g.fillRect(0, 0, w, h);
-            // Draw the image in the center of the button
-            g.drawImage(getImage(), w/2, h/2, Graphics.HCENTER|Graphics.VCENTER);
-            // Draw the borders
-            g.setColor(0x000000);
-            g.drawLine(0, 0, w, 0);
-            g.drawLine(0, 0, 0, h);
-            g.drawLine(0, h-1, w, h-1);
-            g.drawLine(w-1, 0, w-1, h);
-        }
-    }
 	
 	public LoginForm() {
 			//#style loginView
@@ -231,14 +169,14 @@ public class LoginForm extends FramedForm {
 			try{
 				Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
 				//#style myButton
-				this.loginButton = new MyButton(mImage,Localization.get("form.login.login"));
+				this.loginButton = new ImageButton(mImage,Localization.get("form.login.login"));
 				this.loginButton.setLayout(Item.LAYOUT_CENTER);
 				this.loginButton.setLayout(Item.LAYOUT_CENTER);
 				append(this.loginButton);
 				this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
 			}
 			catch (NoLocalizedTextException e){
-				System.out.println("couldn't find demo image path");
+				System.out.println("Missing button text");
 			}
 		}
 		else{
@@ -253,13 +191,13 @@ public class LoginForm extends FramedForm {
 				try{
 					Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
 					//#style myButton
-					this.demoButton = new MyButton(mImage,Localization.get("menu.Demo"));
+					this.demoButton = new ImageButton(mImage,Localization.get("menu.Demo"));
 					append(this.demoButton);
 					this.demoButton.setLayout(Item.LAYOUT_CENTER);
 					this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
 				}
 				catch (NoLocalizedTextException e){
-					System.out.println("couldn't find demo image path");
+					System.out.println("Missing button text");
 				}
 			}
 			else{
