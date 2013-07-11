@@ -22,9 +22,9 @@ import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
 import org.javarosa.services.transport.TransportService;
-import org.javarosa.services.transport.impl.BasicTransportMessage;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 import de.enough.polish.util.StreamUtil;
 
@@ -40,13 +40,11 @@ import de.enough.polish.util.StreamUtil;
  * @author ctsims
  *
  */
-public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
+public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessage {
 	String URL;
-	HttpAuthenticator authenticator;
 
 	int responseCode;
 	InputStream response;
-	String authentication;
 
 	IDataPayload payload;
 	
@@ -100,7 +98,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 * @return The HTTP request method (Either GET or POST) for
 	 * this message.
 	 */
-	public String getMethod() {
+	public String getConnectionMethod() {
 		return (payload == null ? HttpConnection.GET : HttpConnection.POST);
 	}
 	
@@ -174,7 +172,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 	 */
 	public HttpRequestProperties getRequestProperties() {
 		//TODO: Possibly actually count content length here
-		return new HttpRequestProperties(this.getMethod(), -1, "1.0", null);
+		return new HttpRequestProperties(this.getConnectionMethod(), -1, "1.0", null);
 	}
 
 	public InputStream getContentStream() throws IOException {
@@ -244,7 +242,7 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 		}
 	}
 	
-	private String getChallenge(HttpConnection connection ) throws IOException {
+	public static String getChallenge(HttpConnection connection ) throws IOException {
 		final String AUTH_HEADER_HACK = "X-S60-Auth";
 		
 		//technically the standard
@@ -264,24 +262,6 @@ public class AuthenticatedHttpTransportMessage extends BasicTransportMessage {
 		}
 		
 		return challenge;
-	}
-
-	/**
-	 * Issues an authentication challenge from the provided HttpConnection
-	 * 
-	 * @param connection The connection which issued the challenge
-	 * @param challenge The WWW-Authenticate challenge issued.
-	 * @return True if the challenge was addressed by the message's authenticator,
-	 * and the request should be retried, False if the challenge could not be 
-	 * addressed.
-	 */
-	public boolean issueChallenge(HttpConnection connection, String challenge) {
-		authentication = this.authenticator.challenge(connection, challenge, this);
-		if(authentication == null) {
-			return false;
-		} else {
-			return true;
-		}
 	}
 	
 	/**

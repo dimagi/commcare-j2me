@@ -13,7 +13,7 @@ import org.javarosa.core.util.MD5InputStream;
 import org.javarosa.core.util.MathUtils;
 import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.service.transport.securehttp.AuthUtils;
-import org.javarosa.service.transport.securehttp.AuthenticatedHttpTransportMessage;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 /**
  * A digest authorization response object which accepts the
@@ -60,22 +60,22 @@ public class DigestAuthResponse implements AuthCacheRecord {
 	public boolean invalidates(AuthCacheRecord record) {
 		//this crashes with a null pointer if we try to do more than one digest-auth connection in a
 		//commcare session -- turning off for now
-		return true;
+		//return true;
 
-		/*
+		
 		if(record.getUrl().equals(this.URL)) { return true; };
-		
-		//For Digest Auth messages, the _domain_ should also be
-		//a mechanism of invalidation
-		
-		if(record instanceof DigestAuthResponse) {
-			DigestAuthResponse drecord = (DigestAuthResponse)record;
-			if(this.parameters.get("domain").equals(drecord.parameters.get("domain"))) {
-				return true;
-			}
-		}
+//		
+//		//For Digest Auth messages, the _domain_ should also be
+//		//a mechanism of invalidation
+//		
+//		if(record instanceof DigestAuthResponse) {
+//			DigestAuthResponse drecord = (DigestAuthResponse)record;
+//			if(this.parameters.get("domain").equals(drecord.parameters.get("domain"))) {
+//				return true;
+//			}
+//		}
 		return false;
-		*/
+		
 	}
 	
 	public String get(String key) {
@@ -93,14 +93,14 @@ public class DigestAuthResponse implements AuthCacheRecord {
 	 * @return An Authenticate HTTP header for the message if one could be
 	 * created, null otherwise.
 	 */
-	public String buildResponse(AuthenticatedHttpTransportMessage message) {
+	public String buildResponse(SimpleHttpTransportMessage message) {
 		String qop = parameters.get("qop");
 		
 		String nonce= AuthUtils.unquote(parameters.get("nonce"));
 		
 		String uri = AuthUtils.unquote(parameters.get("uri"));
 		
-		String method = message.getMethod();
+		String method = message.getConnectionMethod();
 		
 		String HA2 = null;
 		if(qop != DigestAuthResponse.QOP_AUTH_INT) {
@@ -159,7 +159,7 @@ public class DigestAuthResponse implements AuthCacheRecord {
 		//times that the nonce has been used for authentication
 		//and must be incremented for each request. Otherwise
 		//the nonce data becomes unavailable.
-		if(!parameters.contains("nc")) {
+		if(!parameters.containsKey("nc")) {
 			String nc = "00000001";
 			parameters.put("nc",nc);
 			
@@ -194,7 +194,7 @@ public class DigestAuthResponse implements AuthCacheRecord {
 	 * (non-Javadoc)
 	 * @see org.javarosa.service.transport.securehttp.cache.AuthCacheRecord#retrieve(org.javarosa.service.transport.securehttp.AuthenticatedHttpTransportMessage)
 	 */
-	public String retrieve(AuthenticatedHttpTransportMessage message) {
+	public String retrieve(SimpleHttpTransportMessage message) {
 		//TODO: Extract the URI here and replace the one in the current parameter set
 		//so that we can use the same nonce on multiple URI's.
 		return buildResponse(message);

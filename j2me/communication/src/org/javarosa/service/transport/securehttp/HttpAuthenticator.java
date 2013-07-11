@@ -8,6 +8,7 @@ import javax.microedition.io.HttpConnection;
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.service.transport.securehttp.cache.AuthorizationCache;
 import org.javarosa.service.transport.securehttp.cache.DigestAuthResponse;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 /**
  * An Http Authenticator is responsible for receiving WWW-Authenticate
@@ -28,7 +29,7 @@ import org.javarosa.service.transport.securehttp.cache.DigestAuthResponse;
  */
 public class HttpAuthenticator {
 	
-	boolean attemptCache = false;
+	boolean attemptCache = true;
 	
 	HttpCredentialProvider provider;
 	
@@ -40,7 +41,7 @@ public class HttpAuthenticator {
 	 * request.
 	 */
 	public HttpAuthenticator(HttpCredentialProvider provider) {
-		this(provider,false);
+		this(provider,true	);
 	}
 	
 	/**
@@ -68,7 +69,7 @@ public class HttpAuthenticator {
 	 * attempt, or null if this authenticator was unable to identify or handle
 	 * the challenge.
 	 */
-	public String challenge(HttpConnection connection, String challenge, AuthenticatedHttpTransportMessage message) {
+	public String challenge(HttpConnection connection, String challenge, SimpleHttpTransportMessage message) {
 		String type = challenge.substring(0, challenge.indexOf(' '));
 		String args = challenge.substring(challenge.indexOf(' ') + 1);
 		if(type.equals("Digest")) {
@@ -86,7 +87,7 @@ public class HttpAuthenticator {
 	 * no appropriate auth headers <br/> and an Authentication header to be
 	 * added to the message otherwise.
 	 */
-	public String checkCache(AuthenticatedHttpTransportMessage message) {
+	public String checkCache(SimpleHttpTransportMessage message) {
 		if(attemptCache) {
 			return AuthorizationCache.load().retrieveAuthHeader(message);
 		} else {
@@ -105,7 +106,7 @@ public class HttpAuthenticator {
 	 * attempt, or null if this authenticator was unable to identify or handle
 	 * the challenge.
 	 */
-	protected final String digestResponse(HttpConnection connection, String args, AuthenticatedHttpTransportMessage message) {
+	protected final String digestResponse(HttpConnection connection, String args, SimpleHttpTransportMessage message) {
 		
 		//Parse out the parameters of the challenge
 		Hashtable<String, String> params = AuthUtils.getQuotedParameters(args);

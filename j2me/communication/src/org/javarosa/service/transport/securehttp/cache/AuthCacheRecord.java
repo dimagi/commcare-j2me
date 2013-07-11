@@ -1,6 +1,6 @@
 package org.javarosa.service.transport.securehttp.cache;
 
-import org.javarosa.service.transport.securehttp.AuthenticatedHttpTransportMessage;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 /**
  * An AuthCacheRecord is simply a record of a set of authorization
@@ -48,5 +48,5 @@ public interface AuthCacheRecord {
 	 * authenticate the provided message. Null if no such header can be
 	 * provided.
 	 */
-	public String retrieve(AuthenticatedHttpTransportMessage message);
+	public String retrieve(SimpleHttpTransportMessage message);
 }

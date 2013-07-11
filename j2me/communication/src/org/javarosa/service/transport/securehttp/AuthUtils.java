@@ -118,4 +118,14 @@ public class AuthUtils {
 	 * @return The hex string of MD5(input)
 	 */
 	public static String MD5(String input) { return MD5.toHex(new MD5(input.getBytes()).doFinal()); }
+	
+	private static HttpAuthenticator authenticator;
+	
+	public static void setStaticAuthenticator(HttpAuthenticator authenticator) {
+		AuthUtils.authenticator = authenticator;
+	}
+	
+	public static HttpAuthenticator getStaticAuthenticator() {
+		return authenticator;
+	}
 }

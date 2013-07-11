@@ -1,9 +1,11 @@
 package org.javarosa.services.transport.impl.simplehttp;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
 
@@ -22,6 +24,9 @@ import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapMap;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.service.transport.securehttp.AuthUtils;
+import org.javarosa.service.transport.securehttp.AuthenticatedHttpTransportMessage;
+import org.javarosa.service.transport.securehttp.HttpAuthenticator;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.BasicTransportMessage;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
@@ -54,6 +59,10 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	private HttpRequestProperties responseProperties;
 	
 	private Hashtable<String,String> customHeaders;
+	
+	protected HttpAuthenticator authenticator;
+
+	protected String authentication;
 	
 	/**
 	 * Http connection method.
@@ -131,6 +140,10 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 		this.orApiVersion = orApiVersion;
 	}
 	
+	public InputStream getContentStream() throws IOException {
+		return getContent().getPayloadStream();
+	}
+	
 	public long getContentLength() {
 		if(this.getContent() != null) {
 			return getContent().getLength();
@@ -194,45 +207,56 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	}
 	
 	public void send() {
+		
+		if(authenticator == null) {
+			this.authenticator = AuthUtils.getStaticAuthenticator();
+		}
 		HttpConnection conn = null;
-		DataInputStream is = null;
-		OutputStream os = null;
 		
-		long responseLength = -1;
-		long[] responseRead = {0};
+		
 		boolean ex = false;
-		
+		long[] responseRead = new long[] {0};
+		long responseLength = -1;
+
 		try {
 			System.out.println("Ready to send: " + this);
 			conn = getConnection(this.getConnectionMethod());
 			System.out.println("Connection: " + conn);
-
-			os = conn.openOutputStream();
-			writeBody(os);
-			os.close();
-
+			
+			writeBody(conn);
+			
 			// Get the response
 			int responseCode = conn.getResponseCode();
 			System.out.println("response code: " + responseCode);
 			
-			responseProperties = HttpRequestProperties.HttpResponsePropertyFactory(conn);
-
-			responseLength = conn.getLength();
-			
-			is = (DataInputStream) conn.openDataInputStream();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			StreamsUtil.writeFromInputToOutput(is, baos, responseRead);
-
-			// set return information in the message
-			this.setResponseBody(baos.toByteArray());
-			this.setResponseCode(responseCode);
-			if (responseCode >= 200 && responseCode <= 299) {
-				this.setStatus(TransportMessageStatus.SENT);
+			if (responseCode == HttpConnection.HTTP_UNAUTHORIZED) {
+				
+				String challenge = AuthenticatedHttpTransportMessage.getChallenge(conn);
+				//If authentication is needed, issue the challenge
+				if (this.issueChallenge(conn, challenge)) {
+					// The challenge was handled, and authentication
+					// is now provided, try the request again after
+					//closing the current connection.
+					conn.close();
+					conn = getConnection(this.getConnectionMethod());
+					writeBody(conn);
+					
+					responseCode = conn.getResponseCode();
+					System.out.println("Post-Auth response code: " + responseCode);
+					
+					//Handle the new response as-is, if authentication failed,
+					//the sending process can issue a new request.
+					processResponse(conn, responseRead);
+				} else {
+					// The challenge couldn't be addressed. Set the message to
+					// failure.
+					processResponse(conn, responseRead);
+				}
 			} else {
-				Logger.log("send", this.getTag() + " http resp code: " + responseCode);
+				//The message did not fail due to authorization problems, so
+				//handle the response.
+				processResponse(conn, responseRead);
 			}
-
-			conn.close();
 		} catch(CertificateException certe) {
 			String reason = "";
 			switch (certe.getReason())
@@ -310,14 +334,59 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 			this.incrementFailureCount();
 		} finally {
 			logRecv(responseLength, responseRead[0], ex);
-						
-			if (os != null) {
+			if (conn != null) {
 				try {
-					os.close();
+					conn.close();
 				} catch (IOException e) {
 					// do nothing
 				}
 			}
+		}
+	}
+	
+
+	/**
+	 * Issues an authentication challenge from the provided HttpConnection
+	 * 
+	 * @param connection The connection which issued the challenge
+	 * @param challenge The WWW-Authenticate challenge issued.
+	 * @return True if the challenge was addressed by the message's authenticator,
+	 * and the request should be retried, False if the challenge could not be 
+	 * addressed.
+	 */
+	public boolean issueChallenge(HttpConnection connection, String challenge) {
+		authentication = this.authenticator.challenge(connection, challenge, this);
+		if(authentication == null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	private long processResponse(HttpConnection conn, long[] responseRead) throws IOException {
+		responseProperties = HttpRequestProperties.HttpResponsePropertyFactory(conn);
+		
+		long responseLength = -1;
+
+		DataInputStream is = null;
+		
+		try {
+			responseLength = conn.getLength();
+			
+			is = (DataInputStream) conn.openDataInputStream();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			StreamsUtil.writeFromInputToOutput(is, baos, responseRead);
+	
+			// set return information in the message
+			this.setResponseBody(baos.toByteArray());
+			this.setResponseCode(conn.getResponseCode());
+			if (responseCode >= 200 && responseCode <= 299) {
+				this.setStatus(TransportMessageStatus.SENT);
+			} else {
+				Logger.log("send", this.getTag() + " http resp code: " + responseCode);
+			}
+			return responseLength;
+		} finally {
 			if (is != null) {
 				try {
 					is.close();
@@ -325,12 +394,18 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 					// do nothing
 				}
 			}
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (IOException e) {
-					// do nothing
-				}
+
+		}
+	}
+
+	private void writeBody(HttpConnection conn)  throws IOException {
+		OutputStream os = null;
+		try {
+			os = conn.openOutputStream();
+			writeBody(os);
+		} finally {
+			if(os != null) { 
+				os.close();
 			}
 		}
 	}
@@ -398,7 +473,23 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * @throws IOException
 	 */
 	private HttpConnection getConnection(String connectionMethod) throws IOException {
-		HttpConnection conn = (HttpConnection) Connector.open(this.getUrl());
+		String url = this.getUrl();
+		
+		//Need to add some URL args if we aren't authenticating
+		if(this.authenticator == null) {
+			String newArg = "authtype=noauth";
+			
+			//See if we have any existing args
+			if(url.indexOf("?") != -1) {
+				//add to the list
+				url = url + "&" + newArg;
+			} else {
+				//Add a param list
+				url = url + "?" + newArg;
+			}
+		}
+		
+		HttpConnection conn = (HttpConnection) Connector.open(url);
 		if (conn == null) {
 			throw new RuntimeException("Null conn in getConnection()");
 		}
@@ -408,11 +499,33 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 			throw new RuntimeException("Null message.getRequestProperties() in getConnection()");
 		}
 		
+		//Retrieve either the response auth header, or the cached guess
+		String authorization = this.getAuthString();
+		if(authorization != null) {
+			conn.setRequestProperty("Authorization", authorization);
+		}
+
+		
 		requestProps.configureConnection(conn);
 		
 		return conn;
 
 	}
+	
+	/**
+	 * @return the current best-guess authorization header for this message, 
+	 * either produced as a response to a WWW-Authenticate challenge, or 
+	 * provided by the authentication cache based on previous requests
+	 * (if enabled and relevant in the message's authenticator). 
+	 */
+	public String getAuthString() {
+		if(authentication == null) {
+			//generally pre-challenge
+			return authenticator.checkCache(this);
+		}
+		return authentication;
+	}
+	
 
 	
 	public void setHeader(String header, String value) {

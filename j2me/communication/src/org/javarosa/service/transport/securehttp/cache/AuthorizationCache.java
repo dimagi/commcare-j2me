@@ -5,7 +5,7 @@ package org.javarosa.service.transport.securehttp.cache;
 
 import java.util.Vector;
 
-import org.javarosa.service.transport.securehttp.AuthenticatedHttpTransportMessage;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 /**
  * The authorization cache contains records of authorization
@@ -59,7 +59,7 @@ public class AuthorizationCache {
 	 * @return An authentication header for the provided message if one could
 	 * be created. Null if none could.
 	 */
-	public String retrieveAuthHeader(AuthenticatedHttpTransportMessage message) {
+	public String retrieveAuthHeader(SimpleHttpTransportMessage message) {
 		for(AuthCacheRecord r: records) {
 			if(r.validFor(message.getUrl())) {
 				return r.retrieve(message);
