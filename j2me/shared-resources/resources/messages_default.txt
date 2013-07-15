@@ -262,3 +262,6 @@ command.call=Call ${0}
 menu.Tools=Tools
 
 entity.nodata=No Records
+
+icon.login.path=jr://resource/login.png
+icon.demo.path=jr://resource/demo.png

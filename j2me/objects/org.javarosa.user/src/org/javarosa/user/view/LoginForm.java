@@ -16,32 +16,43 @@
 
 package org.javarosa.user.view;
 
+import java.io.IOException;
+
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
+import org.javarosa.core.util.NoLocalizedTextException;
 import org.javarosa.core.util.SHA1;
+import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
 
-import de.enough.polish.math.BigInteger;
+import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
+import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 
 public class LoginForm extends FramedForm {
 
 	private final static int DEFAULT_COMMAND_PRIORITY = 3;
 
-	//#if javarosa.login.demobutton
-	private StringItem demoButton;
+	private ImageButton demoButton;
+	private ImageButton loginButton;
+	
+	private StringItem regularDemoButton;
+	private StringItem regularLoginButton;
+	
 	public final static Command CMD_DEMO_BUTTON = new Command(Localization.get("menu.Demo"),
 			Command.ITEM, DEFAULT_COMMAND_PRIORITY);
-	//#endif
 
 	public final static Command CMD_CANCEL_LOGIN = new Command(Localization.get("menu.Exit"),
 			Command.CANCEL, 2);
@@ -51,7 +62,7 @@ public class LoginForm extends FramedForm {
 	public final static Command  CMD_TOOLS = new Command(Localization.get("menu.Tools"),
 			Command.ITEM, 4);
 
-	private StringItem loginButton;
+
 	private TextField usernameField;
 	private TextField passwordField;
 	private IStorageUtility users;
@@ -62,8 +73,10 @@ public class LoginForm extends FramedForm {
 
 	private boolean toolsEnabled;
 	
+	private boolean imagesEnabled = false;
+	
 	public LoginForm() {
-		//#style loginView
+			//#style loginView
 		super(Localization.get("form.login.login"));
 		init();
 	}
@@ -83,11 +96,16 @@ public class LoginForm extends FramedForm {
 	 * @param extraText
 	 */
 	public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled) {
+		this(title, extraText, demoEnabled, toolsEnabled, false);
+	}
+	
+	public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled, boolean imagesEnabled) {
 		//#style loginView
 		super(title);
 		this.extraText = extraText;
 		this.demoEnabled = demoEnabled;
 		this.toolsEnabled = toolsEnabled;
+		this.imagesEnabled = imagesEnabled;
 		init();
 	}
 
@@ -147,15 +165,36 @@ public class LoginForm extends FramedForm {
 		this.passwordField.setDefaultCommand(CMD_LOGIN_BUTTON);
 
 		// add the login button
-		this.loginButton = new StringItem(null, Localization.get("form.login.login"), Item.BUTTON);
-		append(this.loginButton);
-		this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
+		if(imagesEnabled){
+			Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
+			//#style myButton
+			this.loginButton = new ImageButton(mImage);
+			this.loginButton.setLayout(Item.LAYOUT_CENTER);
+			this.loginButton.setLayout(Item.LAYOUT_CENTER);
+			append(this.loginButton);
+			this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
+		}
+		else{
+			this.regularLoginButton = new StringItem(null, Localization.get("form.login.login"), Item.BUTTON);
+	 		append(this.regularLoginButton);
+	 		this.regularLoginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
+		}
 
 		//#if javarosa.login.demobutton
 		if (demoEnabled) {
-			this.demoButton = new StringItem(null, Localization.get("menu.Demo"), Item.BUTTON);
-			append(this.demoButton);
-			this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
+			if(imagesEnabled){
+				Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
+				//#style myButton
+				this.demoButton = new ImageButton(mImage);
+				append(this.demoButton);
+				this.demoButton.setLayout(Item.LAYOUT_CENTER);
+				this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
+			}
+			else{
+				this.regularDemoButton = new StringItem(null, Localization.get("menu.Demo"), Item.BUTTON);
+	 			append(this.regularDemoButton);
+	 			this.regularDemoButton.setDefaultCommand(CMD_DEMO_BUTTON);
+			}
 		}
 		//#endif
 
@@ -289,9 +328,5 @@ public class LoginForm extends FramedForm {
 	}
 
 	// ------------------------
-
-	public StringItem getLoginButton() {
-		return this.loginButton;
-	}
 
 }

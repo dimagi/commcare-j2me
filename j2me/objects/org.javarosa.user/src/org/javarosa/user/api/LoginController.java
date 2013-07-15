@@ -46,9 +46,9 @@ public class LoginController implements HandledCommandListener {
 		view.setPasswordMode(passwordFormat);
 	}
 	
-	public LoginController(String title, String image, String[] extraText, String passwordFormat, boolean showDemo) {
+	public LoginController(String title, String image, String[] extraText, String passwordFormat, boolean showDemo, boolean imagesEnabled) {
 		this.extraText = extraText;
-		view = new LoginForm(null, this.extraText, showDemo, true);
+		view = new LoginForm(null, this.extraText, showDemo, true, imagesEnabled);
 		view.setCommandListener(this);
 		view.setPasswordMode(passwordFormat);
 		
