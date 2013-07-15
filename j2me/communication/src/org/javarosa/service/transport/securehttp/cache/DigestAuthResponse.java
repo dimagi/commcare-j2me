@@ -57,23 +57,13 @@ public class DigestAuthResponse implements AuthCacheRecord {
 	 * (non-Javadoc)
 	 * @see org.javarosa.service.transport.securehttp.cache.AuthCacheRecord#invalidates(org.javarosa.service.transport.securehttp.cache.AuthCacheRecord)
 	 */
-	public boolean invalidates(AuthCacheRecord record) {
-		//this crashes with a null pointer if we try to do more than one digest-auth connection in a
-		//commcare session -- turning off for now
-		//return true;
-
-		
+	public boolean invalidates(AuthCacheRecord record) {		
 		if(record.getUrl().equals(this.URL)) { return true; };
-//		
-//		//For Digest Auth messages, the _domain_ should also be
-//		//a mechanism of invalidation
-//		
-//		if(record instanceof DigestAuthResponse) {
-//			DigestAuthResponse drecord = (DigestAuthResponse)record;
-//			if(this.parameters.get("domain").equals(drecord.parameters.get("domain"))) {
-//				return true;
-//			}
-//		}
+		
+		//TODO: If the incoming message is a digest, we should
+		//possibly invalidate any/all messages that it shares
+		//a domain with.
+		
 		return false;
 		
 	}
