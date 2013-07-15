@@ -90,3 +90,4 @@ activity.locationcapture.Longitude=Longitude
 activity.locationcapture.Altitude=Altitude
 activity.locationcapture.Accuracy=Accuracy
 activity.locationcapture.capturelocationhint=Use a GPS to get location
+
