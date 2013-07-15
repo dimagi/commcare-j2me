@@ -166,18 +166,13 @@ public class LoginForm extends FramedForm {
 
 		// add the login button
 		if(imagesEnabled){
-			try{
-				Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
-				//#style myButton
-				this.loginButton = new ImageButton(mImage);
-				this.loginButton.setLayout(Item.LAYOUT_CENTER);
-				this.loginButton.setLayout(Item.LAYOUT_CENTER);
-				append(this.loginButton);
-				this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
-			}
-			catch (NoLocalizedTextException e){
-				System.out.println("Missing button text");
-			}
+			Image mImage = ImageUtils.getImage(Localization.get("icon.login.path"));
+			//#style myButton
+			this.loginButton = new ImageButton(mImage);
+			this.loginButton.setLayout(Item.LAYOUT_CENTER);
+			this.loginButton.setLayout(Item.LAYOUT_CENTER);
+			append(this.loginButton);
+			this.loginButton.setDefaultCommand(CMD_LOGIN_BUTTON);
 		}
 		else{
 			this.regularLoginButton = new StringItem(null, Localization.get("form.login.login"), Item.BUTTON);
@@ -188,17 +183,12 @@ public class LoginForm extends FramedForm {
 		//#if javarosa.login.demobutton
 		if (demoEnabled) {
 			if(imagesEnabled){
-				try{
-					Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
-					//#style myButton
-					this.demoButton = new ImageButton(mImage);
-					append(this.demoButton);
-					this.demoButton.setLayout(Item.LAYOUT_CENTER);
-					this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
-				}
-				catch (NoLocalizedTextException e){
-					System.out.println("Missing button text");
-				}
+				Image mImage = ImageUtils.getImage(Localization.get("icon.demo.path"));
+				//#style myButton
+				this.demoButton = new ImageButton(mImage);
+				append(this.demoButton);
+				this.demoButton.setLayout(Item.LAYOUT_CENTER);
+				this.demoButton.setDefaultCommand(CMD_DEMO_BUTTON);
 			}
 			else{
 				this.regularDemoButton = new StringItem(null, Localization.get("menu.Demo"), Item.BUTTON);
