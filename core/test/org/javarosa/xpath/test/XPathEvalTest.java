@@ -29,6 +29,7 @@ import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.xpath.IExprDataType;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
@@ -37,6 +38,7 @@ import org.javarosa.xpath.XPathUnhandledException;
 import org.javarosa.xpath.XPathUnsupportedException;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.expr.XPathFuncExpr;
+import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
 
 public class XPathEvalTest extends TestCase {
@@ -403,6 +405,19 @@ public class XPathEvalTest extends TestCase {
 		//Attribute XPath References
 		//testEval("/@blah", null, null, new XPathUnsupportedException());
 		//TODO: Need to test with model, probably in a different file
+		
+		String wildcardIndex = "index/*";
+		String indexOne = "index/some_index";
+		String indexTwo = "index/another_index";
+		XPathPathExpr expr = XPathReference.getPathExpr(wildcardIndex);
+		XPathPathExpr expr2 = XPathReference.getPathExpr(indexOne);
+		XPathPathExpr expr3 = XPathReference.getPathExpr(indexTwo);
+		if(!expr.matches(expr2)) { fail("Bad Matching: " + wildcardIndex + " should match " + indexOne); }
+		if(!expr2.matches(expr)) { fail("Bad Matching: " + indexOne + " should match " + wildcardIndex); }
+		if(expr2.matches(expr3)) { fail("Bad Matching: " + indexOne + " should  not match " + indexTwo); }
+		
+		
+		
 		
 		
 		try {
