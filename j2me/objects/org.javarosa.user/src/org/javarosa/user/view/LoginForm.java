@@ -16,29 +16,23 @@
 
 package org.javarosa.user.view;
 
-import java.io.IOException;
-
 import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
-import org.javarosa.core.util.NoLocalizedTextException;
 import org.javarosa.core.util.SHA1;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
 
-import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;
+import de.enough.polish.ui.ItemStateListener;
 import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.Style;
 import de.enough.polish.ui.TextField;
 
 public class LoginForm extends FramedForm {
@@ -163,6 +157,18 @@ public class LoginForm extends FramedForm {
 		// set the focus on the password field
 		this.focus(this.passwordField);
 		this.passwordField.setDefaultCommand(CMD_LOGIN_BUTTON);
+		this.passwordField.setItemStateListener(new ItemStateListener(){
+			public void itemStateChanged(Item item) {
+				String entry = item.toString();
+				if(passwordField.getString().length()>0){
+					regularDemoButton.setVisible(false);
+				}
+				else{
+					regularDemoButton.setVisible(true);
+				}
+				
+			}
+		});
 
 		// add the login button
 		if(imagesEnabled){
