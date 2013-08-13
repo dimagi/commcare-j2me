@@ -159,7 +159,6 @@ public class LoginForm extends FramedForm {
 		this.passwordField.setDefaultCommand(CMD_LOGIN_BUTTON);
 		this.passwordField.setItemStateListener(new ItemStateListener(){
 			public void itemStateChanged(Item item) {
-				String entry = item.toString();
 				if(passwordField.getString().length()>0){
 					regularDemoButton.setVisible(false);
 				}
