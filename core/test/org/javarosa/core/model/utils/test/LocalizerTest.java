@@ -183,7 +183,8 @@ public class LocalizerTest extends TestCase  {
 			fail("Localizer overwrote existing locale");
 		}
 		
-		if (!localeData.equals(l.getLocaleData(TEST_LOCALE))) {
+		Hashtable newLocaleData = l.getLocaleData(TEST_LOCALE);
+		if (!localeData.equals(newLocaleData)) {
 			fail("Localizer overwrote existing locale");			
 		}
 	}
