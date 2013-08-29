@@ -334,6 +334,21 @@ public class XPathEvalTest extends TestCase {
 		testEval("(double(date('2004-05-03T07:00:00')) - double(date('2004-05-01T03:00:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
 		
 		
+		testEval("pow(2, 2)", null, null, new Double(4.0));
+		testEval("pow(2, 0)", null, null, new Double(1.0));
+		testEval("pow(0, 4)", null, null, new Double(0.0));
+		testEval("pow(2.5, 2)", null, null, new Double(6.25));
+		testEval("pow(0.5, 2)", null, null, new Double(.25));
+		
+		testEval("pow(-1, 2)", null, null, new Double(1.0));
+		testEval("pow(-1, 3)", null, null, new Double(-1.0));
+		
+		//So raising things to decimal powers is.... very hard
+		//to evaluated exactly due to double floating point
+		//precision. We'll try for things with clean answers
+		testEval("pow(4, 0.5)", null, null, new Double(2.0));
+		testEval("pow(16, 0.25)", null, null, new Double(2.0));
+		
 		testEval("false() and false() < true()" , null, null, Boolean.FALSE);
 		testEval("(false() and false()) < true()" , null, null, Boolean.TRUE);
 		testEval("6 < 7 - 4" , null, null, Boolean.FALSE);
