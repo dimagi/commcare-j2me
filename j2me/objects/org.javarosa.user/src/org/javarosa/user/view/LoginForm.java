@@ -34,7 +34,6 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.ItemStateListener;
 import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.TextField;
-import de.enough.polish.ui.UiAccess;
 
 public class LoginForm extends FramedForm {
 
@@ -154,7 +153,6 @@ public class LoginForm extends FramedForm {
 
 		append(this.usernameField);
 		append(this.passwordField);
-		
 
 		// set the focus on the password field
 		this.focus(this.passwordField);
@@ -162,14 +160,18 @@ public class LoginForm extends FramedForm {
 		this.passwordField.setItemStateListener(new ItemStateListener(){
 			public void itemStateChanged(Item item) {
 				if(passwordField.getString().length()>0){
-					//#style buttonGreyedOut
-					UiAccess.setStyle(regularDemoButton);
-					regularDemoButton.setDefaultCommand(null);
+					if(imagesEnabled){
+						demoButton.setVisible(false);
+					}else{
+						regularDemoButton.setVisible(false);
+					}
 				}
 				else{
-					//#style button
-					UiAccess.setStyle(regularDemoButton);
-					regularDemoButton.setDefaultCommand(CMD_DEMO_BUTTON);
+					if(imagesEnabled){
+						demoButton.setVisible(true);
+					} else{
+						regularDemoButton.setVisible(true);
+					}
 				}
 				
 			}
