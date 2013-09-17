@@ -160,10 +160,18 @@ public class LoginForm extends FramedForm {
 		this.passwordField.setItemStateListener(new ItemStateListener(){
 			public void itemStateChanged(Item item) {
 				if(passwordField.getString().length()>0){
-					regularDemoButton.setVisible(false);
+					if(imagesEnabled){
+						demoButton.setVisible(false);
+					}else{
+						regularDemoButton.setVisible(false);
+					}
 				}
 				else{
-					regularDemoButton.setVisible(true);
+					if(imagesEnabled){
+						demoButton.setVisible(true);
+					} else{
+						regularDemoButton.setVisible(true);
+					}
 				}
 				
 			}
