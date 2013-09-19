@@ -420,7 +420,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
 			}
 			
 			//#style patselImageCell?, patselCell
-			return new ImageItem("",image,ImageItem.LAYOUT_CENTER  | ImageItem.LAYOUT_VCENTER,"img");
+			return new ImageItem("",image,ImageItem.LAYOUT_LEFT  | ImageItem.LAYOUT_VCENTER,"img");
 		} catch (InvalidReferenceException e) {
 			//Invalid reference is much worse than IOException, but still not sure if this is the right call.
 			e.printStackTrace();
