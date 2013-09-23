@@ -842,11 +842,55 @@ public class LocalizerTest extends TestCase  {
 	public void testLinearSub() {
 		final String F = "first";
 		final String S = "second";
+		
+		final String C = "${0}";
+		
+		final String D = "${1}${0}";
+		
+		final String[] res = new String[] {"One", "Two"};
+		
+		
 		assertEquals(Localizer.processArguments("${0}", new String[] {F}), F);
 		assertEquals(Localizer.processArguments("${0},${1}", new String[] {F,S}), F + "," + S);
 		assertEquals(Localizer.processArguments("testing ${0}", new String[] {F}), "testing " + F);
 		
 		assertEquals(Localizer.processArguments("1${arbitrary}2", new String[] {F}), "1" + F + "2");
+		
+		final String[] holder = new String[1];
+		
+		runAsync(new Runnable() { public void run() {
+				holder[0] = Localizer.processArguments("${0}", new String[] {C});
+			}});
+		
+		assertEquals(holder[0], C);
+		
+		
+		runAsync(new Runnable() { public void run() {
+			holder[0] = Localizer.processArguments("${0}", new String[] {D});
+		}});
+		
+		assertEquals(holder[0], D);
+		
+		runAsync(new Runnable() { public void run() {
+			holder[0] = Localizer.processArguments(holder[0], res);
+		}});
+		
+		assertEquals(holder[0], res[1] + res[0]);
+
+	}
+	
+	private void runAsync(Runnable test) {
+		Thread t = new Thread(test);
+		t.start();
+		try {
+			t.join(50);
+		} catch (InterruptedException e) {
+			
+		}
+		if(t.isAlive()) {
+			t.stop();
+			throw new RuntimeException("Failed to return from recursive argument processing");
+		}
 	}
 	
 	public void testHashSub() {
