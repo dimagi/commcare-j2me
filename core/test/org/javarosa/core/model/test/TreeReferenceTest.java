@@ -141,6 +141,7 @@ public class TreeReferenceTest extends TestCase {
 	public void testParentage () {
 		if(!root.isParentOf(a, true)) { fail("/ is a parent of '/a'"); };
 		if(!a.isParentOf(ac, true)) { fail("/a is a parent of '/a/c'"); };
+		if(!a.isParentOf(acd, true)) { fail("a is a parent of 'a/c/d'"); };
 		if(a.isParentOf(bc, true)) { fail("/a is not parent of '/b/c'"); };
 		
 		if(a.isParentOf(dotc, true)) { fail("/a is not parent of './c'"); };

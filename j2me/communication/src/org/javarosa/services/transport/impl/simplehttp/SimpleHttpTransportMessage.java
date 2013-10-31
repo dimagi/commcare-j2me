@@ -519,7 +519,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 	 * (if enabled and relevant in the message's authenticator). 
 	 */
 	public String getAuthString() {
-		if(authentication == null) {
+		if(authentication == null && authenticator != null) {
 			//generally pre-challenge
 			return authenticator.checkCache(this);
 		}
