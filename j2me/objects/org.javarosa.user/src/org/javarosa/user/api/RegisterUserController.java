@@ -97,7 +97,7 @@ public class RegisterUserController<M extends TransportMessage> implements Trans
 	private void onFail(String message) {
 		form.setText(message);
 		
-		if(!successRequired) {
+		if(!successRequired && builder.isAsync()) {
 			form.addCommand(RETRY);
 			form.addCommand(SEND_LATER);
 		} else {
@@ -143,7 +143,24 @@ public class RegisterUserController<M extends TransportMessage> implements Trans
 		if(c == CANCEL) {
 			transitions.cancel();
 		} else if(c == SEND_LATER ){
+			//ctsims - Now we're assuming that this message hasn't been
+			//cached yet, so process the registration and prepare to cache the 
+			//message for later.
 			transitions.succesfullyRegistered(registerdUser);
+			
+			//Ok, local step is done, now cache the message
+			builder.prepareMessageForCache(message);
+			try {
+				TransportService.send(message,0,0);
+			} catch (TransportException e) {
+				//This actually really sucks, but
+				//A) This isn't a popular workflow
+				//B) There's no alternative since we
+				//otherwise introduce a race condition
+				//with the cache.
+				e.printStackTrace();
+				onFail();
+			}
 		} else if(c == OK ){
 			transitions.succesfullyRegistered(registerdUser);
 		} else if(c == RETRY) {

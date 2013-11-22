@@ -19,5 +19,20 @@ public interface UserRegistrationTranslator<M extends TransportMessage> {
 	
 	public User readResponse(M message) throws UnrecognizedResponseException;
 	
+	/**
+	 * Whether this message can be processed properly asynchronously or must
+	 * be handeled immediately 
+	 * 
+	 * @return
+	 */
+	public boolean isAsync();
+	
+	/**
+	 * Prepares a message to be cached an submitted later 
+	 * 
+	 * @param m
+	 */
+	public void prepareMessageForCache(M m);
+	
 	public String getResponseMessageString();
 }
