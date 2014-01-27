@@ -36,15 +36,12 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 		this.orApiVersion = orApiVersion;
 	}
 	
+	/**
+	 * Gets a user registration message that can be used to synchronously register a user. 
+	 */
 	public SimpleHttpTransportMessage getUserRegistrationMessage() throws IOException {
 		SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getBodyFromRegistration(createXmlRegistrationDoc(user)), registrationUrl);
-		if("1.0".equals(orApiVersion)) {
-			message.setCacheable(true);
-		} else {
-			//Pre 1.0 we'll assume that user registration is a synchronous process.
-			message.setCacheable(false);
-		}
-		
+		message.setCacheable(false);
 		return message;
 	}
 	
@@ -222,6 +219,18 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 	
 	public String getResponseMessageString() {
 		return prompt;
+	}
+
+	public boolean isAsync() {
+		if("1.0".equals(orApiVersion)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public void prepareMessageForCache(SimpleHttpTransportMessage m) {
+		m.setCacheable(true);			
 	}
 
 }

@@ -3,6 +3,7 @@
  */
 package org.javarosa.user.api;
 
+import org.javarosa.core.api.State;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 import org.javarosa.user.api.transitions.RegisterUserTransitions;
 import org.javarosa.user.model.User;
@@ -12,7 +13,7 @@ import org.javarosa.user.transport.HttpUserRegistrationTranslator;
  * @author ctsims
  *
  */
-public abstract class RegisterUserState implements RegisterUserTransitions {
+public abstract class RegisterUserState implements RegisterUserTransitions, State {
 	
 	protected User user;
 	protected String orApiVersion;
