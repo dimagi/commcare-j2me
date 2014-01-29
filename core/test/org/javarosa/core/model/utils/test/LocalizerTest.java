@@ -876,6 +876,12 @@ public class LocalizerTest extends TestCase  {
 		}});
 		
 		assertEquals(holder[0], res[1] + res[0]);
+		
+		runAsync(new Runnable() { public void run() {
+			holder[0] = Localizer.processArguments("$ {0} ${1}", res);
+		}});
+		
+		assertEquals(holder[0], "$ {0} " + res[1]);
 
 	}
 	
