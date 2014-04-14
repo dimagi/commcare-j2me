@@ -42,6 +42,7 @@ import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.util.NoLocalizedTextException;
+import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
@@ -921,7 +922,8 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 	
 				public void run() {
 					J2MEDisplay.showError(at, m, alIm);
-					if(aURI != null) {
+					if(aURI != null && PropertyUtils.playFormAudio()) {
+						System.out.println("Playing form audio!!!");
 						MediaUtils.playAudio(aURI);
 					}
 				}
