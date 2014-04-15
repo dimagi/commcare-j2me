@@ -47,13 +47,16 @@ public class FormManagerProperties implements IPropertyRules {
 	    public final static String LOOSE_MEDIA_YES = "yes";
 	    public final static String LOOSE_MEDIA_NO = "no";
 	    
+	    public final static String PLAY_AUDIO = "play_audio";
+	    public final static String PLAY_AUDIO_YES = "yes";
+	    public final static String PLAY_AUDIO_NO = "no";
+	    
 	    /**
 	     * Creates the JavaRosa set of property rules
 	     */
 	    public FormManagerProperties() {
 	        rules = new Hashtable();
 	        readOnlyProperties = new Vector();
-	        	        
 
 	        Vector allowableDisplays = new Vector();
 	        allowableDisplays.addElement(VIEW_CHATTERBOX);
@@ -69,6 +72,11 @@ public class FormManagerProperties implements IPropertyRules {
 	        looseMedia.addElement(LOOSE_MEDIA_YES);	        
 	        looseMedia.addElement(LOOSE_MEDIA_NO);
 	        rules.put(LOOSE_MEDIA, looseMedia);
+	        
+	        Vector playAudio = new Vector();
+	        playAudio.addElement(PLAY_AUDIO_YES);
+	        playAudio.addElement(PLAY_AUDIO_NO);
+	        rules.put(PLAY_AUDIO, playAudio);
 	    }
 
 	    /** (non-Javadoc)
@@ -137,6 +145,8 @@ public class FormManagerProperties implements IPropertyRules {
 	    		return "Form Entry View";
 	    	}else if(EXTRA_KEY_FORMAT.equals(propertyName)) {
 	    		return "What Action Should the # Button Perform?";
+	    	}else if(PLAY_AUDIO.equals(propertyName)){
+	    		return "Should CommCare play audio?";
 	    	}return propertyName;
 	    }
 	    

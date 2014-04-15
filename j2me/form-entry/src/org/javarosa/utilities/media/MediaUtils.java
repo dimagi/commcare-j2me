@@ -49,6 +49,11 @@ public class MediaUtils {
 		return ret;
 	}
 	
+	public static boolean audioTurnedOn(){
+		String playAudio = PropertyManager._().getSingularProperty(FormManagerProperties.PLAY_AUDIO);
+		return (!FormManagerProperties.PLAY_AUDIO_NO.equals(playAudio));
+	}
+	
 	/**
 	 * Begin audio playback of the content at the uri. 
 	 * 
@@ -59,7 +64,7 @@ public class MediaUtils {
 	 */
 		public static int playAudio(String jrRefURI) {
 			
-			if(!PropertyUtils.playFormAudio()){
+			if(!audioTurnedOn()){
 				return AUDIO_DISABLED;
 			}
 			
