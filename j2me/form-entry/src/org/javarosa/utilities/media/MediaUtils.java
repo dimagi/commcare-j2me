@@ -12,6 +12,7 @@ import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 
 public class MediaUtils {
@@ -57,6 +58,11 @@ public class MediaUtils {
 	 * @return One of the AUDIO_ return codes
 	 */
 		public static int playAudio(String jrRefURI) {
+			
+			if(!PropertyUtils.playFormAudio()){
+				return AUDIO_DISABLED;
+			}
+			
 			synchronized(audioLock) {
 				String curAudioURI = jrRefURI;
 				int retcode = AUDIO_SUCCESS;

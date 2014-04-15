@@ -241,7 +241,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
      * @return
      */
 	public int playAudio(FormEntryPrompt fep,SelectChoice select){
-		if (!playAudioIfAvailable || PropertyUtils.playFormAudio()) return MediaUtils.AUDIO_DISABLED;
+		if (!playAudioIfAvailable) return MediaUtils.AUDIO_DISABLED;
 		
 		String textID;
 		curAudioURI = null;

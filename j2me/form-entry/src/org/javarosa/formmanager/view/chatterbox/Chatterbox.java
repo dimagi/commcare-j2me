@@ -922,8 +922,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 	
 				public void run() {
 					J2MEDisplay.showError(at, m, alIm);
-					if(aURI != null && PropertyUtils.playFormAudio()) {
-						System.out.println("Playing form audio!!!");
+					if(aURI != null) {
 						MediaUtils.playAudio(aURI);
 					}
 				}
