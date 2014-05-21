@@ -49,11 +49,12 @@ public class SendNowSendLaterForm extends FramedForm {
 		super(cacheAutomatically ? Localization.get("sending.view.done.title") : Localization.get("sending.view.submit"));
 
 		setCommandListener(activity);
-		setItemStateListener(itemListener);
 		
 		if(!cacheAutomatically) {
 			//#style submitYesNo
 			this.cg = new ChoiceGroup(Localization.get("sending.view.when"), Choice.EXCLUSIVE);
+			
+			setItemStateListener(itemListener);
 			
 			// NOTE! These Indexes are optimized to be added in a certain
 			// order. _DO NOT_ change it without updating the static values
