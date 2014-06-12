@@ -219,6 +219,8 @@ public class XPathEvalTest extends TestCase {
 		testEval("substr('hello',1,4)", null, null, "ell");
 		testEval("substr('hello',-2)", null, null, "lo");
 		testEval("substr('hello',0,-1)", null, null, "hell");
+		testEval("substr('',0,1)", null, null, "");
+		testEval("substr('hello',0,8)", null, null, "");
 		testEval("date('2000-01-01')", null, null, DateUtils.getDate(2000, 1, 1));
 		testEval("date('1945-04-26')", null, null, DateUtils.getDate(1945, 4, 26));
 		testEval("date('1996-02-29')", null, null, DateUtils.getDate(1996, 2, 29));
