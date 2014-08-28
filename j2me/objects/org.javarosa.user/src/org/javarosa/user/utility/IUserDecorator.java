@@ -25,11 +25,11 @@ package org.javarosa.user.utility;
  *
  */
 public interface IUserDecorator {
-	public String[] getPertinentProperties();
-	
-	/**
-	 * @param property The property to be decorated
-	 * @return a human readable name that describes the presented property. 
-	 */
-	public String getHumanName(String property);
+    public String[] getPertinentProperties();
+    
+    /**
+     * @param property The property to be decorated
+     * @return a human readable name that describes the presented property. 
+     */
+    public String getHumanName(String property);
 }

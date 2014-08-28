@@ -9,9 +9,9 @@ package org.javarosa.formmanager.api.transitions;
  *
  */
 public interface FormTransportStateTransitions {
-	
-	public void done();
-	
-	//TODO: Add an argument here for a thread manager
-	public void sendToBackground();
+    
+    public void done();
+    
+    //TODO: Add an argument here for a thread manager
+    public void sendToBackground();
 }

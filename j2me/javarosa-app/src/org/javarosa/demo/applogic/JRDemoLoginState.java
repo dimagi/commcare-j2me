@@ -7,23 +7,23 @@ import org.javarosa.user.model.User;
 
 public class JRDemoLoginState extends LoginState {
 
-	public void start() {
-		JRDemoContext._().setUser(null);
-		super.start();
-	}
+    public void start() {
+        JRDemoContext._().setUser(null);
+        super.start();
+    }
 
-	public void exit() {
-		JRDemoUtil.exit();
-	}
+    public void exit() {
+        JRDemoUtil.exit();
+    }
 
-	public void loggedIn(User u, String password) {
-		JRDemoContext._().setUser(u);
-		new JRDemoFormListState().start();
-	}
+    public void loggedIn(User u, String password) {
+        JRDemoContext._().setUser(u);
+        new JRDemoFormListState().start();
+    }
 
-	public void tools() {
-		//Not sure if we have anything here
-		J2MEDisplay.showError("No Tools", "Tools not yet supported");
-	}
+    public void tools() {
+        //Not sure if we have anything here
+        J2MEDisplay.showError("No Tools", "Tools not yet supported");
+    }
 
 }

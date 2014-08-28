@@ -40,7 +40,7 @@ public final class LinePointsItem
     }
     
     public boolean isColorField() {
-    	return colorField;
+        return colorField;
     }
 
     

@@ -17,23 +17,23 @@ package org.javarosa.services.transport.impl;
  */
 public class TransportMessageStatus {
 
-	private TransportMessageStatus(){
-		// private constructor
-	}
-	/**
-	 * the message is in a SenderThread
-	 */
-	public static final int QUEUED = 1;
+    private TransportMessageStatus(){
+        // private constructor
+    }
+    /**
+     * the message is in a SenderThread
+     */
+    public static final int QUEUED = 1;
 
-	/**
-	 * the message has failed in a SenderThread and has not been sent
-	 */
-	public static final int CACHED = 2;
+    /**
+     * the message has failed in a SenderThread and has not been sent
+     */
+    public static final int CACHED = 2;
 
-	/**
-	 * the message has been sent
-	 */
-	public static final int SENT = 3;
+    /**
+     * the message has been sent
+     */
+    public static final int SENT = 3;
 
-	public static final int FAILED = 4;
+    public static final int FAILED = 4;
 }

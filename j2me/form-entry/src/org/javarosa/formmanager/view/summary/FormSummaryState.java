@@ -6,29 +6,29 @@ import org.javarosa.formmanager.api.JrFormEntryController;
 
 public class FormSummaryState implements FormSummaryTransitions, State{
 
-	private final JrFormEntryController formController;
+    private final JrFormEntryController formController;
 
-	public FormSummaryState(JrFormEntryController formController){
-		this.formController = formController;
-	}
-	
-	public void start() {
-		FormSummaryController controller = new FormSummaryController(formController.getModel());
-		controller.setTransitions(this);
-		controller.start();
-	}
+    public FormSummaryState(JrFormEntryController formController){
+        this.formController = formController;
+    }
+    
+    public void start() {
+        FormSummaryController controller = new FormSummaryController(formController.getModel());
+        controller.setTransitions(this);
+        controller.start();
+    }
 
-	public void exit() {
-		formController.abort();
-	}
+    public void exit() {
+        formController.abort();
+    }
 
-	public void saveAndExit(boolean formComplete) {
-		// sending handled by CompletedFormOptionsState
-		formController.saveAndExit(formComplete);
-	}
+    public void saveAndExit(boolean formComplete) {
+        // sending handled by CompletedFormOptionsState
+        formController.saveAndExit(formComplete);
+    }
 
-	public void viewForm(FormIndex formIndex) {
-		formController.start(formIndex);
-	}
+    public void viewForm(FormIndex formIndex) {
+        formController.start(formIndex);
+    }
 
 }

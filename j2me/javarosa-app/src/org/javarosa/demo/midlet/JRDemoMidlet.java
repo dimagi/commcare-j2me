@@ -30,26 +30,26 @@ import org.javarosa.demo.util.JRDemoUtil;
  * 
  */
 public class JRDemoMidlet extends MIDlet {
-	
-	/* (non-Javadoc)
-	 * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
-	 */
-	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
+    
+    /* (non-Javadoc)
+     * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
+     */
+    protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
 
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.midlet.MIDlet#pauseApp()
-	 */
-	protected void pauseApp() {
+    /* (non-Javadoc)
+     * @see javax.microedition.midlet.MIDlet#pauseApp()
+     */
+    protected void pauseApp() {
 
-	}
-	
-	/* (non-Javadoc)
-	 * @see javax.microedition.midlet.MIDlet#startApp()
-	 */
-	protected void startApp() throws MIDletStateChangeException {
-		JRDemoContext._().init(this);
-		JRDemoUtil.start();
-	}
+    }
+    
+    /* (non-Javadoc)
+     * @see javax.microedition.midlet.MIDlet#startApp()
+     */
+    protected void startApp() throws MIDletStateChangeException {
+        JRDemoContext._().init(this);
+        JRDemoUtil.start();
+    }
 }

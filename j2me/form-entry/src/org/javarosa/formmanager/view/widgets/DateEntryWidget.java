@@ -29,61 +29,61 @@ import de.enough.polish.ui.DateField;
 import de.enough.polish.ui.Item;
 
 public class DateEntryWidget extends ExpandedWidget {
-	boolean dateTime = false;
-	
-	public DateEntryWidget() {
-		this(false);
-	}
-	
-	public DateEntryWidget(boolean dateTime) {
-		super();
-		this.dateTime = dateTime;
-	}
-	
-	public int getNextMode () {
-		return ExpandedWidget.NEXT_ON_ENTRY;
-	}
-	
-	protected Item getEntryWidget (FormEntryPrompt prompt) {
-		//#style textBox
-		return new DateField(null, DateField.DATE);
-	}
+    boolean dateTime = false;
+    
+    public DateEntryWidget() {
+        this(false);
+    }
+    
+    public DateEntryWidget(boolean dateTime) {
+        super();
+        this.dateTime = dateTime;
+    }
+    
+    public int getNextMode () {
+        return ExpandedWidget.NEXT_ON_ENTRY;
+    }
+    
+    protected Item getEntryWidget (FormEntryPrompt prompt) {
+        //#style textBox
+        return new DateField(null, DateField.DATE);
+    }
 
-	private DateField dateField () {
-		return (DateField)entryWidget;    
-	}
+    private DateField dateField () {
+        return (DateField)entryWidget;    
+    }
 
-	protected void updateWidget (FormEntryPrompt prompt) { /* do nothing */ }
-	
-	protected void setWidgetValue (Object o) {
-		dateField().setDate((Date)o);
-	}
+    protected void updateWidget (FormEntryPrompt prompt) { /* do nothing */ }
+    
+    protected void setWidgetValue (Object o) {
+        dateField().setDate((Date)o);
+    }
 
-	protected IAnswerData getWidgetValue () {
-		Date d = dateField().getDate();
-		if(d == null) {
-			return null;
-		}
-		if (dateTime) {
-			return  new DateTimeData(d);
-		} else {
-			return new DateData(d);
-		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
-	 */
-	public int widgetType() {
-		return Constants.CONTROL_INPUT;
-	}
-	
-	protected IAnswerData getAnswerTemplate() {
-		if (dateTime) {
-			return new DateTimeData();
-		} else {
-			return new DateData();
-		}
-	}
+    protected IAnswerData getWidgetValue () {
+        Date d = dateField().getDate();
+        if(d == null) {
+            return null;
+        }
+        if (dateTime) {
+            return  new DateTimeData(d);
+        } else {
+            return new DateData(d);
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
+     */
+    public int widgetType() {
+        return Constants.CONTROL_INPUT;
+    }
+    
+    protected IAnswerData getAnswerTemplate() {
+        if (dateTime) {
+            return new DateTimeData();
+        } else {
+            return new DateData();
+        }
+    }
 }

@@ -22,62 +22,62 @@ import org.javarosa.services.transport.TransportMessage;
  *
  */
 public class TransportMessageSerializationWrapper implements SerializationWrapper, IMetaData {
-	
-	TransportMessage m;
+    
+    TransportMessage m;
 
-	public Class baseType() {
-		return TransportMessage.class;
-	}
+    public Class baseType() {
+        return TransportMessage.class;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#getData()
-	 */
-	public Externalizable getData() {
-		return m;
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#getData()
+     */
+    public Externalizable getData() {
+        return m;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#setData(org.javarosa.core.util.externalizable.Externalizable)
-	 */
-	public void setData(Externalizable e) {
-		m = (TransportMessage)e;
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#setData(org.javarosa.core.util.externalizable.Externalizable)
+     */
+    public void setData(Externalizable e) {
+        m = (TransportMessage)e;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.util.externalizable.Externalizable#readExternal(java.io.DataInputStream, org.javarosa.core.util.externalizable.PrototypeFactory)
-	 */
-	public void readExternal(DataInputStream in, PrototypeFactory pf)
-			throws IOException, DeserializationException {
-		m = (TransportMessage)ExtUtil.read(in, new ExtWrapTagged(),pf);
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.util.externalizable.Externalizable#readExternal(java.io.DataInputStream, org.javarosa.core.util.externalizable.PrototypeFactory)
+     */
+    public void readExternal(DataInputStream in, PrototypeFactory pf)
+            throws IOException, DeserializationException {
+        m = (TransportMessage)ExtUtil.read(in, new ExtWrapTagged(),pf);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.util.externalizable.Externalizable#writeExternal(java.io.DataOutputStream)
-	 */
-	public void writeExternal(DataOutputStream out) throws IOException {
-		ExtUtil.write(out, new ExtWrapTagged(m));
-	}
-	
+    /* (non-Javadoc)
+     * @see org.javarosa.core.util.externalizable.Externalizable#writeExternal(java.io.DataOutputStream)
+     */
+    public void writeExternal(DataOutputStream out) throws IOException {
+        ExtUtil.write(out, new ExtWrapTagged(m));
+    }
+    
 
-	public Hashtable getMetaData() {
-		Hashtable meta = new Hashtable();
-		meta.put("cache-id", m.getCacheIdentifier());
-		return meta;
-	}
+    public Hashtable getMetaData() {
+        Hashtable meta = new Hashtable();
+        meta.put("cache-id", m.getCacheIdentifier());
+        return meta;
+    }
 
-	public Object getMetaData(String fieldName) {
-		if(fieldName.equals("cache-id")) {
-			return m.getCacheIdentifier();
-		}
-		throw new IllegalArgumentException("No metadata field " + fieldName  + " for stored transport messages"); 
-	}
+    public Object getMetaData(String fieldName) {
+        if(fieldName.equals("cache-id")) {
+            return m.getCacheIdentifier();
+        }
+        throw new IllegalArgumentException("No metadata field " + fieldName  + " for stored transport messages"); 
+    }
 
-	public String[] getMetaDataFields() {
-		return new String[] { "cache-id" };
-	}
+    public String[] getMetaDataFields() {
+        return new String[] { "cache-id" };
+    }
 
-	public void clean() {
-		m = null;		
-	}
+    public void clean() {
+        m = null;        
+    }
 
 }

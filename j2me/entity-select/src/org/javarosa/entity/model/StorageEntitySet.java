@@ -12,26 +12,26 @@ import org.javarosa.core.util.Iterator;
  *
  */
 public class StorageEntitySet<E extends Persistable> implements EntitySet<E> {
-	
-	IStorageUtility<E> storage;
-	
-	public StorageEntitySet(IStorageUtility<E> storage) {
-		this.storage = storage;
-	}
+    
+    IStorageUtility<E> storage;
+    
+    public StorageEntitySet(IStorageUtility<E> storage) {
+        this.storage = storage;
+    }
 
-	public int getCount() {
-		return storage.getNumRecords();
-	}
+    public int getCount() {
+        return storage.getNumRecords();
+    }
 
-	public E get(int index) {
-		return storage.read(index);
-	}
+    public E get(int index) {
+        return storage.read(index);
+    }
 
-	public Iterator<E> iterate() {
-		return storage.iterate();
-	}
+    public Iterator<E> iterate() {
+        return storage.iterate();
+    }
 
-	public int getId(E e) {
-		return e.getID();
-	}
+    public int getId(E e) {
+        return e.getID();
+    }
 }

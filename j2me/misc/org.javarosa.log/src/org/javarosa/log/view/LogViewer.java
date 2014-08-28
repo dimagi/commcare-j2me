@@ -29,14 +29,14 @@ import javax.microedition.lcdui.StringItem;
  */
 public class LogViewer extends Form {
 
-	StringItem logs;
-	
-	public LogViewer() {
-		super("Incident Log");
-	}
-	
-	public void loadLogs(String data) {
-		logs = new StringItem("", data);
-		this.append(logs);
-	}
+    StringItem logs;
+    
+    public LogViewer() {
+        super("Incident Log");
+    }
+    
+    public void loadLogs(String data) {
+        logs = new StringItem("", data);
+        this.append(logs);
+    }
 }

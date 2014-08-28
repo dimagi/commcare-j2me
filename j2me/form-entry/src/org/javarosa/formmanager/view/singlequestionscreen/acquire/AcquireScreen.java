@@ -32,119 +32,119 @@ import org.javarosa.j2me.log.HandledCommandListener;
  * 
  */
 public abstract class AcquireScreen extends Form
-		implements HandledCommandListener /* , IFormEntryView */ {
-	
-	private AcquiringQuestionScreen questionScreen;
-	private CommandListener listenerToReturnTo;
-	public Command cancelCommand;
-	private Command setCallingScreenDataCommand;
+        implements HandledCommandListener /* , IFormEntryView */ {
+    
+    private AcquiringQuestionScreen questionScreen;
+    private CommandListener listenerToReturnTo;
+    public Command cancelCommand;
+    private Command setCallingScreenDataCommand;
 
-	/**
-	 * @param title
-	 *            the screen title
-	 * @param questionScreen
-	 *            the question screen to which the acquiredanswer data will be
-	 *            returned
-	 * @param listenerToReturnTo
-	 *            the listener to which control will be returned once the
-	 *            acquiring process has terminated. this can happen becuase data
-	 *            is successfully acquired or returned, or because acquiring is
-	 *            cancelled
-	 */
-	public AcquireScreen(String title, AcquiringQuestionScreen questionScreen,
-			CommandListener listenerToReturnTo) {
-		super(title);
-		this.questionScreen = questionScreen;
-		this.listenerToReturnTo = listenerToReturnTo;
+    /**
+     * @param title
+     *            the screen title
+     * @param questionScreen
+     *            the question screen to which the acquiredanswer data will be
+     *            returned
+     * @param listenerToReturnTo
+     *            the listener to which control will be returned once the
+     *            acquiring process has terminated. this can happen becuase data
+     *            is successfully acquired or returned, or because acquiring is
+     *            cancelled
+     */
+    public AcquireScreen(String title, AcquiringQuestionScreen questionScreen,
+            CommandListener listenerToReturnTo) {
+        super(title);
+        this.questionScreen = questionScreen;
+        this.listenerToReturnTo = listenerToReturnTo;
 
-		createView();
-		addCommands();
-		setCommandListener(this);
-	}
-
-	/**
-	 * Add initial view items to form
-	 */
-	protected abstract void createView();
-
-	/**
-	 * command handler for screen-specific commands
-	 * 
-	 * @param command
-	 * @param arg1
-	 */
-	protected abstract void handleCustomCommand(Command command,
-			Displayable arg1);
-
-	/**
-	 * Add generic commands
-	 */
-	private void addCommands() {
-		cancelCommand = new Command("Cancel", Command.CANCEL, 9);
-		this.addCommand(cancelCommand);
-		setCallingScreenDataCommand = getSetCallingScreenDataCommand();
-		this.addCommand(setCallingScreenDataCommand);
-	}
-
-	/**
-	 * @return the command that is used to stop capturing, do any processing and
-	 *         attempt to return the acquired data as answer data
-	 */
-	protected abstract Command getSetCallingScreenDataCommand();
-
-	/**
-	 * @return the question screen for which data is being acquired
-	 */
-	public AcquiringQuestionScreen getQuestionScreen() {
-		return questionScreen;
-	}
-
-	protected abstract IAnswerData getAcquiredData();
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
-	 * .lcdui.Command, javax.microedition.lcdui.Displayable)
-	 * 
-	 * Command handler for generic acquisition commands
-	 */
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}
-	
-	public void _commandAction(Command command, Displayable arg1) {
-
-		if (command == cancelCommand) {
-			cleanUp();
-			forwardCommand(command, arg1);
-
-		} else if (command == setCallingScreenDataCommand) {
-			IAnswerData data = this.getAcquiredData();
-			if (data != null) {
-				questionScreen.setAcquiredData(data);
-				_commandAction(cancelCommand, this);
-			}
-
-		} else {
-			handleCustomCommand(command, arg1);
-		}
-
-	}
-	
-    private void forwardCommand (Command c, Displayable d) {
-    	CommandListener cl = listenerToReturnTo;
-    	
-    	if (cl instanceof HandledCommandListener) {
-    		((HandledCommandListener)cl)._commandAction(c, d);
-    	} else {
-    		cl.commandAction(c, d);
-    	}
+        createView();
+        addCommands();
+        setCommandListener(this);
     }
 
-	/**
-	 * Cleans up the resources used to do the acquiring (e.g. video player)
-	 */
-	protected abstract void cleanUp();
+    /**
+     * Add initial view items to form
+     */
+    protected abstract void createView();
+
+    /**
+     * command handler for screen-specific commands
+     * 
+     * @param command
+     * @param arg1
+     */
+    protected abstract void handleCustomCommand(Command command,
+            Displayable arg1);
+
+    /**
+     * Add generic commands
+     */
+    private void addCommands() {
+        cancelCommand = new Command("Cancel", Command.CANCEL, 9);
+        this.addCommand(cancelCommand);
+        setCallingScreenDataCommand = getSetCallingScreenDataCommand();
+        this.addCommand(setCallingScreenDataCommand);
+    }
+
+    /**
+     * @return the command that is used to stop capturing, do any processing and
+     *         attempt to return the acquired data as answer data
+     */
+    protected abstract Command getSetCallingScreenDataCommand();
+
+    /**
+     * @return the question screen for which data is being acquired
+     */
+    public AcquiringQuestionScreen getQuestionScreen() {
+        return questionScreen;
+    }
+
+    protected abstract IAnswerData getAcquiredData();
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
+     * .lcdui.Command, javax.microedition.lcdui.Displayable)
+     * 
+     * Command handler for generic acquisition commands
+     */
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }
+    
+    public void _commandAction(Command command, Displayable arg1) {
+
+        if (command == cancelCommand) {
+            cleanUp();
+            forwardCommand(command, arg1);
+
+        } else if (command == setCallingScreenDataCommand) {
+            IAnswerData data = this.getAcquiredData();
+            if (data != null) {
+                questionScreen.setAcquiredData(data);
+                _commandAction(cancelCommand, this);
+            }
+
+        } else {
+            handleCustomCommand(command, arg1);
+        }
+
+    }
+    
+    private void forwardCommand (Command c, Displayable d) {
+        CommandListener cl = listenerToReturnTo;
+        
+        if (cl instanceof HandledCommandListener) {
+            ((HandledCommandListener)cl)._commandAction(c, d);
+        } else {
+            cl.commandAction(c, d);
+        }
+    }
+
+    /**
+     * Cleans up the resources used to do the acquiring (e.g. video player)
+     */
+    protected abstract void cleanUp();
 }

@@ -14,23 +14,23 @@ import org.javarosa.services.transport.TransportMessage;
 
 public interface TransportResponseProcessor {
 
-	/**
-	 * Parse the response from the server after sending a message and construct output to
-	 * present to the user
-	 * 
-	 * @param message
-	 * @return
-	 */
-	String getResponseMessage (TransportMessage message);
+    /**
+     * Parse the response from the server after sending a message and construct output to
+     * present to the user
+     * 
+     * @param message
+     * @return
+     */
+    String getResponseMessage (TransportMessage message);
 
-	/**
-	 * @return true if this processor can create a fully summative response for all of the processed data
-	 */
-	boolean hasSummativeResponse();
+    /**
+     * @return true if this processor can create a fully summative response for all of the processed data
+     */
+    boolean hasSummativeResponse();
 
-	/**
-	 * @return A string containing all of the compiled responses if possible (hasSummativeResponse is true)
-	 */
-	String getSummativeReseponse();
-	
+    /**
+     * @return A string containing all of the compiled responses if possible (hasSummativeResponse is true)
+     */
+    String getSummativeReseponse();
+    
 }

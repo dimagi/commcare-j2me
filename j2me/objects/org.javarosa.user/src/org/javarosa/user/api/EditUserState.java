@@ -6,20 +6,20 @@ import org.javarosa.user.model.User;
 
 public abstract class EditUserState implements EditUserTransitions, State {
 
-	protected User u;
-	
-	public EditUserState (User u) {
-		this.u = u;
-	}
-	
-	public void start () {
-		EditUserController controller = getController();
-		controller.setTransitions(this);
-		controller.start();
-	}
-	
-	protected EditUserController getController () {
-		return new EditUserController(CreateUserController.PASSWORD_FORMAT_NUMERIC, u);
-	}
-	
+    protected User u;
+    
+    public EditUserState (User u) {
+        this.u = u;
+    }
+    
+    public void start () {
+        EditUserController controller = getController();
+        controller.setTransitions(this);
+        controller.start();
+    }
+    
+    protected EditUserController getController () {
+        return new EditUserController(CreateUserController.PASSWORD_FORMAT_NUMERIC, u);
+    }
+    
 }

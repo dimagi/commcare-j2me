@@ -28,63 +28,63 @@ import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
 
 public class FormDefFetcher {
-	IFormDefRetrievalMethod fetcher;
-	Vector<IPreloadHandler> preloadHandlers;
-	Vector<IFunctionHandler> funcHandlers;
-	InstanceInitializationFactory factory;
-	
-	FormInstance instance;
-	
-	public FormDefFetcher(IFormDefRetrievalMethod retriever,
-			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
-		this.fetcher = retriever;
-		this.preloadHandlers = preloadHandlers;
-		this.funcHandlers = funcHandlers;
-		this.factory = factory;
-	}
-	
-	public FormDefFetcher(IFormDefRetrievalMethod retriever, int instanceId,
-			Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
-		this(retriever, preloadHandlers, funcHandlers, factory);
-		loadModel(instanceId);
-	}
-	
-	private void loadModel(int instanceId) {
-		IStorageUtility instances = StorageManager.getStorage(FormInstance.STORAGE_KEY);
-		instance = (FormInstance)instances.read(instanceId);
-	}
+    IFormDefRetrievalMethod fetcher;
+    Vector<IPreloadHandler> preloadHandlers;
+    Vector<IFunctionHandler> funcHandlers;
+    InstanceInitializationFactory factory;
+    
+    FormInstance instance;
+    
+    public FormDefFetcher(IFormDefRetrievalMethod retriever,
+            Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
+        this.fetcher = retriever;
+        this.preloadHandlers = preloadHandlers;
+        this.funcHandlers = funcHandlers;
+        this.factory = factory;
+    }
+    
+    public FormDefFetcher(IFormDefRetrievalMethod retriever, int instanceId,
+            Vector<IPreloadHandler> preloadHandlers, Vector <IFunctionHandler> funcHandlers, InstanceInitializationFactory factory) {
+        this(retriever, preloadHandlers, funcHandlers, factory);
+        loadModel(instanceId);
+    }
+    
+    private void loadModel(int instanceId) {
+        IStorageUtility instances = StorageManager.getStorage(FormInstance.STORAGE_KEY);
+        instance = (FormInstance)instances.read(instanceId);
+    }
 
-	public FormDef getFormDef() {
-		FormDef form = fetcher.retreiveFormDef(); 
-		if(instance != null) {
-			form.setInstance(instance);
-		}
-		
-		//A lot of this should probably not be with the form.
-		initPreloadHandlers(form);
-		form.setEvaluationContext(initEvaluationContext(new EvaluationContext(null)));
-		form.initialize(instance == null, factory);
-		
-		return form;
-	}
-	
-	private void initPreloadHandlers (FormDef f) {
-		if(preloadHandlers != null) {
-			for (int i = 0; i < preloadHandlers.size(); i++) {
-				f.getPreloader().addPreloadHandler(preloadHandlers.elementAt(i));
-			}
-		}
-	}
-	
-	private EvaluationContext initEvaluationContext (EvaluationContext ec) {
-		if(funcHandlers != null) {
-			for (int i = 0; i < funcHandlers.size(); i++) {
-				ec.addFunctionHandler(funcHandlers.elementAt(i));
-			}
-		}
-		
-		return ec;
-	}
+    public FormDef getFormDef() {
+        FormDef form = fetcher.retreiveFormDef(); 
+        if(instance != null) {
+            form.setInstance(instance);
+        }
+        
+        //A lot of this should probably not be with the form.
+        initPreloadHandlers(form);
+        form.setEvaluationContext(initEvaluationContext(new EvaluationContext(null)));
+        form.initialize(instance == null, factory);
+        
+        return form;
+    }
+    
+    private void initPreloadHandlers (FormDef f) {
+        if(preloadHandlers != null) {
+            for (int i = 0; i < preloadHandlers.size(); i++) {
+                f.getPreloader().addPreloadHandler(preloadHandlers.elementAt(i));
+            }
+        }
+    }
+    
+    private EvaluationContext initEvaluationContext (EvaluationContext ec) {
+        if(funcHandlers != null) {
+            for (int i = 0; i < funcHandlers.size(); i++) {
+                ec.addFunctionHandler(funcHandlers.elementAt(i));
+            }
+        }
+        
+        return ec;
+    }
 
 
 }

@@ -67,7 +67,7 @@ public class LineChart extends CustomItem {
     private boolean isDefaultColor;
 
     public LineChart(String label, Style style) {
-    	super(label,style);
+        super(label,style);
             ticker = 1;
             equalCoordTicker = 1;
             currentPointVector = new Vector();
@@ -115,7 +115,7 @@ public class LineChart extends CustomItem {
      * Return : 
      */
     public void resetData() {
-    	pointsVector = new Vector();
+        pointsVector = new Vector();
         currentPointVector = new Vector();
         pointsVector.addElement(currentPointVector);
     }
@@ -152,7 +152,7 @@ public class LineChart extends CustomItem {
      */
    
     public void insertItem(String pointLabel, int yCordValue, int xCordValue,  int colorOne, int colorTwo, int colorThree) {
-    	insertItem(new LinePointsItem(pointLabel, yCordValue, xCordValue, colorOne, colorTwo, colorThree));
+        insertItem(new LinePointsItem(pointLabel, yCordValue, xCordValue, colorOne, colorTwo, colorThree));
     }
 
     /**
@@ -323,8 +323,8 @@ public class LineChart extends CustomItem {
         }
         Enumeration en = pointsVector.elements();
         while(en.hasMoreElements()) {
-        	Vector pointVector = (Vector)en.nextElement();
-        	drawLine(g, pointVector);
+            Vector pointVector = (Vector)en.nextElement();
+            drawLine(g, pointVector);
         }
     }
    
@@ -343,7 +343,7 @@ public class LineChart extends CustomItem {
            scaleFactor = 6;
        }
        
-	   do {
+       do {
            if(size > 10) {
                break;
            }
@@ -383,9 +383,9 @@ public class LineChart extends CustomItem {
    }
    
    public void startNewLine() {
-	   Vector newVector = new Vector();
-	   pointsVector.addElement(newVector);
-	   currentPointVector = newVector;
+       Vector newVector = new Vector();
+       pointsVector.addElement(newVector);
+       currentPointVector = newVector;
    }
      
     /**

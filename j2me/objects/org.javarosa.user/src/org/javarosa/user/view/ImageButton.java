@@ -7,18 +7,18 @@ import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.Style;
 
 class ImageButton extends CustomItem {
-	
+    
     private Image _image = null;
     private boolean _down = false;
     private int _clicks = 0;
 
     public ImageButton(Image image) {
-    	this(image, null);
+        this(image, null);
     }
     
     public ImageButton(Image image, Style s) {
-    	super("", s);
-    	_image = image;
+        super("", s);
+        _image = image;
     }
 
     public Image getImage() {
@@ -30,7 +30,7 @@ class ImageButton extends CustomItem {
         return _down;
     }
     
-    // Minimal button size = image size	
+    // Minimal button size = image size    
     protected int getMinContentHeight() {
         return getImage().getHeight();
     }

@@ -37,62 +37,62 @@ import de.enough.polish.ui.StringItem;
 
 public class ImageChooserWidget extends ExpandedWidget {
 
-	private PointerAnswerData data;
-	
-	private StringItem label;
-	
-	protected IAnswerData getWidgetValue() {
-		return data;
-	}
+    private PointerAnswerData data;
+    
+    private StringItem label;
+    
+    protected IAnswerData getWidgetValue() {
+        return data;
+    }
 
-	
-	protected void setWidgetValue(Object o) {
-		IDataPointer casted = (IDataPointer) o;
-		if (casted != null) {
-			data = new PointerAnswerData((IDataPointer) o);
-		} else {
-			data = null;
-		}
-		updateLabel();
-	}
-
-
-	protected void updateWidget(FormEntryPrompt prompt) {
-		// do nothing? 
-		
-	}
-
-	public int widgetType() {
-		return Constants.CONTROL_IMAGE_CHOOSE;
-	}
-	
-	protected Item getEntryWidget (FormEntryPrompt prompt) {
-		// //#style textBox
-		
-		updateLabel();
-		return label;
-	}
+    
+    protected void setWidgetValue(Object o) {
+        IDataPointer casted = (IDataPointer) o;
+        if (casted != null) {
+            data = new PointerAnswerData((IDataPointer) o);
+        } else {
+            data = null;
+        }
+        updateLabel();
+    }
 
 
-	private void updateLabel() {
-		
-		if (label == null) {
-			label = new StringItem("", "");
-			// this command comes from the other constants file
-			Command cameraCommand = new Command(org.javarosa.core.api.Constants.ACTIVITY_TYPE_GET_IMAGES, "Get Images", Command.SCREEN, 0);
-			label.addCommand(cameraCommand);
-		}
-		if (data == null) {
-			label.setLabel("Use the menu to get images");
-			label.setText("No images selected");
-		} else {
-			label.setLabel("Use the menu item to change selected images");
-			label.setText(data.getDisplayText());
-		}
-	}
+    protected void updateWidget(FormEntryPrompt prompt) {
+        // do nothing? 
+        
+    }
 
-	protected IAnswerData getAnswerTemplate() {
-		return new PointerAnswerData();
-	}
+    public int widgetType() {
+        return Constants.CONTROL_IMAGE_CHOOSE;
+    }
+    
+    protected Item getEntryWidget (FormEntryPrompt prompt) {
+        // //#style textBox
+        
+        updateLabel();
+        return label;
+    }
+
+
+    private void updateLabel() {
+        
+        if (label == null) {
+            label = new StringItem("", "");
+            // this command comes from the other constants file
+            Command cameraCommand = new Command(org.javarosa.core.api.Constants.ACTIVITY_TYPE_GET_IMAGES, "Get Images", Command.SCREEN, 0);
+            label.addCommand(cameraCommand);
+        }
+        if (data == null) {
+            label.setLabel("Use the menu to get images");
+            label.setText("No images selected");
+        } else {
+            label.setLabel("Use the menu item to change selected images");
+            label.setText(data.getDisplayText());
+        }
+    }
+
+    protected IAnswerData getAnswerTemplate() {
+        return new PointerAnswerData();
+    }
 
 }

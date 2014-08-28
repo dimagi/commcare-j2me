@@ -67,7 +67,7 @@ class RecordForm extends Form implements CommandListener{
     
     public void commandAction(Command comm, Displayable disp){
         //Record to file
-    	if(comm==recordCommand){
+        if(comm==recordCommand){
             try{                
                 p = Manager.createPlayer("capture://audio?encoding=pcm");
                 p.realize();                

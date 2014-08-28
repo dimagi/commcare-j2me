@@ -24,75 +24,75 @@ import javax.microedition.lcdui.TextField;
 import org.javarosa.core.services.locale.Localization;
 
 public class FormTransportViews {
-	// ----------- subviews
-//	private FormTransportMainMenu mainMenu;
-//	private FormTransportMessageList messageList;
-	private TextBox loggingTextBox;
-//	private FormTransportMessageDetailBox messageDetailTextBox;
-	private SendNowSendLaterForm sendNowSendLater;
-	private FormTransportSubmitStatusScreen submitStatusScreen;
-	private MultiSubmitStatusScreen multiSubmitStatusScreen;
+    // ----------- subviews
+//    private FormTransportMainMenu mainMenu;
+//    private FormTransportMessageList messageList;
+    private TextBox loggingTextBox;
+//    private FormTransportMessageDetailBox messageDetailTextBox;
+    private SendNowSendLaterForm sendNowSendLater;
+    private FormTransportSubmitStatusScreen submitStatusScreen;
+    private MultiSubmitStatusScreen multiSubmitStatusScreen;
 
-	public FormTransportViews(CommandListener observer, ItemStateListener stateListener, TransportResponseProcessor responder) {
-		super();
-//		this.mainMenu = constructMainMenu(observer);
-//		this.messageList = new FormTransportMessageList(observer);
-		this.loggingTextBox = createLoggingTextBox();
-//		this.messageDetailTextBox = new FormTransportMessageDetailBox(observer);
-		this.sendNowSendLater = new SendNowSendLaterForm(observer,stateListener);
-		this.submitStatusScreen = new FormTransportSubmitStatusScreen(observer, responder);
+    public FormTransportViews(CommandListener observer, ItemStateListener stateListener, TransportResponseProcessor responder) {
+        super();
+//        this.mainMenu = constructMainMenu(observer);
+//        this.messageList = new FormTransportMessageList(observer);
+        this.loggingTextBox = createLoggingTextBox();
+//        this.messageDetailTextBox = new FormTransportMessageDetailBox(observer);
+        this.sendNowSendLater = new SendNowSendLaterForm(observer,stateListener);
+        this.submitStatusScreen = new FormTransportSubmitStatusScreen(observer, responder);
 
-		this.multiSubmitStatusScreen = new MultiSubmitStatusScreen(observer, responder);
+        this.multiSubmitStatusScreen = new MultiSubmitStatusScreen(observer, responder);
 
-	}
+    }
 
-	private TextBox createLoggingTextBox() {
-		TextBox box = new TextBox(Localization.get("message.log"), null, 1000,
-				TextField.UNEDITABLE);
-		box.addCommand(FormTransportCommands.CMD_BACK);
-		return box;
+    private TextBox createLoggingTextBox() {
+        TextBox box = new TextBox(Localization.get("message.log"), null, 1000,
+                TextField.UNEDITABLE);
+        box.addCommand(FormTransportCommands.CMD_BACK);
+        return box;
 
-	}
+    }
 //
-//	private FormTransportMainMenu constructMainMenu(CommandListener observer) {
-//		Vector mainMenuItems = FormTransportMainMenu.getMenuItems();
-//		String[] elements = new String[mainMenuItems.size()];
-//		mainMenuItems.copyInto(elements);
-//		return new FormTransportMainMenu(observer,
-//				Localization.get("menu.transport"), Choice.IMPLICIT, elements, null);
+//    private FormTransportMainMenu constructMainMenu(CommandListener observer) {
+//        Vector mainMenuItems = FormTransportMainMenu.getMenuItems();
+//        String[] elements = new String[mainMenuItems.size()];
+//        mainMenuItems.copyInto(elements);
+//        return new FormTransportMainMenu(observer,
+//                Localization.get("menu.transport"), Choice.IMPLICIT, elements, null);
 //
-//	}
+//    }
 
-	public void destroyStatusScreen() {
-		this.submitStatusScreen.destroy();
-	}
+    public void destroyStatusScreen() {
+        this.submitStatusScreen.destroy();
+    }
 
-//	public List getMainMenu() {
-//		return this.mainMenu;
-//	}
+//    public List getMainMenu() {
+//        return this.mainMenu;
+//    }
 //
-//	public FormTransportMessageList getMessageList() {
-//		return this.messageList;
-//	}
+//    public FormTransportMessageList getMessageList() {
+//        return this.messageList;
+//    }
 //
-//	public TextBox getLoggingTextBox() {
-//		return this.loggingTextBox;
-//	}
+//    public TextBox getLoggingTextBox() {
+//        return this.loggingTextBox;
+//    }
 //
-//	public TextBox getMessageDetailTextBox() {
-//		return this.messageDetailTextBox;
-//	}
+//    public TextBox getMessageDetailTextBox() {
+//        return this.messageDetailTextBox;
+//    }
 
-	public SendNowSendLaterForm getSendNowSendLaterScreen() {
-		return this.sendNowSendLater;
-	}
+    public SendNowSendLaterForm getSendNowSendLaterScreen() {
+        return this.sendNowSendLater;
+    }
 
-	public FormTransportSubmitStatusScreen getSubmitStatusScreen() {
-		return this.submitStatusScreen;
-	}
+    public FormTransportSubmitStatusScreen getSubmitStatusScreen() {
+        return this.submitStatusScreen;
+    }
 
-	public MultiSubmitStatusScreen getMultiSubmitStatusScreen() {
-		return multiSubmitStatusScreen;
-	}
+    public MultiSubmitStatusScreen getMultiSubmitStatusScreen() {
+        return multiSubmitStatusScreen;
+    }
 
 }

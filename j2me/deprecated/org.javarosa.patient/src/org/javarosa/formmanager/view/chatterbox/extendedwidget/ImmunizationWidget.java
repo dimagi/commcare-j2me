@@ -31,50 +31,50 @@ import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;
 
 public class ImmunizationWidget extends ExpandedWidget {
-	
-	public final static int CONTROL_IMMUNIZATION = 10;
-	
-	VaccinationTable table;
-	
-	Container container;
-	
-	ImmunizationData d;
-	
-	public ImmunizationWidget() {
-		container = new Container(false);
-		table = new VaccinationTable(false);
-		container.add(table);
-	}
+    
+    public final static int CONTROL_IMMUNIZATION = 10;
+    
+    VaccinationTable table;
+    
+    Container container;
+    
+    ImmunizationData d;
+    
+    public ImmunizationWidget() {
+        container = new Container(false);
+        table = new VaccinationTable(false);
+        container.add(table);
+    }
 
-	protected Item getEntryWidget(FormEntryPrompt prompt) {
-		return container;
-	}
+    protected Item getEntryWidget(FormEntryPrompt prompt) {
+        return container;
+    }
 
-	protected IAnswerData getWidgetValue() {
-		d = table.getData();
-		return new ImmunizationAnswerData(d);
-	}
+    protected IAnswerData getWidgetValue() {
+        d = table.getData();
+        return new ImmunizationAnswerData(d);
+    }
 
-	protected void setWidgetValue(Object o) {
-		if(o instanceof ImmunizationData ) {
-			d = (ImmunizationData)o;
-			table.setData(d);
-		}
-	}
+    protected void setWidgetValue(Object o) {
+        if(o instanceof ImmunizationData ) {
+            d = (ImmunizationData)o;
+            table.setData(d);
+        }
+    }
 
-	protected void updateWidget(FormEntryPrompt prompt) {
-	}
-	
+    protected void updateWidget(FormEntryPrompt prompt) {
+    }
+    
 
-	public int getNextMode () {
-		return ExpandedWidget.NEXT_ON_MANUAL;
-	}
+    public int getNextMode () {
+        return ExpandedWidget.NEXT_ON_MANUAL;
+    }
 
-	public int widgetType() {
-		return CONTROL_IMMUNIZATION;
-	}
-	
-	protected IAnswerData getAnswerTemplate() {
-		return new ImmunizationAnswerData();
-	}
+    public int widgetType() {
+        return CONTROL_IMMUNIZATION;
+    }
+    
+    protected IAnswerData getAnswerTemplate() {
+        return new ImmunizationAnswerData();
+    }
 }

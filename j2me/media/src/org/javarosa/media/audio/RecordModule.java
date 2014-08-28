@@ -21,12 +21,12 @@ import org.javarosa.core.services.PrototypeManager;
 
 public class RecordModule implements IModule 
 {
-	//@Override
-	public void registerModule() 
-	{
-		String[] classes = { 
-				"org.javarosa.media.audio.model.FileDataPointer",
-		};		
-		PrototypeManager.registerPrototypes(classes);
-	}
+    //@Override
+    public void registerModule() 
+    {
+        String[] classes = { 
+                "org.javarosa.media.audio.model.FileDataPointer",
+        };        
+        PrototypeManager.registerPrototypes(classes);
+    }
 }

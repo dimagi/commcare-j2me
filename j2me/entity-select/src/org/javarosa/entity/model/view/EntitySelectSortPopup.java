@@ -33,78 +33,78 @@ import de.enough.polish.ui.Form;
 import de.enough.polish.ui.Item;
 
 public class EntitySelectSortPopup<E> extends Form implements HandledCommandListener, HandledPItemStateListener {
-	private EntitySelectView<E> psv;
-	private EntitySelectController<E> psa;
-	private Entity<E> entityPrototype;
-	
+    private EntitySelectView<E> psv;
+    private EntitySelectController<E> psa;
+    private Entity<E> entityPrototype;
+    
     private ChoiceGroup sortField;
     private Command cancelCmd;
 
     public EntitySelectSortPopup (EntitySelectView<E> psv, EntitySelectController<E> psa, Entity<E> entityPrototype) {
-		//#style patselSortPopup
-		super(Localization.get("entity.sort.title"));
+        //#style patselSortPopup
+        super(Localization.get("entity.sort.title"));
 
-		this.psv = psv;
-		this.psa = psa;
-		this.entityPrototype = entityPrototype;
-		
-		sortField = new ChoiceGroup("", Choice.EXCLUSIVE);
+        this.psv = psv;
+        this.psa = psa;
+        this.entityPrototype = entityPrototype;
+        
+        sortField = new ChoiceGroup("", Choice.EXCLUSIVE);
 
-		int[] sortFields = entityPrototype.getSortFields();
-		int[] sorted = psv.getSortOrder();
+        int[] sortFields = entityPrototype.getSortFields();
+        int[] sorted = psv.getSortOrder();
 
-		int toChoose = -1;
-		for (int i = 0; i < sortFields.length; i++) {
-			String name = entityPrototype.getSortFieldName(sortFields[i]);
-			for(int j = 0 ; j < sorted.length ; ++j ){
-				if (sortFields[i] == sorted[j]) {
-					if(j == 0) {
-						toChoose = i;
-					}
-					
-					if(sorted.length > 1) {
-						name = (j+1) + ") " + name;
-					}
-				}
-			}
-			sortField.append(name, null);
-		}
-		if(toChoose != -1) {
-			sortField.setSelectedIndex(toChoose, true);
-		}
-		
-		append(sortField);
-		sortField.setItemStateListener(this);
-		
-		cancelCmd = new Command(Localization.get("polish.command.cancel"), Command.CANCEL, 1);
-		addCommand(cancelCmd);
-		setCommandListener(this);
+        int toChoose = -1;
+        for (int i = 0; i < sortFields.length; i++) {
+            String name = entityPrototype.getSortFieldName(sortFields[i]);
+            for(int j = 0 ; j < sorted.length ; ++j ){
+                if (sortFields[i] == sorted[j]) {
+                    if(j == 0) {
+                        toChoose = i;
+                    }
+                    
+                    if(sorted.length > 1) {
+                        name = (j+1) + ") " + name;
+                    }
+                }
+            }
+            sortField.append(name, null);
+        }
+        if(toChoose != -1) {
+            sortField.setSelectedIndex(toChoose, true);
+        }
+        
+        append(sortField);
+        sortField.setItemStateListener(this);
+        
+        cancelCmd = new Command(Localization.get("polish.command.cancel"), Command.CANCEL, 1);
+        addCommand(cancelCmd);
+        setCommandListener(this);
     }
     
     public void show () {
-    	psa.setView(this);
+        psa.setView(this);
     }
-	
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}  
+    
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }  
 
-	public void _commandAction(Command cmd, Displayable d) {
-		if (d == this) {
-			if (cmd == cancelCmd) {
-				psa.showList();
-			}
-		}
-	}
+    public void _commandAction(Command cmd, Displayable d) {
+        if (d == this) {
+            if (cmd == cancelCmd) {
+                psa.showList();
+            }
+        }
+    }
 
-	public void itemStateChanged(Item i) {
-		CrashHandler.itemStateChanged(this, i);
-	}  
+    public void itemStateChanged(Item i) {
+        CrashHandler.itemStateChanged(this, i);
+    }  
 
-	public void _itemStateChanged(Item item) {
-		if (item == sortField) {
-			psv.changeSort(new int[] {entityPrototype.getSortFields()[sortField.getSelectedIndex()]});
-			psa.showList();
-		}
-	}
+    public void _itemStateChanged(Item item) {
+        if (item == sortField) {
+            psv.changeSort(new int[] {entityPrototype.getSortFields()[sortField.getSelectedIndex()]});
+            psa.showList();
+        }
+    }
 }

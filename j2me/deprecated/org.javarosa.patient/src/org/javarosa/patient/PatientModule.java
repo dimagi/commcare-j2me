@@ -22,8 +22,8 @@ import org.javarosa.patient.model.Patient;
 
 public class PatientModule implements IModule {
 
-	public void registerModule() {
-		StorageManager.registerStorage(Patient.STORAGE_KEY, Patient.class);
-	}
+    public void registerModule() {
+        StorageManager.registerStorage(Patient.STORAGE_KEY, Patient.class);
+    }
    
 }

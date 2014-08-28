@@ -27,7 +27,7 @@ import de.enough.polish.ui.Style;
  *
  */
 public interface IAcquiringService {
-	
-	public AcquiringQuestionScreen getWidget(FormEntryPrompt prompt, Style style);
+    
+    public AcquiringQuestionScreen getWidget(FormEntryPrompt prompt, Style style);
 
 }

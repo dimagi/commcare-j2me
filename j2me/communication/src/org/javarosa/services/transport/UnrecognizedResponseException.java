@@ -8,7 +8,7 @@ package org.javarosa.services.transport;
  *
  */
 public class UnrecognizedResponseException extends Exception {
-	public UnrecognizedResponseException(String message) {
-		super(message);
-	}
+    public UnrecognizedResponseException(String message) {
+        super(message);
+    }
 }

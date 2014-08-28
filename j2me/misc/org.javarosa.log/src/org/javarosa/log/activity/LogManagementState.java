@@ -40,114 +40,114 @@ import org.javarosa.log.view.LogViewer;
  */
 public abstract class LogManagementState implements TrivialTransitions, State, HandledCommandListener {
 
-	private static final String CLEAR_LOGS = "Clear Logs";
-	private static final String VIEW_LOGS = "View Logs";
-	private static final String SEND_LOGS = "Send Logs";
+    private static final String CLEAR_LOGS = "Clear Logs";
+    private static final String VIEW_LOGS = "View Logs";
+    private static final String SEND_LOGS = "Send Logs";
 
-	private static final Command EXIT = new Command("Back", Command.BACK, 0);
+    private static final Command EXIT = new Command("Back", Command.BACK, 0);
 
-	private LogManagementView manager;
-	private LogViewer viewer;
+    private LogManagementView manager;
+    private LogViewer viewer;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.javarosa.core.api.IActivity#start(org.javarosa.core.Context)
-	 */
-	public void start() {
-		this.manager = initView();
-		this.viewer = new LogViewer();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.javarosa.core.api.IActivity#start(org.javarosa.core.Context)
+     */
+    public void start() {
+        this.manager = initView();
+        this.viewer = new LogViewer();
 
-		J2MEDisplay.setView(this.manager);
-	}
+        J2MEDisplay.setView(this.manager);
+    }
 
-	/**
-	 * @return
-	 */
-	private LogManagementView initView() {
-		LogManagementView v = new LogManagementView();
-		v.append(VIEW_LOGS, null);
-		v.append(SEND_LOGS, null);
-		v.append(CLEAR_LOGS, null);
-		v.addCommand(EXIT);
-		v.setCommandListener(this);
-		return v;
-	}
+    /**
+     * @return
+     */
+    private LogManagementView initView() {
+        LogManagementView v = new LogManagementView();
+        v.append(VIEW_LOGS, null);
+        v.append(SEND_LOGS, null);
+        v.append(CLEAR_LOGS, null);
+        v.addCommand(EXIT);
+        v.setCommandListener(this);
+        return v;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
-	 */
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}  
+    /* (non-Javadoc)
+     * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
+     */
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }  
 
-	public void _commandAction(Command com, Displayable d) {
-		if (d instanceof Alert) {
-			J2MEDisplay.setView(this.manager);
-		}
-		if (d == manager) {
-			String action = manager.getString(manager.getSelectedIndex());
-			if (action.equals(CLEAR_LOGS)) {
-				clearLogs();
-			}
+    public void _commandAction(Command com, Displayable d) {
+        if (d instanceof Alert) {
+            J2MEDisplay.setView(this.manager);
+        }
+        if (d == manager) {
+            String action = manager.getString(manager.getSelectedIndex());
+            if (action.equals(CLEAR_LOGS)) {
+                clearLogs();
+            }
 
-			if (action.equals(VIEW_LOGS)) {
-				viewLogs();
-			}
+            if (action.equals(VIEW_LOGS)) {
+                viewLogs();
+            }
 
-			if (action.equals(SEND_LOGS)) {
-				sendLogs();
-			}
-			if (com.equals(EXIT)) {
-				done();
-			}
-		} else if (d == viewer) {
-			J2MEDisplay.setView(this.manager);
-		}
-	}
+            if (action.equals(SEND_LOGS)) {
+                sendLogs();
+            }
+            if (com.equals(EXIT)) {
+                done();
+            }
+        } else if (d == viewer) {
+            J2MEDisplay.setView(this.manager);
+        }
+    }
 
-	/**
-	 * 
-	 */
-	private void sendLogs() {
-		throw new RuntimeException("LogManagementState.sendLogs(): need to convert to new transport layer");
-		
-//		String logData = IncidentLogger._().serializeLogs(new FlatLogSerializer());
-//		ByteArrayPayload payload = new ByteArrayPayload(logData.getBytes(), "",
-//				IDataPayload.PAYLOAD_TYPE_TEXT);
-//		HttpTransportDestination destination = new HttpTransportDestination(
-//				PropertyManager._().getSingularProperty(LogPropertyRules.LOG_SUBMIT_URL));
-//		try {
-//			TransportManager._().enqueue(
-//					payload,
-//					destination,
-//					TransportManager._().getCurrentTransportMethod(), 0);
-//			
-//			J2MEDisplay.showError("Sending Started", "Log Sending Started");
-//		} catch (IOException e) {
-//			J2MEDisplay.showError("Send Failed", "Log sending failure");
-//		}
-	}
+    /**
+     * 
+     */
+    private void sendLogs() {
+        throw new RuntimeException("LogManagementState.sendLogs(): need to convert to new transport layer");
+        
+//        String logData = IncidentLogger._().serializeLogs(new FlatLogSerializer());
+//        ByteArrayPayload payload = new ByteArrayPayload(logData.getBytes(), "",
+//                IDataPayload.PAYLOAD_TYPE_TEXT);
+//        HttpTransportDestination destination = new HttpTransportDestination(
+//                PropertyManager._().getSingularProperty(LogPropertyRules.LOG_SUBMIT_URL));
+//        try {
+//            TransportManager._().enqueue(
+//                    payload,
+//                    destination,
+//                    TransportManager._().getCurrentTransportMethod(), 0);
+//            
+//            J2MEDisplay.showError("Sending Started", "Log Sending Started");
+//        } catch (IOException e) {
+//            J2MEDisplay.showError("Send Failed", "Log sending failure");
+//        }
+    }
 
-	/**
-	 * 
-	 */
-	private void viewLogs() {
-		this.viewer.deleteAll();
-		String logData = Logger._().serializeLogs(new FlatLogSerializer());
-		this.viewer.loadLogs(logData);
-		this.viewer.setCommandListener(this);
-		this.viewer.addCommand(EXIT);
-		J2MEDisplay.setView(this.viewer);
-	}
+    /**
+     * 
+     */
+    private void viewLogs() {
+        this.viewer.deleteAll();
+        String logData = Logger._().serializeLogs(new FlatLogSerializer());
+        this.viewer.loadLogs(logData);
+        this.viewer.setCommandListener(this);
+        this.viewer.addCommand(EXIT);
+        J2MEDisplay.setView(this.viewer);
+    }
 
-	/**
-	 * 
-	 */
-	private void clearLogs() {
-		Logger._().clearLogs();
-		
-		J2MEDisplay.showError("Logs Cleared", "Logs cleared succesfully");
-	}
+    /**
+     * 
+     */
+    private void clearLogs() {
+        Logger._().clearLogs();
+        
+        J2MEDisplay.showError("Logs Cleared", "Logs cleared succesfully");
+    }
 
 }

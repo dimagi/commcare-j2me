@@ -46,10 +46,10 @@ import de.enough.polish.ui.StringItem;
 
 public class Table extends CustomItem implements HandledPItemCommandListener {
     
-	private static final Command CMD_EDIT = new Command("OK", Command.OK, 1);
-	///private static final Command CMD_DATE_OK = new Command("OK", Command.OK, 1);
+    private static final Command CMD_EDIT = new Command("OK", Command.OK, 1);
+    ///private static final Command CMD_DATE_OK = new Command("OK", Command.OK, 1);
 
-	private static final int UPPER = 0;
+    private static final int UPPER = 0;
     private static final int IN = 1;
     private static final int LOWER = 2;
     private int rows = 6;
@@ -89,7 +89,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     public int length=25;
     
     public Table(String title) {
-    	this(title, null);
+        this(title, null);
     }
     
     public Table(String title, Container container) {
@@ -107,48 +107,48 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     
     public void setData(ImmunizationData data) 
     {
-    	Enumeration en = data.getImmunizationRows().elements();
-    	int currentRow = 0;
-    	
-    	while(en.hasMoreElements()) {
-    		ImmunizationRow row = (ImmunizationRow)en.nextElement();
-    		for(int i = 0; i < 5 ; ++i ) {
-    			if(row.getStatus(i) != -1) {
-    			selectedindex[currentRow+1][i+1] = row.getStatus(i);
-    			if(row.getStatus(i) == ExtensionConstants.VACCINATION_GIVEN_ON_DATE) {
-    				recorddate[currentRow+1][i+1] = row.getDate(i).getTime();
-    			}
-    			//This may seem backwards, but it's because the function goes X,Y, not row,column
-    			setText(" X",i+1,currentRow+1);
-    			}
-    			if(i <= data.getLargestAgeColumn() ) {
-    				availablecells[currentRow+1][i+1] = row.getCellEnabled(i);
-    			}
-    			else {
-    				availablecells[currentRow+1][i+1] = false;
-    			}
-    		}
-    		currentRow++;
-    	}
+        Enumeration en = data.getImmunizationRows().elements();
+        int currentRow = 0;
+        
+        while(en.hasMoreElements()) {
+            ImmunizationRow row = (ImmunizationRow)en.nextElement();
+            for(int i = 0; i < 5 ; ++i ) {
+                if(row.getStatus(i) != -1) {
+                selectedindex[currentRow+1][i+1] = row.getStatus(i);
+                if(row.getStatus(i) == ExtensionConstants.VACCINATION_GIVEN_ON_DATE) {
+                    recorddate[currentRow+1][i+1] = row.getDate(i).getTime();
+                }
+                //This may seem backwards, but it's because the function goes X,Y, not row,column
+                setText(" X",i+1,currentRow+1);
+                }
+                if(i <= data.getLargestAgeColumn() ) {
+                    availablecells[currentRow+1][i+1] = row.getCellEnabled(i);
+                }
+                else {
+                    availablecells[currentRow+1][i+1] = false;
+                }
+            }
+            currentRow++;
+        }
     }
     
     public ImmunizationData getData() {
-    	ImmunizationData data = new ImmunizationData();
-    	
-    	//First row is for labels
-    	for(int i = 1 ; i < rows ; ++i ) {
-    		ImmunizationRow row = new ImmunizationRow(this.data[i][0]);
-    		for(int j = 1 ; j < cols ; j++) {
-    			if(selectedindex[i][j] == ExtensionConstants.VACCINATION_GIVEN_ON_DATE) {
-    				row.setDose(j-1, selectedindex[i][j], new Date(recorddate[i][j]));
-    			} else {
-        			row.setVaccinationDose(j-1, selectedindex[i][j]);	
-    			}
-    		}
-    		data.addRow(row);
-    	}
-    	
-    	return data;
+        ImmunizationData data = new ImmunizationData();
+        
+        //First row is for labels
+        for(int i = 1 ; i < rows ; ++i ) {
+            ImmunizationRow row = new ImmunizationRow(this.data[i][0]);
+            for(int j = 1 ; j < cols ; j++) {
+                if(selectedindex[i][j] == ExtensionConstants.VACCINATION_GIVEN_ON_DATE) {
+                    row.setDose(j-1, selectedindex[i][j], new Date(recorddate[i][j]));
+                } else {
+                    row.setVaccinationDose(j-1, selectedindex[i][j]);    
+                }
+            }
+            data.addRow(row);
+        }
+        
+        return data;
     }
     
     
@@ -169,7 +169,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     }
 
     protected void paint(Graphics g, int w, int h) {
-    	this.border = null;
+        this.border = null;
         for (int i = 0; i <= rows; i++) {
             g.drawLine(0, i * dy, cols * dx, i * dy);
         }
@@ -184,17 +184,17 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-            	if(!availablecells[i][j] && (i != 0 && j != 0)) {
-            		oldColor = g.getColor();
-            		if(i == currentY && j == currentX) {
-            			g.setColor(0x00545454);
-            		} else {
-            			g.setColor(0x00040404);
-            		}
-            		g.fillRect((j * dx) + 1, i * dy+1, dx - 2, dy - 2);
-            		g.setColor(oldColor);
-            	}
-            	else if (data[i][j] != null) {
+                if(!availablecells[i][j] && (i != 0 && j != 0)) {
+                    oldColor = g.getColor();
+                    if(i == currentY && j == currentX) {
+                        g.setColor(0x00545454);
+                    } else {
+                        g.setColor(0x00040404);
+                    }
+                    g.fillRect((j * dx) + 1, i * dy+1, dx - 2, dy - 2);
+                    g.setColor(oldColor);
+                }
+                else if (data[i][j] != null) {
                     // store clipping properties
                     int oldClipX = g.getClipX();
                     int oldClipY = g.getClipY();
@@ -216,8 +216,8 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     
 
     protected boolean traverse(int dir, int viewportWidth, int viewportHeight, int[] visRect_inout) {
-    	
-    	if (horz && vert) {
+        
+        if (horz && vert) {
             switch (dir) {
             case Canvas.DOWN:
 
@@ -336,7 +336,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     }
     private void setInformation()
     {
-    	 data[0][0]="Vaccine";
+         data[0][0]="Vaccine";
          data[0][1]="birth";
          data[0][2]="4 wk";
          data[0][3]="8 wk";
@@ -348,175 +348,175 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
          data[4][0]="Hep B";
          data[5][0]="Measles";
          if(!(currentX==0 || currentY==0))
-     	{
-        	 setOptions();
-     	}
+         {
+             setOptions();
+         }
     }
     
     public void removeStringItem()
     {
-    	container.remove(option);
-    	container.remove(question1);
-    	container.remove(question2);
-    	container.remove(question3);
-    	container.remove(question4);
+        container.remove(option);
+        container.remove(question1);
+        container.remove(question2);
+        container.remove(question3);
+        container.remove(question4);
     }
     public void getdate()
     {
-    	datefield.getDate();
+        datefield.getDate();
     }
     public void checkdatefield()
     {
-    	if(isDatefield==true)
-    	{
-    		//chatScreen.removeItem(datefield);
-    		isDatefield=false;
-    	}
+        if(isDatefield==true)
+        {
+            //chatScreen.removeItem(datefield);
+            isDatefield=false;
+        }
     }
 
     public void setText(String text,int x,int y) {
-    	currentX=x;
-    	currentY=y;
+        currentX=x;
+        currentY=y;
         data[currentY][currentX] = text;
         //repaint(currentY * dx, currentX * dy, dx, dy);
     }
     public void keyPressed(int code) {
-    	try {
-    	
-	    	if(availablecells[currentY][currentX]) {
-	    		switch(code)
-	    		{
-	    			case Canvas.KEY_NUM1:
-	    				question1.setLabel("");
-	    				question1.setText("1:Given. ");
-	    				question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				setText("X",currentX,currentY);
-	    				selectedindex[currentY][currentX] = 1;
-	    				checkdatefield();
-	    				break;
-	            
-	    			case Canvas.KEY_NUM2:
-	    				question2.setLabel("");
-	    				question2.setText("2:No vaccination. ");
-	    				question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				setText("X",currentX,currentY);
-	    				selectedindex[currentY][currentX] = 2;
-	    				checkdatefield();
-	    				break;
-	    			case Canvas.KEY_NUM3:
-	    				question3.setLabel("");
-	    				question3.setText("3:Unknown. ");
-	    				question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				setText("X",currentX,currentY);
-	    				selectedindex[currentY][currentX] = 3;
-	    				checkdatefield();
-	    				break;
-	    			case Canvas.KEY_NUM4:
-	    				isDatefield=true;
-	    				question4.setLabel("");
-	    				question4.setText("4:Specify Date Given: ");
-	    				question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-	    				Calendar calendar = Calendar.getInstance();
-	  	    	  		calendar.setTime(new Date());  
-	  	    	  		calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-6);
-	  	    	  		calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
-	  	    	  		calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH));
-	  	    	  		datefield.setDate(calendar.getTime());
-	  	    	  		//chatScreen.insert(chatScreen.getCurrentIndex()+1,datefield);
-	  	    	  		setText("X",currentX,currentY);
-	  	    	  		selectedindex[currentY][currentX] = 4;
-	  	    	  		recorddate[currentY][currentX] = calendar.getTime().getTime();
-	  	    	  		//chatScreen.append(datefield);
-	  	    	  		//chatScreen.focus(datefield);
-	  	    	  		break;
-	    		}
-	    	}
-	    	
-    	} catch (Exception e) {
-    		Logger.die("gui-keydown", e);
-    	}
-    	
+        try {
+        
+            if(availablecells[currentY][currentX]) {
+                switch(code)
+                {
+                    case Canvas.KEY_NUM1:
+                        question1.setLabel("");
+                        question1.setText("1:Given. ");
+                        question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        setText("X",currentX,currentY);
+                        selectedindex[currentY][currentX] = 1;
+                        checkdatefield();
+                        break;
+                
+                    case Canvas.KEY_NUM2:
+                        question2.setLabel("");
+                        question2.setText("2:No vaccination. ");
+                        question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        setText("X",currentX,currentY);
+                        selectedindex[currentY][currentX] = 2;
+                        checkdatefield();
+                        break;
+                    case Canvas.KEY_NUM3:
+                        question3.setLabel("");
+                        question3.setText("3:Unknown. ");
+                        question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        setText("X",currentX,currentY);
+                        selectedindex[currentY][currentX] = 3;
+                        checkdatefield();
+                        break;
+                    case Canvas.KEY_NUM4:
+                        isDatefield=true;
+                        question4.setLabel("");
+                        question4.setText("4:Specify Date Given: ");
+                        question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+                        Calendar calendar = Calendar.getInstance();
+                            calendar.setTime(new Date());  
+                            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-6);
+                            calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
+                            calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH));
+                            datefield.setDate(calendar.getTime());
+                            //chatScreen.insert(chatScreen.getCurrentIndex()+1,datefield);
+                            setText("X",currentX,currentY);
+                            selectedindex[currentY][currentX] = 4;
+                            recorddate[currentY][currentX] = calendar.getTime().getTime();
+                            //chatScreen.append(datefield);
+                            //chatScreen.focus(datefield);
+                            break;
+                }
+            }
+            
+        } catch (Exception e) {
+            Logger.die("gui-keydown", e);
+        }
+        
     }
     public void addOptions()
     {
-    	if (container != null) {
-			container.add(option);
-			container.add(question1);
-			container.add(question2);
-			container.add(question3);
-			container.add(question4);
-		}
-    	//set default
-    	question1.setLabel("");
-		question1.setText("1:Given. ");
-		question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-		question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-		question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-		question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-		
-		switch(selectedindex[currentY][currentX]) {
-		case 1:
-			question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-			break;
-		case 2:
-			question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-			break;
-		case 3:
-			question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-			break;
-		case 4:
-			question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-			break;
-			
-		}
+        if (container != null) {
+            container.add(option);
+            container.add(question1);
+            container.add(question2);
+            container.add(question3);
+            container.add(question4);
+        }
+        //set default
+        question1.setLabel("");
+        question1.setText("1:Given. ");
+        question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+        question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+        question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+        question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+        
+        switch(selectedindex[currentY][currentX]) {
+        case 1:
+            question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+            break;
+        case 2:
+            question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+            break;
+        case 3:
+            question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+            break;
+        case 4:
+            question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
+            break;
+            
+        }
     }
     public void setOptions()
     {
-      	 if(isStringitem ==true)
-    	 {
-         	removeStringItem();
-         	checkdatefield();
-         	addOptions();
-         	//isStringitem=false;
-    	 }
-    	 else{
-    		addOptions();
-        	isStringitem=true;
-    	 }
+           if(isStringitem ==true)
+         {
+             removeStringItem();
+             checkdatefield();
+             addOptions();
+             //isStringitem=false;
+         }
+         else{
+            addOptions();
+            isStringitem=true;
+         }
 
     }
 
-	public void commandAction(Command c, Item i) {
-		CrashHandler.commandAction(this, c, i);
-	}  
+    public void commandAction(Command c, Item i) {
+        CrashHandler.commandAction(this, c, i);
+    }  
 
-	public void _commandAction(Command c, Item i) {
+    public void _commandAction(Command c, Item i) {
         if (c == CMD_EDIT) {
-        	
+            
         }
    }
     public String[][] getText()
     {
-    	return data;
+        return data;
     }
     public int getcurrentrow()
     {
-    	return currentX;
+        return currentX;
     }
     public int getcurrentcolumn()
     {
-    	return currentY;
+        return currentY;
     }
 }

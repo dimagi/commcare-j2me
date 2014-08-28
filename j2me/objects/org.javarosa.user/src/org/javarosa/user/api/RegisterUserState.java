@@ -14,35 +14,35 @@ import org.javarosa.user.transport.HttpUserRegistrationTranslator;
  *
  */
 public abstract class RegisterUserState implements RegisterUserTransitions, State {
-	
-	protected User user;
-	protected String orApiVersion;
-	
-	/**
-	 * Create a state for registering a user with a remote system 
-	 * 
-	 * @param user
-	 */
-	public RegisterUserState(User user) {
-		this(user, null);
-	}
-	
-	public RegisterUserState(User user, String orApiVersion) {
-		this.user = user;
-		this.orApiVersion = orApiVersion;
-	}
-	
-	public void start () {
-		RegisterUserController<SimpleHttpTransportMessage> controller = getController();
-		controller.setTransitions(this);
-		controller.start();
-	}
-	
-	protected RegisterUserController<SimpleHttpTransportMessage> getController () {
-		return new RegisterUserController<SimpleHttpTransportMessage>(new HttpUserRegistrationTranslator(user,getRegistrationURL(), orApiVersion));
-	}
+    
+    protected User user;
+    protected String orApiVersion;
+    
+    /**
+     * Create a state for registering a user with a remote system 
+     * 
+     * @param user
+     */
+    public RegisterUserState(User user) {
+        this(user, null);
+    }
+    
+    public RegisterUserState(User user, String orApiVersion) {
+        this.user = user;
+        this.orApiVersion = orApiVersion;
+    }
+    
+    public void start () {
+        RegisterUserController<SimpleHttpTransportMessage> controller = getController();
+        controller.setTransitions(this);
+        controller.start();
+    }
+    
+    protected RegisterUserController<SimpleHttpTransportMessage> getController () {
+        return new RegisterUserController<SimpleHttpTransportMessage>(new HttpUserRegistrationTranslator(user,getRegistrationURL(), orApiVersion));
+    }
 
-	public abstract String getRegistrationURL();
-	
-	
+    public abstract String getRegistrationURL();
+    
+    
 }
