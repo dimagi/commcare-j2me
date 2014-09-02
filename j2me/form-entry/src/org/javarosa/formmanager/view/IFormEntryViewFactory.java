@@ -25,5 +25,5 @@ import org.javarosa.formmanager.api.JrFormEntryController;
  * 
  */
 public interface IFormEntryViewFactory {
-	IFormEntryView getFormEntryView(JrFormEntryController controller);
+    IFormEntryView getFormEntryView(JrFormEntryController controller);
 }

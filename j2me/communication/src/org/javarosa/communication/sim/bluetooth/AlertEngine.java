@@ -8,15 +8,15 @@ import org.javarosa.core.api.*;
  * */
 public class AlertEngine extends Alert implements IView{
 
-	public AlertEngine(String title, String alertText, Image alertImage,
-			AlertType alertType) {
-		super(title, alertText, alertImage, alertType);
-		// TODO Auto-generated constructor stub
-	}
+    public AlertEngine(String title, String alertText, Image alertImage,
+            AlertType alertType) {
+        super(title, alertText, alertImage, alertType);
+        // TODO Auto-generated constructor stub
+    }
 
-	public Object getScreenObject() {
-		// TODO Auto-generated method stub
-		return this;
-	}
+    public Object getScreenObject() {
+        // TODO Auto-generated method stub
+        return this;
+    }
 
 }

@@ -26,35 +26,35 @@ import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 
 public class NumericalRecordEntry implements IRecordEntry, Externalizable {
-	Date recordDate;
-	
-	//Sticking with Int for now
-	int recordValue;
-	
-	public NumericalRecordEntry(Date recordDate, int recordValue) {
-		this.recordValue = recordValue;
-		this.recordDate = recordDate;
-	}
-	
-	public Date getEntryDate() {
-		return recordDate;
-	}
-	
-	public int getRecordValue() {
-		return recordValue;
-	}
+    Date recordDate;
+    
+    //Sticking with Int for now
+    int recordValue;
+    
+    public NumericalRecordEntry(Date recordDate, int recordValue) {
+        this.recordValue = recordValue;
+        this.recordDate = recordDate;
+    }
+    
+    public Date getEntryDate() {
+        return recordDate;
+    }
+    
+    public int getRecordValue() {
+        return recordValue;
+    }
 
-	public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
-		recordValue = in.readInt();
-		
-		recordDate = new Date(in.readLong());
-	}
+    public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
+        recordValue = in.readInt();
+        
+        recordDate = new Date(in.readLong());
+    }
 
-	public void writeExternal(DataOutputStream out) throws IOException {
-		out.writeInt(recordValue);
-		
-		out.writeLong(recordDate.getTime());
-	}
-	
-	
+    public void writeExternal(DataOutputStream out) throws IOException {
+        out.writeInt(recordValue);
+        
+        out.writeLong(recordDate.getTime());
+    }
+    
+    
 }

@@ -74,192 +74,192 @@ import org.javarosa.j2me.view.ProgressIndicator;
  */
 
 public class EntitySelectController <E> implements ProgressIndicator{
-	private EntitySelectTransitions transitions;
-	
-	private EntitySelectView<E> selView;
-	
-	protected EntitySet<E> entitySet;
-	private Entity<E> entityPrototype;
-	
-	protected boolean immediatelySelectNewlyCreated;
-	protected boolean bailOnEmpty;
-	
-	Vector<Entity<E>> entities;
-	
-	int progress = 0;
-	int count =1;
-	
-	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype) {
-		this(title, set, entityPrototype, EntitySelectView.NEW_IN_LIST, true, false);
-	}
-	
-	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype, int newMode, boolean immediatelySelectNewlyCreated) {
-		this(title, set, entityPrototype, newMode, immediatelySelectNewlyCreated, false);
-	}
+    private EntitySelectTransitions transitions;
+    
+    private EntitySelectView<E> selView;
+    
+    protected EntitySet<E> entitySet;
+    private Entity<E> entityPrototype;
+    
+    protected boolean immediatelySelectNewlyCreated;
+    protected boolean bailOnEmpty;
+    
+    Vector<Entity<E>> entities;
+    
+    int progress = 0;
+    int count =1;
+    
+    public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype) {
+        this(title, set, entityPrototype, EntitySelectView.NEW_IN_LIST, true, false);
+    }
+    
+    public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype, int newMode, boolean immediatelySelectNewlyCreated) {
+        this(title, set, entityPrototype, newMode, immediatelySelectNewlyCreated, false);
+    }
 
-	/**
-	 * Create a new Entity Select activity instance
-	 * 
-	 * @param title UI screen title
-	 * @param entityStorage StorageUtility to pull records from (must return records of type <E>)
-	 * @param entityPrototype an instance of the Entity -- the wrapper class for the records
-	 * @param newMode EntitySelectView.NEW_*; controls if and how you can create new entities from this activity
-	 * @param immediatelySelectNewlyCreated if you're allowed to create new entities, whether to immediately select
-	 *    the entity just created
-	 * @param bailOnEmpty if true, immediately exit the activity via the 'empty' transition if there are no entities
-	 *    in the set and creating new entities is disabled
-	 */
-	public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype,
-			int newMode, boolean immediatelySelectNewlyCreated, boolean bailOnEmpty) {
-		this.entitySet = set;
-		this.entityPrototype = entityPrototype;
+    /**
+     * Create a new Entity Select activity instance
+     * 
+     * @param title UI screen title
+     * @param entityStorage StorageUtility to pull records from (must return records of type <E>)
+     * @param entityPrototype an instance of the Entity -- the wrapper class for the records
+     * @param newMode EntitySelectView.NEW_*; controls if and how you can create new entities from this activity
+     * @param immediatelySelectNewlyCreated if you're allowed to create new entities, whether to immediately select
+     *    the entity just created
+     * @param bailOnEmpty if true, immediately exit the activity via the 'empty' transition if there are no entities
+     *    in the set and creating new entities is disabled
+     */
+    public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype,
+            int newMode, boolean immediatelySelectNewlyCreated, boolean bailOnEmpty) {
+        this.entitySet = set;
+        this.entityPrototype = entityPrototype;
 
-		this.immediatelySelectNewlyCreated = immediatelySelectNewlyCreated;
-		this.bailOnEmpty = bailOnEmpty;
+        this.immediatelySelectNewlyCreated = immediatelySelectNewlyCreated;
+        this.bailOnEmpty = bailOnEmpty;
 
-		selView = new EntitySelectView<E>(this, entityPrototype, title, newMode);
-	}
-	
-	public void setTransitions (EntitySelectTransitions transitions) {
-		this.transitions = transitions;
-	}
-	
-	public void start () {
-		loadEntities();
+        selView = new EntitySelectView<E>(this, entityPrototype, title, newMode);
+    }
+    
+    public void setTransitions (EntitySelectTransitions transitions) {
+        this.transitions = transitions;
+    }
+    
+    public void start () {
+        loadEntities();
 
-		if(entities.isEmpty() && bailOnEmpty && selView.newMode == EntitySelectView.NEW_DISALLOWED) {
-			transitions.empty();
-			return;
-		} 
-		
-		selView.init();
-		showList();
-	}
+        if(entities.isEmpty() && bailOnEmpty && selView.newMode == EntitySelectView.NEW_DISALLOWED) {
+            transitions.empty();
+            return;
+        } 
+        
+        selView.init();
+        showList();
+    }
 
-	private void loadEntities () {
-		entities = new Vector<Entity<E>>();
-		
-		//CTS: 11/28/2011 - Filters are deprecated. Filters should be placed
-		//directly in the entity set.
-		//EntityFilter<? super E> filter = entityPrototype.getFilter();
-		
-		progress = 0;
-		count = entitySet.getCount();
-		
-		Iterator<E> ei = entitySet.iterate();
-		while (ei.hasMore()) {
-			E obj = null;
-			obj = ei.nextRecord();
-			
-			if (obj != null) {
-				loadEntity(obj);
-			}
-			progress++;
-		}
-	}
-	
-	private void loadEntity (E obj) {
-		Entity<E> entity = entityPrototype.factory();
-		entity.readEntity(obj);
-		entities.addElement(entity);
-	}
-	
-	public void setView (Displayable view) {
-		J2MEDisplay.setView(view);
-	}
+    private void loadEntities () {
+        entities = new Vector<Entity<E>>();
+        
+        //CTS: 11/28/2011 - Filters are deprecated. Filters should be placed
+        //directly in the entity set.
+        //EntityFilter<? super E> filter = entityPrototype.getFilter();
+        
+        progress = 0;
+        count = entitySet.getCount();
+        
+        Iterator<E> ei = entitySet.iterate();
+        while (ei.hasMore()) {
+            E obj = null;
+            obj = ei.nextRecord();
+            
+            if (obj != null) {
+                loadEntity(obj);
+            }
+            progress++;
+        }
+    }
+    
+    private void loadEntity (E obj) {
+        Entity<E> entity = entityPrototype.factory();
+        entity.readEntity(obj);
+        entities.addElement(entity);
+    }
+    
+    public void setView (Displayable view) {
+        J2MEDisplay.setView(view);
+    }
 
-	public void newEntity (int newEntityID) {
-		//note: it is assumed that the newly created entity satisfies any filters in effect
-		if (immediatelySelectNewlyCreated) {
-			entityChosen(newEntityID);
-		} else {
-			E obj = entitySet.get(newEntityID);
-			loadEntity(obj);
-			selView.refresh(newEntityID);
-			showList();
-		}
-	}
-	
-	public Vector<Integer> search (String key) {
-		Vector<Integer> matches = new Vector<Integer>();
-		
-		if (key == null || key.equals("")) {
-			for (int i = 0; i < entities.size(); i++)
-				matches.addElement(new Integer(i));
-		} else {
-			for (int i = 0; i < entities.size(); i++) {
-				Entity<E> entity = entities.elementAt(i);
-				if (entity.match(key)) {
-					matches.addElement(new Integer(i));
-				}
-			}
-		}
-		
-		return matches;
-	}
-	
-	public int getRawResultCount() {
-		return entities.size();
-	}
-	
-	public void showList () {
-		selView.show();
-	}
-	
-	public void itemSelected (int i) {
-		Entity<E> entity = entities.elementAt(i);
-		if(entity.getHeaders(true) ==null) {
-			entityChosen(this.getRecordID(i));
-		} else {
-			EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entitySet);
-			psdp.show();
-		}
-	}
-	
-	public void entityChosen (int entityID) {
-		transitions.entitySelected(entityID);
-	}
-	
-	public void newEntity () {
-		transitions.newEntity();
-	}
-	
-	public void exit () {
-		transitions.cancel();
-	}
-	
-	public String[] getDataFields (int i) {
-		return entities.elementAt(i).getShortFields();
-	}
-	
-	public String[] getTitleData () {
-		return entityPrototype.getHeaders(false);
-	}
-	
-	public String[] getColumnFormat(boolean header) {
-		return entityPrototype.getForms(header);
-	}
-	
-	public Entity<E> getEntity (int i) {
-		return entities.elementAt(i);
-	}	
+    public void newEntity (int newEntityID) {
+        //note: it is assumed that the newly created entity satisfies any filters in effect
+        if (immediatelySelectNewlyCreated) {
+            entityChosen(newEntityID);
+        } else {
+            E obj = entitySet.get(newEntityID);
+            loadEntity(obj);
+            selView.refresh(newEntityID);
+            showList();
+        }
+    }
+    
+    public Vector<Integer> search (String key) {
+        Vector<Integer> matches = new Vector<Integer>();
+        
+        if (key == null || key.equals("")) {
+            for (int i = 0; i < entities.size(); i++)
+                matches.addElement(new Integer(i));
+        } else {
+            for (int i = 0; i < entities.size(); i++) {
+                Entity<E> entity = entities.elementAt(i);
+                if (entity.match(key)) {
+                    matches.addElement(new Integer(i));
+                }
+            }
+        }
+        
+        return matches;
+    }
+    
+    public int getRawResultCount() {
+        return entities.size();
+    }
+    
+    public void showList () {
+        selView.show();
+    }
+    
+    public void itemSelected (int i) {
+        Entity<E> entity = entities.elementAt(i);
+        if(entity.getHeaders(true) ==null) {
+            entityChosen(this.getRecordID(i));
+        } else {
+            EntitySelectDetailPopup<E> psdp = new EntitySelectDetailPopup<E>(this, entity, entitySet);
+            psdp.show();
+        }
+    }
+    
+    public void entityChosen (int entityID) {
+        transitions.entitySelected(entityID);
+    }
+    
+    public void newEntity () {
+        transitions.newEntity();
+    }
+    
+    public void exit () {
+        transitions.cancel();
+    }
+    
+    public String[] getDataFields (int i) {
+        return entities.elementAt(i).getShortFields();
+    }
+    
+    public String[] getTitleData () {
+        return entityPrototype.getHeaders(false);
+    }
+    
+    public String[] getColumnFormat(boolean header) {
+        return entityPrototype.getForms(header);
+    }
+    
+    public Entity<E> getEntity (int i) {
+        return entities.elementAt(i);
+    }    
 
-	public int getRecordID (int i) {
-		return entities.elementAt(i).getRecordID();
-	}
-	
-	public void attemptCallout(String number) {
-		J2MEDisplay.showError("Not Available", "Calling functionality is not enabled for this application");
-	}
+    public int getRecordID (int i) {
+        return entities.elementAt(i).getRecordID();
+    }
+    
+    public void attemptCallout(String number) {
+        J2MEDisplay.showError("Not Available", "Calling functionality is not enabled for this application");
+    }
 
-	public double getProgress() {
-		return (double)progress / count;
-	}
-	public String getCurrentLoadingStatus() {
-		return Localization.get("loading.screen.message");
-	}
+    public double getProgress() {
+        return (double)progress / count;
+    }
+    public String getCurrentLoadingStatus() {
+        return Localization.get("loading.screen.message");
+    }
 
-	public int getIndicatorsProvided() {
-		return ProgressIndicator.INDICATOR_PROGRESS | ProgressIndicator.INDICATOR_STATUS;
-	}
+    public int getIndicatorsProvided() {
+        return ProgressIndicator.INDICATOR_PROGRESS | ProgressIndicator.INDICATOR_STATUS;
+    }
 }

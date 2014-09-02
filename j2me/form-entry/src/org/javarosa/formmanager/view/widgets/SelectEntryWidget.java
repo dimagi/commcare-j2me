@@ -41,63 +41,63 @@ import de.enough.polish.ui.Item;
  *
  */
 public abstract class SelectEntryWidget extends ExpandedWidget {
-	private int style;
-	protected boolean autoSelect;
-	protected boolean numericNavigation;
-	protected FormEntryPrompt prompt;
-	
-	private CustomChoiceGroup choicegroup;
-	
-	public SelectEntryWidget (int style, boolean autoSelect, boolean numericNavigation) {
-		this.style = style;
-		this.autoSelect = autoSelect;
-		this.numericNavigation = numericNavigation;
-	}
-	
-	protected Item getEntryWidget (FormEntryPrompt prompt) {
-		this.prompt = prompt;
-		
-		int numChoices = prompt.getSelectChoices().size();
-		
-		if(numChoices > 9) {
-			numericNavigation = false;
-		}
-		
-		CustomChoiceGroup cg = new CustomChoiceGroup("",style, autoSelect, numericNavigation) {
-			public void playAudio(int index) {
-				getMultimediaController().playAudioOnDemand(SelectEntryWidget.this.prompt,
-															SelectEntryWidget.this.prompt.getSelectChoices().elementAt(index));
-			}
-		};
-		for (int i = 0; i < numChoices; i++){
-			if(numericNavigation) {
-				//#style uninitializedListItem
-				cg.append("", null);
-			} else {
-				//#style listitem
-				cg.append("", null);
-			}
-		}
-		
-		this.choicegroup = cg;
-		
-		return cg;
-	}
+    private int style;
+    protected boolean autoSelect;
+    protected boolean numericNavigation;
+    protected FormEntryPrompt prompt;
+    
+    private CustomChoiceGroup choicegroup;
+    
+    public SelectEntryWidget (int style, boolean autoSelect, boolean numericNavigation) {
+        this.style = style;
+        this.autoSelect = autoSelect;
+        this.numericNavigation = numericNavigation;
+    }
+    
+    protected Item getEntryWidget (FormEntryPrompt prompt) {
+        this.prompt = prompt;
+        
+        int numChoices = prompt.getSelectChoices().size();
+        
+        if(numChoices > 9) {
+            numericNavigation = false;
+        }
+        
+        CustomChoiceGroup cg = new CustomChoiceGroup("",style, autoSelect, numericNavigation) {
+            public void playAudio(int index) {
+                getMultimediaController().playAudioOnDemand(SelectEntryWidget.this.prompt,
+                                                            SelectEntryWidget.this.prompt.getSelectChoices().elementAt(index));
+            }
+        };
+        for (int i = 0; i < numChoices; i++){
+            if(numericNavigation) {
+                //#style uninitializedListItem
+                cg.append("", null);
+            } else {
+                //#style listitem
+                cg.append("", null);
+            }
+        }
+        
+        this.choicegroup = cg;
+        
+        return cg;
+    }
 
-	protected CustomChoiceGroup choiceGroup () {
-		return this.choicegroup;
-	}
-	
-	protected void updateWidget (FormEntryPrompt prompt) {
-		for (int i = 0; i < choiceGroup().size(); i++) {
-			SelectChoice sc = prompt.getSelectChoices().elementAt(i);
-			Image im = ImageUtils.getImage(prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_IMAGE));
+    protected CustomChoiceGroup choiceGroup () {
+        return this.choicegroup;
+    }
+    
+    protected void updateWidget (FormEntryPrompt prompt) {
+        for (int i = 0; i < choiceGroup().size(); i++) {
+            SelectChoice sc = prompt.getSelectChoices().elementAt(i);
+            Image im = ImageUtils.getImage(prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_IMAGE));
 
-			choiceGroup().getItem(i).setText(prompt.getSelectChoiceText(sc));
-			
-			if(im!=null){
-				choiceGroup().getItem(i).setImage(im);			
-			}
-		}
-	}
+            choiceGroup().getItem(i).setText(prompt.getSelectChoiceText(sc));
+            
+            if(im!=null){
+                choiceGroup().getItem(i).setImage(im);            
+            }
+        }
+    }
 }

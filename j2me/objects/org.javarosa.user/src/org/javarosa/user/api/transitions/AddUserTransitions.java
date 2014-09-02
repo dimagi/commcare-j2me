@@ -15,6 +15,6 @@ import org.javarosa.user.model.User;
  *
  */
 public interface AddUserTransitions {
-	public void userCreated(User newUser);
-	public void cancel();
+    public void userCreated(User newUser);
+    public void cancel();
 }

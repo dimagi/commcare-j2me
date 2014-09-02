@@ -29,14 +29,14 @@ import javax.microedition.lcdui.TextField;
  *
  */
 public class FeedbackReportScreen extends TextBox {
-	public static final Command SEND_REPORT = new Command("Send Report", 1, Command.OK);
-	public static final Command CANCEL = new Command("Cancel", 2, Command.CANCEL);
-	
+    public static final Command SEND_REPORT = new Command("Send Report", 1, Command.OK);
+    public static final Command CANCEL = new Command("Cancel", 2, Command.CANCEL);
+    
 
-	public FeedbackReportScreen(String title) {
-		super("Please enter your feedback report.", "", 500, TextField.ANY);
-		this.addCommand(SEND_REPORT);
-		this.addCommand(CANCEL);
-	}
+    public FeedbackReportScreen(String title) {
+        super("Please enter your feedback report.", "", 500, TextField.ANY);
+        this.addCommand(SEND_REPORT);
+        this.addCommand(CANCEL);
+    }
 
 }

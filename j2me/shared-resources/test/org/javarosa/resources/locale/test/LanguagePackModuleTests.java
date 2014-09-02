@@ -26,52 +26,52 @@ import org.javarosa.core.services.locale.Localization;
 import org.javarosa.resources.locale.LanguagePackModule;
 
 public class LanguagePackModuleTests extends TestCase  {
-	public final int NUM_TESTS = 1 ;
+    public final int NUM_TESTS = 1 ;
 
-	public LanguagePackModuleTests(String name, TestMethod rTestMethod) {
-		super(name, rTestMethod);
-	}
+    public LanguagePackModuleTests(String name, TestMethod rTestMethod) {
+        super(name, rTestMethod);
+    }
 
-	public LanguagePackModuleTests(String name) {
-		super(name);
-	}
+    public LanguagePackModuleTests(String name) {
+        super(name);
+    }
 
-	public LanguagePackModuleTests() {
-		super();
-	}
+    public LanguagePackModuleTests() {
+        super();
+    }
 
-	public Test suite() {
-		TestSuite aSuite = new TestSuite();
+    public Test suite() {
+        TestSuite aSuite = new TestSuite();
 
-		for (int i = 1; i <= NUM_TESTS; i++) {
-			final int testID = i;
+        for (int i = 1; i <= NUM_TESTS; i++) {
+            final int testID = i;
 
-			aSuite.addTest(new LanguagePackModuleTests("Locale File Test " + i, new TestMethod() {
-				public void run (TestCase tc) {
-					((LanguagePackModuleTests)tc).testMaster(testID);
-				}
-			}));
-		}
+            aSuite.addTest(new LanguagePackModuleTests("Locale File Test " + i, new TestMethod() {
+                public void run (TestCase tc) {
+                    ((LanguagePackModuleTests)tc).testMaster(testID);
+                }
+            }));
+        }
 
-		return aSuite;
-	}
+        return aSuite;
+    }
 
-	public void testMaster (int testID) {
-		//System.out.println("running " + testID);
+    public void testMaster (int testID) {
+        //System.out.println("running " + testID);
 
-		switch (testID) {
-		case 1: testValidLanguageFiles(); break;
-		}
-	}
+        switch (testID) {
+        case 1: testValidLanguageFiles(); break;
+        }
+    }
 
-	public void testValidLanguageFiles () {
-		new LanguagePackModule().registerModule();
-		for(String locale : LanguagePackModule.locales) {
-			try {
-				Localization.setLocale(locale);
-			} catch(Exception e) {
-				fail("Malformed Locale File in the Core Language Pack! Error: " + e.getMessage());
-			}
-		}
-	}
+    public void testValidLanguageFiles () {
+        new LanguagePackModule().registerModule();
+        for(String locale : LanguagePackModule.locales) {
+            try {
+                Localization.setLocale(locale);
+            } catch(Exception e) {
+                fail("Malformed Locale File in the Core Language Pack! Error: " + e.getMessage());
+            }
+        }
+    }
 }

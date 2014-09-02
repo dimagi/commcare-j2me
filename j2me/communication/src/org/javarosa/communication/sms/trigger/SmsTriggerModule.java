@@ -21,9 +21,9 @@ import org.javarosa.core.services.PropertyManager;
 
 public class SmsTriggerModule implements IModule {
 
-	public void registerModule() {
-		PropertyManager._().addRules(new SmsTriggerProperties());
-		SmsTriggerDaemon daemon = new SmsTriggerDaemon();
-		JavaRosaServiceProvider.instance().registerDaemon(daemon, daemon.getName());
-	}
+    public void registerModule() {
+        PropertyManager._().addRules(new SmsTriggerProperties());
+        SmsTriggerDaemon daemon = new SmsTriggerDaemon();
+        JavaRosaServiceProvider.instance().registerDaemon(daemon, daemon.getName());
+    }
 }

@@ -40,63 +40,63 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
  */
 public class HttpTransportHeader implements IDataPayload {
 
-	/** String -> String **/
-	Hashtable headers = new Hashtable();
-	
-	public HttpTransportHeader() {
-	}
-	
-	public void addHeaderNoNewline(String key, String value) {
-		headers.put(key, value);
-	}
-	
-	public void addHeader(String key, String value) {
-		headers.put(key, value + "\r\n");
-	}
-	
-	public void readExternal(DataInputStream in, PrototypeFactory pf)
-			throws IOException, DeserializationException {
-		headers = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
-	}
-	
-	public void writeExternal(DataOutputStream out) throws IOException {
-		ExtUtil.write(out, new ExtWrapMap(headers));
-	}
-	public Object accept(IDataPayloadVisitor visitor) {
-		return null;
-	}
-	
-	public String getPayloadId() {
-		return null;
-	}
-	public InputStream getPayloadStream() {
-		return new ByteArrayInputStream(getBytes());
-	}
-	
-	private byte[] getBytes() {
-		String header = "";
-		Enumeration en = headers.keys();
-		while(en.hasMoreElements()) {
-			String key = (String)en.nextElement();
-			String value = (String)headers.get(key);
-			header += key + value;
-		}
-		return header.getBytes();
-	}
-	
-	public int getPayloadType() {
-		return 0;
-	}
+    /** String -> String **/
+    Hashtable headers = new Hashtable();
+    
+    public HttpTransportHeader() {
+    }
+    
+    public void addHeaderNoNewline(String key, String value) {
+        headers.put(key, value);
+    }
+    
+    public void addHeader(String key, String value) {
+        headers.put(key, value + "\r\n");
+    }
+    
+    public void readExternal(DataInputStream in, PrototypeFactory pf)
+            throws IOException, DeserializationException {
+        headers = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
+    }
+    
+    public void writeExternal(DataOutputStream out) throws IOException {
+        ExtUtil.write(out, new ExtWrapMap(headers));
+    }
+    public Object accept(IDataPayloadVisitor visitor) {
+        return null;
+    }
+    
+    public String getPayloadId() {
+        return null;
+    }
+    public InputStream getPayloadStream() {
+        return new ByteArrayInputStream(getBytes());
+    }
+    
+    private byte[] getBytes() {
+        String header = "";
+        Enumeration en = headers.keys();
+        while(en.hasMoreElements()) {
+            String key = (String)en.nextElement();
+            String value = (String)headers.get(key);
+            header += key + value;
+        }
+        return header.getBytes();
+    }
+    
+    public int getPayloadType() {
+        return 0;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.javarosa.core.services.transport.IDataPayload#getLength()
-	 */
-	public long getLength() {
-		return getBytes().length;
-	}
-	
-	public int getTransportId() { 
-		return -1;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.javarosa.core.services.transport.IDataPayload#getLength()
+     */
+    public long getLength() {
+        return getBytes().length;
+    }
+    
+    public int getTransportId() { 
+        return -1;
+    }
 }

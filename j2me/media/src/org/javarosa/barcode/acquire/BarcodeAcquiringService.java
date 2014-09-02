@@ -36,87 +36,87 @@ import org.javarosa.view.singlequestionscreen.widgets.BarcodeQuestionWidget;
 //not a real data capture service... seems too tied to the singlequestionscreen api
 public class BarcodeAcquiringService implements DataCaptureService, IAcquiringService {
 
-	BarcodeCaptureService barcoder;
-	
-	public BarcodeAcquiringService (DataCaptureServiceRegistry dc) {
-		try {
-			barcoder = dc.getBarcodeCaptureService();
-		} catch (UnavailableServiceException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public String getType() {
-		return "singlequestionscreen-barcode";
-	}
+    BarcodeCaptureService barcoder;
+    
+    public BarcodeAcquiringService (DataCaptureServiceRegistry dc) {
+        try {
+            barcoder = dc.getBarcodeCaptureService();
+        } catch (UnavailableServiceException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public String getType() {
+        return "singlequestionscreen-barcode";
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
-	 * (org.javarosa.formmanager.view.FormElementBinding, int)
-	 * 
-	 * If there is a service that is able to process a barcode from an image,
-	 * return a barcode widget to capture the image
-	 */
-	public AcquiringQuestionScreen getWidget(FormElementBinding prompt, int temp) {
-		BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
-				temp);
-		barcodeWidget.setBarcodeProcessor(barcoder);
-		return barcodeWidget;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
+     * (org.javarosa.formmanager.view.FormElementBinding, int)
+     * 
+     * If there is a service that is able to process a barcode from an image,
+     * return a barcode widget to capture the image
+     */
+    public AcquiringQuestionScreen getWidget(FormElementBinding prompt, int temp) {
+        BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
+                temp);
+        barcodeWidget.setBarcodeProcessor(barcoder);
+        return barcodeWidget;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
-	 * (org.javarosa.formmanager.view.FormElementBinding)
-	 * 
-	 * If there is a service that is able to process a barcode from an image,
-	 * return a barcode widget to capture the image
-	 */
-	public AcquiringQuestionScreen getWidget(FormElementBinding prompt) {
-		BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
+     * (org.javarosa.formmanager.view.FormElementBinding)
+     * 
+     * If there is a service that is able to process a barcode from an image,
+     * return a barcode widget to capture the image
+     */
+    public AcquiringQuestionScreen getWidget(FormElementBinding prompt) {
+        BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt);
 
-		barcodeWidget.setBarcodeProcessor(barcoder);
-		return barcodeWidget;
-	}
+        barcodeWidget.setBarcodeProcessor(barcoder);
+        return barcodeWidget;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
-	 * (org.javarosa.formmanager.view.FormElementBinding, java.lang.String)
-	 * 
-	 * If there is a service that is able to process a barcode from an image,
-	 * return a barcode widget to capture the image
-	 */
-	public AcquiringQuestionScreen getWidget(FormElementBinding prompt,
-			String str) {
-		BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
-				str);
-		barcodeWidget.setBarcodeProcessor(barcoder);
-		return barcodeWidget;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
+     * (org.javarosa.formmanager.view.FormElementBinding, java.lang.String)
+     * 
+     * If there is a service that is able to process a barcode from an image,
+     * return a barcode widget to capture the image
+     */
+    public AcquiringQuestionScreen getWidget(FormElementBinding prompt,
+            String str) {
+        BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
+                str);
+        barcodeWidget.setBarcodeProcessor(barcoder);
+        return barcodeWidget;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
-	 * (org.javarosa.formmanager.view.FormElementBinding, char)
-	 * 
-	 * If there is a service that is able to process a barcode from an image,
-	 * return a barcode widget to capture the image
-	 */
-	public AcquiringQuestionScreen getWidget(FormElementBinding prompt, char str) {
-		BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
-				str);
-		barcodeWidget.setBarcodeProcessor(barcoder);
-		return barcodeWidget;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
+     * (org.javarosa.formmanager.view.FormElementBinding, char)
+     * 
+     * If there is a service that is able to process a barcode from an image,
+     * return a barcode widget to capture the image
+     */
+    public AcquiringQuestionScreen getWidget(FormElementBinding prompt, char str) {
+        BarcodeQuestionWidget barcodeWidget = new BarcodeQuestionWidget(prompt,
+                str);
+        barcodeWidget.setBarcodeProcessor(barcoder);
+        return barcodeWidget;
+    }
 
 }

@@ -11,7 +11,7 @@ package org.javarosa.core.services.storage;
  *
  */
 public class StorageUtilAccessor {
-	public static IStorageUtility getStorage(WrappingStorageUtility utility) {
-		return utility.storage;
-	}
+    public static IStorageUtility getStorage(WrappingStorageUtility utility) {
+        return utility.storage;
+    }
 }

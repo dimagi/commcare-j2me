@@ -13,46 +13,46 @@ import org.javarosa.user.model.User;
 
 public class JRDemoFormListState implements JRDemoFormListTransitions, State {
 
-	public void start() {
-		JRDemoFormListController ctrl = new JRDemoFormListController();
-		ctrl.setTransitions(this);
-		ctrl.start();	
-	}
+    public void start() {
+        JRDemoFormListController ctrl = new JRDemoFormListController();
+        ctrl.setTransitions(this);
+        ctrl.start();    
+    }
 
-	public void formSelected(int formID) {
-		FormInstance formInstance = JRDemoUtil.getSavedFormInstance(formID);
-		new JRDemoFormEntryState(formID).start();
-	}
+    public void formSelected(int formID) {
+        FormInstance formInstance = JRDemoUtil.getSavedFormInstance(formID);
+        new JRDemoFormEntryState(formID).start();
+    }
 
-	public void viewSaved() {
-		new JRDemoSavedFormListState().start();
-	}
+    public void viewSaved() {
+        new JRDemoSavedFormListState().start();
+    }
 
-	public void exit() {
-		JRDemoUtil.exit();
-	}
-	
-	public void settings() {
-		new PropertyUpdateState () {
-			public void done () {
-				new JRDemoFormListState().start();
-			}
-		}.start();
-	}
+    public void exit() {
+        JRDemoUtil.exit();
+    }
+    
+    public void settings() {
+        new PropertyUpdateState () {
+            public void done () {
+                new JRDemoFormListState().start();
+            }
+        }.start();
+    }
 
-	public void addUser() {
-		new CreateUserState () {
-			public void cancel() {
-				new JRDemoFormListState().start();
-			}
+    public void addUser() {
+        new CreateUserState () {
+            public void cancel() {
+                new JRDemoFormListState().start();
+            }
 
-			public void userCreated(User newUser) {
-				new JRDemoFormListState().start();
-			}
-		}.start();
-	}
+            public void userCreated(User newUser) {
+                new JRDemoFormListState().start();
+            }
+        }.start();
+    }
 
-	public void downloadForms() {
-	    new JRDemoGetFormListHTTPState(PropertyManager._().getSingularProperty(DemoAppProperties.FORM_URL_PROPERTY)).start();
-	}
+    public void downloadForms() {
+        new JRDemoGetFormListHTTPState(PropertyManager._().getSingularProperty(DemoAppProperties.FORM_URL_PROPERTY)).start();
+    }
 }

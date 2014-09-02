@@ -89,8 +89,8 @@ public final class BluetoothServer implements Runnable {
      * in the different thread to "avoid dead lock".
      */
     public BluetoothServer(String name,String uuid,BluetoothServerListener eventListener) {
-    	this.name = name;
-    	this.SERVER_UUID = new UUID(uuid,false);
+        this.name = name;
+        this.SERVER_UUID = new UUID(uuid,false);
         this.eventListener = eventListener;
      }
     
@@ -101,7 +101,7 @@ public final class BluetoothServer implements Runnable {
     public void start(){
         // we have to initialize a system in different thread...
         accepterThread = new Thread(this);
-        accepterThread.start();	
+        accepterThread.start();    
     }
 
     /**
@@ -115,7 +115,7 @@ public final class BluetoothServer implements Runnable {
 
             // set we are discoverable
             if (!localDevice.setDiscoverable(DiscoveryAgent.GIAC))
-            	raiseError("Can't set discoverable mode", null);
+                raiseError("Can't set discoverable mode", null);
 
             // prepare a URL to create a notifier
             StringBuffer url = new StringBuffer("btspp://");
@@ -139,14 +139,14 @@ public final class BluetoothServer implements Runnable {
             // and remember the service record for the later updates
             record = localDevice.getRecord(notifier);
             
- 			DataElement fullyAvailable = new DataElement(
-					DataElement.U_INT_1, 0xFF);
-			record.setAttributeValue(0x0008, fullyAvailable);
-			localDevice.updateRecord(record);
+             DataElement fullyAvailable = new DataElement(
+                    DataElement.U_INT_1, 0xFF);
+            record.setAttributeValue(0x0008, fullyAvailable);
+            localDevice.updateRecord(record);
 
         } catch (Exception e) {
-        	raiseError("Can't initialize bluetooth: ",e);
-        	return;
+            raiseError("Can't initialize bluetooth: ",e);
+            return;
         }
 
         // ok, start processor now
@@ -157,18 +157,18 @@ public final class BluetoothServer implements Runnable {
             StreamConnection conn = null;
 
             try {
-            	//notifier = (StreamConnectionNotifier)Connector.open(url.toString());
-            	System.out.println("Waiting for connections...");
+                //notifier = (StreamConnectionNotifier)Connector.open(url.toString());
+                System.out.println("Waiting for connections...");
                 conn = notifier.acceptAndOpen();
                
                 System.out.println("Accepted connection...");
             } catch (IOException e) {
                 // wrong client or interrupted - continue anyway
-            	System.out.println("IOException thrown");
+                System.out.println("IOException thrown");
                 continue;
             }
             catch(Exception e){
-            	e.printStackTrace();
+                e.printStackTrace();
             }
 
             processor.addConnection(conn);
@@ -211,7 +211,7 @@ public final class BluetoothServer implements Runnable {
      * @param e - the exception, if any, that caused this problem.
      */
     private void raiseError(String message, Exception e){
-    	this.eventListener.errorOccured(message,e);
+        this.eventListener.errorOccured(message,e);
     }
    
     /**
@@ -224,7 +224,7 @@ public final class BluetoothServer implements Runnable {
         private BluetoothServerListener eventListener;
 
         ClientProcessor(BluetoothServerListener eventListener) {
-        	this.eventListener = eventListener;
+            this.eventListener = eventListener;
             processorThread = new Thread(this);
             processorThread.start();
         }
@@ -300,17 +300,17 @@ public final class BluetoothServer implements Runnable {
          * Let the event listener process the connection.
          */
         private void processConnection(StreamConnection conn) {
-        	
-        	 DataOutputStream dos = null;
-        	 DataInputStream dis = null;
-        	 
-        	 try{ 			
-    	    	 dos = new DataOutputStream(conn.openDataOutputStream());
-    	    	 dis = new DataInputStream(conn.openDataInputStream());
-    	    	 this.eventListener.processConnection(dis, dos);
-        	 }catch(IOException e){
-        		 raiseError("Error getting data stream",e);
-        	 }  
+            
+             DataOutputStream dos = null;
+             DataInputStream dis = null;
+             
+             try{             
+                 dos = new DataOutputStream(conn.openDataOutputStream());
+                 dis = new DataInputStream(conn.openDataInputStream());
+                 this.eventListener.processConnection(dis, dos);
+             }catch(IOException e){
+                 raiseError("Error getting data stream",e);
+             }  
            }
     }
 }

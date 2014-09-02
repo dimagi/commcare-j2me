@@ -29,108 +29,108 @@ import org.javarosa.user.model.User;
  *
  */
 public class UserEntity extends Entity<User> {
-	
-	String username;
-	String type;
+    
+    String username;
+    String type;
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#entityType()
-	 */
-	public String entityType() {
-		return Localization.get("user.entity.name");
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#entityType()
+     */
+    public String entityType() {
+        return Localization.get("user.entity.name");
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#factory(int)
-	 */
-	public UserEntity factory() {
-		return new UserEntity();
-	}
-	
-	public int readEntityId(User u) {
-		return u.getID();
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#factory(int)
+     */
+    public UserEntity factory() {
+        return new UserEntity();
+    }
+    
+    public int readEntityId(User u) {
+        return u.getID();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#readEntity(java.lang.Object)
-	 */
-	public void loadEntity(User u) {
-		this.username = u.getUsername();
-		this.type = u.getUserType();
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#getHeaders(boolean)
-	 */
-	public String[] getHeaders(boolean detailed) {
-		if(!detailed) {
-			return new String[]{Localization.get("user.entity.username"),Localization.get("user.entity.type")};
-		} else {
-			return new String[]{Localization.get("user.entity.username"), Localization.get("user.entity.type")};
-		}
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#readEntity(java.lang.Object)
+     */
+    public void loadEntity(User u) {
+        this.username = u.getUsername();
+        this.type = u.getUserType();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#getHeaders(boolean)
+     */
+    public String[] getHeaders(boolean detailed) {
+        if(!detailed) {
+            return new String[]{Localization.get("user.entity.username"),Localization.get("user.entity.type")};
+        } else {
+            return new String[]{Localization.get("user.entity.username"), Localization.get("user.entity.type")};
+        }
+    }
 
-	public String getName() {
-		return username;
-	}
-	
-	private String getType() {
-		return getType(type);
-	}
-	
-	private String getType(String type) {
-		String output = Localization.get("user.entity.unknown");
-		if(User.ADMINUSER.equals(type)) {
-			output = Localization.get("user.entity.admin");
-		} else if(User.DEMO_USER.equals(type)) {
-			output = Localization.get("user.entity.demo");
-		} else if(User.STANDARD.equals(type)) {
-			output = Localization.get("user.entity.normal");
-		}
-		return output;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#getLongFields(java.lang.Object)
-	 */
-	public String[] getLongFields(User u) {
-		String type = getType(u.getUserType());
-		
-		return new String[]{getName(), type};
-	}
+    public String getName() {
+        return username;
+    }
+    
+    private String getType() {
+        return getType(type);
+    }
+    
+    private String getType(String type) {
+        String output = Localization.get("user.entity.unknown");
+        if(User.ADMINUSER.equals(type)) {
+            output = Localization.get("user.entity.admin");
+        } else if(User.DEMO_USER.equals(type)) {
+            output = Localization.get("user.entity.demo");
+        } else if(User.STANDARD.equals(type)) {
+            output = Localization.get("user.entity.normal");
+        }
+        return output;
+    }
+    
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#getLongFields(java.lang.Object)
+     */
+    public String[] getLongFields(User u) {
+        String type = getType(u.getUserType());
+        
+        return new String[]{getName(), type};
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.patient.select.activity.IEntity#getShortFields()
-	 */
-	public String[] getShortFields() {
-		return new String[]{getName(), getType()};
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.patient.select.activity.IEntity#getShortFields()
+     */
+    public String[] getShortFields() {
+        return new String[]{getName(), getType()};
+    }
 
-	public boolean match(String key) {
-		String[] fields = this.getShortFields();
-		for(int i = 0; i < fields.length; ++i) {
-			if(fields[i].indexOf(key) != -1) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public int[] getSortFields () {
-		return new int[] {0};
-	}
-	
-	public String getSortFieldName (int key) {
-		return Localization.get("user.entity.username");
-	}
-	
-	public Object getSortKey (int key) {
-		if (key == 0) {
-			return getName();
-		} else {
-			throw new RuntimeException("Sort Key [" + 0 + "] is not supported by this entity");
-		}
-	}
+    public boolean match(String key) {
+        String[] fields = this.getShortFields();
+        for(int i = 0; i < fields.length; ++i) {
+            if(fields[i].indexOf(key) != -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int[] getSortFields () {
+        return new int[] {0};
+    }
+    
+    public String getSortFieldName (int key) {
+        return Localization.get("user.entity.username");
+    }
+    
+    public Object getSortKey (int key) {
+        if (key == 0) {
+            return getName();
+        } else {
+            throw new RuntimeException("Sort Key [" + 0 + "] is not supported by this entity");
+        }
+    }
 
 
 

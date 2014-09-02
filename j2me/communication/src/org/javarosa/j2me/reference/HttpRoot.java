@@ -12,16 +12,16 @@ import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
  *
  */
 public class HttpRoot extends PrefixedRootFactory {
-	
-	SecurityFailureListener listener;
+    
+    SecurityFailureListener listener;
 
-	public HttpRoot(SecurityFailureListener listener) {
-		super(new String[] {"http://","https://"});
-		this.listener = listener;
-	}
-	
+    public HttpRoot(SecurityFailureListener listener) {
+        super(new String[] {"http://","https://"});
+        this.listener = listener;
+    }
+    
 
-	protected Reference factory(String terminal, String URI) {
-		return new HttpReference(URI, listener);
-	}
+    protected Reference factory(String terminal, String URI) {
+        return new HttpReference(URI, listener);
+    }
 }

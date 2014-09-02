@@ -42,85 +42,85 @@ import org.javarosa.xform.util.XFormUtils;
 
 public abstract class GetFormHttpState implements State,TrivialTransitions,HandledCommandListener,TransportListener {
 
-	protected ProgressScreen progressScreen;
+    protected ProgressScreen progressScreen;
 
-	private ByteArrayInputStream bin;
+    private ByteArrayInputStream bin;
 
-	private SenderThread sendThread;
+    private SenderThread sendThread;
 
 
-	public GetFormHttpState() {
-		
-	}
-	
-	public abstract String getURL();
+    public GetFormHttpState() {
+        
+    }
+    
+    public abstract String getURL();
 
-	public void fetchForm(){
-		SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getURL());
-		
-		try {
-			sendThread = TransportService.send(message);
-			sendThread.addListener(this);
-		} catch (TransportException e) {
-			//TODO: Isn't there a screen where this can be displayed?
-			fail("Transport Error while downloading form!" + e.getMessage());
-		}
-	}
+    public void fetchForm(){
+        SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getURL());
+        
+        try {
+            sendThread = TransportService.send(message);
+            sendThread.addListener(this);
+        } catch (TransportException e) {
+            //TODO: Isn't there a screen where this can be displayed?
+            fail("Transport Error while downloading form!" + e.getMessage());
+        }
+    }
 
-	public void start() {
-		this.progressScreen = initProgressScreen();
-		J2MEDisplay.setView(progressScreen);
-		fetchForm();
-	}
-	
-	protected ProgressScreen initProgressScreen() {
-		return new ProgressScreen("Downloadng","Please Wait. Fetching Form...", this);
-	}
-	
-	public void fail(String message) {
-		progressScreen.setText(message);
-		progressScreen.addCommand(progressScreen.CMD_RETRY);
-	}
+    public void start() {
+        this.progressScreen = initProgressScreen();
+        J2MEDisplay.setView(progressScreen);
+        fetchForm();
+    }
+    
+    protected ProgressScreen initProgressScreen() {
+        return new ProgressScreen("Downloadng","Please Wait. Fetching Form...", this);
+    }
+    
+    public void fail(String message) {
+        progressScreen.setText(message);
+        progressScreen.addCommand(progressScreen.CMD_RETRY);
+    }
 
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}  
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }  
 
-	public void _commandAction(Command command, Displayable display) {
-		if(display == progressScreen){
-			if(command==progressScreen.CMD_CANCEL){
-				sendThread.cancel();
-				done();
-			} if(command == progressScreen.CMD_RETRY) {
-				start();
-			}
-		}
-	}
-	
-	public void process(byte[] response) {
-		IStorageUtility formStorage = StorageManager.getStorage(FormDef.STORAGE_KEY);
+    public void _commandAction(Command command, Displayable display) {
+        if(display == progressScreen){
+            if(command==progressScreen.CMD_CANCEL){
+                sendThread.cancel();
+                done();
+            } if(command == progressScreen.CMD_RETRY) {
+                start();
+            }
+        }
+    }
+    
+    public void process(byte[] response) {
+        IStorageUtility formStorage = StorageManager.getStorage(FormDef.STORAGE_KEY);
 
-		bin = new ByteArrayInputStream(response);
-		try {
-			formStorage.write(XFormUtils.getFormFromInputStream(bin));
-		} catch (StorageFullException e) {
-			throw new RuntimeException("Whoops! Storage full : " + FormDef.STORAGE_KEY);
-		}
-		done();
-	}
-	
-	public void onChange(TransportMessage message, String remark) {
-		progressScreen.setText(remark);
-	}
+        bin = new ByteArrayInputStream(response);
+        try {
+            formStorage.write(XFormUtils.getFormFromInputStream(bin));
+        } catch (StorageFullException e) {
+            throw new RuntimeException("Whoops! Storage full : " + FormDef.STORAGE_KEY);
+        }
+        done();
+    }
+    
+    public void onChange(TransportMessage message, String remark) {
+        progressScreen.setText(remark);
+    }
 
-	public void onStatusChange(TransportMessage message) {
-		SimpleHttpTransportMessage httpMessage = (SimpleHttpTransportMessage)message;
-		if(httpMessage.isSuccess()) {
-			process(httpMessage.getResponseBody());
-		} else {
-			fail("Failure while fetching XForm: " + message.getFailureReason());
-		}
-	}
-	
-	public abstract void done();
+    public void onStatusChange(TransportMessage message) {
+        SimpleHttpTransportMessage httpMessage = (SimpleHttpTransportMessage)message;
+        if(httpMessage.isSuccess()) {
+            process(httpMessage.getResponseBody());
+        } else {
+            fail("Failure while fetching XForm: " + message.getFailureReason());
+        }
+    }
+    
+    public abstract void done();
 }

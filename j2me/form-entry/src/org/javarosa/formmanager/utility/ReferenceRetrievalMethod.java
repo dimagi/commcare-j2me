@@ -19,12 +19,12 @@ package org.javarosa.formmanager.utility;
 import org.javarosa.core.model.FormDef;
 
 public class ReferenceRetrievalMethod implements IFormDefRetrievalMethod {
-	FormDef formDef;
+    FormDef formDef;
 
-	public ReferenceRetrievalMethod(FormDef formDef) {
-		this.formDef = formDef;
-	}
-	public FormDef retreiveFormDef(	) {
-		return formDef;
-	}
+    public ReferenceRetrievalMethod(FormDef formDef) {
+        this.formDef = formDef;
+    }
+    public FormDef retreiveFormDef(    ) {
+        return formDef;
+    }
 }
