@@ -21,23 +21,23 @@ import org.javarosa.entity.api.transitions.EntitySelectTransitions;
  */
 
 public abstract class EntitySelectState <E> implements EntitySelectTransitions, State {
-	
-	protected EntitySelectController<E> controller;
-	
-	public void start () {
-		controller = getController();
-		controller.setTransitions(this);
-		controller.start();
-	}
-	
-	protected abstract EntitySelectController<E> getController ();
-	
-	public void newEntityCreated (int entityID) {
-		if (entityID != -1) {
-			controller.newEntity(entityID);
-		} else {
-			controller.showList();
-		}
-	}
-	
+    
+    protected EntitySelectController<E> controller;
+    
+    public void start () {
+        controller = getController();
+        controller.setTransitions(this);
+        controller.start();
+    }
+    
+    protected abstract EntitySelectController<E> getController ();
+    
+    public void newEntityCreated (int entityID) {
+        if (entityID != -1) {
+            controller.newEntity(entityID);
+        } else {
+            controller.showList();
+        }
+    }
+    
 }

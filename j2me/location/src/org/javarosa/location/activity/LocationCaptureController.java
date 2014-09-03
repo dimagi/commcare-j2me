@@ -29,90 +29,90 @@ import org.javarosa.j2me.services.exception.LocationServiceException;
 import org.javarosa.j2me.view.J2MEDisplay;
 
 public class LocationCaptureController implements LocationStateListener,
-		HandledCommandListener, Runnable {
+        HandledCommandListener, Runnable {
 
-	private LocationCaptureTransitions transitions;
-	private LocationCaptureService locService;
+    private LocationCaptureTransitions transitions;
+    private LocationCaptureService locService;
 
-	private LocationCaptureView locView;
-	private Thread captureThread;
-	private Fix myLoc;
-	
-	private boolean interrupted = false;
+    private LocationCaptureView locView;
+    private Thread captureThread;
+    private Fix myLoc;
+    
+    private boolean interrupted = false;
 
-	public LocationCaptureController(LocationCaptureService lService) {
-		this.locService = lService;
-		locService.addListener(this);
-	}
+    public LocationCaptureController(LocationCaptureService lService) {
+        this.locService = lService;
+        locService.addListener(this);
+    }
 
-	public void setTransitions(LocationCaptureTransitions transitions) {
-		this.transitions = transitions;
-	}
+    public void setTransitions(LocationCaptureTransitions transitions) {
+        this.transitions = transitions;
+    }
 
-	public void start() {
-		locView = new LocationCaptureView();
-		locView.setCommandListener(this);
-		
-		J2MEDisplay.setView(locView);
+    public void start() {
+        locView = new LocationCaptureView();
+        locView.setCommandListener(this);
+        
+        J2MEDisplay.setView(locView);
 
-		captureThread = new HandledThread(this, "CaptureThread");
-		captureThread.start();
+        captureThread = new HandledThread(this, "CaptureThread");
+        captureThread.start();
 
-	}
+    }
 
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }
 
-	public void _commandAction(Command comm, Displayable disp) {
-		if (comm == locView.cancelCommand) {
-			transitions.captureCancelled();
-		} else if (comm == locView.okCommand) {
-			if (locService.getStatus() == LocationCaptureService.FIX_OBTAINED)
-			{
-				interrupted=true;
-				transitions.captured(myLoc);
-			}
-			else
-				transitions.captureCancelled();
-		} else if (comm == locView.retryCommand) {
-			captureThread = new HandledThread(this, "CaptureThread");
-			captureThread.start();
-		}
-	}
+    public void _commandAction(Command comm, Displayable disp) {
+        if (comm == locView.cancelCommand) {
+            transitions.captureCancelled();
+        } else if (comm == locView.okCommand) {
+            if (locService.getStatus() == LocationCaptureService.FIX_OBTAINED)
+            {
+                interrupted=true;
+                transitions.captured(myLoc);
+            }
+            else
+                transitions.captureCancelled();
+        } else if (comm == locView.retryCommand) {
+            captureThread = new HandledThread(this, "CaptureThread");
+            captureThread.start();
+        }
+    }
 
-	public void run() {
-		try {
-			myLoc = locService.getFix();
-			if (myLoc == null)
-				transitions.captureCancelled();
-			else {
-				// sleep long enough for the message to show
-				Thread.sleep(2000);
-				if (!interrupted)
-					transitions.captured(myLoc);
-			}
-		}
+    public void run() {
+        try {
+            myLoc = locService.getFix();
+            if (myLoc == null)
+                transitions.captureCancelled();
+            else {
+                // sleep long enough for the message to show
+                Thread.sleep(2000);
+                if (!interrupted)
+                    transitions.captured(myLoc);
+            }
+        }
 
-		catch (LocationServiceException le) {
-			System.err.println(le.getMessage());
-		}
-		
-		catch (SecurityException se) {
-			//no permission
-			System.err.println(se.getMessage());
-			transitions.captureCancelled();
-		}
-		
-		catch (InterruptedException ie) {
-			//user cancelled
-		}
+        catch (LocationServiceException le) {
+            System.err.println(le.getMessage());
+        }
+        
+        catch (SecurityException se) {
+            //no permission
+            System.err.println(se.getMessage());
+            transitions.captureCancelled();
+        }
+        
+        catch (InterruptedException ie) {
+            //user cancelled
+        }
 
-	}
+    }
 
-	public void onChange(int state) {
-		if (locView != null)
-			locView.resetView(state);
-	}
+    public void onChange(int state) {
+        if (locView != null)
+            locView.resetView(state);
+    }
 
 }

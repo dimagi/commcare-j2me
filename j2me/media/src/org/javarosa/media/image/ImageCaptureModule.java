@@ -22,11 +22,11 @@ import org.javarosa.core.services.PrototypeManager;
 
 public class ImageCaptureModule implements IModule {
 
-	public void registerModule() {
-		String[] classes = {
-				"org.javarosa.media.image.model.FileDataPointer",
-		};		
-		PrototypeManager.registerPrototypes(classes);
-	}
+    public void registerModule() {
+        String[] classes = {
+                "org.javarosa.media.image.model.FileDataPointer",
+        };        
+        PrototypeManager.registerPrototypes(classes);
+    }
 
 }

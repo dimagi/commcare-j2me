@@ -6,20 +6,20 @@ import org.javarosa.services.transport.TransportMessage;
 
 public abstract class CompletedFormOptionsState implements CompletedFormOptionsTransitions, State {
 
-	protected String messageId;
-	
-	public CompletedFormOptionsState (String messageId) {
-		this.messageId = messageId;
-	}
-	
-	public void start () {
-		CompletedFormOptionsController controller = getController();
-		controller.setTransitions(this);
-		controller.start();
-	}
-	
-	protected CompletedFormOptionsController getController () {
-		return new CompletedFormOptionsController(messageId);
-	}
-	
+    protected String messageId;
+    
+    public CompletedFormOptionsState (String messageId) {
+        this.messageId = messageId;
+    }
+    
+    public void start () {
+        CompletedFormOptionsController controller = getController();
+        controller.setTransitions(this);
+        controller.start();
+    }
+    
+    protected CompletedFormOptionsController getController () {
+        return new CompletedFormOptionsController(messageId);
+    }
+    
 }

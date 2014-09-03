@@ -18,40 +18,40 @@ import org.javarosa.core.services.storage.StorageManager;
  */
 public class NamespaceRetrievalMethod implements IFormDefRetrievalMethod {
 
-	FormDef def;
-	
-	public NamespaceRetrievalMethod(String namespace) {
-		IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
-		int id;
-		
+    FormDef def;
+    
+    public NamespaceRetrievalMethod(String namespace) {
+        IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
+        int id;
+        
         Vector IDs = forms.getIDsForValue("XMLNS", namespace);
         if (IDs.size() == 1) {
-        	id = ((Integer)IDs.elementAt(0)).intValue();
+            id = ((Integer)IDs.elementAt(0)).intValue();
         } else {
-        	throw new RuntimeException("No form found with namespace [" + namespace + "]");
+            throw new RuntimeException("No form found with namespace [" + namespace + "]");
         }
 
         load(id);
-	}
-	
-	private void load(int id) {
-		IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
-		FormDef theForm = (FormDef)forms.read(id);
-		
-		if (theForm != null) {
-			this.def = theForm;
-		} else {
-			String error = "Form loader couldn't retrieve form for ";
-			error += " ID = " + id;
-			throw new RuntimeException(error);
-		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.javarosa.formmanager.utility.IFormDefRetrievalMethod#retreiveFormDef()
-	 */
-	public FormDef retreiveFormDef() {
-		return def;
-	}
+    }
+    
+    private void load(int id) {
+        IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
+        FormDef theForm = (FormDef)forms.read(id);
+        
+        if (theForm != null) {
+            this.def = theForm;
+        } else {
+            String error = "Form loader couldn't retrieve form for ";
+            error += " ID = " + id;
+            throw new RuntimeException(error);
+        }
+    }
+    
+    /*
+     * (non-Javadoc)
+     * @see org.javarosa.formmanager.utility.IFormDefRetrievalMethod#retreiveFormDef()
+     */
+    public FormDef retreiveFormDef() {
+        return def;
+    }
 }

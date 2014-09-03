@@ -42,112 +42,112 @@ import org.javarosa.form.api.FormEntryPrompt;
  *
  */
 public class FormDefTest extends TestCase {
-	QuestionDef q = null;
-	FormEntryPrompt fep = null;
-	FormParseInit fpi = null;
-	
-	public FormDefTest(String name, TestMethod rTestMethod) {
-		super(name, rTestMethod);
-		initStuff();
-	}
-	
-	public FormDefTest(String name) {
-		super(name);
-		initStuff();
-	}
-	
-	public FormDefTest() {
-		super();
-		initStuff();
-	}	
-	
-	public void initStuff(){
-		fpi = new FormParseInit();
-		q = fpi.getFirstQuestionDef();
-		fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
-	}
-	
-	static PrototypeFactory pf;
-	
-	static {
-		PrototypeManager.registerPrototype("org.javarosa.model.xform.XPathReference");
-		pf = ExtUtil.defaultPrototypes();
-	}
-		
-	public Test suite() {
-		TestSuite aSuite = new TestSuite();
-		
-		for (int i = 1; i <= NUM_TESTS; i++) {
-			final int testID = i;
-			aSuite.addTest(new FormDefTest("FormDef Test " + i, new TestMethod() {
-				public void run (TestCase tc) {
-					((FormDefTest)tc).doTest(testID);
-				}
-			}));
-		}
-			
-		return aSuite;
-	}
-	
-	private void testSerialize (QuestionDef q, String msg) {
-		//ExternalizableTest.testExternalizable(q, this, pf, "QuestionDef [" + msg + "]");
-	}
-	
-	public final static int NUM_TESTS = 1;
-	public void doTest (int i) {
-		switch (i) {
-		case 1: testAnswerConstraint();break;
-		}
-	}
-	
-	
-	public void testAnswerConstraint(){
-		IntegerData ans = new IntegerData(13);
-		FormEntryController fec = fpi.getFormEntryController();
-		fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-		
-		do{
-			
-			QuestionDef q = fpi.getCurrentQuestion();
-			if(q==null || q.getTextID() == null || q.getTextID() == "")continue;
-			if(q.getTextID().equals("constraint-test")){
-				int response = fec.answerQuestion(ans);
-				if(response == fec.ANSWER_CONSTRAINT_VIOLATED){
-					fail("Answer Constraint test failed.");
-				}else if(response == fec.ANSWER_OK){
-					break;
-				}else{
-					fail("Bad response from fec.answerQuestion()");
-				}
-			}
-		}while(fec.stepToNextEvent()!=fec.EVENT_END_OF_FORM);
-	}
-	
-	public IDataReference newRef(String xpath){
-			IDataReference ref = new DummyReference();
-			ref.setReference(xpath);
-			pf.addClass(DummyReference.class);
-			return ref;
-	}
-	
-	private class QuestionObserver implements FormElementStateListener {
-		public boolean flag = false;
-		public TreeElement e;
-		public QuestionDef q;
-		public int flags;
-		
-		public void formElementStateChanged (IFormElement q, int flags) {
-			flag = true;
-			this.q = (QuestionDef)q;
-			this.flags = flags;
-		}
+    QuestionDef q = null;
+    FormEntryPrompt fep = null;
+    FormParseInit fpi = null;
+    
+    public FormDefTest(String name, TestMethod rTestMethod) {
+        super(name, rTestMethod);
+        initStuff();
+    }
+    
+    public FormDefTest(String name) {
+        super(name);
+        initStuff();
+    }
+    
+    public FormDefTest() {
+        super();
+        initStuff();
+    }    
+    
+    public void initStuff(){
+        fpi = new FormParseInit();
+        q = fpi.getFirstQuestionDef();
+        fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
+    }
+    
+    static PrototypeFactory pf;
+    
+    static {
+        PrototypeManager.registerPrototype("org.javarosa.model.xform.XPathReference");
+        pf = ExtUtil.defaultPrototypes();
+    }
+        
+    public Test suite() {
+        TestSuite aSuite = new TestSuite();
+        
+        for (int i = 1; i <= NUM_TESTS; i++) {
+            final int testID = i;
+            aSuite.addTest(new FormDefTest("FormDef Test " + i, new TestMethod() {
+                public void run (TestCase tc) {
+                    ((FormDefTest)tc).doTest(testID);
+                }
+            }));
+        }
+            
+        return aSuite;
+    }
+    
+    private void testSerialize (QuestionDef q, String msg) {
+        //ExternalizableTest.testExternalizable(q, this, pf, "QuestionDef [" + msg + "]");
+    }
+    
+    public final static int NUM_TESTS = 1;
+    public void doTest (int i) {
+        switch (i) {
+        case 1: testAnswerConstraint();break;
+        }
+    }
+    
+    
+    public void testAnswerConstraint(){
+        IntegerData ans = new IntegerData(13);
+        FormEntryController fec = fpi.getFormEntryController();
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+        
+        do{
+            
+            QuestionDef q = fpi.getCurrentQuestion();
+            if(q==null || q.getTextID() == null || q.getTextID() == "")continue;
+            if(q.getTextID().equals("constraint-test")){
+                int response = fec.answerQuestion(ans);
+                if(response == fec.ANSWER_CONSTRAINT_VIOLATED){
+                    fail("Answer Constraint test failed.");
+                }else if(response == fec.ANSWER_OK){
+                    break;
+                }else{
+                    fail("Bad response from fec.answerQuestion()");
+                }
+            }
+        }while(fec.stepToNextEvent()!=fec.EVENT_END_OF_FORM);
+    }
+    
+    public IDataReference newRef(String xpath){
+            IDataReference ref = new DummyReference();
+            ref.setReference(xpath);
+            pf.addClass(DummyReference.class);
+            return ref;
+    }
+    
+    private class QuestionObserver implements FormElementStateListener {
+        public boolean flag = false;
+        public TreeElement e;
+        public QuestionDef q;
+        public int flags;
+        
+        public void formElementStateChanged (IFormElement q, int flags) {
+            flag = true;
+            this.q = (QuestionDef)q;
+            this.flags = flags;
+        }
 
-		public void formElementStateChanged(TreeElement question, int changeFlags) {
-			flag = true;
-			this.e = question;
-			this.flags = changeFlags;
-		}
-	}
+        public void formElementStateChanged(TreeElement question, int changeFlags) {
+            flag = true;
+            this.e = question;
+            this.flags = changeFlags;
+        }
+    }
 
 
 }

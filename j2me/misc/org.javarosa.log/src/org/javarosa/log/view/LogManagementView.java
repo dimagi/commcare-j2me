@@ -28,9 +28,9 @@ import javax.microedition.lcdui.List;
  */
 public class LogManagementView extends List {
 
-	public LogManagementView() {
-		super("Log Manager", List.IMPLICIT);
-	}
-	
+    public LogManagementView() {
+        super("Log Manager", List.IMPLICIT);
+    }
+    
 
 }

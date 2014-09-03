@@ -25,56 +25,56 @@ import org.javarosa.core.services.PropertyManager;
  *
  */
 public class SmsTriggerDaemon implements IDaemon {
-	
-	public static final String DAEMON_NAME = "SMS Trigger Daemon";
-	
-	boolean running = false;
-	String port;
-	SmsTriggerService service;
-	
-	public SmsTriggerDaemon() {
-		String propPort = PropertyManager._().getSingularProperty(SmsTriggerProperties.TRIGGER_DEFAULT_PORT);
-		if(propPort == null) {
-			propPort = "16361"; 
-		}
-		init(propPort);
-	}
-	
-	public SmsTriggerDaemon(String port) {
-		init(port);
-	}
-	
-	private void init(String port) {
-		this.port = port;
-		service = new SmsTriggerService();
-	}
+    
+    public static final String DAEMON_NAME = "SMS Trigger Daemon";
+    
+    boolean running = false;
+    String port;
+    SmsTriggerService service;
+    
+    public SmsTriggerDaemon() {
+        String propPort = PropertyManager._().getSingularProperty(SmsTriggerProperties.TRIGGER_DEFAULT_PORT);
+        if(propPort == null) {
+            propPort = "16361"; 
+        }
+        init(propPort);
+    }
+    
+    public SmsTriggerDaemon(String port) {
+        init(port);
+    }
+    
+    private void init(String port) {
+        this.port = port;
+        service = new SmsTriggerService();
+    }
 
-	public String getName() {
-		return DAEMON_NAME;
-	}
+    public String getName() {
+        return DAEMON_NAME;
+    }
 
-	public boolean isRunning() {
-		return running;
-	}
+    public boolean isRunning() {
+        return running;
+    }
 
-	public void restart() {
-		stop();
-		start();
-	}
+    public void restart() {
+        stop();
+        start();
+    }
 
-	public void start() {
-		if(!running) {
-			running = service.start(port);
-		}
-	}
+    public void start() {
+        if(!running) {
+            running = service.start(port);
+        }
+    }
 
-	public void stop() {
-		if(running) {
-			running = service.stop();
-		}
-	}
-	
-	public void addTrigger(ISmsTrigger trigger) {
-		service.addTrigger(trigger);
-	}
+    public void stop() {
+        if(running) {
+            running = service.stop();
+        }
+    }
+    
+    public void addTrigger(ISmsTrigger trigger) {
+        service.addTrigger(trigger);
+    }
 }

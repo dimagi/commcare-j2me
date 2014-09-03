@@ -83,7 +83,7 @@ public class SmsTriggerProperties implements IPropertyRules {
      *  @see org.javarosa.properties.IPropertyRules#checkPropertyUserReadOnly)
      */
     public boolean checkPropertyUserReadOnly(String propertyName){
-    	return false;
+        return false;
     }
     
     /*
@@ -91,10 +91,10 @@ public class SmsTriggerProperties implements IPropertyRules {
      * @see org.javarosa.core.services.properties.IPropertyRules#getHumanReadableDescription(java.lang.String)
      */
     public String getHumanReadableDescription(String propertyName) {
-    	if(TRIGGER_DEFAULT_PORT.equals(propertyName)) {
-    		return "Default Port for Trigger SMS";
-    	} 
-    	return propertyName;
+        if(TRIGGER_DEFAULT_PORT.equals(propertyName)) {
+            return "Default Port for Trigger SMS";
+        } 
+        return propertyName;
     }
     
     /*
@@ -102,7 +102,7 @@ public class SmsTriggerProperties implements IPropertyRules {
      * @see org.javarosa.core.services.properties.IPropertyRules#getHumanReadableValue(java.lang.String, java.lang.String)
      */
     public String getHumanReadableValue(String propertyName, String value) {
-    	return value;
+        return value;
     }
     
     /*

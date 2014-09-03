@@ -10,6 +10,6 @@ import org.javarosa.user.model.User;
  *
  */
 public interface RegisterUserTransitions {
-	void succesfullyRegistered(User user);
-	void cancel();
+    void succesfullyRegistered(User user);
+    void cancel();
 }

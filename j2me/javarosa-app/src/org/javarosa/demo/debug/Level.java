@@ -9,11 +9,11 @@ package org.javarosa.demo.debug;
  * are met:
  *  
  *  * Redistribution of source code must retain the above copyright notice,
- *	this list of conditions and the following disclaimer.
+ *    this list of conditions and the following disclaimer.
  * 
  *  * Redistribution in binary form must reproduce the above copyright notice,
- *	this list of conditions and the following disclaimer in the
- *	documentation and/or other materials provided with the distribution.
+ *    this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  * 
  * Neither the name of Sun Microsystems, Inc. or the names of contributors
  * may be used to endorse or promote products derived from this software
@@ -51,7 +51,7 @@ public class Level {
 
     private Level( int level, String name ){
         _level = level;
-	_name = "[" + name + "]";
+    _name = "[" + name + "]";
     }
 
     public int intValue(){
@@ -59,7 +59,7 @@ public class Level {
     }
 
     public String toString(){
-	return _name;
+    return _name;
     }
 
     private int _level;

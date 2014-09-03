@@ -133,11 +133,11 @@ public class FileBrowser extends List implements HandledCommandListener {
      * or is the implicit <code>SELECT_COMMAND</code> of List.
      * @param d the <code>Displayable</code> on which this event has occurred
      */
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}  
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }  
 
-	public void _commandAction(Command c, Displayable d) {
+    public void _commandAction(Command c, Displayable d) {
         if (c.equals(SELECT_FILE_COMMAND)) {
             List curr = (List) d;
             currFile = curr.getString(curr.getSelectedIndex());
@@ -287,21 +287,21 @@ public class FileBrowser extends List implements HandledCommandListener {
 
     private void doDismiss() {
         //selectedURL = "file:///" + currDirName + SEP_STR + currFile;
-    	selectedURL = "file:///" + currDirName + currFile;
+        selectedURL = "file:///" + currDirName + currFile;
         System.out.println("selURL: "+ currDirName + "    "+ currFile);
         CommandListener commandListener = getCommandListener();
         if (commandListener != null) {
-        	forwardCommand(SELECT_FILE_COMMAND, this);
+            forwardCommand(SELECT_FILE_COMMAND, this);
         }
     }
 
     private void forwardCommand (Command c, Displayable d) {
-    	CommandListener cl = getCommandListener();
-    	
-    	if (cl instanceof HandledCommandListener) {
-    		((HandledCommandListener)cl)._commandAction(c, d);
-    	} else {
-    		cl.commandAction(c, d);
-    	}
+        CommandListener cl = getCommandListener();
+        
+        if (cl instanceof HandledCommandListener) {
+            ((HandledCommandListener)cl)._commandAction(c, d);
+        } else {
+            cl.commandAction(c, d);
+        }
     }
 }

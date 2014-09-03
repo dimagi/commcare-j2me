@@ -27,13 +27,13 @@ import org.javarosa.utilities.media.ReferenceDataPointer;
 
 public class FormManagerModule implements IModule {
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.api.IModule#registerModule()
-	 */
-	public void registerModule() {
-		String[] prototypes = new String[] { ReferenceDataPointer.class.getName()};
-		PrototypeManager.registerPrototypes(prototypes);	
-		PropertyManager._().addRules(new FormManagerProperties());
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.api.IModule#registerModule()
+     */
+    public void registerModule() {
+        String[] prototypes = new String[] { ReferenceDataPointer.class.getName()};
+        PrototypeManager.registerPrototypes(prototypes);    
+        PropertyManager._().addRules(new FormManagerProperties());
+    }
 
 }

@@ -43,45 +43,45 @@ import org.javarosa.services.transport.senders.SenderThread;
  */
 public class FormSender {
 
-	TransportMessage message;
-	private ISubmitStatusObserver observer;
-	FormTransportSubmitStatusScreen view;
+    TransportMessage message;
+    private ISubmitStatusObserver observer;
+    FormTransportSubmitStatusScreen view;
 
-	/**
-	 * @param shell
-	 * @param activity
-	 */
-	public FormSender(FormTransportSubmitStatusScreen view, TransportMessage message) {
-		this.view = view;
-		this.message = message;
-	}
-	
+    /**
+     * @param shell
+     * @param activity
+     */
+    public FormSender(FormTransportSubmitStatusScreen view, TransportMessage message) {
+        this.view = view;
+        this.message = message;
+    }
+    
 
-	public void setObserver(ISubmitStatusObserver o) {
-		this.observer = o;
-	}
+    public void setObserver(ISubmitStatusObserver o) {
+        this.observer = o;
+    }
 
-	public void sendData() {
-		if (this.message == null)
-			throw new RuntimeException(
-					"null data when trying to send single data");
+    public void sendData() {
+        if (this.message == null)
+            throw new RuntimeException(
+                    "null data when trying to send single data");
 
-		try{ 
-			//#debug debug
-			System.out.println("Sending single datum, serialized id="
-					+ this.message.getCacheIdentifier());
+        try{ 
+            //#debug debug
+            System.out.println("Sending single datum, serialized id="
+                    + this.message.getCacheIdentifier());
 
-			SenderThread thread = TransportService.send(message);
-			view.reinit(message.getCacheIdentifier());
-			thread.addListener(observer);
-		}
-		catch(TransportException e) {
-			Logger.exception("FormSender.sendData", e);
-			e.printStackTrace();
-			if(observer != null) {
-				observer.receiveError(e.getMessage());
-			}
-		}
-	}
+            SenderThread thread = TransportService.send(message);
+            view.reinit(message.getCacheIdentifier());
+            thread.addListener(observer);
+        }
+        catch(TransportException e) {
+            Logger.exception("FormSender.sendData", e);
+            e.printStackTrace();
+            if(observer != null) {
+                observer.receiveError(e.getMessage());
+            }
+        }
+    }
 
 }

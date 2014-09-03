@@ -31,20 +31,20 @@ import org.javarosa.formmanager.api.FormMultimediaController;
 
 //this is generic enough to be renamed 'IActivityView'
 public interface IFormEntryView {
-	
-	/* form entry views MUST call controller.setFormEntryView(this) in their constructors before they
-	 * make any calls to the controller!
-	 */
-	
-	public void destroy ();
-	
-	public void show();
+    
+    /* form entry views MUST call controller.setFormEntryView(this) in their constructors before they
+     * make any calls to the controller!
+     */
+    
+    public void destroy ();
+    
+    public void show();
 
-	/**
-	 * Show the form and set the focus to the specified index.
-	 * @param index
-	 */
-	public void show(FormIndex index);
-	
-	public void attachFormMediaController(FormMultimediaController mediacontroller);
+    /**
+     * Show the form and set the focus to the specified index.
+     * @param index
+     */
+    public void show(FormIndex index);
+    
+    public void attachFormMediaController(FormMultimediaController mediacontroller);
 }

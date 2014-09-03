@@ -30,27 +30,27 @@ import org.javarosa.j2me.services.LocationCaptureService.LocationReceiver;
 
 public class LocationCaptureState implements LocationCaptureTransitions, State {
 
-	private LocationReceiver receiver;
-	private LocationCaptureController controller;
-	private LocationCaptureService locService;
+    private LocationReceiver receiver;
+    private LocationCaptureController controller;
+    private LocationCaptureService locService;
 
-	public LocationCaptureState(LocationReceiver receiver, LocationCaptureService locService) {
-		this.receiver = receiver;
-		this.locService = locService;
-	}
+    public LocationCaptureState(LocationReceiver receiver, LocationCaptureService locService) {
+        this.receiver = receiver;
+        this.locService = locService;
+    }
 
-	public void start() {
-		controller = new LocationCaptureController(locService);
-		controller.setTransitions(this);
-		controller.start();
-	}
+    public void start() {
+        controller = new LocationCaptureController(locService);
+        controller.setTransitions(this);
+        controller.start();
+    }
 
-	public void captureCancelled() {
-		receiver.fixFailed();
-	}
+    public void captureCancelled() {
+        receiver.fixFailed();
+    }
 
-	public void captured(Fix fix) {
-		receiver.fixObtained(fix);
-	}
+    public void captured(Fix fix) {
+        receiver.fixObtained(fix);
+    }
 
 }

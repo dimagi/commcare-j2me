@@ -10,6 +10,6 @@ import org.javarosa.services.transport.TransportMessage;
  *
  */
 public interface CompletedFormOptionsTransitions {
-	public void sendData(String messageId);
-	public void skipSend(String messageId);
+    public void sendData(String messageId);
+    public void skipSend(String messageId);
 }

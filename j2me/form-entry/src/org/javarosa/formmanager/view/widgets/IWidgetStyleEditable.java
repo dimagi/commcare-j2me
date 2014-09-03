@@ -27,34 +27,34 @@ import de.enough.polish.ui.Item;
  * supports returning data back from the widget.
  */
 public interface IWidgetStyleEditable extends IWidgetStyle {
-	/**
-	 * Get the data currently entered in the widget, in the datatype appropriate to the type of question this
-	 * widget is tied to. If this widget represents a question or concept that is not meant to collect input, return null.
-	 * 
-	 * @return currently entered question data; null if not applicable
-	 * @throws InvalidDataException 
-	 */
-	IAnswerData getData () throws InvalidDataException;
-	
-	//handle custom widget focusing. return whether any focusing was performed (thus needing repaint)
-	boolean focus ();
-	
-	//specify how the 'answered' event is triggered
-	int getNextMode ();
-	
-	//get item to set event listeners for 
-	Item getInteractiveWidget ();
-	
-	/**
-	 * Register the controller that should be used by this editable widget for multimedia
-	 * playback and interfacing.
-	 * 
-	 * @param controller
-	 */
-	public void registerMultimediaController(FormMultimediaController controller);
+    /**
+     * Get the data currently entered in the widget, in the datatype appropriate to the type of question this
+     * widget is tied to. If this widget represents a question or concept that is not meant to collect input, return null.
+     * 
+     * @return currently entered question data; null if not applicable
+     * @throws InvalidDataException 
+     */
+    IAnswerData getData () throws InvalidDataException;
+    
+    //handle custom widget focusing. return whether any focusing was performed (thus needing repaint)
+    boolean focus ();
+    
+    //specify how the 'answered' event is triggered
+    int getNextMode ();
+    
+    //get item to set event listeners for 
+    Item getInteractiveWidget ();
+    
+    /**
+     * Register the controller that should be used by this editable widget for multimedia
+     * playback and interfacing.
+     * 
+     * @param controller
+     */
+    public void registerMultimediaController(FormMultimediaController controller);
 
-	/**
-	 * Releases any external media loaded for this widget (but without clearing that media)
-	 */
-	void releaseMedia();
+    /**
+     * Releases any external media loaded for this widget (but without clearing that media)
+     */
+    void releaseMedia();
 }

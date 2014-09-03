@@ -26,27 +26,27 @@ package org.javarosa.service.transport.securehttp;
  *
  */
 public interface HttpCredentialProvider {
-	
-	/**
-	 * Possibly blocking call to prepare credentials for authentication.
-	 * 
-	 * @return True if credentials were acquired and ready for use, False
-	 * if none could be provided.
-	 */
-	public boolean acquireCredentials();
-	
-	/**
-	 * Only valid in the Acquired State
-	 * 
-	 * @return The username for authentication
-	 */
-	public String getUsername();
-	
-	/**
-	 * Only valid in the Acquired State
-	 * 
-	 * @return The password for authentication
-	 */
-	public String getPassword();
-	
+    
+    /**
+     * Possibly blocking call to prepare credentials for authentication.
+     * 
+     * @return True if credentials were acquired and ready for use, False
+     * if none could be provided.
+     */
+    public boolean acquireCredentials();
+    
+    /**
+     * Only valid in the Acquired State
+     * 
+     * @return The username for authentication
+     */
+    public String getUsername();
+    
+    /**
+     * Only valid in the Acquired State
+     * 
+     * @return The password for authentication
+     */
+    public String getPassword();
+    
 }

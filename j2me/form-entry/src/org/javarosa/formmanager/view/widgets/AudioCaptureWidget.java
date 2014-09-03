@@ -37,60 +37,60 @@ import de.enough.polish.ui.StringItem;
 
 public class AudioCaptureWidget extends ExpandedWidget 
 {
-	private PointerAnswerData data;	
-	private StringItem label;
-	
-	protected Item getEntryWidget(FormEntryPrompt prompt)
-	{
-		updateLabel();
-		return label;
-	}
-	
-	//@Override
-	protected IAnswerData getWidgetValue() 
-	{
-		return data;
-	}
+    private PointerAnswerData data;    
+    private StringItem label;
+    
+    protected Item getEntryWidget(FormEntryPrompt prompt)
+    {
+        updateLabel();
+        return label;
+    }
+    
+    //@Override
+    protected IAnswerData getWidgetValue() 
+    {
+        return data;
+    }
 
-	//@Override
-	protected void updateWidget(FormEntryPrompt prompt) 
-	{
-		// TODO Auto-generated method stub
-	}
+    //@Override
+    protected void updateWidget(FormEntryPrompt prompt) 
+    {
+        // TODO Auto-generated method stub
+    }
 
-	protected void setWidgetValue(Object o)
-	{
-		IDataPointer objectPointer = (IDataPointer)o;
-		if (objectPointer != null) 
-		{
-			data = new PointerAnswerData((IDataPointer) o);
-		} 
-		else 
-		{
-			data = null;
-		}
-		updateLabel();
-	}
-	
-	//@Override
-	public int widgetType() 
-	{
-		// TODO Auto-generated method stub\
-		return Constants.CONTROL_AUDIO_CAPTURE;
-	}
-	
-	private void updateLabel()
-	{
-		label = new StringItem("", "");
-		
-		if(data == null)
-		{
-			label.setLabel("Use the menu to capture audio");
-		}
-	}
+    protected void setWidgetValue(Object o)
+    {
+        IDataPointer objectPointer = (IDataPointer)o;
+        if (objectPointer != null) 
+        {
+            data = new PointerAnswerData((IDataPointer) o);
+        } 
+        else 
+        {
+            data = null;
+        }
+        updateLabel();
+    }
+    
+    //@Override
+    public int widgetType() 
+    {
+        // TODO Auto-generated method stub\
+        return Constants.CONTROL_AUDIO_CAPTURE;
+    }
+    
+    private void updateLabel()
+    {
+        label = new StringItem("", "");
+        
+        if(data == null)
+        {
+            label.setLabel("Use the menu to capture audio");
+        }
+    }
 
-	protected IAnswerData getAnswerTemplate() {
-		return new PointerAnswerData();
-	}
+    protected IAnswerData getAnswerTemplate() {
+        return new PointerAnswerData();
+    }
 
 }
