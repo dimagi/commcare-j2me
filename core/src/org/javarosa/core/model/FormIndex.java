@@ -395,6 +395,18 @@ public class FormIndex {
         }
     }
     
+    /**
+     * Identifies whether the parent index contains the child index, 
+     * neither index must be fully formed.
+     * 
+     * For Example:
+     * parent: 1_0, 3, 1, 2
+     * child: 1, 2
+     * 
+     * @param parent
+     * @param child
+     * @return
+     */
     public static boolean isSubIndex(FormIndex parent, FormIndex child) {
         if(child.equals(parent)) {
             return true;
@@ -406,6 +418,27 @@ public class FormIndex {
         }
     }
     
+    /**
+     * Identifies whether the child index is an element which is 
+     * a descendant of the parent index.
+     * 
+     * For example:
+     * parent (group)
+     * 2, 1, 3
+     * 
+     * child_a
+     * 2, 1, 3, 1
+     * 
+     * child_b
+     * 2, 1, 4, 2
+     * 
+     * isSubElement(parent, child_a) -> true
+     * isSubElement(parent, child_b) -> false
+     * 
+     * @param parent
+     * @param child
+     * @return
+     */
     public static boolean isSubElement(FormIndex parent, FormIndex child) {
         while(!parent.isTerminal() && !child.isTerminal()) {
             if(parent.getLocalIndex() != child.getLocalIndex()) {
