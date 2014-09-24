@@ -77,9 +77,9 @@ public final class BluetoothClient implements DiscoveryListener {
      * in the different thread to "avoid dead lock".
      */
     public BluetoothClient(String uuid,BluetoothClientListener eventListener) {
-    	this.eventListener = eventListener;
-    	this.SERVER_UUID = new UUID(uuid,false);
-    	init();
+        this.eventListener = eventListener;
+        this.SERVER_UUID = new UUID(uuid,false);
+        init();
     }
 
     /**
@@ -92,7 +92,7 @@ public final class BluetoothClient implements DiscoveryListener {
             LocalDevice localDevice = LocalDevice.getLocalDevice();
             discoveryAgent = localDevice.getDiscoveryAgent();
         } catch (Exception e) {
-        	eventListener.errorOccured("Can't initialize bluetooth: ", e);
+            eventListener.errorOccured("Can't initialize bluetooth: ", e);
             System.err.println("Can't initialize bluetooth: " + e);
         }
 
@@ -107,20 +107,20 @@ public final class BluetoothClient implements DiscoveryListener {
     }
     
     public String getServiceUrl(){
-    	searchDevices();
-    	searchServices();
-    	
-    	if(records.size() == 0)
-    		return null;
-    	//The first service is enough.
-    	return ((ServiceRecord)this.records.elementAt(0)).getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
+        searchDevices();
+        searchServices();
+        
+        if(records.size() == 0)
+            return null;
+        //The first service is enough.
+        return ((ServiceRecord)this.records.elementAt(0)).getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
     }
     
     /**
      * Invoked by system when a new remote device is found -
      * remember the found device.
      */
-    public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {   	
+    public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {       
         // same device may found several times during single search
         if (devices.indexOf(btDevice) == -1)
             devices.addElement(btDevice);
@@ -215,15 +215,15 @@ public final class BluetoothClient implements DiscoveryListener {
         try {
             discoveryAgent.startInquiry(DiscoveryAgent.GIAC, this);
         } catch (BluetoothStateException e) {
-        	eventListener.errorOccured("Can't start inquiry now: ", e);
+            eventListener.errorOccured("Can't start inquiry now: ", e);
             System.err.println("Can't start inquiry now: " + e);
             return true;
         }
     
         try {
-        	synchronized(this){
-        		wait(); // until devices are found
-        	}
+            synchronized(this){
+                wait(); // until devices are found
+            }
         } catch (InterruptedException e) {
             //System.err.println("Unexpected interruption: " + e);
             return false;
@@ -232,8 +232,8 @@ public final class BluetoothClient implements DiscoveryListener {
         // no?, ok, let's check the return code then
         switch (discType) {
         case INQUIRY_ERROR:
-        	eventListener.errorOccured("Device discovering error.", null);
-        	System.out.println("Device discovering error...");//parent.informSearchError("Device discovering error...");
+            eventListener.errorOccured("Device discovering error.", null);
+            System.out.println("Device discovering error...");//parent.informSearchError("Device discovering error...");
 
         // fall through
         case INQUIRY_TERMINATED:
@@ -247,7 +247,7 @@ public final class BluetoothClient implements DiscoveryListener {
         case INQUIRY_COMPLETED:
 
             if (devices.size() == 0) {
-            	eventListener.errorOccured("No devices in range", null);
+                eventListener.errorOccured("No devices in range", null);
                 System.out.println("No devices in range");//parent.informSearchError("No devices in range");
             }
 
@@ -282,9 +282,9 @@ public final class BluetoothClient implements DiscoveryListener {
             RemoteDevice rd = (RemoteDevice)devices.elementAt(i);
 
             try {
-            	if(searchIDs != null)
+                if(searchIDs != null)
                 searchIDs[i] = discoveryAgent.searchServices(null, uuidSet, rd, this);
-            	//searchIDs[i] = discoveryAgent.searchServices(null, uuidSet, rd, this);
+                //searchIDs[i] = discoveryAgent.searchServices(null, uuidSet, rd, this);
             } catch (BluetoothStateException e) {
                 //System.err.println("Can't search services for: " + rd.getBluetoothAddress() +
                 //    " due to " + e);
@@ -298,18 +298,18 @@ public final class BluetoothClient implements DiscoveryListener {
 
         // at least one of the services search should be found
         if (!isSearchStarted) {
-        	eventListener.errorOccured("Can't search services.", null);
+            eventListener.errorOccured("Can't search services.", null);
             System.out.println("Can't search services.");//parent.informSearchError("Can't search services.");
 
             return true;
         }
 
         try {
-        	synchronized(this){
-        		wait(); // until services are found
-        	}
+            synchronized(this){
+                wait(); // until services are found
+            }
         } catch (InterruptedException e) {
-        	eventListener.errorOccured("Unexpected interruption:", e);
+            eventListener.errorOccured("Unexpected interruption:", e);
             //System.err.println("Unexpected interruption: " + e);
 
             return false;
@@ -317,7 +317,7 @@ public final class BluetoothClient implements DiscoveryListener {
 
         // actually, no services were found
         if (records.size() == 0) {
-        	eventListener.errorOccured("No proper services were found", null);
+            eventListener.errorOccured("No proper services were found", null);
             System.out.println("No proper services were found");
         }
 

@@ -32,40 +32,40 @@ import org.javarosa.user.model.User;
  *
  */
 public class UserPreloadHandler implements IPreloadHandler {
-	User user;
-	
-	public UserPreloadHandler(User user) {
-		this.user = user;
-	}
+    User user;
+    
+    public UserPreloadHandler(User user) {
+        this.user = user;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.model.utils.IPreloadHandler#handlePostProcess(org.javarosa.core.model.instance.TreeElement, java.lang.String)
-	 */
-	public boolean handlePostProcess(TreeElement node, String params) {
-		return false;
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.model.utils.IPreloadHandler#handlePostProcess(org.javarosa.core.model.instance.TreeElement, java.lang.String)
+     */
+    public boolean handlePostProcess(TreeElement node, String params) {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.model.utils.IPreloadHandler#handlePreload(java.lang.String)
-	 */
-	public IAnswerData handlePreload(String preloadParams) {
-		if(preloadParams.equals("username")) { 
-			return new UncastData(user.getUsername());
-		} else if(preloadParams.equals("uuid")) { 
-			return new UncastData(user.getUniqueId());
-		}
-		String property = user.getProperty(preloadParams);
-		if(property == null) {
-			return null;
-		}
-		return new UncastData(property);
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.model.utils.IPreloadHandler#handlePreload(java.lang.String)
+     */
+    public IAnswerData handlePreload(String preloadParams) {
+        if(preloadParams.equals("username")) { 
+            return new UncastData(user.getUsername());
+        } else if(preloadParams.equals("uuid")) { 
+            return new UncastData(user.getUniqueId());
+        }
+        String property = user.getProperty(preloadParams);
+        if(property == null) {
+            return null;
+        }
+        return new UncastData(property);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.model.utils.IPreloadHandler#preloadHandled()
-	 */
-	public String preloadHandled() {
-		return "user";
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.model.utils.IPreloadHandler#preloadHandled()
+     */
+    public String preloadHandled() {
+        return "user";
+    }
 
 }

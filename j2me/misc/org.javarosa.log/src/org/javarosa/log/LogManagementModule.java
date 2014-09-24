@@ -30,11 +30,11 @@ import org.javarosa.log.properties.LogPropertyRules;
  */
 public class LogManagementModule implements IModule {
 
-	/* (non-Javadoc)
-	 * @see org.javarosa.core.api.IModule#registerModule(org.javarosa.core.Context)
-	 */
-	public void registerModule() {
-		PropertyManager._().addRules(new LogPropertyRules());
-	}
+    /* (non-Javadoc)
+     * @see org.javarosa.core.api.IModule#registerModule(org.javarosa.core.Context)
+     */
+    public void registerModule() {
+        PropertyManager._().addRules(new LogPropertyRules());
+    }
 
 }

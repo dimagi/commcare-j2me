@@ -28,14 +28,14 @@ import org.javarosa.core.util.externalizable.Externalizable;
  *
  */
 public interface IPatientRecord extends Externalizable {
-	
-	/**
-	 * Returns a filtered set of historical record entries
-	 * 
-	 * @param selector The Selector string to be used to
-	 * filter the entries
-	 * @return a subset of IRecordEntry objects which correspond
-	 * to the set of data specified by the selector
-	 */
-	public Vector getHistoricalRecords(String selector);
+    
+    /**
+     * Returns a filtered set of historical record entries
+     * 
+     * @param selector The Selector string to be used to
+     * filter the entries
+     * @return a subset of IRecordEntry objects which correspond
+     * to the set of data specified by the selector
+     */
+    public Vector getHistoricalRecords(String selector);
 }

@@ -13,12 +13,12 @@ import org.javarosa.services.properties.controller.PropertyUpdateController;
  */
 public abstract class PropertyUpdateState implements State, TrivialTransitions {
 
-	protected PropertyUpdateController getController () {
-		return new PropertyUpdateController(this);
-	}
-	
-	public void start() {
-		getController().start();
-	}
+    protected PropertyUpdateController getController () {
+        return new PropertyUpdateController(this);
+    }
+    
+    public void start() {
+        getController().start();
+    }
 
 }

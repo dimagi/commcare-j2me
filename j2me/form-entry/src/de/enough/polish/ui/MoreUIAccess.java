@@ -26,7 +26,7 @@ package de.enough.polish.ui;
  */
 public class MoreUIAccess {
 
-	public static boolean isScrollingContainer(Container c) {
-		return c.enableScrolling;
-	}
+    public static boolean isScrollingContainer(Container c) {
+        return c.enableScrolling;
+    }
 }

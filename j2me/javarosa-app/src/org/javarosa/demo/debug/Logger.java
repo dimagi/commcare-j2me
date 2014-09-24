@@ -9,11 +9,11 @@ package org.javarosa.demo.debug;
  * are met:
  *  
  *  * Redistribution of source code must retain the above copyright notice,
- *	this list of conditions and the following disclaimer.
+ *    this list of conditions and the following disclaimer.
  * 
  *  * Redistribution in binary form must reproduce the above copyright notice,
- *	this list of conditions and the following disclaimer in the
- *	documentation and/or other materials provided with the distribution.
+ *    this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
  * 
  * Neither the name of Sun Microsystems, Inc. or the names of contributors
  * may be used to endorse or promote products derived from this software
@@ -184,22 +184,22 @@ public class Logger {
         if( level == null ) level = Level.FINE;
         if( !isLoggable( level ) ) return;
 
-	long time = System.currentTimeMillis();
-	String tname = Thread.currentThread().toString();
+    long time = System.currentTimeMillis();
+    String tname = Thread.currentThread().toString();
 
-	if( _logToStdout ){
-	    String tmp = msg;
+    if( _logToStdout ){
+        String tmp = msg;
 
-	    if( e != null ){
-		tmp = msg + " " + e;
-	    }
+        if( e != null ){
+        tmp = msg + " " + e;
+        }
 
-	    System.out.println( time + " " +
-	                        tname + " " + level +
-				" " + tmp );
-	}
+        System.out.println( time + " " +
+                            tname + " " + level +
+                " " + tmp );
+    }
 
-	if( !_logToRS ) return;
+    if( !_logToRS ) return;
 
         // Prepare the data
 
@@ -210,9 +210,9 @@ public class Logger {
 
         try {
             dout.writeInt( level.intValue() );
-	    dout.writeLong( System.currentTimeMillis() );
-	    dout.writeUTF(
-	               Thread.currentThread().toString() );
+        dout.writeLong( System.currentTimeMillis() );
+        dout.writeUTF(
+                   Thread.currentThread().toString() );
             dout.writeUTF( msg != null ? msg : "" );
             dout.writeUTF( e != null ? e.toString() : "" );
             dout.flush();
@@ -261,13 +261,13 @@ public class Logger {
     // Whether or not to log to stdout
 
     public void setLogToStdout( boolean log ){
-	_logToStdout = log;
+    _logToStdout = log;
     }
 
     // Whether or not to log to the record store
 
     public void setLogToRS( boolean log ){
-	_logToRS = log;
+    _logToRS = log;
     }
 
     // Sets the logger's parent.
@@ -303,8 +303,8 @@ public class Logger {
     private static RecordStore _rs;
 
     static {
-	// Initialize the root level
-	
+    // Initialize the root level
+    
         _loggers.put( "", _root );
         _root.setParent( null );
         _root.setLevel( Level.WARNING );

@@ -44,41 +44,41 @@ import javax.microedition.media.control.VideoControl;
 import javax.microedition.midlet.MIDlet;
 
 public class CameraCanvas extends Canvas {
-	//private MIDlet mMIDlet;
-	  
-	  public CameraCanvas(MIDlet midlet, VideoControl videoControl) {
-	    int width = getWidth();
-	    int height = getHeight();
-	    
-	   // mMIDlet = midlet;
-	    
-	    videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
-	    try {
-	      videoControl.setDisplayLocation(2, 2);
-	      videoControl.setDisplaySize(width - 4, height - 4);
-	    }
-	    catch (MediaException me) {
-	      try { videoControl.setDisplayFullScreen(true); }
-	      catch (MediaException me2) {}
-	    }
-	    videoControl.setVisible(true);
-	  }
-	  
-	  public void paint(Graphics g) {
-	    int width = getWidth();
-	    int height = getHeight();
+    //private MIDlet mMIDlet;
+      
+      public CameraCanvas(MIDlet midlet, VideoControl videoControl) {
+        int width = getWidth();
+        int height = getHeight();
+        
+       // mMIDlet = midlet;
+        
+        videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
+        try {
+          videoControl.setDisplayLocation(2, 2);
+          videoControl.setDisplaySize(width - 4, height - 4);
+        }
+        catch (MediaException me) {
+          try { videoControl.setDisplayFullScreen(true); }
+          catch (MediaException me2) {}
+        }
+        videoControl.setVisible(true);
+      }
+      
+      public void paint(Graphics g) {
+        int width = getWidth();
+        int height = getHeight();
 
-	    // Draw a green border around the VideoControl.
-	    g.setColor(0x00ff00);
-	    g.drawRect(0, 0, width - 1, height - 1);
-	    g.drawRect(1, 1, width - 3, height - 3);
-	  }
-	  
-   	  //no exception handling needed
-	  public void keyPressed(int keyCode) {
-	   // int action = getGameAction(keyCode);
-	    //if (action == FIRE) 
-		//mSnapperMIDlet.capture();
-	  }
-	}
+        // Draw a green border around the VideoControl.
+        g.setColor(0x00ff00);
+        g.drawRect(0, 0, width - 1, height - 1);
+        g.drawRect(1, 1, width - 3, height - 3);
+      }
+      
+         //no exception handling needed
+      public void keyPressed(int keyCode) {
+       // int action = getGameAction(keyCode);
+        //if (action == FIRE) 
+        //mSnapperMIDlet.capture();
+      }
+    }
  

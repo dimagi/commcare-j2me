@@ -37,49 +37,49 @@ import de.enough.polish.ui.UiAccess;
  *
  */
 public class MessageWidget extends ExpandedWidget {
-	private StringItem ok;
-	
-	public MessageWidget (boolean showButton) {
-		if(showButton) {
-			//#style button
-			ok = new StringItem(null, Localization.get("button.Next"));
-		} else {
-			//#style invisibleTrigger
-			ok = new StringItem(null, "");
-		}
-	}
+    private StringItem ok;
+    
+    public MessageWidget (boolean showButton) {
+        if(showButton) {
+            //#style button
+            ok = new StringItem(null, Localization.get("button.Next"));
+        } else {
+            //#style invisibleTrigger
+            ok = new StringItem(null, "");
+        }
+    }
 
-	public IAnswerData getData () {
-		return new StringData("OK");
-	}
+    public IAnswerData getData () {
+        return new StringData("OK");
+    }
 
-	public int getNextMode () {
-		return ExpandedWidget.NEXT_ON_MANUAL;
-	}
-	
+    public int getNextMode () {
+        return ExpandedWidget.NEXT_ON_MANUAL;
+    }
+    
 
-	public int widgetType() {
-		return Constants.CONTROL_TRIGGER;
-	}
+    public int widgetType() {
+        return Constants.CONTROL_TRIGGER;
+    }
 
-	protected IAnswerData getAnswerTemplate() {
-		return new StringData();
-	}
+    protected IAnswerData getAnswerTemplate() {
+        return new StringData();
+    }
 
-	protected Item getEntryWidget(FormEntryPrompt prompt) {
-		return ok;
-	}
+    protected Item getEntryWidget(FormEntryPrompt prompt) {
+        return ok;
+    }
 
-	protected void updateWidget(FormEntryPrompt prompt) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	protected void setWidgetValue(Object o) {
-		//Nope. Not a thing.		
-	}
+    protected void updateWidget(FormEntryPrompt prompt) {
+        // TODO Auto-generated method stub
+        
+    }
+    
+    protected void setWidgetValue(Object o) {
+        //Nope. Not a thing.        
+    }
 
-	protected IAnswerData getWidgetValue() {
-		return new StringData("OK");
-	}
+    protected IAnswerData getWidgetValue() {
+        return new StringData("OK");
+    }
 }

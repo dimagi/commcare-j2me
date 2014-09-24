@@ -18,40 +18,40 @@ import org.javarosa.j2me.view.J2MEDisplay;
 
 public class JRDemoRemoteFormListController implements HandledCommandListener {
 
-	JRDemoRemoteFormListTransitions transitions;
-	JRDemoRemoteFormListView view;
-	OrderedHashtable formList;
-	
-	public JRDemoRemoteFormListController(String formListXml) {
-		formList = JRDemoUtil.readFormListXML(formListXml);
-		view = new JRDemoRemoteFormListView(Localization.get("jrdemo.remoteformlist.title"), formList, JRDemoContext._().getUser().isAdminUser());
-		view.setCommandListener(this);
-	}
-	
-	public void setTransitions (JRDemoRemoteFormListTransitions transitions) {
-		this.transitions = transitions;
-	}
-		
-	public void start () {
-		J2MEDisplay.setView(view);
-	}
-	
-	public void commandAction(Command c, Displayable d) {
-		CrashHandler.commandAction(this, c, d);
-	}  
+    JRDemoRemoteFormListTransitions transitions;
+    JRDemoRemoteFormListView view;
+    OrderedHashtable formList;
+    
+    public JRDemoRemoteFormListController(String formListXml) {
+        formList = JRDemoUtil.readFormListXML(formListXml);
+        view = new JRDemoRemoteFormListView(Localization.get("jrdemo.remoteformlist.title"), formList, JRDemoContext._().getUser().isAdminUser());
+        view.setCommandListener(this);
+    }
+    
+    public void setTransitions (JRDemoRemoteFormListTransitions transitions) {
+        this.transitions = transitions;
+    }
+        
+    public void start () {
+        J2MEDisplay.setView(view);
+    }
+    
+    public void commandAction(Command c, Displayable d) {
+        CrashHandler.commandAction(this, c, d);
+    }  
 
-	public void _commandAction(Command c, Displayable d) {
-		if (d == view) {
-			if (c == List.SELECT_COMMAND) {
-				int index = view.getSelectedIndex();
-				if (index != -1)
-				{
-					String formUrl = (String) formList.elementAt(index);
-					transitions.formDownload(formUrl);
-				}
-			} else if (c == view.CMD_BACK) {
-				transitions.back();
-			} 
-		}
-	}
+    public void _commandAction(Command c, Displayable d) {
+        if (d == view) {
+            if (c == List.SELECT_COMMAND) {
+                int index = view.getSelectedIndex();
+                if (index != -1)
+                {
+                    String formUrl = (String) formList.elementAt(index);
+                    transitions.formDownload(formUrl);
+                }
+            } else if (c == view.CMD_BACK) {
+                transitions.back();
+            } 
+        }
+    }
 }

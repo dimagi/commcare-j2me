@@ -8,5 +8,5 @@ package org.javarosa.formmanager.view;
  *
  */
 public interface InvalidInputListener {
-	public void invalidNativeInput(String input);
+    public void invalidNativeInput(String input);
 }

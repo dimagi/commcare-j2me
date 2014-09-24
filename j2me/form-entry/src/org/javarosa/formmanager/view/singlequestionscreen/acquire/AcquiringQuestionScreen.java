@@ -31,43 +31,43 @@ import de.enough.polish.ui.Style;
  * 
  */
 public abstract class AcquiringQuestionScreen extends SingleQuestionScreen {
-	protected IAnswerData acquiredData;
-	public Command acquireCommand;
-	AcquireScreen acquireScreen;
+    protected IAnswerData acquiredData;
+    public Command acquireCommand;
+    AcquireScreen acquireScreen;
 
-	public AcquiringQuestionScreen(FormEntryPrompt prompt, String groupName, Style style) {
-		super(prompt, groupName,style);
-		addAcquireCommand();
+    public AcquiringQuestionScreen(FormEntryPrompt prompt, String groupName, Style style) {
+        super(prompt, groupName,style);
+        addAcquireCommand();
 
-	}
+    }
 
-	/**
-	 * @return the command that is used to stop capturing and attempt to
-	 *         transform the captured data into answer data
-	 */
-	public abstract Command getAcquireCommand();
+    /**
+     * @return the command that is used to stop capturing and attempt to
+     *         transform the captured data into answer data
+     */
+    public abstract Command getAcquireCommand();
 
-	public void addAcquireCommand() {
-		this.acquireCommand = getAcquireCommand();
-		this.addCommand(acquireCommand);
-	}
+    public void addAcquireCommand() {
+        this.acquireCommand = getAcquireCommand();
+        this.addCommand(acquireCommand);
+    }
 
-	protected void setAcquiredData(IAnswerData acquiredData) {
-		this.acquiredData = acquiredData;
-		updateDisplay();
-	}
+    protected void setAcquiredData(IAnswerData acquiredData) {
+        this.acquiredData = acquiredData;
+        updateDisplay();
+    }
 
-	/**
-	 * Update the question screen with a representation of the acquired data
-	 */
-	protected abstract void updateDisplay();
+    /**
+     * Update the question screen with a representation of the acquired data
+     */
+    protected abstract void updateDisplay();
 
-	/**
-	 * @param callingListener
-	 *            the listener to which control will be returned
-	 * @return the screen that will do the acquiring
-	 */
-	public abstract AcquireScreen getAcquireScreen(
-			CommandListener callingListener);
+    /**
+     * @param callingListener
+     *            the listener to which control will be returned
+     * @return the screen that will do the acquiring
+     */
+    public abstract AcquireScreen getAcquireScreen(
+            CommandListener callingListener);
 
 }

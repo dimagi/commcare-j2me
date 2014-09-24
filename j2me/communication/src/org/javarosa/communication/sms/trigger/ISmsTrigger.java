@@ -26,6 +26,6 @@ import javax.wireless.messaging.TextMessage;
  *
  */
 public interface ISmsTrigger {
-	public boolean isConsumable(TextMessage message);
-	public void consume(TextMessage message);
+    public boolean isConsumable(TextMessage message);
+    public void consume(TextMessage message);
 }

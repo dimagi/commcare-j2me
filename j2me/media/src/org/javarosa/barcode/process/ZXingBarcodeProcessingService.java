@@ -45,28 +45,28 @@ import com.google.zxing.qrcode.QRCodeReader;
  */
 public class ZXingBarcodeProcessingService implements BarcodeCaptureService {
 
-	public String getType() {
-		return DataCaptureService.BARCODE;
-	}
+    public String getType() {
+        return DataCaptureService.BARCODE;
+    }
 
-	public IAnswerData processImage(Image image)
-			throws ImageProcessingException {
-		MonochromeBitmapSource source = new LCDUIImageMonochromeBitmapSource(
-				image);
-		Reader reader = new QRCodeReader();
-		Hashtable hints = new Hashtable();
-		// hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+    public IAnswerData processImage(Image image)
+            throws ImageProcessingException {
+        MonochromeBitmapSource source = new LCDUIImageMonochromeBitmapSource(
+                image);
+        Reader reader = new QRCodeReader();
+        Hashtable hints = new Hashtable();
+        // hints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
 
-		try {
-			Result result = reader.decode(source, hints);
-			if ((result != null) && (result.getText() != null)) {
-				String scannedCode = result.getText();
-				return new StringData(scannedCode);
-			} else {
-				throw new ImageProcessingException("Barcode scanning failed");
-			}
-		} catch (ReaderException re) {
-			throw new ImageProcessingException("Barcode scanning failed");
-		}
-	}
+        try {
+            Result result = reader.decode(source, hints);
+            if ((result != null) && (result.getText() != null)) {
+                String scannedCode = result.getText();
+                return new StringData(scannedCode);
+            } else {
+                throw new ImageProcessingException("Barcode scanning failed");
+            }
+        } catch (ReaderException re) {
+            throw new ImageProcessingException("Barcode scanning failed");
+        }
+    }
 }

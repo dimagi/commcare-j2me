@@ -6,19 +6,19 @@ import org.javarosa.user.utility.UserUtility;
 
 public class JRDemoSplashScreenState extends SplashScreenState {
 
-	public JRDemoSplashScreenState() {
-		super(Localization.get("splashscreen"));
-	}
+    public JRDemoSplashScreenState() {
+        super(Localization.get("splashscreen"));
+    }
 
-	public void done() {
-		
-//		new JRDemoLanguageSelectState().start();
+    public void done() {
+        
+//        new JRDemoLanguageSelectState().start();
 
-		//#if javarosa.dev.shortcuts
-		new JRDemoLoginState().loggedIn(UserUtility.demoUser(true), null);
-		//#else
-		new JRDemoLoginState().start();
-		//#endif
-	}
+        //#if javarosa.dev.shortcuts
+        new JRDemoLoginState().loggedIn(UserUtility.demoUser(true), null);
+        //#else
+        new JRDemoLoginState().start();
+        //#endif
+    }
 
 }

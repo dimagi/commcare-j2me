@@ -22,8 +22,8 @@ import org.javarosa.core.services.PropertyManager;
 
 public class FeedbackReportModule implements IModule {
 
-	public void registerModule() {
-		PropertyManager._().addRules(new FeedbackReportProperties());
-	}
+    public void registerModule() {
+        PropertyManager._().addRules(new FeedbackReportProperties());
+    }
 
 }

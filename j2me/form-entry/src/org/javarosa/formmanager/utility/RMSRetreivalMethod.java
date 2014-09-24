@@ -24,40 +24,40 @@ import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageManager;
 
 public class RMSRetreivalMethod implements IFormDefRetrievalMethod {
-	private FormDef def;
+    private FormDef def;
 
-	public RMSRetreivalMethod(int formId) {
-		load(formId);
-	}
-	
-	public RMSRetreivalMethod(String formName) {
-		IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
-		int id;
-		
+    public RMSRetreivalMethod(int formId) {
+        load(formId);
+    }
+    
+    public RMSRetreivalMethod(String formName) {
+        IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
+        int id;
+        
         Vector IDs = forms.getIDsForValue("DESCRIPTOR", formName);
         if (IDs.size() == 1) {
-        	id = ((Integer)IDs.elementAt(0)).intValue();
+            id = ((Integer)IDs.elementAt(0)).intValue();
         } else {
-        	throw new RuntimeException("No form found for descriptor [" + formName + "]");
+            throw new RuntimeException("No form found for descriptor [" + formName + "]");
         }
 
         load(id);
-	}
-	
-	private void load(int id) {
-		IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
-		FormDef theForm = (FormDef)forms.read(id);
-		
-		if (theForm != null) {
-			this.def = theForm;
-		} else {
-			String error = "Form loader couldn't retrieve form for ";
-			error += " ID = " + id;
-			throw new RuntimeException(error);
-		}
-	}
-	
-	public FormDef retreiveFormDef() {
-		return def;
-	}
+    }
+    
+    private void load(int id) {
+        IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
+        FormDef theForm = (FormDef)forms.read(id);
+        
+        if (theForm != null) {
+            this.def = theForm;
+        } else {
+            String error = "Form loader couldn't retrieve form for ";
+            error += " ID = " + id;
+            throw new RuntimeException(error);
+        }
+    }
+    
+    public FormDef retreiveFormDef() {
+        return def;
+    }
 }

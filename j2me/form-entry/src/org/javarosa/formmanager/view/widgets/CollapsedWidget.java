@@ -31,75 +31,75 @@ import de.enough.polish.ui.UiAccess;
  * question answer in readable-text form on the right/bottom.
  */
 public class CollapsedWidget implements IWidgetStyle {
-	public static String UPDATE_TEXT = "Update";
-	
-	private static final Command updateCommand =  new Command(UPDATE_TEXT, Command.ITEM, 1);
-	
-	private StringItem prompt;
-	private StringItem answer;
-	
-	private boolean seekable = false;
+    public static String UPDATE_TEXT = "Update";
+    
+    private static final Command updateCommand =  new Command(UPDATE_TEXT, Command.ITEM, 1);
+    
+    private StringItem prompt;
+    private StringItem answer;
+    
+    private boolean seekable = false;
 
-	public CollapsedWidget () {
-		reset();
-	}
+    public CollapsedWidget () {
+        reset();
+    }
 
-	/**
-	 * TODO: be smart about layout/wrapping; take into account lengths of QuestionDef and answer for optimum
-	 * use of vertical screen space
-	 */
+    /**
+     * TODO: be smart about layout/wrapping; take into account lengths of QuestionDef and answer for optimum
+     * use of vertical screen space
+     */
 
-	public void initWidget (FormEntryPrompt fep, Container c) {
-		//#style split
-		UiAccess.setStyle(c); //it is dubious whether this works properly; Chatterbox.babysitStyles() takes care of this for now
-		
-		//#style splitleft
-		Container test = new Container(false);
-		prompt = new StringItem(null, null);
-		if(this.seekable) {
-			prompt.setDefaultCommand(updateCommand);
-			test.setDefaultCommand(updateCommand);
-		}
-		test.add(new StringItem(null, null));
-		test.add(prompt);
-		
-		//#style splitright
-		answer = new StringItem(null, null); 
+    public void initWidget (FormEntryPrompt fep, Container c) {
+        //#style split
+        UiAccess.setStyle(c); //it is dubious whether this works properly; Chatterbox.babysitStyles() takes care of this for now
+        
+        //#style splitleft
+        Container test = new Container(false);
+        prompt = new StringItem(null, null);
+        if(this.seekable) {
+            prompt.setDefaultCommand(updateCommand);
+            test.setDefaultCommand(updateCommand);
+        }
+        test.add(new StringItem(null, null));
+        test.add(prompt);
+        
+        //#style splitright
+        answer = new StringItem(null, null); 
 
-		//polish has a quirk where it really wants to impose the parent styling onto the first item in the
-		//container, even if you explicitly override it with a new style. this null item takes the fall
-		c.add(new StringItem(null, null));
-		c.add(test);
-		c.add(answer);
-	}
+        //polish has a quirk where it really wants to impose the parent styling onto the first item in the
+        //container, even if you explicitly override it with a new style. this null item takes the fall
+        c.add(new StringItem(null, null));
+        c.add(test);
+        c.add(answer);
+    }
 
-	public void refreshWidget (FormEntryPrompt fep, int changeFlags) {	
-		prompt.setText(fep.getShortText());
-		
-		String value = fep.getAnswerText();
-		if (value != null) {
-			answer.setText(value);
-		}
-	}
+    public void refreshWidget (FormEntryPrompt fep, int changeFlags) {    
+        prompt.setText(fep.getShortText());
+        
+        String value = fep.getAnswerText();
+        if (value != null) {
+            answer.setText(value);
+        }
+    }
 
-	public void reset () {
-		prompt = null;
-		answer = null;
-	}
+    public void reset () {
+        prompt = null;
+        answer = null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
-	 */
-	public int widgetType() {
-		return Constants.CONTROL_UNTYPED;
-	}
-	
-	public void setSeekable(boolean seekable) {
-		this.seekable = seekable;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
+     */
+    public int widgetType() {
+        return Constants.CONTROL_UNTYPED;
+    }
+    
+    public void setSeekable(boolean seekable) {
+        this.seekable = seekable;
+    }
 
-	public int getPinnableHeight() {
-		return prompt.getContentHeight();
-	}
+    public int getPinnableHeight() {
+        return prompt.getContentHeight();
+    }
 }
