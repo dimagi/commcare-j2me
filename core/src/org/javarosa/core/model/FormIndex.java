@@ -39,7 +39,7 @@ import org.javarosa.model.xform.XPathReference;
  * @author Clayton Sims
  *
  */
-public class FormIndex {
+public class FormIndex implements Comparable {
     
     private boolean beginningOfForm = false;
     
