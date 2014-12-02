@@ -40,7 +40,6 @@ public abstract class DataInstance<T extends AbstractTreeElement<T>> implements 
     public DataInstance() {
         referenceCache = new CacheTable<TreeReference, T>();
     }
-
     
     public DataInstance(String instanceid) {
         this.instanceid = instanceid;
@@ -74,11 +73,11 @@ public abstract class DataInstance<T extends AbstractTreeElement<T>> implements 
     public T resolveReference(TreeReference ref) {
         if (!ref.isAbsolute()){
             return null;
-        }
+        }   
         
         T t = referenceCache.retrieve(ref);
         
-        if(t != null && (t.getValue() != null)){
+        if(t != null && (t.getValue() != null)) {
             return t;
         } 
     
