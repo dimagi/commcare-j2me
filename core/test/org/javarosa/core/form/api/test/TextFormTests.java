@@ -231,7 +231,7 @@ public class TextFormTests extends TestCase {
         
         QuestionDef q = new QuestionDef();
                 
-        q.setHelpTextID("help");
+        q.setHintTextID("help");
         FormEntryPrompt fep = new DummyFormEntryPrompt(l,"prompt",q);
                 
         if (!"loc: long text".equals(fep.getLongText())) {
@@ -251,8 +251,8 @@ public class TextFormTests extends TestCase {
             fail("Long text ID getter/setter broken");
         }
 
-        q.setHelpTextID("help text id");
-        if (!"help text id".equals(q.getHelpTextID()) || q.getHelpText() != null) {
+        q.setHintTextID("hint text id");
+        if (!"help text id".equals(q.getHintTextID()) || q.getHintText() != null) {
             fail("Help text ID getter/setter broken");
         }
     }
@@ -265,8 +265,8 @@ public class TextFormTests extends TestCase {
             fail("LabelInnerText getter/setter broken");
         }
 
-        q.setHelpText("help text");
-        if (!"help text".equals(q.getHelpText())) {
+        q.setHintText("help text");
+        if (!"help text".equals(q.getHintText())) {
             fail("Help text getter/setter broken");
         }
     }
