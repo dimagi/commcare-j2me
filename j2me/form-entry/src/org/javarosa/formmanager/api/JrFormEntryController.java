@@ -45,6 +45,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     
+    private PlayerListener logHandler;
+    
     
     /** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
     private boolean audioFailFast = true;
@@ -66,6 +68,44 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         this.audioFailFast = audioFailFast;
         this.quickEntry = quickEntry;
         this.isMinimal = isMinimal;
+        
+        this.logHandler = new PlayerListener() {
+            public void playerUpdate(Player player, String event, Object eventData) {
+                String action = "";
+                if (event == PlayerListener.STARTED) {
+                    action = "start";
+                }
+                else if (event == PlayerListener.STOPPED) {
+                    action = "pause";
+                }
+                else if (event == PlayerListener.END_OF_MEDIA) {
+                    action = "stop";
+                }
+                FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
+                try {
+                    if (fep != null && fep.getAudioText() != null) {
+                        // log that action was attempted on audio file
+                        // TODO: move this to some sort of 'form entry diagnostics' framework
+                        // instead of bloating the logs
+                        String audio = fep.getAudioText();
+                        
+                        //extract just the audio filename to reduce log size
+                        String audioShort;
+                        try {
+                            Vector<String> pieces = DateUtils.split(audio, "/", false);
+                            String filename = pieces.lastElement();
+                            int suffixIx = filename.lastIndexOf('.');
+                            audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
+                        } catch (Exception e) {
+                            audioShort = audio;
+                        }                        
+                        Logger.log("audio", action + " " + audioShort);
+                    }
+                } catch(Exception e) {
+                    //Nothing
+                }
+            }
+        };
         
         //#if device.identifier == Sony-Ericsson/K610i
         POUND_KEYCODE = Canvas.KEY_STAR;
@@ -262,43 +302,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             detachVideoPlayer(player);
         }
         this.player = player;
-        this.player.addPlayerListener(new PlayerListener() {
-            public void playerUpdate(Player player, String event, Object eventData) {
-                String action = "";
-                if (event == PlayerListener.STARTED) {
-                    action = "start";
-                }
-                else if (event == PlayerListener.STOPPED) {
-                    action = "pause";
-                }
-                else if (event == PlayerListener.END_OF_MEDIA) {
-                    action = "stop";
-                }
-                FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
-                try {
-                    if (fep != null && fep.getAudioText() != null) {
-                        // log that action was attempted on audio file
-                        // TODO: move this to some sort of 'form entry diagnostics' framework
-                        // instead of bloating the logs
-                        String audio = fep.getAudioText();
-                        
-                        //extract just the audio filename to reduce log size
-                        String audioShort;
-                        try {
-                            Vector<String> pieces = DateUtils.split(audio, "/", false);
-                            String filename = pieces.lastElement();
-                            int suffixIx = filename.lastIndexOf('.');
-                            audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
-                        } catch (Exception e) {
-                            audioShort = audio;
-                        }                        
-                        Logger.log("audio", action + " " + audioShort);
-                    }
-                } catch(Exception e) {
-                    //Nothing
-                }
-            }
-        });
+        this.player.removePlayerListener(logHandler);
+        this.player.addPlayerListener(logHandler);            
     }
 
     /*
