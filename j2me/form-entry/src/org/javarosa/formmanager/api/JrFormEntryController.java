@@ -3,22 +3,17 @@
  */
 package org.javarosa.formmanager.api;
 
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.PlayerListener;
 
-import org.javarosa.core.api.State;
-import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.core.services.locale.Localization;
@@ -28,9 +23,6 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.formmanager.view.IFormEntryView;
-import org.javarosa.j2me.services.DataCaptureServiceRegistry;
-import org.javarosa.j2me.services.LocationCaptureService;
-import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 
 /**
@@ -143,33 +135,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             }
             
             if(this.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {return false;}
-            //Get prompt
-            FormEntryPrompt fep = this.getModel().getQuestionPrompt();
             
-            try{
-                if(fep != null && fep.getAudioText() != null) {
-                    // log that audio file was (attempted to be) played
-                    // TODO: move this to some sort of 'form entry diagnostics' framework
-                    // instead of bloating the logs
-                    String audio = fep.getAudioText();
-                    
-                    //extract just the audio filename to reduce log size
-                    String audioShort;
-                    try {
-                        Vector<String> pieces = DateUtils.split(audio, "/", false);
-                        String filename = pieces.lastElement();
-                        int suffixIx = filename.lastIndexOf('.');
-                        audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
-                    } catch (Exception e) {
-                        audioShort = audio;
-                    }                        
-                    Logger.log("audio", audioShort);
-                }
-            } catch(Exception e) {
-                //Nothing
-            }
-            
-            playAudioOnDemand(fep);
+            playAudioOnDemand(this.getModel().getQuestionPrompt());
             //We can keep processing this. Audio plays in the background.
             return false;
         }
@@ -295,6 +262,43 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             detachVideoPlayer(player);
         }
         this.player = player;
+        this.player.addPlayerListener(new PlayerListener() {
+            public void playerUpdate(Player player, String event, Object eventData) {
+                String action = "";
+                if (event == PlayerListener.STARTED) {
+                    action = "start";
+                }
+                else if (event == PlayerListener.STOPPED) {
+                    action = "pause";
+                }
+                else if (event == PlayerListener.END_OF_MEDIA) {
+                    action = "stop";
+                }
+                FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
+                try {
+                    if (fep != null && fep.getAudioText() != null) {
+                        // log that action was attempted on audio file
+                        // TODO: move this to some sort of 'form entry diagnostics' framework
+                        // instead of bloating the logs
+                        String audio = fep.getAudioText();
+                        
+                        //extract just the audio filename to reduce log size
+                        String audioShort;
+                        try {
+                            Vector<String> pieces = DateUtils.split(audio, "/", false);
+                            String filename = pieces.lastElement();
+                            int suffixIx = filename.lastIndexOf('.');
+                            audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
+                        } catch (Exception e) {
+                            audioShort = audio;
+                        }                        
+                        Logger.log("audio", action + " " + audioShort);
+                    }
+                } catch(Exception e) {
+                    //Nothing
+                }
+            }
+        });
     }
 
     /*
