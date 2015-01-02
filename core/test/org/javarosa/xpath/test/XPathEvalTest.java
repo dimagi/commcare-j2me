@@ -426,6 +426,8 @@ public class XPathEvalTest extends TestCase {
         testEval("check-types(55, '55', false(), '1999-09-09', get-custom(false()))", null, ec, Boolean.TRUE);
         testEval("check-types(55, '55', false(), '1999-09-09', get-custom(true()))", null, ec, Boolean.TRUE);
         testEval("regex('12345','[0-9]+')", null, ec, Boolean.TRUE);
+        testEval("upper-case('SimpLY')", null, null, new String("SIMPLY"));
+        testEval("lower-case('rEd')", null, null, new String("red"));
         //Variables
         EvaluationContext varContext = getVariableContext();
         testEval("$var_float_five", null, varContext, new Double(5.0));
