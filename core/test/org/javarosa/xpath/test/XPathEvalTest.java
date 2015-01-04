@@ -341,6 +341,14 @@ public class XPathEvalTest extends TestCase {
         testEval("(double(date('2004-05-01T07:00:00')) - double(date('2004-05-01T00:30:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
         testEval("(double(date('2004-05-03T07:00:00')) - double(date('2004-05-01T03:00:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
         
+        testEval("abs(-3.5)", null, null, new Double(3.5));
+        testEval("abs(2)", null, null, new Double(2.0));
+        testEval("floor(-4.8)", null, null, new Double(-5.0));
+        testEval("floor(100.2)", null, null, new Double(100.0));
+        testEval("ceiling(-0.5)", null, null, new Double(0.0));
+        testEval("ceiling(10.4)", null, null, new Double(11.0));
+        testEval("round(1.5)", null, null, new Double(2.0));
+        testEval("round(1.455)", null, null, new Double(1.0));
         
         testEval("log(" + Math.E + ")", null, null, new Double(1.0));
         testEval("log(1)", null, null, new Double(0.0));
