@@ -106,7 +106,7 @@ public class XPathEvalTest extends TestCase {
             }
         } catch (XPathException xpex) {
             if (!exceptionExpected) {
-                fail("Did not expect exception");
+                fail("Did not expect " + xpex.getClass() + " exception");
             } else if (xpex.getClass() != expected.getClass()) {
                 fail("Did not get expected exception type");
             }
@@ -436,6 +436,15 @@ public class XPathEvalTest extends TestCase {
         testEval("regex('12345','[0-9]+')", null, ec, Boolean.TRUE);
         testEval("upper-case('SimpLY')", null, null, new String("SIMPLY"));
         testEval("lower-case('rEd')", null, null, new String("red"));
+        testEval("contains('', 'stuff')", null, null, Boolean.FALSE);
+        testEval("contains('stuff', '')", null, null, Boolean.TRUE);
+        testEval("contains('know', 'now')", null, null, Boolean.TRUE);
+        testEval("contains('now', 'know')", null, null, Boolean.FALSE);
+        testEval("starts-with('finish', 'fin')", null, null, Boolean.TRUE);
+        testEval("starts-with('keep', '')", null, null, Boolean.TRUE);
+        testEval("starts-with('why', 'y')", null, null, Boolean.FALSE);
+        testEval("ends-with('elements', 'nts')", null, null, Boolean.TRUE);
+        testEval("ends-with('elements', 'xenon')", null, null, Boolean.FALSE);
         //Variables
         EvaluationContext varContext = getVariableContext();
         testEval("$var_float_five", null, varContext, new Double(5.0));
