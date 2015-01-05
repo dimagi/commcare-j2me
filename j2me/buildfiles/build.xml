@@ -29,8 +29,8 @@
 
 		
 		<!-- Exclude BouncyCastle test sources -->
-		<exclude name="j2me/crypto/src/**/test/*.java"/>
-		<exclude name="j2me/crypto/src/**/examples/*.java"/>
+		<exclude name="j2me/crypto/**"/>
+		<exclude name="j2me/crypto/**"/>
 	</fileset>
 
 	<target name="package" depends="clean,init-libs,fetchPolishClassList">
