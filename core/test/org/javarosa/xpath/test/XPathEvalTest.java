@@ -102,7 +102,7 @@ public class XPathEvalTest extends TestCase {
                     fail("Doubles outside of tolerance [" + o + "," + t + " ]");
                 }
             } else if (!expected.equals(result)) {
-                fail("Expression " + expr + " should be " + expected + ", is " + result);
+                fail("Expected " + expected + ", got " + result);
             }
         } catch (XPathException xpex) {
             if (!exceptionExpected) {
@@ -451,6 +451,11 @@ public class XPathEvalTest extends TestCase {
         testEval("translate('yellow', 'low', 'or')", null, null, new String("yeoor"));
         testEval("translate('bora bora', 'a', 'bc')", null, null, new String("borb borb"));
         testEval("translate('squash me', 'aeiou ', '')", null, null, new String("sqshm"));
+        testEval("regex('aaaabfooaaabgarplyaaabwackyb', 'a*b')", null, null, Boolean.TRUE);
+        testEval("regex('photo', 'a*b')", null, null, Boolean.FALSE);
+        testEval("replace('aaaabfooaaabgarplyaaabwackyb', 'a*b', '-')", null, null, new String("-foo-garply-wacky-"));
+        testEval("replace('abbc', 'a(.*)c', '$1')", null, null, new String("$1"));
+        testEval("replace('aaabb', '[ab][ab][ab]', '')", null, null, new String("bb"));
         //Variables
         EvaluationContext varContext = getVariableContext();
         testEval("$var_float_five", null, varContext, new Double(5.0));
