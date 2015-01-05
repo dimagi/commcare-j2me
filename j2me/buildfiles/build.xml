@@ -28,8 +28,7 @@
 		<exclude name="j2me/communication/src/org/javarosa/communication/sms/trigger/**/*.java"/>
 
 		
-		<!-- Exclude BouncyCastle test sources -->
-		<exclude name="j2me/crypto/**"/>
+		<!-- Exclude all BouncyCastle sources -->
 		<exclude name="j2me/crypto/**"/>
 	</fileset>
 
