@@ -102,7 +102,7 @@ public class XPathEvalTest extends TestCase {
                     fail("Doubles outside of tolerance [" + o + "," + t + " ]");
                 }
             } else if (!expected.equals(result)) {
-                fail("Did not get expected result for expression: " + expr);
+                fail("Expression " + expr + " should be " + expected + ", is " + result);
             }
         } catch (XPathException xpex) {
             if (!exceptionExpected) {
@@ -445,6 +445,12 @@ public class XPathEvalTest extends TestCase {
         testEval("starts-with('why', 'y')", null, null, Boolean.FALSE);
         testEval("ends-with('elements', 'nts')", null, null, Boolean.TRUE);
         testEval("ends-with('elements', 'xenon')", null, null, Boolean.FALSE);
+        testEval("translate('aBcdE', 'xyz', 'qrs')", null, null, new String("aBcdE"));
+        testEval("translate('bosco', 'bos', 'sfo')", null, null, new String("sfocf"));
+        testEval("translate('ramp', 'mapp', 'nbqr')", null, null, new String("rbnq"));
+        testEval("translate('yellow', 'low', 'or')", null, null, new String("yeoor"));
+        testEval("translate('bora bora', 'a', 'bc')", null, null, new String("borb borb"));
+        testEval("translate('squash me', 'aeiou ', '')", null, null, new String("sqshm"));
         //Variables
         EvaluationContext varContext = getVariableContext();
         testEval("$var_float_five", null, varContext, new Double(5.0));
