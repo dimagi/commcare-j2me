@@ -348,6 +348,7 @@ public class XPathEvalTest extends TestCase {
         testEval("ceiling(-0.5)", null, null, new Double(0.0));
         testEval("ceiling(10.4)", null, null, new Double(11.0));
         testEval("round(1.5)", null, null, new Double(2.0));
+        testEval("round(-1.5)", null, null, new Double(-1.0));
         testEval("round(1.455)", null, null, new Double(1.0));
         
         testEval("log(" + Math.E + ")", null, null, new Double(1.0));
