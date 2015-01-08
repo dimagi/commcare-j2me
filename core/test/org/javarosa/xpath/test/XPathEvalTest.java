@@ -102,11 +102,11 @@ public class XPathEvalTest extends TestCase {
                     fail("Doubles outside of tolerance [" + o + "," + t + " ]");
                 }
             } else if (!expected.equals(result)) {
-                fail("Did not get expected result for expression: " + expr);
+                fail("Expected " + expected + ", got " + result);
             }
         } catch (XPathException xpex) {
             if (!exceptionExpected) {
-                fail("Did not expect exception");
+                fail("Did not expect " + xpex.getClass() + " exception");
             } else if (xpex.getClass() != expected.getClass()) {
                 fail("Did not get expected exception type");
             }
@@ -341,6 +341,15 @@ public class XPathEvalTest extends TestCase {
         testEval("(double(date('2004-05-01T07:00:00')) - double(date('2004-05-01T00:30:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
         testEval("(double(date('2004-05-03T07:00:00')) - double(date('2004-05-01T03:00:00'))) > (6.0 div 24) " , null, null, Boolean.TRUE);
         
+        testEval("abs(-3.5)", null, null, new Double(3.5));
+        testEval("abs(2)", null, null, new Double(2.0));
+        testEval("floor(-4.8)", null, null, new Double(-5.0));
+        testEval("floor(100.2)", null, null, new Double(100.0));
+        testEval("ceiling(-0.5)", null, null, new Double(0.0));
+        testEval("ceiling(10.4)", null, null, new Double(11.0));
+        testEval("round(1.5)", null, null, new Double(2.0));
+        testEval("round(-1.5)", null, null, new Double(-1.0));
+        testEval("round(1.455)", null, null, new Double(1.0));
         
         testEval("log(" + Math.E + ")", null, null, new Double(1.0));
         testEval("log(1)", null, null, new Double(0.0));
@@ -426,6 +435,28 @@ public class XPathEvalTest extends TestCase {
         testEval("check-types(55, '55', false(), '1999-09-09', get-custom(false()))", null, ec, Boolean.TRUE);
         testEval("check-types(55, '55', false(), '1999-09-09', get-custom(true()))", null, ec, Boolean.TRUE);
         testEval("regex('12345','[0-9]+')", null, ec, Boolean.TRUE);
+        testEval("upper-case('SimpLY')", null, null, new String("SIMPLY"));
+        testEval("lower-case('rEd')", null, null, new String("red"));
+        testEval("contains('', 'stuff')", null, null, Boolean.FALSE);
+        testEval("contains('stuff', '')", null, null, Boolean.TRUE);
+        testEval("contains('know', 'now')", null, null, Boolean.TRUE);
+        testEval("contains('now', 'know')", null, null, Boolean.FALSE);
+        testEval("starts-with('finish', 'fin')", null, null, Boolean.TRUE);
+        testEval("starts-with('keep', '')", null, null, Boolean.TRUE);
+        testEval("starts-with('why', 'y')", null, null, Boolean.FALSE);
+        testEval("ends-with('elements', 'nts')", null, null, Boolean.TRUE);
+        testEval("ends-with('elements', 'xenon')", null, null, Boolean.FALSE);
+        testEval("translate('aBcdE', 'xyz', 'qrs')", null, null, new String("aBcdE"));
+        testEval("translate('bosco', 'bos', 'sfo')", null, null, new String("sfocf"));
+        testEval("translate('ramp', 'mapp', 'nbqr')", null, null, new String("rbnq"));
+        testEval("translate('yellow', 'low', 'or')", null, null, new String("yeoor"));
+        testEval("translate('bora bora', 'a', 'bc')", null, null, new String("borb borb"));
+        testEval("translate('squash me', 'aeiou ', '')", null, null, new String("sqshm"));
+        testEval("regex('aaaabfooaaabgarplyaaabwackyb', 'a*b')", null, null, Boolean.TRUE);
+        testEval("regex('photo', 'a*b')", null, null, Boolean.FALSE);
+        testEval("replace('aaaabfooaaabgarplyaaabwackyb', 'a*b', '-')", null, null, new String("-foo-garply-wacky-"));
+        testEval("replace('abbc', 'a(.*)c', '$1')", null, null, new String("$1"));
+        testEval("replace('aaabb', '[ab][ab][ab]', '')", null, null, new String("bb"));
         //Variables
         EvaluationContext varContext = getVariableContext();
         testEval("$var_float_five", null, varContext, new Double(5.0));
