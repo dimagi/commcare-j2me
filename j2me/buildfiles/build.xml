@@ -28,9 +28,8 @@
 		<exclude name="j2me/communication/src/org/javarosa/communication/sms/trigger/**/*.java"/>
 
 		
-		<!-- Exclude BouncyCastle test sources -->
-		<exclude name="j2me/crypto/src/**/test/*.java"/>
-		<exclude name="j2me/crypto/src/**/examples/*.java"/>
+		<!-- Exclude all BouncyCastle sources -->
+		<exclude name="j2me/crypto/**"/>
 	</fileset>
 
 	<target name="package" depends="clean,init-libs,fetchPolishClassList">
