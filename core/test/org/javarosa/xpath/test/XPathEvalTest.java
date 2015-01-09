@@ -26,8 +26,12 @@ import java.util.Vector;
 
 import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.IFunctionHandler;
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.IntegerData;
+import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
+import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.model.xform.XPathReference;
 import org.javarosa.xpath.IExprDataType;
@@ -88,7 +92,7 @@ public class XPathEvalTest extends TestCase {
         }
         
         try {
-            Object result = xpe.eval(model, ec);
+            Object result = XPathFuncExpr.unpack(xpe.eval(model, ec));
             if(tolerance != XPathFuncExpr.DOUBLE_TOLERANCE) {
                 System.out.println(expr + " = " + result);
             }
@@ -496,8 +500,21 @@ public class XPathEvalTest extends TestCase {
         testEval("read()", null, ec, "testing-read");
         
         testEval("write('testing-write')", null, ec, Boolean.TRUE);
-        if (!"testing-write".equals(write.val))
+        if (!"testing-write".equals(write.val)) {
             fail("Custom function handler did not successfully send data to external source");
+        }
+        
+        addDataRef(instance, "/data/string", new StringData("string"));
+        addDataRef(instance, "/data/int", new IntegerData(17));
+        addDataRef(instance, "/data/int_two", new IntegerData(5));
+        
+        testEval("/data/string", instance, null, "string");
+        testEval("/data/int", instance, null, new Double(17.0));
+        
+        testEval("min(/data/int, /data/int_two)", instance, null, new Double(5.0));
+
+        
+        
         
         /* fetching from model */
 //        testEval("/", dm1, null, "");
@@ -512,8 +529,7 @@ public class XPathEvalTest extends TestCase {
 //        testEval("/data/test", dm1, null, "");
 //        testEval("/data/test/too-deep", dm1, null, "");
 //        
-//        addDataRef(dm1, "/data/string", new StringData("string"));
-//        addDataRef(dm1, "/data/int", new IntegerData(17));
+
 //        addDataRef(dm1, "/data/date", new DateData(DateUtils.getDate(2006, 6, 13)));
 //
 //        SelectOneData sod = new SelectOneData(new Selection(1, getSelectQuestion(false)));
@@ -538,7 +554,7 @@ public class XPathEvalTest extends TestCase {
 //        //testEval("/.", null, null, new XPathUnsupportedException());
 //        //testEval("/..", null, null, new XPathUnsupportedException());
     }
-    /*
+    
     private FormInstance newDataModel () {
         return new FormInstance(new TreeElement());
     }
@@ -547,57 +563,23 @@ public class XPathEvalTest extends TestCase {
         addNodeRef(dm, ref, true);
         
         if (data != null) {
-            dm.updateDataValue(new XPathReference(ref), data);
+            dm.resolveReference(new XPathReference(ref)).setValue(data);
         }
     }
     
     private void addNodeRef (FormInstance dm, String ref, boolean terminal) {
-        Vector pieces = new Vector();
+        TreeReference treeRef = XPathReference.getPathExpr(ref).getReference();
         
-        //split ref by '/', assume first char is '/'
-        int i = 1;
-        while (i > 0) {
-            int j = ref.indexOf("/", i);
-            pieces.addElement(ref.substring(i, j == -1 ? ref.length() : j));
-            i = j + 1;
-        }
-        
-        TreeElement node = dm.getRoot();
-        for (int k = 0; k < pieces.size(); k++) {
-            // find if child exists
-            Vector children = node.getChildren();
-            TreeElement child = null;
-            if (children != null) {
-                for (int l = 0; l < children.size(); l++) {
-                    if (((TreeElement) children.elementAt(l)).getName().equals(
-                            (String) pieces.elementAt(k))) {
-                        child = (TreeElement) children.elementAt(l);
-                        break;
-                    }
-                }
-            }
-
-            if (child == null) {
-                if (k == pieces.size() - 1 && terminal) {
-                    child = new TreeElement((String)pieces.elementAt(k));
-                    //What do we do with the ref here?
-                } else {
-                    child = new TreeElement((String)pieces.elementAt(k));
-                }
-                
-                node.addChild(child);
-            }
-            
-            if (k < pieces.size() - 1) {
-                if (!child.isChildable()) {
-                    throw new IllegalArgumentException();
-                }    
-                
-                node = child;
+        TreeElement lastValidStep = dm.getRoot();
+        for(int i = 1; i < treeRef.size(); ++i) {
+            TreeElement step = dm.resolveReference(treeRef.getSubReference(i));
+            if(step == null) {
+                String currentName = treeRef.getName(i);
+                lastValidStep.addChild(new TreeElement(currentName));
             }
         }
     }
-    
+    /*
     private QuestionDef getSelectQuestion (boolean multi) {
         QuestionDef q = new QuestionDef(1, "blah",
                 multi ? Constants.CONTROL_SELECT_MULTI : Constants.CONTROL_SELECT_ONE);

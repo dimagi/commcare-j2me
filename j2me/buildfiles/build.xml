@@ -123,9 +123,6 @@
 		    <fileset dir="${dir.resources-shared}/resources/"/>
    		</copy>
 		
-		<exec executable="hg" outputproperty="jr-build-version">
-			<arg line="parents --template {node|short}"/>
-		</exec>		
 		<echo message="jr-build-version=${jr-build-version}" file="build/javarosa.properties" />
 		
 		<!-- Schweet, now turn it into a 'jar' file! -->
@@ -153,7 +150,7 @@
 
 			<include name="**/test**/*.java"/>
 			
-			<exclude name="crypto/src/**/test/*.java"/>
+			<exclude name="crypto/**/*.java"/>
 		</javac>
 	</target>
 

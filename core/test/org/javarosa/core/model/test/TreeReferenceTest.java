@@ -119,7 +119,7 @@ public class TreeReferenceTest extends TestCase {
         return aSuite;
     }
     
-    public final static int NUM_TESTS = 7;
+    public final static int NUM_TESTS = 8;
     public void doTest (int i) {
         switch (i) {
         case 1: testClones(); break;
@@ -129,9 +129,15 @@ public class TreeReferenceTest extends TestCase {
         case 5: contextualization(); break;
         case 6: testPredicates(); break;
         case 7: testGenericize(); break;
+        case 8: testSubreferences(); break;
         }
     }
 
+
+    private void testSubreferences() {
+        if(!a.equals(acd.getSubReference(0))) { fail("(/a/c/d).subreference(0) should be: /a"); }
+        if(!ac.equals(acd.getSubReference(1))) { fail("(/a/b/c).subreference(1) should be: /a/c"); }
+    }
 
     public void testSerialization () {
         //TODO: That ^
