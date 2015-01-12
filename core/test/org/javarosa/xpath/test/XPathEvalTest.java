@@ -560,14 +560,14 @@ public class XPathEvalTest extends TestCase {
     }
     
     private void addDataRef (FormInstance dm, String ref, IAnswerData data) {
-        addNodeRef(dm, ref, true);
+        addNodeRef(dm, ref);
         
         if (data != null) {
             dm.resolveReference(new XPathReference(ref)).setValue(data);
         }
     }
     
-    private void addNodeRef (FormInstance dm, String ref, boolean terminal) {
+    private void addNodeRef (FormInstance dm, String ref) {
         TreeReference treeRef = XPathReference.getPathExpr(ref).getReference();
         
         TreeElement lastValidStep = dm.getRoot();
