@@ -71,6 +71,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         
         this.logHandler = new PlayerListener() {
             public void playerUpdate(Player player, String event, Object eventData) {
+Logger.log("jls", "in playerUpdate");
                 String action = "";
                 if (event == PlayerListener.STARTED) {
                     action = "start";
@@ -81,6 +82,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                 else if (event == PlayerListener.END_OF_MEDIA) {
                     action = "stop";
                 }
+Logger.log("jls", "action = " + action);
                 FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
                 try {
                     if (fep != null && fep.getAudioText() != null) {
@@ -88,6 +90,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                         // TODO: move this to some sort of 'form entry diagnostics' framework
                         // instead of bloating the logs
                         String audio = fep.getAudioText();
+Logger.log("jls", "audio = " + audio);
                         
                         //extract just the audio filename to reduce log size
                         String audioShort;
@@ -100,6 +103,9 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                             audioShort = audio;
                         }                        
                         Logger.log("audio", action + " " + audioShort);
+                    }
+                    else {
+Logger.log("jls", "Something was null: " + fep + " or " + fep.getAudioText());
                     }
                 } catch(Exception e) {
                     //Nothing
