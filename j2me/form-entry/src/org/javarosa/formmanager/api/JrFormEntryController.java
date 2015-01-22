@@ -45,7 +45,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     
-    private PlayerListener mediaLogger;
+    private PlayerListener mMediaLogger;
     
     
     /** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
@@ -69,7 +69,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         this.quickEntry = quickEntry;
         this.isMinimal = isMinimal;
         
-        this.mediaLogger = new PlayerListener() {
+        this.mMediaLogger = new PlayerListener() {
             public void playerUpdate(Player player, String event, Object eventData) {
                 FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
                 try {
@@ -276,8 +276,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         if(this.player != null) {
             detachVideoPlayer(player);
         }
-        player.removePlayerListener(mediaLogger);
-        player.addPlayerListener(mediaLogger);            
+        player.removePlayerListener(mMediaLogger);   // make sure listener doesn't get added multiple times
+        player.addPlayerListener(mMediaLogger);            
         this.player = player;
     }
 

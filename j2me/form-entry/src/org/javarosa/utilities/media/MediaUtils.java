@@ -166,7 +166,7 @@ public class MediaUtils {
                 } catch (Exception e) {
                     // just use the full URI
                 }
-                Logger.log("media", action + " " + uri);
+                Logger.log("media", action + ": " + uri);
             }
         }
         
