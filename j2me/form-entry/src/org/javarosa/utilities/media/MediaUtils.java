@@ -1,16 +1,20 @@
 package org.javarosa.utilities.media;
 
 import java.io.IOException;
+import java.util.Vector;
 
 import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VolumeControl;
 
+import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.formmanager.properties.FormManagerProperties;
@@ -136,13 +140,47 @@ public class MediaUtils {
             if(fpath.indexOf(".au") > -1) return "audio/basic";
             throw new RuntimeException("COULDN'T FIND FILE FORMAT");
         }
-
+        
+        /**
+         * Log that a media file was started, paused, or stopped (i.e., finished playing).
+         * 
+         * TODO: move this to some sort of 'form entry diagnostics' framework instead of bloating the logs.
+         * @param event From PlayerListener
+         * @param uri Media file location
+         */
+        public static void logEvent(String event, String uri) {
+            String action = "";
+            if (event == PlayerListener.STARTED) {
+                action = "start";
+            }
+            if (event == PlayerListener.STOPPED) {
+                action = "pause";
+            }
+            else if (event == PlayerListener.END_OF_MEDIA) {
+                action = "stop";
+            }
+            if (!"".equals(action)) {
+                try {
+                    Vector<String> pieces = DateUtils.split(uri, "/", false);
+                    uri = pieces.lastElement();
+                } catch (Exception e) {
+                    // just use the full URI
+                }
+                Logger.log("media", action + ": " + uri);
+            }
+        }
         
         public static Player getPlayerLoose(Reference reference) throws MediaException, IOException {
             Player thePlayer;
             
             try{ 
                 thePlayer = Manager.createPlayer(reference.getLocalURI());
+                final String uri = reference.getLocalURI();
+                thePlayer.addPlayerListener(new PlayerListener() {
+                    public void playerUpdate(Player player, String event, Object eventData) {
+                        logEvent(event, uri);
+                    }
+                });
                 return thePlayer;
             } catch(MediaException e) {
                 if(!FormManagerProperties.LOOSE_MEDIA_YES.equals(PropertyManager._().getSingularProperty(FormManagerProperties.LOOSE_MEDIA))) {
