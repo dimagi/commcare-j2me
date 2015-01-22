@@ -45,7 +45,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     
-    private PlayerListener logHandler;
+    private PlayerListener mediaLogger;
     
     
     /** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
@@ -69,43 +69,12 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         this.quickEntry = quickEntry;
         this.isMinimal = isMinimal;
         
-        this.logHandler = new PlayerListener() {
+        this.mediaLogger = new PlayerListener() {
             public void playerUpdate(Player player, String event, Object eventData) {
-Logger.log("jls", "in playerUpdate");
-                String action = "";
-                if (event == PlayerListener.STARTED) {
-                    action = "start";
-                }
-                else if (event == PlayerListener.STOPPED) {
-                    action = "pause";
-                }
-                else if (event == PlayerListener.END_OF_MEDIA) {
-                    action = "stop";
-                }
-Logger.log("jls", "action = " + action);
                 FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
                 try {
                     if (fep != null && fep.getAudioText() != null) {
-                        // log that action was attempted on audio file
-                        // TODO: move this to some sort of 'form entry diagnostics' framework
-                        // instead of bloating the logs
-                        String audio = fep.getAudioText();
-Logger.log("jls", "audio = " + audio);
-                        
-                        //extract just the audio filename to reduce log size
-                        String audioShort;
-                        try {
-                            Vector<String> pieces = DateUtils.split(audio, "/", false);
-                            String filename = pieces.lastElement();
-                            int suffixIx = filename.lastIndexOf('.');
-                            audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
-                        } catch (Exception e) {
-                            audioShort = audio;
-                        }                        
-                        Logger.log("audio", action + " " + audioShort);
-                    }
-                    else {
-Logger.log("jls", "Something was null: " + fep + " or " + fep.getAudioText());
+                        MediaUtils.logEvent(event, fep.getAudioText());
                     }
                 } catch(Exception e) {
                     //Nothing
@@ -307,9 +276,9 @@ Logger.log("jls", "Something was null: " + fep + " or " + fep.getAudioText());
         if(this.player != null) {
             detachVideoPlayer(player);
         }
+        player.removePlayerListener(mediaLogger);
+        player.addPlayerListener(mediaLogger);            
         this.player = player;
-        this.player.removePlayerListener(logHandler);
-        this.player.addPlayerListener(logHandler);            
     }
 
     /*
