@@ -3,22 +3,17 @@
  */
 package org.javarosa.formmanager.api;
 
-import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.PlayerListener;
 
-import org.javarosa.core.api.State;
-import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.core.services.locale.Localization;
@@ -28,9 +23,6 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.formmanager.view.IFormEntryView;
-import org.javarosa.j2me.services.DataCaptureServiceRegistry;
-import org.javarosa.j2me.services.LocationCaptureService;
-import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 
 /**
@@ -53,6 +45,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     
+    private PlayerListener mMediaLogger;
+    
     
     /** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
     private boolean audioFailFast = true;
@@ -74,6 +68,19 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         this.audioFailFast = audioFailFast;
         this.quickEntry = quickEntry;
         this.isMinimal = isMinimal;
+        
+        this.mMediaLogger = new PlayerListener() {
+            public void playerUpdate(Player player, String event, Object eventData) {
+                FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
+                try {
+                    if (fep != null && fep.getAudioText() != null) {
+                        MediaUtils.logEvent(event, fep.getAudioText());
+                    }
+                } catch(Exception e) {
+                    //Nothing
+                }
+            }
+        };
         
         //#if device.identifier == Sony-Ericsson/K610i
         POUND_KEYCODE = Canvas.KEY_STAR;
@@ -143,33 +150,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             }
             
             if(this.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {return false;}
-            //Get prompt
-            FormEntryPrompt fep = this.getModel().getQuestionPrompt();
             
-            try{
-                if(fep != null && fep.getAudioText() != null) {
-                    // log that audio file was (attempted to be) played
-                    // TODO: move this to some sort of 'form entry diagnostics' framework
-                    // instead of bloating the logs
-                    String audio = fep.getAudioText();
-                    
-                    //extract just the audio filename to reduce log size
-                    String audioShort;
-                    try {
-                        Vector<String> pieces = DateUtils.split(audio, "/", false);
-                        String filename = pieces.lastElement();
-                        int suffixIx = filename.lastIndexOf('.');
-                        audioShort = (suffixIx != -1 ? filename.substring(0, suffixIx) : filename);
-                    } catch (Exception e) {
-                        audioShort = audio;
-                    }                        
-                    Logger.log("audio", audioShort);
-                }
-            } catch(Exception e) {
-                //Nothing
-            }
-            
-            playAudioOnDemand(fep);
+            playAudioOnDemand(this.getModel().getQuestionPrompt());
             //We can keep processing this. Audio plays in the background.
             return false;
         }
@@ -294,6 +276,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         if(this.player != null) {
             detachVideoPlayer(player);
         }
+        player.removePlayerListener(mMediaLogger);   // make sure listener doesn't get added multiple times
+        player.addPlayerListener(mMediaLogger);            
         this.player = player;
     }
 
