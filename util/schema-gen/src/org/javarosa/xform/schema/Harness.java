@@ -57,10 +57,10 @@ public class Harness {
                 mode = MODE_CSV_IMPORT;
             } else if (args[0].equals("validatemodel")) {
                 mode = MODE_VALIDATE_MODEL;
-            } else if (args[0].equals("validateForm")) {
+            } else if (args[0].equals("validate")) {
                 mode = MODE_VALIDATE_FORM;
             } else {
-                System.err.println("Usage: java -jar form_translate.jar [validateForm|schema|summary|csvdump] < form.xml > output");
+                System.err.println("Usage: java -jar form_translate.jar [validate|schema|summary|csvdump] < form.xml > output");
                 System.err.println("or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput");
                 System.err.println("or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance");
                 System.exit(1);
