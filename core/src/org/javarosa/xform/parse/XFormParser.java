@@ -836,7 +836,7 @@ public class XFormParser {
 
     protected QuestionDef parseControl(IFormElement parent, Element e, int controlType) {
         QuestionDef question = new QuestionDef();
-        question.setID(serialQuestionID++); //until we come up with a better scheme
+        question.setID(serialQuestionID++); // until we come up with a better scheme
 
         Vector usedAtts = new Vector();
         usedAtts.addElement(REF_ATTR);
@@ -913,11 +913,9 @@ public class XFormParser {
 
         parent.addChild(question);
 
-
         if (XFormUtils.showUnusedAttributeWarning(e, usedAtts)) {
             reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP, XFormUtils.unusedAttWarning(e, usedAtts), getVagueLocation(e));
         }
-
 
         return question;
     }
@@ -1401,15 +1399,15 @@ public class XFormParser {
             }
         }
 
-        //the case of a group wrapping a repeat is cleaned up in a post-processing step (collapseRepeatGroups)
-
+        // the case of a group wrapping a repeat is cleaned up in a
+        // post-processing step (collapseRepeatGroups)
         for (int i = 0; i < e.getChildCount(); i++) {
             if (e.getType(i) == Element.ELEMENT) {
                 parseElement(e.getElement(i), group, groupLevelHandlers);
             }
         }
 
-        //print unused attribute warning message for parent element
+        // print unused attribute warning message for parent element
         if (XFormUtils.showUnusedAttributeWarning(e, usedAtts)) {
             reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP, XFormUtils.unusedAttWarning(e, usedAtts), getVagueLocation(e));
         }
@@ -2767,8 +2765,8 @@ public class XFormParser {
      * Undefined types result in returning the unsupported datatype id and
      * raising a warning.
      *
-     * @param type is the String value of a tag's type attribute.
-     * @return int representing datatype id defined in Constants
+     * @param type is the String value of a elements's type attribute.
+     * @return int representing datatype id
      */
     private int getDataType(String type) {
         int dataType = Constants.DATATYPE_NULL;
@@ -2794,7 +2792,14 @@ public class XFormParser {
         modelPrototypes.addNewPrototype(String.valueOf(type), element.getClass());
     }
 
+    /**
+     * Register a type to datatype id mapping
+     *
+     * @param type is the String value of a elements's type attribute.
+     * @param int representing datatype id defined in Constants
+     */
     public static void addDataType(String type, int dataType) {
+        // TODO: PM: handle overwriting old value
         typeMappings.put(type, DataUtil.integer(dataType));
     }
 
