@@ -40,11 +40,11 @@ public class Harness {
     public static final int MODE_CSV_IMPORT = 5;
     public static final int MODE_VALIDATE_MODEL = 6;
     public static final int MODE_VALIDATE_FORM = 7;
-    
+
     public static void main(String[] args) {
-        try{
+        try {
             int mode = -1;
-            
+
             if (args.length == 0) {
                 mode = MODE_SCHEMA;
             } else if (args[0].equals("schema")) {
@@ -57,42 +57,41 @@ public class Harness {
                 mode = MODE_CSV_IMPORT;
             } else if (args[0].equals("validatemodel")) {
                 mode = MODE_VALIDATE_MODEL;
-            } else if (args[0].equals("validate")) {
+            } else if (args[0].equals("validateForm")) {
                 mode = MODE_VALIDATE_FORM;
-            }  else {
-                System.err.println("Usage: java -jar form_translate.jar [validate|schema|summary|csvdump] < form.xml > output");
+            } else {
+                System.err.println("Usage: java -jar form_translate.jar [validateForm|schema|summary|csvdump] < form.xml > output");
                 System.err.println("or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput");
                 System.err.println("or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance");
                 System.exit(1);
             }
-            
-            if(mode == MODE_VALIDATE_FORM) {
-                validate(args);
+
+            if (mode == MODE_VALIDATE_FORM) {
+                validateForm(args);
                 return;
             }
-            
-            if(mode == MODE_VALIDATE_MODEL) {
-                
+
+            if (mode == MODE_VALIDATE_MODEL) {
                 String formPath = args[1];
                 String modelPath = args[2];
-                
+
                 FileInputStream formInput = null;
                 FileInputStream instanceInput = null;
-                
+
                 try {
                     formInput = new FileInputStream(formPath);
                 } catch (FileNotFoundException e) {
                     System.out.println("Couldn't find file at: " + formPath);
                     System.exit(1);
                 }
-                
+
                 try {
                     instanceInput = new FileInputStream(modelPath);
                 } catch (FileNotFoundException e) {
                     System.out.println("Couldn't find file at: " + modelPath);
                     System.exit(1);
                 }
-                
+
                 try {
                     FormInstanceValidator validator = new FormInstanceValidator(formInput, instanceInput);
                     validator.simulateEntryTest();
@@ -100,42 +99,41 @@ public class Harness {
                     e.printStackTrace();
                     System.exit(1);
                 }
-                
+
                 System.out.println("Form instance appears to be valid");
                 System.exit(0);
             }
-            
-            
+
+
             PrintStream sysOut = System.out;
             System.setOut(System.err);
-            
-            if(mode == MODE_CSV_IMPORT) {
+
+            if (mode == MODE_CSV_IMPORT) {
                 System.setOut(sysOut);
-                if(args.length > 1) {
+                if (args.length > 1) {
                     String delimeter = args[1];
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, null,null);
-                }
-                else if(args.length > 2) {
+                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, null, null);
+                } else if (args.length > 2) {
                     String delimeter = args[1];
                     String encoding = args[2];
                     FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, encoding, null);
-                } else if(args.length > 3) {
+                } else if (args.length > 3) {
                     String delimeter = args[1];
                     String incoding = args[2];
                     String outcoding = args[3];
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, incoding, outcoding );
+                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, incoding, outcoding);
                 } else {
                     FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out);
                 }
                 System.exit(0);
             }
-            
+
             InputStream inputStream = System.in;
-            if(args.length > 1) {
+            if (args.length > 1) {
                 String formPath = args[1];
-            
+
                 FileInputStream formInput = null;
-            
+
                 try {
                     inputStream = new FileInputStream(formPath);
                 } catch (FileNotFoundException e) {
@@ -143,11 +141,11 @@ public class Harness {
                     System.exit(1);
                 }
             }
-            
+
             FormDef f = XFormUtils.getFormFromInputStream(inputStream);
             System.setOut(sysOut);
-            
-            if (mode == MODE_SCHEMA) {            
+
+            if (mode == MODE_SCHEMA) {
                 Document schemaDoc = InstanceSchema.generateInstanceSchema(f);
                 KXmlSerializer serializer = new KXmlSerializer();
                 try {
@@ -162,7 +160,7 @@ public class Harness {
             } else if (mode == MODE_CSV_DUMP) {
                 System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(f));
             }
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
         } finally {
@@ -170,15 +168,22 @@ public class Harness {
         }
     }
 
-    private static void validate(String[] args) {
+    /**
+     * Read in form from standard input or filename argument and run it through
+     * XForm parser, logging errors along the way.
+     *
+     * @param args is an String array, where the first entry, if present will be treated as a filename.
+     */
+    private static void validateForm(String[] args) {
         InputStream inputStream = System.in;
-        
-        //if they did pass in an arg, we'll look for the form there
-        if(args.length > 1) {
+
+        // If command line args non-empty, treat first entry as filename we
+        // open to get the form.
+        if (args.length > 1) {
             String formPath = args[1];
-        
+
             FileInputStream formInput = null;
-        
+
             try {
                 inputStream = new FileInputStream(formPath);
             } catch (FileNotFoundException e) {
@@ -187,46 +192,46 @@ public class Harness {
             }
         }
         PrintStream responseStream = System.out;
-        //Redirect output to syserr. We're using sysout for the response, gotta keep it clean
+        // Redirect output to syserr. We're using sysout for the response, gotta keep it clean
         System.setOut(System.err);
-        
+
         InputStreamReader isr;
         try {
-            isr = new InputStreamReader(inputStream,"UTF-8");
-        } catch(UnsupportedEncodingException uee) {
+            isr = new InputStreamReader(inputStream, "UTF-8");
+        } catch (UnsupportedEncodingException uee) {
             System.out.println("UTF 8 encoding unavailable, trying default encoding");
-            isr = new InputStreamReader(inputStream); 
+            isr = new InputStreamReader(inputStream);
         }
-        
+
         try {
             JSONReporter reporter = new JSONReporter();
             try {
                 XFormParser parser = new XFormParser(isr);
                 parser.attachReporter(reporter);
                 parser.parse();
-                
+
                 reporter.setPassed();
-            } catch(IOException e) {
-                //Rethrow this. This is probably a failure of the system, not the form
+            } catch (IOException e) {
+                // Rethrow this. This is probably a failure of the system, not the form
                 reporter.setFailed(e);
                 System.err.println("IO Exception while processing form");
                 e.printStackTrace();
                 System.exit(1);
-            } catch(XFormParseException xfpe) {
+            } catch (XFormParseException xfpe) {
                 reporter.setFailed(xfpe);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 reporter.setFailed(e);
             }
+
             responseStream.print(reporter.generateJSONReport());
-            System.exit(0);
-            
         } finally {
             try {
                 isr.close();
-            }
-            catch(IOException e) {
+                System.exit(0);
+            } catch (IOException e) {
                 System.err.println("IO Exception while closing stream.");
                 e.printStackTrace();
+                System.exit(1);
             }
         }
 
