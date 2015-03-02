@@ -88,8 +88,11 @@ public class Constants {
     /** Question with external binary answer. */
     public static final int DATATYPE_BINARY = 12;
 
-    /** Question with external binary answer. */
+    /** Question with long integer answer. */
     public static final int DATATYPE_LONG = 13;
+
+    /** Question with custom android intent. */
+    public static final int DATATYPE_INTENT = 14;
 
     public static final int CONTROL_UNTYPED = -1;
     public static final int CONTROL_INPUT = 1;
