@@ -255,34 +255,44 @@ public class XFormParser {
         });
     }
 
+    /**
+     * Setup mapping from a tag's type attribute to its datatype id.
+     */
     private static void initTypeMappings() {
         typeMappings = new Hashtable<String, Integer>();
-        typeMappings.put("string", DataUtil.integer(Constants.DATATYPE_TEXT));               //xsd:
-        typeMappings.put("integer", DataUtil.integer(Constants.DATATYPE_INTEGER));           //xsd:
-        typeMappings.put("long", DataUtil.integer(Constants.DATATYPE_LONG));                 //xsd:
-        typeMappings.put("int", DataUtil.integer(Constants.DATATYPE_INTEGER));               //xsd:
-        typeMappings.put("decimal", DataUtil.integer(Constants.DATATYPE_DECIMAL));           //xsd:
-        typeMappings.put("double", DataUtil.integer(Constants.DATATYPE_DECIMAL));            //xsd:
-        typeMappings.put("float", DataUtil.integer(Constants.DATATYPE_DECIMAL));             //xsd:
-        typeMappings.put("dateTime", DataUtil.integer(Constants.DATATYPE_DATE_TIME));        //xsd:
-        typeMappings.put("date", DataUtil.integer(Constants.DATATYPE_DATE));                 //xsd:
-        typeMappings.put("time", DataUtil.integer(Constants.DATATYPE_TIME));                 //xsd:
-        typeMappings.put("gYear", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));         //xsd:
-        typeMappings.put("gMonth", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));        //xsd:
-        typeMappings.put("gDay", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));          //xsd:
-        typeMappings.put("gYearMonth", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));    //xsd:
-        typeMappings.put("gMonthDay", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));     //xsd:
-        typeMappings.put("boolean", DataUtil.integer(Constants.DATATYPE_BOOLEAN));           //xsd:
-        typeMappings.put("base64Binary", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));  //xsd:
-        typeMappings.put("hexBinary", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));     //xsd:
-        typeMappings.put("anyURI", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));        //xsd:
-        typeMappings.put("listItem", DataUtil.integer(Constants.DATATYPE_CHOICE));           //xforms:
-        typeMappings.put("listItems", DataUtil.integer(Constants.DATATYPE_CHOICE_LIST));        //xforms:
-        typeMappings.put(SELECTONE, DataUtil.integer(Constants.DATATYPE_CHOICE));            //non-standard
-        typeMappings.put(SELECT, DataUtil.integer(Constants.DATATYPE_CHOICE_LIST));        //non-standard
-        typeMappings.put("geopoint", DataUtil.integer(Constants.DATATYPE_GEOPOINT));         //non-standard
-        typeMappings.put("barcode", DataUtil.integer(Constants.DATATYPE_BARCODE));           //non-standard
-        typeMappings.put("binary", DataUtil.integer(Constants.DATATYPE_BINARY));             //non-standard
+
+        // xsd:
+        typeMappings.put("string", DataUtil.integer(Constants.DATATYPE_TEXT));
+        typeMappings.put("integer", DataUtil.integer(Constants.DATATYPE_INTEGER));
+        typeMappings.put("long", DataUtil.integer(Constants.DATATYPE_LONG));
+        typeMappings.put("int", DataUtil.integer(Constants.DATATYPE_INTEGER));
+        typeMappings.put("decimal", DataUtil.integer(Constants.DATATYPE_DECIMAL));
+        typeMappings.put("double", DataUtil.integer(Constants.DATATYPE_DECIMAL));
+        typeMappings.put("float", DataUtil.integer(Constants.DATATYPE_DECIMAL));
+        typeMappings.put("dateTime", DataUtil.integer(Constants.DATATYPE_DATE_TIME));
+        typeMappings.put("date", DataUtil.integer(Constants.DATATYPE_DATE));
+        typeMappings.put("time", DataUtil.integer(Constants.DATATYPE_TIME));
+        typeMappings.put("gYear", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("gMonth", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("gDay", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("gYearMonth", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("gMonthDay", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("boolean", DataUtil.integer(Constants.DATATYPE_BOOLEAN));
+        typeMappings.put("base64Binary", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("hexBinary", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+        typeMappings.put("anyURI", DataUtil.integer(Constants.DATATYPE_UNSUPPORTED));
+
+        // xforms:
+        typeMappings.put("listItem", DataUtil.integer(Constants.DATATYPE_CHOICE));
+        typeMappings.put("listItems", DataUtil.integer(Constants.DATATYPE_CHOICE_LIST));
+
+        // non-standard:
+        typeMappings.put(SELECTONE, DataUtil.integer(Constants.DATATYPE_CHOICE));
+        typeMappings.put(SELECT, DataUtil.integer(Constants.DATATYPE_CHOICE_LIST));
+        typeMappings.put("geopoint", DataUtil.integer(Constants.DATATYPE_GEOPOINT));
+        typeMappings.put("barcode", DataUtil.integer(Constants.DATATYPE_BARCODE));
+        typeMappings.put("binary", DataUtil.integer(Constants.DATATYPE_BINARY));
+        typeMappings.put("intent", DataUtil.integer(Constants.DATATYPE_INTENT));
     }
 
     private void initState() {
@@ -2751,7 +2761,15 @@ public class XFormParser {
         //     }
     }
 
-    // returns data type corresponding to type string; doesn't handle defaulting to 'text' if type unrecognized/unknown
+    /**
+     * Gets the datatype id corresponding to type string passed it.
+     *
+     * Undefined types result in returning the unsupported datatype id and
+     * raising a warning.
+     *
+     * @param type is the String value of a tag's type attribute.
+     * @return int representing datatype id defined in Constants
+     */
     private int getDataType(String type) {
         int dataType = Constants.DATATYPE_NULL;
 
