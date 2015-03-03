@@ -34,34 +34,28 @@ import org.kxml2.kdom.Document;
 
 public class Harness {
     public static void main(String[] args) {
-        try {
-            if (args.length == 0 || args[0].equals("schema")) {
-                FormDef form = loadSchema(args);
-                processSchema(form);
-            } else if (args[0].equals("summary")) {
-                FormDef form = loadSchema(args);
-                System.out.println(FormOverview.overview(form));
-            } else if (args[0].equals("csvdump")) {
-                FormDef form = loadSchema(args);
-                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
-            } else if (args[0].equals("csvimport")) {
-                csvImport(args);
-            } else if (args[0].equals("validatemodel")) {
-                validateModel(args[1], args[2]);
-            } else if (args[0].equals("validate")) {
-                validateForm(args);
-            } else {
-                System.err.println("Usage: java -jar form_translate.jar [validate|schema|summary|csvdump] < form.xml > output");
-                System.err.println("or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput");
-                System.err.println("or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance");
-                System.exit(1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (args.length == 0 || args[0].equals("schema")) {
+            FormDef form = loadSchema(args);
+            processSchema(form);
+        } else if (args[0].equals("summary")) {
+            FormDef form = loadSchema(args);
+            System.out.println(FormOverview.overview(form));
+        } else if (args[0].equals("csvdump")) {
+            FormDef form = loadSchema(args);
+            System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
+        } else if (args[0].equals("csvimport")) {
+            csvImport(args);
+        } else if (args[0].equals("validatemodel")) {
+            validateModel(args[1], args[2]);
+        } else if (args[0].equals("validate")) {
+            validateForm(args);
+        } else {
+            System.err.println("Usage: java -jar form_translate.jar [validate|schema|summary|csvdump] < form.xml > output");
+            System.err.println("or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput");
+            System.err.println("or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance");
             System.exit(1);
-        } finally {
-            System.exit(0);
         }
+        System.exit(0);
     }
 
     /**
@@ -123,7 +117,6 @@ public class Harness {
         } finally {
             try {
                 isr.close();
-                System.exit(0);
             } catch (IOException e) {
                 System.err.println("IO Exception while closing stream.");
                 e.printStackTrace();
@@ -159,7 +152,6 @@ public class Harness {
         }
 
         System.out.println("Form instance appears to be valid");
-        System.exit(0);
     }
 
     private static void csvImport(String[] args) {
@@ -179,7 +171,6 @@ public class Harness {
         } else {
             FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out);
         }
-        System.exit(0);
     }
 
     private static FormDef loadSchema(String[] args) {
