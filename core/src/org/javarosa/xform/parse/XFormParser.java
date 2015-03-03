@@ -150,7 +150,7 @@ public class XFormParser {
     // parsing when they are encountered.
     private static Hashtable<String, Vector<String>> specExtensionKeywords =
         new Hashtable<String, Vector<String>>();
-    // namespace for which inner elements should be parsed.
+    // Namespace for which inner elements should be parsed.
     private static Vector<String> parseSpecExtensionsInnerElements =
         new Vector<String>();
     // Namespace for which we supress "unrecognized element" warnings
@@ -416,8 +416,8 @@ public class XFormParser {
      * extension whose parsing will be handled at a different time with an
      * extension to the logic.
      *
-     * @param namespace String representing "abc" in tag "abc:xyz"
-     * @param name String representing "xyz" in tag "abc:xyz"
+     * @param namespace String that is usually a url i.e. "http://opendatakit.org/xforms"
+     * @param name String representing tag name i.e. "extra" for an element like <extra ...>
      * @return boolean
      */
     public boolean inSpecExtension(String namespace, String name) {
@@ -428,8 +428,8 @@ public class XFormParser {
      * Handle parsing and warning logic for a tag that doesn't have attached
      * logic already, but has been registered as a spec extension.
      *
-     * @param namespace String representing "abc" in tag "abc:xyz"
-     * @param name String representing "xyz" in tag "abc:xyz"
+     * @param namespace String that is usually a url i.e. "http://opendatakit.org/xforms"
+     * @param name String representing tag name i.e. "extra" for an element like <extra ...>
      * @param element is the current element we are parsing
      * @param parent is the parent to the element we are parsing
      * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
