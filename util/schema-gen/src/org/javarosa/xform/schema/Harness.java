@@ -73,7 +73,12 @@ public class Harness {
             System.out.println(FormOverview.overview(form));
         } else if (leftOverArgs[0].equals("csvdump")) {
             FormDef form = loadFormDef(leftOverArgs);
-            System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
+            try {
+                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
         } else if (leftOverArgs[0].equals("csvimport")) {
             csvImport(leftOverArgs);
         } else if (leftOverArgs[0].equals("validatemodel")) {
@@ -153,7 +158,7 @@ public class Harness {
 
         // read in namespace warning suppression for specification extensions
         // from command-line options
-        Properties namespaceWarningSupression = argsParsedWithOptions.getOptionProperties("W");
+        Properties namespaceWarningSupression = argsParsedWithOptions.getOptionProperties("S");
         if (namespaceWarningSupression != null) {
             Enumeration<?> properties = namespaceWarningSupression.propertyNames();
             while (properties.hasMoreElements()) {
@@ -211,8 +216,8 @@ public class Harness {
             }
         }
         PrintStream responseStream = System.out;
-        // Redirect output to syserr. We're using sysout for the response,
-        // gotta keep it clean
+        // Redirect output to syserr because sysout is being used for the
+        // response, and must be kept clean.
         System.setOut(System.err);
 
         InputStreamReader isr;
@@ -228,7 +233,7 @@ public class Harness {
             try {
                 XFormParser parser = new XFormParser(isr);
                 // setup xformparser with options parsed from command-line
-                parser.setupAllSpecExtensionParsing(specExtensionKeywords,
+                parser.setupAllSpecExtensions(specExtensionKeywords,
                         suppressSpecExtensionWarnings,
                         parseSpecExtensionsInnerElements);
                 parser.attachReporter(reporter);
@@ -251,6 +256,8 @@ public class Harness {
         } finally {
             try {
                 isr.close();
+                // reset output stream on exit
+                System.setOut(responseStream);
             } catch (IOException e) {
                 System.err.println("IO Exception while closing stream.");
                 e.printStackTrace();
@@ -308,6 +315,11 @@ public class Harness {
     }
 
     private static FormDef loadFormDef(String[] args) {
+        // Redirect output to syserr because sysout is being used for the
+        // response, and must be kept clean.
+        PrintStream responseStream = System.out;
+        System.setOut(System.err);
+
         InputStream inputStream = System.in;
 
         // open form file
@@ -324,7 +336,12 @@ public class Harness {
             }
         }
 
-        return XFormUtils.getFormFromInputStream(inputStream);
+        FormDef form = XFormUtils.getFormFromInputStream(inputStream);
+
+        // reset the system output on exit.
+        System.setOut(responseStream);
+
+        return form;
     }
 
     private static void processSchema(FormDef form) {

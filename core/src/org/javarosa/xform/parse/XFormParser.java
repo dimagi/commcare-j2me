@@ -368,7 +368,7 @@ public class XFormParser {
 
     /**
      * If the handlers that parse specification extensions aren't present,
-     * determine how the parser continues and raises warnings.
+     * register a place-holder to enable control over parsing and warnings.
      *
      * @param namespace String ensures we only apply parser extension logic to
      * the correct namespace.
@@ -379,7 +379,7 @@ public class XFormParser {
      * @param parseInnerElements do we want the parser to work on children of
      * the element from the spec extension?
      */
-    public void setupSpecExtensionParsing(String namespace, Vector<String> keywords,
+    public void addSpecExtension(String namespace, Vector<String> keywords,
             boolean suppressWarnings, boolean parseInnerElements) {
         if (suppressWarnings) {
             XFormParser.suppressSpecExtensionWarnings.add(namespace);
@@ -402,7 +402,7 @@ public class XFormParser {
      * @param namespaceParseInner is a Vector of namespaces for which
      * we should continue parsing inner elements
      */
-    public void setupAllSpecExtensionParsing(Hashtable<String, Vector<String>> namespacesToKeywords,
+    public void setupAllSpecExtensions(Hashtable<String, Vector<String>> namespacesToKeywords,
             Vector<String> namespacesToSuppressWarnings,
             Vector<String> namespacesToParseInner) {
         XFormParser.parseSpecExtensionsInnerElements = namespacesToParseInner;
@@ -412,16 +412,18 @@ public class XFormParser {
 
 
     /**
-     * Has the tag, including namespace, been registered as an
-     * extension whose parsing will be handled at a different time with an
-     * extension to the logic.
+     * Has the tag, including namespace, been registered as an extension whose
+     * parsing will be handled at a different time via registerHandler.
      *
-     * @param namespace String that is usually a url i.e. "http://opendatakit.org/xforms"
-     * @param name String representing tag name i.e. "extra" for an element like <extra ...>
+     * @param namespace String that is usually a url i.e.
+     * "http://opendatakit.org/xforms"
+     * @param name String representing tag name i.e. "extra" for an element
+     * like <extra ...>
      * @return boolean
      */
     public boolean inSpecExtension(String namespace, String name) {
-        return specExtensionKeywords.containsKey(namespace) && specExtensionKeywords.get(namespace).contains(name);
+        return (specExtensionKeywords.containsKey(namespace) &&
+                specExtensionKeywords.get(namespace).contains(name));
     }
 
     /**
