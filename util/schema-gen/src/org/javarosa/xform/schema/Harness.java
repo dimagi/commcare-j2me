@@ -48,13 +48,13 @@ public class Harness {
     // Track specification extension keywords so we know what to do during
     // parsing when they are encountered.
     private static Hashtable<String, Vector<String>> specExtensionKeywords =
-        new Hashtable<String, Vector<String>>();
+            new Hashtable<String, Vector<String>>();
     // Namespace for which inner elements should be parsed.
     private static Vector<String> parseSpecExtensionsInnerElements =
-        new Vector<String>();
+            new Vector<String>();
     // Namespace for which we supress "unrecognized element" warnings
     private static Vector<String> suppressSpecExtensionWarnings =
-        new Vector<String>();
+            new Vector<String>();
 
     public static void main(String[] args) {
         Options options = new Options();
@@ -95,32 +95,31 @@ public class Harness {
     /**
      * Setup command-line options and parse them.
      *
-     * @param args String array of command-line arguments passed in.
+     * @param args    String array of command-line arguments passed in.
      * @param options Options object that we add to in this function
      * @return CommandLine parsed options
      */
     private static CommandLine parseCommandlineOptions(String[] args, Options options) {
         options.addOption(OptionBuilder.withArgName("namespace=tag1,...,tagN")
-                            .hasArgs(2)
-                            .withValueSeparator()
-                            .withDescription("comma-delimited list of reserved tags at given namespace for the parser to expect")
-                            .create("E"));
+                .hasArgs(2)
+                .withValueSeparator()
+                .withDescription("comma-delimited list of reserved tags at given namespace for the parser to expect")
+                .create("E"));
         options.addOption(OptionBuilder.withArgName("namespace")
-                            .hasArg()
-                            .withDescription("suppress warnings when parser encounters elements at given namespace")
-                            .create("S"));
+                .hasArg()
+                .withDescription("suppress warnings when parser encounters elements at given namespace")
+                .create("S"));
         options.addOption(OptionBuilder.withArgName("namespace")
-                            .hasArg()
-                            .withDescription("continue parsing inner elements of unrecognized tag at given namespace")
-                            .create("I"));
+                .hasArg()
+                .withDescription("continue parsing inner elements of unrecognized tag at given namespace")
+                .create("I"));
         options.addOption(new Option("help", "print this message"));
 
         CommandLineParser parser = new BasicParser();
 
         try {
             return parser.parse(options, args);
-        }
-        catch(ParseException exp) {
+        } catch (ParseException exp) {
             System.err.println("Parsing failed: " + exp.getMessage());
             System.exit(1);
         }
@@ -131,8 +130,8 @@ public class Harness {
      * Setup local variables based on parsed command-line options.
      *
      * @param argsParsedWithOptions are command-line arguments that have been
-     * processed with the options passed in.
-     * @param options command-line options used for printing help message
+     *                              processed with the options passed in.
+     * @param options               command-line options used for printing help message
      */
     private static void processCommandlineOptions(CommandLine argsParsedWithOptions, Options options) {
         if (argsParsedWithOptions.hasOption("help")) {
@@ -187,9 +186,9 @@ public class Harness {
     private static void printHelpMessage(Options options) {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp("java -jar form_translate.jar [OPTION] ... validate \n" +
-                        "or: java -jar form_translate.jar [ schema | summary | csvdump] \n" +
-                        "or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput \n" +
-                        "or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance", options);
+                "or: java -jar form_translate.jar [ schema | summary | csvdump] \n" +
+                "or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput \n" +
+                "or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance", options);
     }
 
     /**

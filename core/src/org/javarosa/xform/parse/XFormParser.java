@@ -149,13 +149,13 @@ public class XFormParser {
     // Track specification extension keywords so we know what to do during
     // parsing when they are encountered.
     private static Hashtable<String, Vector<String>> specExtensionKeywords =
-        new Hashtable<String, Vector<String>>();
+            new Hashtable<String, Vector<String>>();
     // Namespace for which inner elements should be parsed.
     private static Vector<String> parseSpecExtensionsInnerElements =
-        new Vector<String>();
+            new Vector<String>();
     // Namespace for which we supress "unrecognized element" warnings
     private static Vector<String> suppressSpecExtensionWarnings =
-        new Vector<String>();
+            new Vector<String>();
 
 
     // pseudo-data model tree that describes the repeat structure of the instance;
@@ -370,17 +370,17 @@ public class XFormParser {
      * If the handlers that parse specification extensions aren't present,
      * register a place-holder to enable control over parsing and warnings.
      *
-     * @param namespace String ensures we only apply parser extension logic to
-     * the correct namespace.
-     * @param keywords are the commands are to be expected in the specification
-     * extension.
-     * @param supressWarnings do we want to show warnings if parser attempts to
-     * work on a given keyword in the namespace?
+     * @param namespace          String ensures we only apply parser extension logic to
+     *                           the correct namespace.
+     * @param keywords           are the commands are to be expected in the specification
+     *                           extension.
+     * @param supressWarnings    do we want to show warnings if parser attempts to
+     *                           work on a given keyword in the namespace?
      * @param parseInnerElements do we want the parser to work on children of
-     * the element from the spec extension?
+     *                           the element from the spec extension?
      */
     public void addSpecExtension(String namespace, Vector<String> keywords,
-            boolean suppressWarnings, boolean parseInnerElements) {
+                                 boolean suppressWarnings, boolean parseInnerElements) {
         if (suppressWarnings) {
             XFormParser.suppressSpecExtensionWarnings.add(namespace);
         }
@@ -395,16 +395,16 @@ public class XFormParser {
      * Important for when the handlers that parse specification extensions
      * aren't present.
      *
-     * @param namespacesToKeywords is a Hashtable mapping namespaces to a Vector
-     * of keywords that we should apply spec extension parsing logic to.
+     * @param namespacesToKeywords         is a Hashtable mapping namespaces to a Vector
+     *                                     of keywords that we should apply spec extension parsing logic to.
      * @param namespacesToSuppressWarnings is a Vector of namespaces for which
-     * we should suppress parsing warnings on
-     * @param namespaceParseInner is a Vector of namespaces for which
-     * we should continue parsing inner elements
+     *                                     we should suppress parsing warnings on
+     * @param namespaceParseInner          is a Vector of namespaces for which
+     *                                     we should continue parsing inner elements
      */
     public void setupAllSpecExtensions(Hashtable<String, Vector<String>> namespacesToKeywords,
-            Vector<String> namespacesToSuppressWarnings,
-            Vector<String> namespacesToParseInner) {
+                                       Vector<String> namespacesToSuppressWarnings,
+                                       Vector<String> namespacesToParseInner) {
         XFormParser.parseSpecExtensionsInnerElements = namespacesToParseInner;
         XFormParser.suppressSpecExtensionWarnings = namespacesToSuppressWarnings;
         XFormParser.specExtensionKeywords = namespacesToKeywords;
@@ -416,9 +416,9 @@ public class XFormParser {
      * parsing will be handled at a different time via registerHandler.
      *
      * @param namespace String that is usually a url i.e.
-     * "http://opendatakit.org/xforms"
-     * @param name String representing tag name i.e. "extra" for an element
-     * like <extra ...>
+     *                  "http://opendatakit.org/xforms"
+     * @param name      String representing tag name i.e. "extra" for an element
+     *                  like <extra ...>
      * @return boolean
      */
     public boolean inSpecExtension(String namespace, String name) {
@@ -431,10 +431,10 @@ public class XFormParser {
      * logic already, but has been registered as a spec extension.
      *
      * @param namespace String that is usually a url i.e. "http://opendatakit.org/xforms"
-     * @param name String representing tag name i.e. "extra" for an element like <extra ...>
-     * @param element is the current element we are parsing
-     * @param parent is the parent to the element we are parsing
-     * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
+     * @param name      String representing tag name i.e. "extra" for an element like <extra ...>
+     * @param element   is the current element we are parsing
+     * @param parent    is the parent to the element we are parsing
+     * @param handlers  maps tags to IElementHandlers, used to perform parsing of that tag
      */
     public void parseUnregisteredSpecExtension(String namespace, String name, Element e, Object parent, Hashtable<String, IElementHandler> handlers) {
         if (!XFormParser.suppressSpecExtensionWarnings.contains(namespace)) {
@@ -628,8 +628,8 @@ public class XFormParser {
     }
 
     /**
-     * @param element is the current element we are parsing
-     * @param parent is the parent to the element we are parsing
+     * @param element  is the current element we are parsing
+     * @param parent   is the parent to the element we are parsing
      * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
      */
     private void parseElement(Element e, Object parent, Hashtable<String, IElementHandler> handlers) {
@@ -2910,7 +2910,7 @@ public class XFormParser {
      * Register a type to datatype id mapping
      *
      * @param type is the String value of a elements's type attribute.
-     * @param int representing datatype id defined in Constants
+     * @param int  representing datatype id defined in Constants
      */
     public static void addDataType(String type, int dataType) {
         typeMappings.put(type, DataUtil.integer(dataType));
