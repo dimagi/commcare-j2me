@@ -150,14 +150,12 @@ public class XFormParser {
     // parsing when they are encountered.
     private static Hashtable<String, Vector<String>> specExtensionKeywords =
         new Hashtable<String, Vector<String>>();
-    // Map namespace to boolean determining if inner elements from that
-    // namespace should be parsed.
-    private static Hashtable<String, Boolean> parseSpecExtensionsInnerElements =
-        new Hashtable<String, Boolean>();
-    // Map namespace to boolean determining if "unrecognized element" warnings
-    // should be raised for that namespace.
-    private static Hashtable<String, Boolean> suppressSpecExtensionWarnings =
-        new Hashtable<String, Boolean>();
+    // namespace for which inner elements should be parsed.
+    private static Vector<String> parseSpecExtensionsInnerElements =
+        new Vector<String>();
+    // Namespace for which we supress "unrecognized element" warnings
+    private static Vector<String> suppressSpecExtensionWarnings =
+        new Vector<String>();
 
 
     // pseudo-data model tree that describes the repeat structure of the instance;
@@ -277,7 +275,6 @@ public class XFormParser {
      * Setup mapping from a tag's type attribute to its datatype id.
      */
     private static void initTypeMappings() {
-        // TODO: move this to the class header, right?
         typeMappings = new Hashtable<String, Integer>();
 
         // xsd:
@@ -384,9 +381,33 @@ public class XFormParser {
      */
     public void setupSpecExtensionParsing(String namespace, Vector<String> keywords,
             boolean suppressWarnings, boolean parseInnerElements) {
-        XFormParser.parseSpecExtensionsInnerElements.put(namespace, parseInnerElements);
-        XFormParser.suppressSpecExtensionWarnings.put(namespace, suppressWarnings);
+        if (suppressWarnings) {
+            XFormParser.suppressSpecExtensionWarnings.add(namespace);
+        }
+        if (parseInnerElements) {
+            XFormParser.parseSpecExtensionsInnerElements.add(namespace);
+        }
         XFormParser.specExtensionKeywords.put(namespace, keywords);
+    }
+
+    /**
+     * Setup local state that controls specification extension parsing logic.
+     * Important for when the handlers that parse specification extensions
+     * aren't present.
+     *
+     * @param namespacesToKeywords is a Hashtable mapping namespaces to a Vector
+     * of keywords that we should apply spec extension parsing logic to.
+     * @param namespacesToSuppressWarnings is a Vector of namespaces for which
+     * we should suppress parsing warnings on
+     * @param namespaceParseInner is a Vector of namespaces for which
+     * we should continue parsing inner elements
+     */
+    public void setupAllSpecExtensionParsing(Hashtable<String, Vector<String>> namespacesToKeywords,
+            Vector<String> namespacesToSuppressWarnings,
+            Vector<String> namespacesToParseInner) {
+        XFormParser.parseSpecExtensionsInnerElements = namespacesToParseInner;
+        XFormParser.suppressSpecExtensionWarnings = namespacesToSuppressWarnings;
+        XFormParser.specExtensionKeywords = namespacesToKeywords;
     }
 
 
@@ -400,7 +421,7 @@ public class XFormParser {
      * @return boolean
      */
     public boolean inSpecExtension(String namespace, String name) {
-        return specExtensionKeywords.contains(namespace) && specExtensionKeywords.get(namespace).contains(name);
+        return specExtensionKeywords.containsKey(namespace) && specExtensionKeywords.get(namespace).contains(name);
     }
 
     /**
@@ -414,16 +435,14 @@ public class XFormParser {
      * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
      */
     public void parseUnregisteredSpecExtension(String namespace, String name, Element e, Object parent, Hashtable<String, IElementHandler> handlers) {
-        if (XFormParser.suppressSpecExtensionWarnings.contains(namespace) &&
-                !XFormParser.suppressSpecExtensionWarnings.get(namespace)) {
+        if (!XFormParser.suppressSpecExtensionWarnings.contains(namespace)) {
             // raise a warning about not knowing how to parse
             reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP,
                     "Unrecognized element [" + name + "] from namespace " + namespace + ".",
                     getVagueLocation(e));
         }
 
-        if (XFormParser.parseSpecExtensionsInnerElements.contains(namespace) &&
-                XFormParser.parseSpecExtensionsInnerElements.get(namespace)) {
+        if (XFormParser.parseSpecExtensionsInnerElements.contains(namespace)) {
             // parse inner elements using default parsing logic.
             for (int i = 0; i < e.getChildCount(); i++) {
                 if (e.getType(i) == Element.ELEMENT) {
@@ -611,8 +630,7 @@ public class XFormParser {
      * @param parent is the parent to the element we are parsing
      * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
      */
-    private void parseElement(Element e, Object parent, Hashtable<String, IElementHandler> handlers) { //,
-//            boolean allowUnknownElements, boolean allowText, boolean recurseUnknown) {
+    private void parseElement(Element e, Object parent, Hashtable<String, IElementHandler> handlers) {
         String name = e.getName();
         String namespace = e.getNamespace();
 
@@ -637,13 +655,14 @@ public class XFormParser {
         }
 
         // if there is a registered parser, invoke it
-        if (handlers.contains(name)) {
-            handlers.get(name).handle(this, e, parent);
+        IElementHandler eh = handlers.get(name);
+        if (eh != null) {
+            eh.handle(this, e, parent);
         } else {
             if (inSpecExtension(namespace, name)) {
                 parseUnregisteredSpecExtension(namespace, name, e, parent, handlers);
             } else {
-                if (suppressWarning.contains(name)) {
+                if (!suppressWarning.contains(name)) {
                     reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP,
                             "Unrecognized element [" + name + "]. Ignoring and processing children...",
                             getVagueLocation(e));
