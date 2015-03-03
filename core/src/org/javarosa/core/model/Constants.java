@@ -14,8 +14,8 @@
  * the License.
  */
 
-package org.javarosa.core.model;
 
+package org.javarosa.core.model;
 
 /**
  * Constants shared throught classes in the containing package.
@@ -90,9 +90,6 @@ public class Constants {
 
     /** Question with long integer answer. */
     public static final int DATATYPE_LONG = 13;
-
-    /** Question with custom android intent. */
-    public static final int DATATYPE_INTENT = 14;
 
     public static final int CONTROL_UNTYPED = -1;
     public static final int CONTROL_INPUT = 1;
