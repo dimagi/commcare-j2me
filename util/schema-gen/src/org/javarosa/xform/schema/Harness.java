@@ -33,62 +33,27 @@ import org.kxml2.io.KXmlSerializer;
 import org.kxml2.kdom.Document;
 
 public class Harness {
-    public static final int MODE_SCHEMA = 1;
-    public static final int MODE_SUMMARY_TEXT = 2;
-    public static final int MODE_SUMMARY_SPREADSHEET = 3;
-    public static final int MODE_CSV_DUMP = 4;
-    public static final int MODE_CSV_IMPORT = 5;
-    public static final int MODE_VALIDATE_MODEL = 6;
-    public static final int MODE_VALIDATE_FORM = 7;
-
     public static void main(String[] args) {
         try {
-            int mode = -1;
-
             if (args.length == 0) {
-                mode = MODE_SCHEMA;
+                processSchema(args);
             } else if (args[0].equals("schema")) {
-                mode = MODE_SCHEMA;
+                processSchema(args);
             } else if (args[0].equals("summary")) {
-                mode = MODE_SUMMARY_TEXT;
+                System.out.println(FormOverview.overview(f));
             } else if (args[0].equals("csvdump")) {
-                mode = MODE_CSV_DUMP;
+                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(f));
             } else if (args[0].equals("csvimport")) {
-                mode = MODE_CSV_IMPORT;
+                csvImport(args);
             } else if (args[0].equals("validatemodel")) {
-                mode = MODE_VALIDATE_MODEL;
+                validateModel(args[1], args[2]);
             } else if (args[0].equals("validate")) {
-                mode = MODE_VALIDATE_FORM;
+                validateForm(args);
             } else {
                 System.err.println("Usage: java -jar form_translate.jar [validate|schema|summary|csvdump] < form.xml > output");
                 System.err.println("or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput");
                 System.err.println("or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance");
                 System.exit(1);
-            }
-
-            if (mode == MODE_VALIDATE_FORM) {
-                validateForm(args);
-                return;
-            }
-
-            if (mode == MODE_VALIDATE_MODEL) {
-                validateModel(args[1], args[2]);
-            }
-
-            PrintStream sysOut = System.out;
-            System.setOut(sysOut);
-            // System.setOut(System.err);
-
-            if (mode == MODE_CSV_IMPORT) {
-                csvImport(args);
-            }
-
-            if (mode == MODE_SCHEMA) {
-                processSchema(args);
-            } else if (mode == MODE_SUMMARY_TEXT) {
-                System.out.println(FormOverview.overview(f));
-            } else if (mode == MODE_CSV_DUMP) {
-                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(f));
             }
         } catch (Exception e) {
             e.printStackTrace();
