@@ -72,89 +72,19 @@ public class Harness {
             }
 
             if (mode == MODE_VALIDATE_MODEL) {
-                String formPath = args[1];
-                String modelPath = args[2];
-
-                FileInputStream formInput = null;
-                FileInputStream instanceInput = null;
-
-                try {
-                    formInput = new FileInputStream(formPath);
-                } catch (FileNotFoundException e) {
-                    System.out.println("Couldn't find file at: " + formPath);
-                    System.exit(1);
-                }
-
-                try {
-                    instanceInput = new FileInputStream(modelPath);
-                } catch (FileNotFoundException e) {
-                    System.out.println("Couldn't find file at: " + modelPath);
-                    System.exit(1);
-                }
-
-                try {
-                    FormInstanceValidator validator = new FormInstanceValidator(formInput, instanceInput);
-                    validator.simulateEntryTest();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.exit(1);
-                }
-
-                System.out.println("Form instance appears to be valid");
-                System.exit(0);
+                validateModel(args[1], args[2]);
             }
-
 
             PrintStream sysOut = System.out;
-            System.setOut(System.err);
+            System.setOut(sysOut);
+            // System.setOut(System.err);
 
             if (mode == MODE_CSV_IMPORT) {
-                System.setOut(sysOut);
-                if (args.length > 1) {
-                    String delimeter = args[1];
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, null, null);
-                } else if (args.length > 2) {
-                    String delimeter = args[1];
-                    String encoding = args[2];
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, encoding, null);
-                } else if (args.length > 3) {
-                    String delimeter = args[1];
-                    String incoding = args[2];
-                    String outcoding = args[3];
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, incoding, outcoding);
-                } else {
-                    FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out);
-                }
-                System.exit(0);
+                csvImport(args);
             }
-
-            InputStream inputStream = System.in;
-            if (args.length > 1) {
-                String formPath = args[1];
-
-                FileInputStream formInput = null;
-
-                try {
-                    inputStream = new FileInputStream(formPath);
-                } catch (FileNotFoundException e) {
-                    System.out.println("Couldn't find file at: " + formPath);
-                    System.exit(1);
-                }
-            }
-
-            FormDef f = XFormUtils.getFormFromInputStream(inputStream);
-            System.setOut(sysOut);
 
             if (mode == MODE_SCHEMA) {
-                Document schemaDoc = InstanceSchema.generateInstanceSchema(f);
-                KXmlSerializer serializer = new KXmlSerializer();
-                try {
-                    serializer.setOutput(System.out, null);
-                    schemaDoc.write(serializer);
-                    serializer.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                processSchema(args);
             } else if (mode == MODE_SUMMARY_TEXT) {
                 System.out.println(FormOverview.overview(f));
             } else if (mode == MODE_CSV_DUMP) {
@@ -234,6 +164,85 @@ public class Harness {
                 System.exit(1);
             }
         }
+    }
 
+    private static void validateModel(String formPath, String modelPath) {
+        FileInputStream formInput = null;
+        FileInputStream instanceInput = null;
+
+        try {
+            formInput = new FileInputStream(formPath);
+        } catch (FileNotFoundException e) {
+            System.out.println("Couldn't find file at: " + formPath);
+            System.exit(1);
+        }
+
+        try {
+            instanceInput = new FileInputStream(modelPath);
+        } catch (FileNotFoundException e) {
+            System.out.println("Couldn't find file at: " + modelPath);
+            System.exit(1);
+        }
+
+        try {
+            FormInstanceValidator validator = new FormInstanceValidator(formInput, instanceInput);
+            validator.simulateEntryTest();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
+        System.out.println("Form instance appears to be valid");
+        System.exit(0);
+    }
+
+    private static void csvImport(String[] args) {
+        // TODO: refactor so that instead of passing in args, we just pass in individual arguments
+        if (args.length > 1) {
+            String delimeter = args[1];
+            FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, null, null);
+        } else if (args.length > 2) {
+            String delimeter = args[1];
+            String encoding = args[2];
+            FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, encoding, null);
+        } else if (args.length > 3) {
+            String delimeter = args[1];
+            String incoding = args[2];
+            String outcoding = args[3];
+            FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out, delimeter, incoding, outcoding);
+        } else {
+            FormTranslationFormatter.turnTranslationsCSVtoItext(System.in, System.out);
+        }
+        System.exit(0);
+    }
+
+    private static void processSchema(String[] args) {
+        InputStream inputStream = System.in;
+        // open form file
+        if (args.length > 1) {
+            String formPath = args[1];
+
+            FileInputStream formInput = null;
+
+            try {
+                inputStream = new FileInputStream(formPath);
+            } catch (FileNotFoundException e) {
+                System.out.println("Couldn't find file at: " + formPath);
+                System.exit(1);
+            }
+        }
+
+        FormDef f = XFormUtils.getFormFromInputStream(inputStream);
+        System.setOut(sysOut);
+
+        Document schemaDoc = InstanceSchema.generateInstanceSchema(f);
+        KXmlSerializer serializer = new KXmlSerializer();
+        try {
+            serializer.setOutput(System.out, null);
+            schemaDoc.write(serializer);
+            serializer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
