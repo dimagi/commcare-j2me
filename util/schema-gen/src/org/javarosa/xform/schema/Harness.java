@@ -49,32 +49,30 @@ public class Harness {
     // parsing when they are encountered.
     private static Hashtable<String, Vector<String>> specExtensionKeywords =
         new Hashtable<String, Vector<String>>();
-    // Map namespace to boolean determining if inner elements from that
-    // namespace should be parsed.
+    // Namespace for which inner elements should be parsed.
     private static Vector<String> parseSpecExtensionsInnerElements =
         new Vector<String>();
-    // Map namespace to boolean determining if "unrecognized element" warnings
-    // should be raised for that namespace.
+    // Namespace for which we supress "unrecognized element" warnings
     private static Vector<String> suppressSpecExtensionWarnings =
         new Vector<String>();
 
     public static void main(String[] args) {
         Options options = new Options();
-        CommandLine line = parseCommandlineOptions(args, options);
-        processCommandlineOptions(line, options);
+        CommandLine argsParsedWithOptions = parseCommandlineOptions(args, options);
+        processCommandlineOptions(argsParsedWithOptions, options);
 
-        // get unproccessed command line arguments
-        String[] leftOverArgs = line.getArgs();
+        // get unproccessed command-line arguments
+        String[] leftOverArgs = argsParsedWithOptions.getArgs();
 
-        // Dispatch on remaining command line argument
+        // Dispatch on remaining command-line argument
         if (leftOverArgs.length == 0 || leftOverArgs[0].equals("schema")) {
-            FormDef form = loadSchema(leftOverArgs);
+            FormDef form = loadFormDef(leftOverArgs);
             processSchema(form);
         } else if (leftOverArgs[0].equals("summary")) {
-            FormDef form = loadSchema(leftOverArgs);
+            FormDef form = loadFormDef(leftOverArgs);
             System.out.println(FormOverview.overview(form));
         } else if (leftOverArgs[0].equals("csvdump")) {
-            FormDef form = loadSchema(leftOverArgs);
+            FormDef form = loadFormDef(leftOverArgs);
             System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
         } else if (leftOverArgs[0].equals("csvimport")) {
             csvImport(leftOverArgs);
@@ -89,6 +87,13 @@ public class Harness {
         System.exit(0);
     }
 
+    /**
+     * Setup command-line options and parse them.
+     *
+     * @param args String array of command-line arguments passed in.
+     * @param options Options object that we add to in this function
+     * @return CommandLine parsed options
+     */
     private static CommandLine parseCommandlineOptions(String[] args, Options options) {
         options.addOption(OptionBuilder.withArgName("namespace=tag1,...,tagN")
                             .hasArgs(2)
@@ -97,8 +102,8 @@ public class Harness {
                             .create("E"));
         options.addOption(OptionBuilder.withArgName("namespace")
                             .hasArg()
-                            .withDescription("raise warnings when parser encounters elements at given namespace")
-                            .create("W"));
+                            .withDescription("suppress warnings when parser encounters elements at given namespace")
+                            .create("S"));
         options.addOption(OptionBuilder.withArgName("namespace")
                             .hasArg()
                             .withDescription("continue parsing inner elements of unrecognized tag at given namespace")
@@ -108,8 +113,7 @@ public class Harness {
         CommandLineParser parser = new BasicParser();
 
         try {
-            CommandLine line = parser.parse(options, args);
-            return line;
+            return parser.parse(options, args);
         }
         catch(ParseException exp) {
             System.err.println("Parsing failed: " + exp.getMessage());
@@ -118,13 +122,21 @@ public class Harness {
         return null;
     }
 
-    private static void processCommandlineOptions(CommandLine line, Options options) {
-        if (line.hasOption("help")) {
+    /**
+     * Setup local variables based on parsed command-line options.
+     *
+     * @param argsParsedWithOptions are command-line arguments that have been
+     * processed with the options passed in.
+     * @param options command-line options used for printing help message
+     */
+    private static void processCommandlineOptions(CommandLine argsParsedWithOptions, Options options) {
+        if (argsParsedWithOptions.hasOption("help")) {
             printHelpMessage(options);
             System.exit(0);
         }
 
-        Properties extensions = line.getOptionProperties("E");
+        // read in specification extension keywords from command-line options
+        Properties extensions = argsParsedWithOptions.getOptionProperties("E");
         if (extensions != null) {
             Enumeration<?> properties = extensions.propertyNames();
             while (properties.hasMoreElements()) {
@@ -138,18 +150,10 @@ public class Harness {
                 specExtensionKeywords.put(namespace, tags);
             }
         }
-        // debugging
-        // System.out.println("keywords:");
-        // for (String key : specExtensionKeywords.keySet()) {
-        //     System.out.print(key + ": ");
-        //     Enumeration vEnum = specExtensionKeywords.get(key).elements();
-        //     while(vEnum.hasMoreElements()) {
-        //         System.out.print(vEnum.nextElement() + " ");
-        //     }
-        //     System.out.println();
-        // }
 
-        Properties namespaceWarningSupression = line.getOptionProperties("W");
+        // read in namespace warning suppression for specification extensions
+        // from command-line options
+        Properties namespaceWarningSupression = argsParsedWithOptions.getOptionProperties("W");
         if (namespaceWarningSupression != null) {
             Enumeration<?> properties = namespaceWarningSupression.propertyNames();
             while (properties.hasMoreElements()) {
@@ -157,15 +161,10 @@ public class Harness {
                 suppressSpecExtensionWarnings.add(namespace);
             }
         }
-        // debugging
-        // System.out.println("warning supression:");
-        // Enumeration vEnum = suppressSpecExtensionWarnings.elements();
-        // while(vEnum.hasMoreElements()) {
-        //     System.out.print(vEnum.nextElement() + " ");
-        // }
-        // System.out.println();
 
-        Properties namespaceParseInner = line.getOptionProperties("I");
+        // read in inner element parsing logic for specification extensions
+        // from command-line options
+        Properties namespaceParseInner = argsParsedWithOptions.getOptionProperties("I");
         if (namespaceParseInner != null) {
             Enumeration<?> properties = namespaceParseInner.propertyNames();
             while (properties.hasMoreElements()) {
@@ -173,21 +172,19 @@ public class Harness {
                 parseSpecExtensionsInnerElements.add(namespace);
             }
         }
-        // debugging
-        // System.out.println("parse inner:");
-        // vEnum = parseSpecExtensionsInnerElements.elements();
-        // while(vEnum.hasMoreElements()) {
-        //     System.out.print(vEnum.nextElement() + " ");
-        // }
-        // System.out.println();
-
     }
 
+    /**
+     * Print help message for command-line argument options.
+     *
+     * @param options command-line options used for printing help message
+     */
     private static void printHelpMessage(Options options) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp("java -jar form_translate.jar [OPTION] ... [validate | schema | summary | csvdump] \n" +
-                        "or: java -jar form_translate.jar [OPTION] ... csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput \n" +
-                        "or: java -jar form_translate.jar [OPTION] ... validatemodel /path/to/xform /path/to/instance", options);
+        formatter.printHelp("java -jar form_translate.jar [OPTION] ... validate \n" +
+                        "or: java -jar form_translate.jar [ schema | summary | csvdump] \n" +
+                        "or: java -jar form_translate.jar csvimport [delimeter] [encoding] [outcoding] < translations.csv > itextoutput \n" +
+                        "or: java -jar form_translate.jar validatemodel /path/to/xform /path/to/instance", options);
     }
 
     /**
@@ -214,7 +211,8 @@ public class Harness {
             }
         }
         PrintStream responseStream = System.out;
-        // Redirect output to syserr. We're using sysout for the response, gotta keep it clean
+        // Redirect output to syserr. We're using sysout for the response,
+        // gotta keep it clean
         System.setOut(System.err);
 
         InputStreamReader isr;
@@ -229,6 +227,7 @@ public class Harness {
             JSONReporter reporter = new JSONReporter();
             try {
                 XFormParser parser = new XFormParser(isr);
+                // setup xformparser with options parsed from command-line
                 parser.setupAllSpecExtensionParsing(specExtensionKeywords,
                         suppressSpecExtensionWarnings,
                         parseSpecExtensionsInnerElements);
@@ -308,7 +307,7 @@ public class Harness {
         }
     }
 
-    private static FormDef loadSchema(String[] args) {
+    private static FormDef loadFormDef(String[] args) {
         InputStream inputStream = System.in;
 
         // open form file
