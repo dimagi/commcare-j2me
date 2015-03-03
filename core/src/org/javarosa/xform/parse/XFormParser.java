@@ -141,6 +141,24 @@ public class XFormParser {
     private static Vector<String> namedActions;
     private static Hashtable<String, IElementHandler> structuredActions;
 
+    // At times, we need to extend the spec, and hence the parser, with fancy
+    // functionality. The parsing logic for this is plugged in later, via
+    // registerHandler, so it is helpful to be able to suppress warnings and
+    // control parser logic for these extension.
+    //
+    // Track specification extension keywords so we know what to do during
+    // parsing when they are encountered.
+    private static Hashtable<String, Vector<String>> specExtensionKeywords =
+        new Hashtable<String, Vector<String>>();
+    // Map namespace to boolean determining if inner elements from that
+    // namespace should be parsed.
+    private static Hashtable<String, Boolean> parseSpecExtensionsInnerElements =
+        new Hashtable<String, Boolean>();
+    // Map namespace to boolean determining if "unrecognized element" warnings
+    // should be raised for that namespace.
+    private static Hashtable<String, Boolean> suppressSpecExtensionWarnings =
+        new Hashtable<String, Boolean>();
+
 
     // pseudo-data model tree that describes the repeat structure of the instance;
     // useful during instance processing and validation
@@ -259,6 +277,7 @@ public class XFormParser {
      * Setup mapping from a tag's type attribute to its datatype id.
      */
     private static void initTypeMappings() {
+        // TODO: move this to the class header, right?
         typeMappings = new Hashtable<String, Integer>();
 
         // xsd:
@@ -292,7 +311,6 @@ public class XFormParser {
         typeMappings.put("geopoint", DataUtil.integer(Constants.DATATYPE_GEOPOINT));
         typeMappings.put("barcode", DataUtil.integer(Constants.DATATYPE_BARCODE));
         typeMappings.put("binary", DataUtil.integer(Constants.DATATYPE_BINARY));
-        typeMappings.put("intent", DataUtil.integer(Constants.DATATYPE_INTENT));
     }
 
     private void initState() {
@@ -349,6 +367,70 @@ public class XFormParser {
 
     public void attachReporter(XFormParserReporter reporter) {
         this.reporter = reporter;
+    }
+
+    /**
+     * If the handlers that parse specification extensions aren't present,
+     * determine how the parser continues and raises warnings.
+     *
+     * @param namespace String ensures we only apply parser extension logic to
+     * the correct namespace.
+     * @param keywords are the commands are to be expected in the specification
+     * extension.
+     * @param supressWarnings do we want to show warnings if parser attempts to
+     * work on a given keyword in the namespace?
+     * @param parseInnerElements do we want the parser to work on children of
+     * the element from the spec extension?
+     */
+    public void setupSpecExtensionParsing(String namespace, Vector<String> keywords,
+            boolean suppressWarnings, boolean parseInnerElements) {
+        XFormParser.parseSpecExtensionsInnerElements.put(namespace, parseInnerElements);
+        XFormParser.suppressSpecExtensionWarnings.put(namespace, suppressWarnings);
+        XFormParser.specExtensionKeywords.put(namespace, keywords);
+    }
+
+
+    /**
+     * Has the tag, including namespace, been registered as an
+     * extension whose parsing will be handled at a different time with an
+     * extension to the logic.
+     *
+     * @param namespace String representing "abc" in tag "abc:xyz"
+     * @param name String representing "xyz" in tag "abc:xyz"
+     * @return boolean
+     */
+    public boolean inSpecExtension(String namespace, String name) {
+        return specExtensionKeywords.contains(namespace) && specExtensionKeywords.get(namespace).contains(name);
+    }
+
+    /**
+     * Handle parsing and warning logic for a tag that doesn't have attached
+     * logic already, but has been registered as a spec extension.
+     *
+     * @param namespace String representing "abc" in tag "abc:xyz"
+     * @param name String representing "xyz" in tag "abc:xyz"
+     * @param element is the current element we are parsing
+     * @param parent is the parent to the element we are parsing
+     * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
+     */
+    public void parseUnregisteredSpecExtension(String namespace, String name, Element e, Object parent, Hashtable<String, IElementHandler> handlers) {
+        if (XFormParser.suppressSpecExtensionWarnings.contains(namespace) &&
+                !XFormParser.suppressSpecExtensionWarnings.get(namespace)) {
+            // raise a warning about not knowing how to parse
+            reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP,
+                    "Unrecognized element [" + name + "] from namespace " + namespace + ".",
+                    getVagueLocation(e));
+        }
+
+        if (XFormParser.parseSpecExtensionsInnerElements.contains(namespace) &&
+                XFormParser.parseSpecExtensionsInnerElements.get(namespace)) {
+            // parse inner elements using default parsing logic.
+            for (int i = 0; i < e.getChildCount(); i++) {
+                if (e.getType(i) == Element.ELEMENT) {
+                    parseElement(e.getElement(i), parent, handlers);
+                }
+            }
+        }
     }
 
     public FormDef parse() throws IOException {
@@ -524,9 +606,15 @@ public class XFormParser {
 
     }
 
+    /**
+     * @param element is the current element we are parsing
+     * @param parent is the parent to the element we are parsing
+     * @param handlers maps tags to IElementHandlers, used to perform parsing of that tag
+     */
     private void parseElement(Element e, Object parent, Hashtable<String, IElementHandler> handlers) { //,
 //            boolean allowUnknownElements, boolean allowText, boolean recurseUnknown) {
         String name = e.getName();
+        String namespace = e.getNamespace();
 
         String[] suppressWarningArr = {
                 "html",
@@ -548,18 +636,23 @@ public class XFormParser {
             suppressWarning.addElement(suppressWarningArr[i]);
         }
 
-        IElementHandler eh = handlers.get(name);
-        if (eh != null) {
-            eh.handle(this, e, parent);
+        // if there is a registered parser, invoke it
+        if (handlers.contains(name)) {
+            handlers.get(name).handle(this, e, parent);
         } else {
-            if (!suppressWarning.contains(name)) {
-                reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP,
-                        "Unrecognized element [" + name + "]. Ignoring and processing children...",
-                        getVagueLocation(e));
-            }
-            for (int i = 0; i < e.getChildCount(); i++) {
-                if (e.getType(i) == Element.ELEMENT) {
-                    parseElement(e.getElement(i), parent, handlers);
+            if (inSpecExtension(namespace, name)) {
+                parseUnregisteredSpecExtension(namespace, name, e, parent, handlers);
+            } else {
+                if (suppressWarning.contains(name)) {
+                    reporter.warning(XFormParserReporter.TYPE_UNKNOWN_MARKUP,
+                            "Unrecognized element [" + name + "]. Ignoring and processing children...",
+                            getVagueLocation(e));
+                }
+                // parse children
+                for (int i = 0; i < e.getChildCount(); i++) {
+                    if (e.getType(i) == Element.ELEMENT) {
+                        parseElement(e.getElement(i), parent, handlers);
+                    }
                 }
             }
         }
@@ -2799,7 +2892,6 @@ public class XFormParser {
      * @param int representing datatype id defined in Constants
      */
     public static void addDataType(String type, int dataType) {
-        // TODO: PM: handle overwriting old value
         typeMappings.put(type, DataUtil.integer(dataType));
     }
 
