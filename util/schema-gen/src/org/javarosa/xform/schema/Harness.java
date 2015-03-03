@@ -35,14 +35,15 @@ import org.kxml2.kdom.Document;
 public class Harness {
     public static void main(String[] args) {
         try {
-            if (args.length == 0) {
-                processSchema(args);
-            } else if (args[0].equals("schema")) {
-                processSchema(args);
+            if (args.length == 0 || args[0].equals("schema")) {
+                FormDef form = loadSchema(args);
+                processSchema(form);
             } else if (args[0].equals("summary")) {
-                System.out.println(FormOverview.overview(f));
+                FormDef form = loadSchema(args);
+                System.out.println(FormOverview.overview(form));
             } else if (args[0].equals("csvdump")) {
-                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(f));
+                FormDef form = loadSchema(args);
+                System.out.println(FormTranslationFormatter.dumpTranslationsIntoCSV(form));
             } else if (args[0].equals("csvimport")) {
                 csvImport(args);
             } else if (args[0].equals("validatemodel")) {
@@ -181,8 +182,9 @@ public class Harness {
         System.exit(0);
     }
 
-    private static void processSchema(String[] args) {
+    private static FormDef loadSchema(String[] args) {
         InputStream inputStream = System.in;
+
         // open form file
         if (args.length > 1) {
             String formPath = args[1];
@@ -197,10 +199,11 @@ public class Harness {
             }
         }
 
-        FormDef f = XFormUtils.getFormFromInputStream(inputStream);
-        System.setOut(sysOut);
+        return XFormUtils.getFormFromInputStream(inputStream);
+    }
 
-        Document schemaDoc = InstanceSchema.generateInstanceSchema(f);
+    private static void processSchema(FormDef form) {
+        Document schemaDoc = InstanceSchema.generateInstanceSchema(form);
         KXmlSerializer serializer = new KXmlSerializer();
         try {
             serializer.setOutput(System.out, null);
