@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <project default="package">
+    <property name="build" location="bin"/>
+    <property name="dist" location="dist"/>
+    <property name="src" location="src"/>
+
+
     <property name="name" value="javarosa-libraries"/>
     <property name="jar" value="${name}.jar"/>
     <property name="dir.root" value="${basedir}/../"/>
@@ -10,22 +15,32 @@
         <path id="classpath">
             <fileset dir="${dir.lib}" includes="*.jar"/>
         </path>
-        <mkdir dir="bin/"/>
-        <mkdir dir="dist/"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${build}"/>
     </target>
 
-    <target name="clean" description="delete dist and bin directories">
-        <delete dir="dist/"/>
-        <delete dir="bin/"/>
+    <target name="clean" description="delete dist and build directories">
+        <delete dir="${dist}"/>
+        <delete dir="${build}"/>
     </target>
 
     <target name="compile" depends="clean,extract-libs,init" description="compile the source">
-        <javac srcdir="src/" destdir="bin/" classpathref="classpath" debug="true" debuglevel="lines,source" source="1.5" target="1.5"/>
+        <!-- To get rid of "bootstrap class path not set in conjunction with
+             -source 1.5" warning add
+             bootclasspath="path/to/java/instance/rt.jar" attribute to javac
+             tag -->
+        <javac srcdir="${src}" destdir="${build}"
+            classpathref="classpath"
+            debug="true" debuglevel="lines,source"
+            source="1.5" target="1.5" includeantruntime="false">
+            <!-- Do we want to see lint warnings? -->
+            <!-- <compilerarg value="-Xlint:unchecked"/> -->
+        </javac>
     </target>
 
     <target name="package" depends="compile" description="package binary into jar">
-        <jar destfile="dist/${jar}">
-            <fileset dir="bin/" includes="**/*.class"/>
+        <jar destfile="${dist}/${jar}">
+            <fileset dir="${build}" includes="**/*.class"/>
         </jar>
     </target>
 
@@ -36,5 +51,4 @@
     <target name="extract-libs" if="extract-libs-fresh">
         <unzip src="${javarosa-deps}" dest="${dir.root}" overwrite="true" />
     </target>
-
 </project>
