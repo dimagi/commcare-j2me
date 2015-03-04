@@ -52,7 +52,7 @@
         <delete dir="${build}"/>
     </target>
 
-    <target name="compile" depends="clean, extract-libs, init" description="compile the source">
+    <target name="compile" depends="extract-libs, init" description="compile the source">
         <!-- To get rid of
              "bootstrap class path not set in conjunction with -source 1.5" warning
              add bootclasspath="path/to/java/instance/rt.jar" attribute to javac tag -->
