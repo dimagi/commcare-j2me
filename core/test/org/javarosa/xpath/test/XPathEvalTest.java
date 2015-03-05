@@ -42,6 +42,7 @@ import org.javarosa.xpath.XPathUnhandledException;
 import org.javarosa.xpath.XPathUnsupportedException;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.expr.XPathFuncExpr;
+import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
 
@@ -507,11 +508,28 @@ public class XPathEvalTest extends TestCase {
         addDataRef(instance, "/data/string", new StringData("string"));
         addDataRef(instance, "/data/int", new IntegerData(17));
         addDataRef(instance, "/data/int_two", new IntegerData(5));
+        addDataRef(instance, "/data/string_two", new StringData("2"));
+        addDataRef(instance, "/data/predtest[1]/@val", new StringData("2.0"));
+        addDataRef(instance, "/data/predtest[2]/@val", new StringData("2"));
+        addDataRef(instance, "/data/predtest[3]/@val", new StringData("string"));
+        
+        addDataRef(instance, "/data/strtest[1]/@val", new StringData("a"));
+        addDataRef(instance, "/data/strtest[2]/@val", new StringData("b"));
+        addDataRef(instance, "/data/strtest[3]/@val", new StringData("string"));
         
         testEval("/data/string", instance, null, "string");
         testEval("/data/int", instance, null, new Double(17.0));
         
         testEval("min(/data/int, /data/int_two)", instance, null, new Double(5.0));
+        
+        testEval("count(/data/predtest[@val = /data/string_two])", instance, null, new Double(2));
+        testEval("count(/data/predtest[@val = 2])", instance, null, new Double(2));
+        testEval("count(/data/predtest[2 = @val])", instance, null, new Double(2));
+        
+        testEval("count(/data/strtest[@val = 'a'])", instance, null, new Double(1));
+        testEval("count(/data/strtest[@val = 2])", instance, null, new Double(0));
+        testEval("count(/data/strtest[@val = /data/string])", instance, null, new Double(1));
+        
 
         
         
@@ -560,23 +578,51 @@ public class XPathEvalTest extends TestCase {
     }
     
     private void addDataRef (FormInstance dm, String ref, IAnswerData data) {
-        addNodeRef(dm, ref);
+        TreeReference treeRef = XPathReference.getPathExpr(ref).getReference(true);
+        treeRef = InlinePositionArgs(treeRef);
+        
+        addNodeRef(dm, treeRef);
+
         
         if (data != null) {
-            dm.resolveReference(new XPathReference(ref)).setValue(data);
+            dm.resolveReference(treeRef).setValue(data);
         }
     }
     
-    private void addNodeRef (FormInstance dm, String ref) {
-        TreeReference treeRef = XPathReference.getPathExpr(ref).getReference();
+    private TreeReference InlinePositionArgs(TreeReference treeRef) {
+        //find/replace position predicates
+        for(int i = 0 ; i < treeRef.size(); ++i) {
+            Vector<XPathExpression> predicates =  treeRef.getPredicate(i);
+            if(predicates == null || predicates.size() == 0) { continue; }
+            if(predicates.size() > 1 ) {throw new IllegalArgumentException("only position [] predicates allowed"); }
+            if(!(predicates.elementAt(0) instanceof XPathNumericLiteral)) { throw new IllegalArgumentException("only position [] predicates allowed");}
+            double d = ((XPathNumericLiteral)predicates.elementAt(0)).d;
+            if(d != (double)((int)d)) { throw new IllegalArgumentException("invalid position: " + d); }
+            
+            int multiplicity = (int)d - 1;
+            if(treeRef.getMultiplicity(i) != TreeReference.INDEX_UNBOUND) {throw new IllegalArgumentException("Cannot inline already qualified steps"); }
+            treeRef.setMultiplicity(i, multiplicity);            
+        }
         
+        treeRef = treeRef.removePredicates();
+        return treeRef;
+    }
+
+    private void addNodeRef (FormInstance dm, TreeReference treeRef) {
         TreeElement lastValidStep = dm.getRoot();
         for(int i = 1; i < treeRef.size(); ++i) {
             TreeElement step = dm.resolveReference(treeRef.getSubReference(i));
             if(step == null) {
+                if(treeRef.getMultiplicity(i) == TreeReference.INDEX_ATTRIBUTE) {
+                    //must be the last step
+                    lastValidStep.setAttribute(null, treeRef.getName(i), "");
+                    return;
+                }
                 String currentName = treeRef.getName(i);
-                lastValidStep.addChild(new TreeElement(currentName));
+                step = new TreeElement(currentName, treeRef.getMultiplicity(i) == TreeReference.INDEX_UNBOUND ? TreeReference.DEFAULT_MUTLIPLICITY : treeRef.getMultiplicity(i));
+                lastValidStep.addChild(step);
             }
+            lastValidStep = step;
         }
     }
     /*
