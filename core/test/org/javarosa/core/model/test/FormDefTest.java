@@ -36,10 +36,10 @@ import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
 
 /**
- * See testAnswerConstraint() for an example of how to write the 
+ * See testAnswerConstraint() for an example of how to write the
  * constraint unit type tests.
- * @author adewinter
  *
+ * @author adewinter
  */
 public class FormDefTest extends TestCase {
     QuestionDef q = null;
@@ -49,80 +49,82 @@ public class FormDefTest extends TestCase {
     // How many tests does the suite have?
     // Used to dispatch in doTest's switch statement.
     public final static int NUM_TESTS = 1;
-    
+
     public FormDefTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
         initStuff();
     }
-    
+
     public FormDefTest(String name) {
         super(name);
         initStuff();
     }
-    
+
     public FormDefTest() {
         super();
         initStuff();
-    }    
-    
-    public void initStuff(){
+    }
+
+    public void initStuff() {
         fpi = new FormParseInit();
         q = fpi.getFirstQuestionDef();
         fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
     }
-    
+
     static PrototypeFactory pf;
-    
+
     static {
         PrototypeManager.registerPrototype("org.javarosa.model.xform.XPathReference");
         pf = ExtUtil.defaultPrototypes();
     }
-        
+
     public Test suite() {
         TestSuite aSuite = new TestSuite();
-        
+
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new FormDefTest("FormDef Test " + i, new TestMethod() {
-                public void run (TestCase tc) {
-                    ((FormDefTest)tc).doTest(testID);
+                public void run(TestCase tc) {
+                    ((FormDefTest) tc).doTest(testID);
                 }
             }));
         }
-            
+
         return aSuite;
     }
-    
-    private void testSerialize (QuestionDef q, String msg) {
+
+    private void testSerialize(QuestionDef q, String msg) {
         //ExternalizableTest.testExternalizable(q, this, pf, "QuestionDef [" + msg + "]");
     }
-    
-    public void doTest (int i) {
+
+    public void doTest(int i) {
         switch (i) {
-        case 1: testAnswerConstraint();break;
+            case 1:
+                testAnswerConstraint();
+                break;
         }
     }
-    
-    
-    public void testAnswerConstraint(){
+
+
+    public void testAnswerConstraint() {
         IntegerData ans = new IntegerData(13);
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-        
-        do{
-            
+
+        do {
+
             QuestionDef q = fpi.getCurrentQuestion();
-            if(q==null || q.getTextID() == null || q.getTextID() == "")continue;
-            if(q.getTextID().equals("constraint-test")){
+            if (q == null || q.getTextID() == null || q.getTextID() == "") continue;
+            if (q.getTextID().equals("constraint-test")) {
                 int response = fec.answerQuestion(ans);
-                if(response == fec.ANSWER_CONSTRAINT_VIOLATED){
+                if (response == fec.ANSWER_CONSTRAINT_VIOLATED) {
                     fail("Answer Constraint test failed.");
-                }else if(response == fec.ANSWER_OK){
+                } else if (response == fec.ANSWER_OK) {
                     break;
-                }else{
+                } else {
                     fail("Bad response from fec.answerQuestion()");
                 }
             }
-        }while(fec.stepToNextEvent()!=fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
     }
 }
