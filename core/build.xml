@@ -1,29 +1,12 @@
 <?xml version="1.0"?>
 <project default="package">
-    <!-- ///////////////////////////////////////////// -->
-    <!-- Setup                                         -->
-    <!-- ///////////////////////////////////////////// -->
-    <!-- directory locations -->
-    <property name="build" location="bin"/>
-    <property name="dist" location="dist"/>
-    <property name="src" location="src"/>
-    <property name="test-build" location="test-build"/>
-    <property name="dir.root" value="${basedir}/../"/>
-    <property name="dir.lib" value="${dir.root}/lib/"/>
 
-    <!-- Point the following to wherever you downloaded the javarosa library
-         dependencies to. This dir should contain a j2me dir with
-         ant-contrib.jar and javarosa-ant-libs.jar in it. -->
-    <property name="javarosa-dependencies" location="${basedir}/../javarosa-deps/"/>
-
-    <!-- Setup build variables -->
-    <property name="name" value="javarosa-libraries"/>
-    <property name="jar" value="${name}.jar"/>
+    <property file="build.properties"/>
 
     <!-- Include ant contrib library to use fancy things like "for" and "if" tasks -->
     <taskdef resource="net/sf/antcontrib/antlib.xml">
         <classpath>
-            <pathelement location="${javarosa-dependencies}/j2me/buildfiles/tools/ant-contrib.jar"/>
+          <pathelement location="${ant-contrib}"/>
         </classpath>
     </taskdef>
 
@@ -39,7 +22,6 @@
     <!-- ///////////////////////////////////////////// -->
 
     <target name="init" description="set classpath and make needed directories">
-        <mkdir dir="lib/"/>
         <path id="classpath">
             <fileset dir="${dir.lib}" includes="*.jar"/>
         </path>
