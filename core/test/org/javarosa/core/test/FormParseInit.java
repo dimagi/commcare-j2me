@@ -28,72 +28,33 @@ import org.javarosa.xform.util.XFormUtils;
  * PLM: ^^^ AAAhhh, set what?!! What do I need to remember to set?
  */
 
-
-//TODO
-//Make some better lazy-people methods for testing constraints.
-
-
 public class FormParseInit {
-    private String FORM_NAME = new String("/ImageSelectTester.xhtml");
+    private String formName = new String("/ImageSelectTester.xhtml");
     private FormDef xform;
     private FormEntryController fec;
     private FormEntryModel femodel;
-
 
     public FormParseInit() {
         this.init();
     }
 
     /**
-     * Set a new form to be parsed (instead of the default), and calls
-     * init() immediately to parse it.  It is uneccessary to call init() again after
-     * using this method.
+     * Set path of form to be parsed and initalize the form.
      *
      * @param uri URI pointing to the xform.
      */
     public void setFormToParse(String uri) {
-        FORM_NAME = uri;
+        formName = uri;
         this.init();
     }
 
-    /**
-     * @param args
-     */
-    public static void main(String[] args) {
-
-//        FormParseInit t = new FormParseInit();
-
-//        System.out.println("Form Summary");
-//        System.out.println(t.printStuff());
-//
-//        System.out.println("Stepping through questions...");
-//
-//        t.fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-//        do{
-//            QuestionDef q = t.getCurrentQuestion();
-//            if(q!=null)    System.out.println("Question Text ID is: "+q.getTextID());
-//        }while(t.fec.stepToNextEvent()!=FormEntryController.EVENT_END_OF_FORM);
-//        for(int i=0;i<QuestionDefTest.NUM_TESTS+1;i++){
-//            new QuestionDefTest().doTest(i);
-//        }
-
-
-        for (int i = 0; i < TextFormTests.NUM_TESTS; i++) {
-            new TextFormTests().doTest(i);
-        }
-
-    }
-
     public void init() {
-        String xf_name = FORM_NAME;
-
-        InputStream is = this.getClass().getResourceAsStream(xf_name);
+        InputStream is = this.getClass().getResourceAsStream(formName);
 
         if (is == null) {
-            System.err.println("Error: the file '" + xf_name
-                    + "' could not be found!");
-            throw new RuntimeException("Error: the file '" + xf_name
-                    + "' could not be found!");
+            String errorMessage = "Error: the file '" + formName + "' could not be found!";
+            System.err.println(errorMessage);
+            throw new RuntimeException(errorMessage);
         }
         // Parse the form
         xform = XFormUtils.getFormFromInputStream(is);
@@ -103,7 +64,6 @@ public class FormParseInit {
 
         if (xform == null) {
             System.out.println("\n\n==================================\nERROR: XForm has failed validation!!");
-        } else {
         }
     }
 
@@ -141,8 +101,10 @@ public class FormParseInit {
      * @return the next question in the form (QuestionDef), or null if the end of the form has been reached.
      */
     public QuestionDef getNextQuestion() {
-        //jump to next event and check for end of form
-        if (fec.stepToNextEvent() == FormEntryController.EVENT_END_OF_FORM) return null;
+        // jump to next event and check for end of form
+        if (fec.stepToNextEvent() == FormEntryController.EVENT_END_OF_FORM) {
+            return null;
+        }
 
         FormEntryCaption fep = this.getFormEntryModel().getCaptionPrompt();
 
@@ -154,10 +116,9 @@ public class FormParseInit {
         return null;
     }
 
-    /**
-     * @return the FormDef for this form
-     */
-
+   /**
+    * @return the FormDef for this form
+    */
     public FormDef getFormDef() {
         return xform;
     }
@@ -205,5 +166,11 @@ public class FormParseInit {
         } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
 
         return stuff;
+    }
+
+    public static void main(String[] args) {
+        for (int i = 0; i < TextFormTests.NUM_TESTS; i++) {
+            new TextFormTests().doTest(i);
+        }
     }
 }
