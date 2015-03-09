@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <project default="package">
 
+    <property file="local.properties"/>
     <property file="build.properties"/>
 
     <!-- Include ant contrib library to use fancy things like "for" and "if" tasks -->
