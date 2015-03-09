@@ -45,6 +45,10 @@ public class FormDefTest extends TestCase {
     QuestionDef q = null;
     FormEntryPrompt fep = null;
     FormParseInit fpi = null;
+
+    // How many tests does the suite have?
+    // Used to dispatch in doTest's switch statement.
+    public final static int NUM_TESTS = 1;
     
     public FormDefTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -93,7 +97,6 @@ public class FormDefTest extends TestCase {
         //ExternalizableTest.testExternalizable(q, this, pf, "QuestionDef [" + msg + "]");
     }
     
-    public final static int NUM_TESTS = 1;
     public void doTest (int i) {
         switch (i) {
         case 1: testAnswerConstraint();break;
@@ -122,32 +125,4 @@ public class FormDefTest extends TestCase {
             }
         }while(fec.stepToNextEvent()!=fec.EVENT_END_OF_FORM);
     }
-    
-    public IDataReference newRef(String xpath){
-            IDataReference ref = new DummyReference();
-            ref.setReference(xpath);
-            pf.addClass(DummyReference.class);
-            return ref;
-    }
-    
-    private class QuestionObserver implements FormElementStateListener {
-        public boolean flag = false;
-        public TreeElement e;
-        public QuestionDef q;
-        public int flags;
-        
-        public void formElementStateChanged (IFormElement q, int flags) {
-            flag = true;
-            this.q = (QuestionDef)q;
-            this.flags = flags;
-        }
-
-        public void formElementStateChanged(TreeElement question, int changeFlags) {
-            flag = true;
-            this.e = question;
-            this.flags = changeFlags;
-        }
-    }
-
-
 }
