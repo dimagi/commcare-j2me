@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.form.api;
+package org.javarosa.form.api.test;
 
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
@@ -41,21 +41,33 @@ import org.javarosa.form.api.FormEntryPrompt;
  */
 public class FormEntryControllerTest extends TestCase {
     private FormParseInit fpi;
-    private FormEntryModel femodel;
     private FormEntryController fec;
 
     private String formName = new String("/test_form_entry_controller.xml");
 
     public FormEntryControllerTest() {
         super();
-        fpi = new FormParseInit(formName);
-        fpi.setFormToParse();
+        initForm();
+    }
+
+    public FormEntryControllerTest(String name, TestMethod rTestMethod) {
+        super(name, rTestMethod);
+        initForm();
+    }
+
+    /**
+     * load and parse form
+     */
+    private void initForm() {
+        System.out.println("init FormEntryControllerTest");
+        fpi = new FormParseInit();
+        fpi.setFormToParse(formName);
     }
 
     public Test suite() {
         TestSuite aSuite = new TestSuite();
 
-        aSuite.addTest(new FormEntryControllerTest("FormEntryController Test .answerQuestion", new TestMethod() {
+        aSuite.addTest(new FormEntryControllerTest("FormEntryController Test answerQuestion method", new TestMethod() {
             public void run(TestCase tc) {
                 ((FormEntryControllerTest) tc).testAnswerQuestion();
             }
@@ -64,9 +76,15 @@ public class FormEntryControllerTest extends TestCase {
         return aSuite;
     }
 
+    /**
+     * Tests constraint passing and failing when using FormEntryController to
+     * answer form questions.
+     *
+     * TODO: create test cases that test complex questions, that is, those with
+     * copy tags inside of them that need to processed.
+     */
     public void testAnswerQuestion() {
-        IntegerData ans = new IntegerData(13);
-
+        IntegerData ans;
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
@@ -78,21 +96,68 @@ public class FormEntryControllerTest extends TestCase {
                 continue;
             }
 
-            // complex question w/o constraint
-            // complex question w/ constraint
-            // simple question w/o constraint
-            // simple question w/ constraint pass
-            // simple question w/ constraint fail
-            if (q.getTextID().equals("constraint-test")) {
-                int response = fec.answerQuestion(ans);
-                if (response == fec.ANSWER_CONSTRAINT_VIOLATED) {
-                    fail("Answer Constraint test failed.");
-                } else if (response == fec.ANSWER_OK) {
-                    break;
-                } else {
-                    fail("Bad response from fec.answerQuestion()");
-                }
+
+            if (q.getTextID().equals("select-without-constraint-label")) {
+                ans = new IntegerData(20);
+                expectToPassConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
+            } else if (q.getTextID().equals("select-with-constraint-pass-label")) {
+                ans = new IntegerData(10);
+                expectToPassConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
+            } else if (q.getTextID().equals("select-with-constraint-fail-label")) {
+                ans = new IntegerData(31);
+                expectToFailConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
+            } else if (q.getTextID().equals("simple-without-constraint-label")) {
+                ans = new IntegerData(40);
+                expectToPassConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
+            } else if (q.getTextID().equals("simple-with-constraint-pass-label")) {
+                ans = new IntegerData(5);
+                expectToPassConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
+            } else if (q.getTextID().equals("simple-with-constraint-fail-label")) {
+                ans = new IntegerData(15);
+                expectToFailConstraint(fec.answerQuestion(ans), q.getTextID(), ans.getDisplayText());
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+    }
+
+    /**
+     * Check for response code signalling that the answer to a question passed
+     * its constraint. Throw a useful error message if this isn't the case.
+     *
+     * @param responseCode code returned from FormEntryController after answering a question
+     * @param questionText the descriptor text of the question answered
+     * @param answerAsString a string representation of the answer value for the question
+     */
+    private void expectToPassConstraint(int responseCode, String questionText, String answerAsString) {
+        if (responseCode == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
+            fail("Answered question with a value that didn't pass its constraint: \n" +
+                    "[Question] = " + questionText + " \n" +
+                    "[Answer] = " + answerAsString);
+        } else if (responseCode != FormEntryController.ANSWER_OK) {
+            fail("Unexpected response from FormEntryController.answerQuestion(): \n" +
+                    "[Response Code] = " + Integer.toString(responseCode) + " \n" +
+                    "[Question] = " + questionText + " \n" +
+                    "[Answer] = " + answerAsString);
+        }
+    }
+
+    /**
+     * Check for response code signalling that the answer to a question failed
+     * its constraint. Throw a useful error message if this isn't the case.
+     *
+     * @param responseCode code returned from FormEntryController after answering a question
+     * @param questionText the descriptor text of the question answered
+     * @param answerAsString a string representation of the answer value for the question
+     */
+    private void expectToFailConstraint(int responseCode, String questionText, String answerAsString) {
+        if (responseCode == FormEntryController.ANSWER_OK) {
+            fail("Answered question with a value that should have failed the question's constraint: \n" +
+                    "[Question] = " + questionText + " \n" +
+                    "[Answer] = " + answerAsString);
+        } else if (responseCode != FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
+            fail("Unexpected response from FormEntryController.answerQuestion(): \n" +
+                    "[Response Code] = " + Integer.toString(responseCode) + " \n" +
+                    "[Question] = " + questionText + " \n" +
+                    "[Answer] = " + answerAsString);
+        }
     }
 }
