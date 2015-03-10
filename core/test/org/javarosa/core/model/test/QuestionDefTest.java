@@ -50,91 +50,102 @@ public class QuestionDefTest extends TestCase {
     QuestionDef q = null;
     FormEntryPrompt fep = null;
     FormParseInit fpi = null;
-    
+
     public QuestionDefTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
         initStuff();
     }
-    
+
     public QuestionDefTest(String name) {
         super(name);
         initStuff();
     }
-    
+
     public QuestionDefTest() {
         super();
         initStuff();
-    }    
-    
-    public void initStuff(){
+    }
+
+    public void initStuff() {
         fpi = new FormParseInit();
         q = fpi.getFirstQuestionDef();
         fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
     }
-    
+
     static PrototypeFactory pf;
-    
+
     static {
         PrototypeManager.registerPrototype("org.javarosa.model.xform.XPathReference");
         pf = ExtUtil.defaultPrototypes();
     }
-        
+
     public Test suite() {
         TestSuite aSuite = new TestSuite();
         System.out.println("Running QuestionDefTest tests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
-                public void run (TestCase tc) {
-                    ((QuestionDefTest)tc).doTest(testID);
+                public void run(TestCase tc) {
+                    ((QuestionDefTest) tc).doTest(testID);
                 }
             }));
         }
-            
+
         return aSuite;
     }
-    
-    private void testSerialize (QuestionDef q, String msg) {
+
+    private void testSerialize(QuestionDef q, String msg) {
         //ExternalizableTest.testExternalizable(q, this, pf, "QuestionDef [" + msg + "]");
     }
-    
+
     public final static int NUM_TESTS = 5;
-    public void doTest (int i) {
+
+    public void doTest(int i) {
         switch (i) {
-        case 1: testConstructors(); break;
-        case 2: testAccessorsModifiers(); break;
-        case 3: testChild(); break;
-        case 4: testFlagObservers(); break;
-        case 5: testReferences(); break;
+            case 1:
+                testConstructors();
+                break;
+            case 2:
+                testAccessorsModifiers();
+                break;
+            case 3:
+                testChild();
+                break;
+            case 4:
+                testFlagObservers();
+                break;
+            case 5:
+                testReferences();
+                break;
         }
     }
-    
-    public void testConstructors () {
+
+    public void testConstructors() {
         QuestionDef q;
-        
+
         q = new QuestionDef();
         if (q.getID() != -1) {
             fail("QuestionDef not initialized properly (default constructor)");
         }
         testSerialize(q, "a");
-        
-        q = new QuestionDef(17,Constants.CONTROL_RANGE);
+
+        q = new QuestionDef(17, Constants.CONTROL_RANGE);
         if (q.getID() != 17) {
             fail("QuestionDef not initialized properly");
         }
         testSerialize(q, "b");
     }
 
-    public IDataReference newRef (String xpath) {
-            IDataReference ref = new DummyReference();
-            ref.setReference(xpath);
-            pf.addClass(DummyReference.class);
-            return ref;
+    public IDataReference newRef(String xpath) {
+        IDataReference ref = new DummyReference();
+        ref.setReference(xpath);
+        pf.addClass(DummyReference.class);
+        return ref;
     }
-    
-    public void testAccessorsModifiers () {
+
+    public void testAccessorsModifiers() {
         QuestionDef q = new QuestionDef();
-        
+
         q.setID(45);
         if (q.getID() != 45) {
             fail("ID getter/setter broken");
@@ -160,10 +171,10 @@ public class QuestionDefTest extends TestCase {
         }
         testSerialize(q, "h");
     }
-        
-    public void testChild () {
+
+    public void testChild() {
         QuestionDef q = new QuestionDef();
-        
+
         if (q.getChildren() != null) {
             fail("Question has children");
         }
@@ -174,7 +185,7 @@ public class QuestionDefTest extends TestCase {
         } catch (IllegalStateException ise) {
             //expected
         }
-        
+
         try {
             q.addChild(new QuestionDef());
             fail("Added a child to a question without exception");
@@ -182,8 +193,8 @@ public class QuestionDefTest extends TestCase {
             //expected
         }
     }
-    
-    public void testFlagObservers () {
+
+    public void testFlagObservers() {
         QuestionDef q = new QuestionDef();
 
         QuestionObserver qo = new QuestionObserver();
@@ -194,25 +205,13 @@ public class QuestionDefTest extends TestCase {
         }
 
         q.unregisterStateObserver(qo);
-        
+
         if (qo.flag) {
             fail("Localization observer updated after unregistered");
         }
     }
 
 
-    
-
-    
-
-
-
-    
-
-    
-
-
-    
 //    //Deprecated
 //    public void testLocaleChanged () {
 //        QuestionDef q = new QuestionDef();
@@ -245,58 +244,56 @@ public class QuestionDefTest extends TestCase {
 //    }    
 
 
-
-    
-    public void testReferences(){
+    public void testReferences() {
         QuestionDef q = fpi.getFirstQuestionDef();
         FormEntryPrompt fep = fpi.getFormEntryModel().getQuestionPrompt();
-        
+
         Localizer l = fpi.getFormDef().getLocalizer();
         l.setDefaultLocale(l.getAvailableLocales()[0]);
         l.setLocale(l.getAvailableLocales()[0]);
-        
+
         String audioURI = fep.getAudioText();
         String ref;
-        
+
         ReferenceManager._().addReferenceFactory(new ResourceReferenceFactory());
         ReferenceManager._().addRootTranslator(new RootTranslator("jr://audio/", "jr://resource/"));
-        try{
+        try {
             Reference r = ReferenceManager._().DeriveReference(audioURI);
             ref = r.getURI();
-            if(!ref.equals("jr://resource/hah.mp3")){
+            if (!ref.equals("jr://resource/hah.mp3")) {
                 fail("Root translation failed.");
             }
-        }catch(InvalidReferenceException ire){
-            fail("There was an Invalid Reference Exception:"+ire.getMessage());
+        } catch (InvalidReferenceException ire) {
+            fail("There was an Invalid Reference Exception:" + ire.getMessage());
             ire.printStackTrace();
         }
-        
-        
-        ReferenceManager._().addRootTranslator(new RootTranslator("jr://images/","jr://resource/"));
+
+
+        ReferenceManager._().addRootTranslator(new RootTranslator("jr://images/", "jr://resource/"));
         q = fpi.getNextQuestion();
         fep = fpi.getFormEntryModel().getQuestionPrompt();
         String imURI = fep.getImageText();
-        try{
+        try {
             Reference r = ReferenceManager._().DeriveReference(imURI);
             ref = r.getURI();
-            if(!ref.equals("jr://resource/four.gif")){
+            if (!ref.equals("jr://resource/four.gif")) {
                 fail("Root translation failed.");
             }
-        }catch(InvalidReferenceException ire){
-            fail("There was an Invalid Reference Exception:"+ire.getMessage());
+        } catch (InvalidReferenceException ire) {
+            fail("There was an Invalid Reference Exception:" + ire.getMessage());
             ire.printStackTrace();
         }
     }
-    
+
     private class QuestionObserver implements FormElementStateListener {
         public boolean flag = false;
         public TreeElement e;
         public QuestionDef q;
         public int flags;
-        
-        public void formElementStateChanged (IFormElement q, int flags) {
+
+        public void formElementStateChanged(IFormElement q, int flags) {
             flag = true;
-            this.q = (QuestionDef)q;
+            this.q = (QuestionDef) q;
             this.flags = flags;
         }
 
