@@ -26,19 +26,19 @@ import org.javarosa.core.model.data.IntegerData;
 public class IntegerDataTests extends TestCase {
     Integer one;
     Integer two;
-    
+
     private static int NUM_TESTS = 3;
-    
+
     /* (non-Javadoc)
      * @see j2meunit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         one = new Integer(1);
         two = new Integer(2);
     }
-    
+
     public IntegerDataTests(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -49,7 +49,7 @@ public class IntegerDataTests extends TestCase {
 
     public IntegerDataTests() {
         super();
-    }    
+    }
 
     public Test suite() {
         TestSuite aSuite = new TestSuite();
@@ -58,7 +58,7 @@ public class IntegerDataTests extends TestCase {
             final int testID = i;
 
             aSuite.addTest(new IntegerDataTests("IntegerData Test " + i, new TestMethod() {
-                public void run (TestCase tc) {
+                public void run(TestCase tc) {
                     ((IntegerDataTests)tc).testMaster(testID);
                 }
             }));
@@ -66,37 +66,46 @@ public class IntegerDataTests extends TestCase {
 
         return aSuite;
     }
-    public void testMaster (int testID) {
+
+    public void testMaster(int testID) {
         //System.out.println("running " + testID);
-        
+
         switch (testID) {
-        case 1: testGetData(); break;
-        case 2: testSetData(); break;
-        case 3: testNullData(); break;
+            case 1:
+                testGetData();
+                break;
+            case 2:
+                testSetData();
+                break;
+            case 3:
+                testNullData();
+                break;
         }
     }
-    
+
     public void testGetData() {
         IntegerData data = new IntegerData(one);
         assertEquals("IntegerData's getValue returned an incorrect integer", data.getValue(), one);
     }
+
     public void testSetData() {
         IntegerData data = new IntegerData(one);
         data.setValue(two);
-        
+
         assertTrue("IntegerData did not set value properly. Maintained old value.", !(data.getValue().equals(one)));
         assertEquals("IntegerData did not properly set value ", data.getValue(), two);
-        
+
         data.setValue(one);
         assertTrue("IntegerData did not set value properly. Maintained old value.", !(data.getValue().equals(two)));
         assertEquals("IntegerData did not properly reset value ", data.getValue(), one);
-        
+
     }
+
     public void testNullData() {
         boolean exceptionThrown = false;
         IntegerData data = new IntegerData();
         data.setValue(one);
-        try { 
+        try {
             data.setValue(null);
         } catch (NullPointerException e) {
             exceptionThrown = true;

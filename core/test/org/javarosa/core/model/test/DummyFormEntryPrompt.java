@@ -17,11 +17,11 @@ public class DummyFormEntryPrompt extends FormEntryPrompt {
     protected String getTextID() {
         return textId;
     }
-    
+
     public Localizer localizer() {
         return localizer;
     }
-    
+
     protected String substituteStringArgs(String template) {
         return template;
     }
