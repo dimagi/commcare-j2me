@@ -26,23 +26,23 @@ import java.util.Date;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.utils.DateUtils;
 
-public class DateDataTests extends TestCase{
-    
+public class DateDataTests extends TestCase {
+
     Date today;
     Date notToday;
-    
+
     private static int NUM_TESTS = 4;
-    
+
     /* (non-Javadoc)
      * @see j2meunit.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
-        
+
         today = DateUtils.roundDate(new Date());
-        notToday = DateUtils.roundDate(new Date(today.getTime() - today.getTime()/2));
+        notToday = DateUtils.roundDate(new Date(today.getTime() - today.getTime() / 2));
     }
-    
+
     public DateDataTests(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -53,7 +53,7 @@ public class DateDataTests extends TestCase{
 
     public DateDataTests() {
         super();
-    }    
+    }
 
     public Test suite() {
         TestSuite aSuite = new TestSuite();
@@ -62,7 +62,7 @@ public class DateDataTests extends TestCase{
             final int testID = i;
 
             aSuite.addTest(new DateDataTests("DateData Test " + i, new TestMethod() {
-                public void run (TestCase tc) {
+                public void run(TestCase tc) {
                     ((DateDataTests)tc).testMaster(testID);
                 }
             }));
@@ -70,55 +70,65 @@ public class DateDataTests extends TestCase{
 
         return aSuite;
     }
-    public void testMaster (int testID) {
+
+    public void testMaster(int testID) {
         //System.out.println("running " + testID);
-        
+
         switch (testID) {
-        case 1: testGetData(); break;
-        case 2: testSetData(); break;
-        case 3: testDisplay(); break;
-        case 4: testNullData(); break;
+            case 1:
+                testGetData();
+                break;
+            case 2:
+                testSetData();
+                break;
+            case 3:
+                testDisplay();
+                break;
+            case 4:
+                testNullData();
+                break;
         }
     }
-    
+
     public void testGetData() {
         DateData data = new DateData(today);
         assertEquals("DateData's getValue returned an incorrect date", data.getValue(), today);
         Date temp = new Date(today.getTime());
         today.setTime(1234);
         assertEquals("DateData's getValue was mutated incorrectly", data.getValue(), temp);
-        
+
         Date rep = (Date)data.getValue();
         rep.setTime(rep.getTime() - 1000);
-        
+
         assertEquals("DateData's getValue was mutated incorrectly", data.getValue(), temp);
     }
+
     public void testSetData() {
         DateData data = new DateData(notToday);
         data.setValue(today);
-        
+
         assertTrue("DateData did not set value properly. Maintained old value.", !(data.getValue().equals(notToday)));
         assertEquals("DateData did not properly set value ", data.getValue(), today);
-        
+
         data.setValue(notToday);
         assertTrue("DateData did not set value properly. Maintained old value.", !(data.getValue().equals(today)));
         assertEquals("DateData did not properly reset value ", data.getValue(), notToday);
-        
+
         Date temp = new Date(notToday.getTime());
         notToday.setTime(notToday.getTime() - 1324);
-        
+
         assertEquals("DateData's value was mutated incorrectly", data.getValue(), temp);
     }
-    
+
     public void testDisplay() {
         // We don't actually want this, because the Date's getDisplayText code should be moved to a library
     }
-    
+
     public void testNullData() {
         boolean exceptionThrown = false;
         DateData data = new DateData();
         data.setValue(today);
-        try { 
+        try {
             data.setValue(null);
         } catch (NullPointerException e) {
             exceptionThrown = true;
