@@ -22,15 +22,14 @@ import org.javarosa.core.model.QuestionDef;
 
 /**
  * Static methods to create form defs for workflow testing.
- * 
- * @author Clayton Sims
  *
+ * @author Clayton Sims
  */
 public class FormDefConstructionUtils {
-    
+
     public static FormDef createSimpleGroupReference() {
         FormDef theform = new FormDef();
-        
+
         QuestionDef question1 = new QuestionDef();
         GroupDef group1 = new GroupDef();
         QuestionDef question11 = new QuestionDef();
@@ -41,7 +40,7 @@ public class FormDefConstructionUtils {
         theform.addChild(question1);
         theform.addChild(group1);
         theform.addChild(question2);
-        
+
         return theform;
     }
 }

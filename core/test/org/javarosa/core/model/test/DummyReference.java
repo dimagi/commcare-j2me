@@ -26,39 +26,38 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 
 /**
  * Dummy reference for testing purposes.
- * 
- * @author Clayton Sims
  *
+ * @author Clayton Sims
  */
 public class DummyReference implements IDataReference {
     String ref = "";
-    
+
     public DummyReference() {
         super();
     }
-    
+
     public Object getReference() {
         return ref;
     }
 
     public void setReference(Object reference) {
         ref = (String)reference;
-        
+
     }
 
     public void readExternal(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
         ref = in.readUTF();
-        
+
     }
 
     public void writeExternal(DataOutputStream out)
             throws IOException {
         out.writeUTF(ref);
     }
-    
+
     public boolean equals(Object o) {
-        if(!(o instanceof DummyReference)) {
+        if (!(o instanceof DummyReference)) {
             return false;
         } else {
             return ((DummyReference)o).ref.equals(this.ref);
