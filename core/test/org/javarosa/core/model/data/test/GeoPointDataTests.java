@@ -66,17 +66,17 @@ public class GeoPointDataTests extends TestCase {
     }
 
     public void testGetData() {
-        double[] pointsA = { 1.11111, 2.2, -1.000, -4 };
-        double[] pointsB = { 1, 2, 3, 4 };
+        double[] pointsA = { 1.11111, 2.2, -1.111, -4.19999 };
+        double[] pointsB = { 1, 2, -3, 4 };
         double[] pointsC = { 6.899999999, 3.20000001 };
         GeoPointData data = new GeoPointData(pointsA);
         assertTrue("GeoPointData test constructor and decimal truncation",
-            "1.1 2.2 -1.0 -4.0".equals(data.getDisplayText()));
+            "1.11111 2.2 -1.1 -4.1".equals(data.getDisplayText()));
         data.setValue(pointsB);
         assertTrue("GeoPointData test setValue on 4 datapoints and decimal truncation",
-            "1.0 2.0 3.0 4.0".equals(data.getDisplayText()));
+            "1.0 2.0 -3.0 4.0".equals(data.getDisplayText()));
         data.setValue(pointsC);
         assertTrue("GeoPointData test setValue on 2 datapoints",
-            "6.8 3.2".equals(data.getDisplayText()));
+            "6.899999999 3.20000001".equals(data.getDisplayText()));
     }
 }
