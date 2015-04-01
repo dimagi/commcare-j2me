@@ -21,6 +21,10 @@ import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
@@ -45,8 +49,11 @@ import org.javarosa.xpath.expr.XPathFuncExpr;
 import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
+import org.javarosa.xml.TreeElementParser;
+import org.javarosa.xml.util.InvalidStructureException;
 
 import org.kxml2.io.KXmlParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 /**
  *
@@ -55,7 +62,7 @@ import org.kxml2.io.KXmlParser;
 
 public class XPathPathExprTest extends TestCase {
 
-    private static final String formName = new String("/test_xpathpathexpr.xml");
+    private static final String formPath = new String("/test_xpathpathexpr.xml");
 
     public XPathPathExprTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -82,33 +89,45 @@ public class XPathPathExprTest extends TestCase {
     }
 
     public void doTests() {
+        try {
+        BufferedReader br = new BufferedReader(new FileReader(formPath));
+        String line = null;
+        while ((line = br.readLine()) != null) {
+            System.out.println(line);
+        }
+        } catch (Exception e) {
+            System.out.println("XXX couldn't find file");
+            return;
+        }
+
+        KXmlParser parser = null;
+        TreeElement root = null;
         EvaluationContext ec = new EvaluationContext(null);
 
-        TreeElement root = new TreeElementParser(new KXmlParser(formName), 0, "instancename").parse();
+        // read in xml
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(formPath));
+            parser = new KXmlParser();
+            parser.setInput(reader);
+        } catch (FileNotFoundException e) {
+            fail("XML file could not be read: " + formPath);
+            return;
+        } catch (XmlPullParserException e) {
+            fail("Contents at filepath could not be parsed as XML: " + formPath);
+            return;
+        }
+
+        // turn parsed xml into a form instance
+        try {
+            root = new TreeElementParser(parser, 0, "instancename").parse();
+        } catch (Exception e) {
+            fail("File couldn't be parsed into a TreeElement: " + formPath);
+            return;
+        }
+
         FormInstance instance = new FormInstance(root, "instancename");
 
-        //Attribute XPath References
-        //testEval("/@blah", null, null, new XPathUnsupportedException());
-        //TODO: Need to test with model, probably in a different file
-
-        String statesPath = "places/country/state";
-        String wildcardIndex = "index/*";
-        String indexOne = "index/some_index";
-        String indexTwo = "index/another_index";
-        XPathPathExpr expr = XPathReference.getPathExpr(wildcardIndex);
-        XPathPathExpr expr2 = XPathReference.getPathExpr(indexOne);
-        XPathPathExpr expr3 = XPathReference.getPathExpr(indexTwo);
-        if (!expr.matches(expr2)) {
-            fail("Bad Matching: " + wildcardIndex + " should match " + indexOne);
-        }
-        if (!expr2.matches(expr)) {
-            fail("Bad Matching: " + indexOne + " should match " + wildcardIndex);
-        }
-        if (expr2.matches(expr3)) {
-            fail("Bad Matching: " + indexOne + " should  not match " + indexTwo);
-        }
-
-        testEval("count(/data/strtest[@val = /data/string])", instance, null, new Double(1));
+        testEval("count(/places/country/state)", instance, null, new Double(2));
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
@@ -155,69 +174,6 @@ public class XPathPathExprTest extends TestCase {
             } else if (xpex.getClass() != expected.getClass()) {
                 fail("Did not get expected exception type");
             }
-        }
-    }
-
-    private FormInstance newDataModel() {
-        return new FormInstance(new TreeElement());
-    }
-
-    private void addDataRef(FormInstance dm, String ref, IAnswerData data) {
-        TreeReference treeRef = XPathReference.getPathExpr(ref).getReference(true);
-        treeRef = inlinePositionArgs(treeRef);
-
-        addNodeRef(dm, treeRef);
-
-
-        if (data != null) {
-            dm.resolveReference(treeRef).setValue(data);
-        }
-    }
-
-    private TreeReference inlinePositionArgs(TreeReference treeRef) {
-        //find/replace position predicates
-        for (int i = 0; i < treeRef.size(); ++i) {
-            Vector<XPathExpression> predicates = treeRef.getPredicate(i);
-            if (predicates == null || predicates.size() == 0) {
-                continue;
-            }
-            if (predicates.size() > 1) {
-                throw new IllegalArgumentException("only position [] predicates allowed");
-            }
-            if (!(predicates.elementAt(0) instanceof XPathNumericLiteral)) {
-                throw new IllegalArgumentException("only position [] predicates allowed");
-            }
-            double d = ((XPathNumericLiteral) predicates.elementAt(0)).d;
-            if (d != (double) ((int) d)) {
-                throw new IllegalArgumentException("invalid position: " + d);
-            }
-
-            int multiplicity = (int) d - 1;
-            if (treeRef.getMultiplicity(i) != TreeReference.INDEX_UNBOUND) {
-                throw new IllegalArgumentException("Cannot inline already qualified steps");
-            }
-            treeRef.setMultiplicity(i, multiplicity);
-        }
-
-        treeRef = treeRef.removePredicates();
-        return treeRef;
-    }
-
-    private void addNodeRef(FormInstance dm, TreeReference treeRef) {
-        TreeElement lastValidStep = dm.getRoot();
-        for (int i = 1; i < treeRef.size(); ++i) {
-            TreeElement step = dm.resolveReference(treeRef.getSubReference(i));
-            if (step == null) {
-                if (treeRef.getMultiplicity(i) == TreeReference.INDEX_ATTRIBUTE) {
-                    //must be the last step
-                    lastValidStep.setAttribute(null, treeRef.getName(i), "");
-                    return;
-                }
-                String currentName = treeRef.getName(i);
-                step = new TreeElement(currentName, treeRef.getMultiplicity(i) == TreeReference.INDEX_UNBOUND ? TreeReference.DEFAULT_MUTLIPLICITY : treeRef.getMultiplicity(i));
-                lastValidStep.addChild(step);
-            }
-            lastValidStep = step;
         }
     }
 }
