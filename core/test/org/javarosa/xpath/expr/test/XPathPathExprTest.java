@@ -98,9 +98,9 @@ public class XPathPathExprTest extends TestCase {
         // read in xml
         try {
             InputStream is = System.class.getResourceAsStream(formPath);
-            parser = new TreeElementParser(ElementParser.instantiateParser(is), 0, "data");
+            parser = new TreeElementParser(ElementParser.instantiateParser(is), 0, "instance");
         } catch (IOException e) {
-            fail("Contents at filepath could not be parsed as XML: " + formPath);
+            fail("Contents at filepath could not be loaded into parser: " + formPath);
             return;
         }
 
@@ -113,12 +113,17 @@ public class XPathPathExprTest extends TestCase {
         }
         FormInstance instance = null;
         try {
-            instance = new FormInstance(root, "data");
+            instance = new FormInstance(root, "");
         } catch (Exception e) {
             fail("couldn't create form instance");
         }
 
-        testEval("count(/data/places/country/state)", instance, null, new Double(2));
+        // Used to reproduce bug where locations can't handle heterogeneous template paths
+        // The following test will pass when this is fixed.
+        testEval("/data/places/country[1]/state[0]/name", instance, null, "Utah");
+
+        // XXX: not sure why this test isn't passing
+        testEval("/data/places/country[0]/name", instance, null, "Singapore");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
