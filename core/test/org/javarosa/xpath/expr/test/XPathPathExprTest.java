@@ -50,9 +50,9 @@ import org.javarosa.xpath.expr.XPathFuncExpr;
 import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
+import org.javarosa.xml.ElementParser;
 import org.javarosa.xml.TreeElementParser;
 import org.javarosa.xml.util.InvalidStructureException;
-
 import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -91,30 +91,29 @@ public class XPathPathExprTest extends TestCase {
     }
 
     public void doTests() {
-        KXmlParser parser = null;
         TreeElement root = null;
         EvaluationContext ec = new EvaluationContext(null);
 
+        TreeElementParser parser;
         // read in xml
         try {
             InputStream is = System.class.getResourceAsStream(formPath);
-            parser = new KXmlParser();
-            parser.setInput(is, "UTF-8");
-        } catch (XmlPullParserException e) {
+            parser = new TreeElementParser(ElementParser.InstantiateParser(is), 0, "data");
+        } catch (IOException e) {
             fail("Contents at filepath could not be parsed as XML: " + formPath);
             return;
         }
 
         // turn parsed xml into a form instance
         try {
-            root = new TreeElementParser(parser, 0, "data").parse();
+            root = parser.parse();
         } catch (Exception e) {
             fail("File couldn't be parsed into a TreeElement: " + formPath);
             return;
         }
         FormInstance instance = null;
         try {
-            instance = new FormInstance(root.getChildAt(0), "data");
+            instance = new FormInstance(root, "data");
         } catch (Exception e) {
             fail("couldn't create form instance");
         }
