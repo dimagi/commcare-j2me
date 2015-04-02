@@ -64,6 +64,7 @@ import org.xmlpull.v1.XmlPullParserException;
 public class XPathPathExprTest extends TestCase {
 
     private static final String formPath = new String("/test_xpathpathexpr.xml");
+    // private static final String formPath = new String("/test_small_xml_example.xml");
 
     public XPathPathExprTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -111,10 +112,14 @@ public class XPathPathExprTest extends TestCase {
             fail("File couldn't be parsed into a TreeElement: " + formPath);
             return;
         }
+        FormInstance instance = null;
+        try {
+            instance = new FormInstance(root.getChildAt(0), "data");
+        } catch (Exception e) {
+            fail("couldn't create form instance");
+        }
 
-        FormInstance instance = new FormInstance(root, "data");
-
-        testEval("count(/places/country/state)", instance, null, new Double(2));
+        testEval("count(/data/places/country/state)", instance, null, new Double(2));
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
@@ -150,7 +155,7 @@ public class XPathPathExprTest extends TestCase {
                 Double o = ((Double) result).doubleValue();
                 Double t = ((Double) expected).doubleValue();
                 if (Math.abs(o - t) > tolerance) {
-                    fail("Doubles outside of tolerance [" + o + "," + t + " ]");
+                    fail("Doubles outside of tolerance: got " + o + ", expected " + t);
                 }
             } else if (!expected.equals(result)) {
                 fail("Expected " + expected + ", got " + result);
