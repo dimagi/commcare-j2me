@@ -98,7 +98,7 @@ public class XPathPathExprTest extends TestCase {
         // read in xml
         try {
             InputStream is = System.class.getResourceAsStream(formPath);
-            parser = new TreeElementParser(ElementParser.InstantiateParser(is), 0, "data");
+            parser = new TreeElementParser(ElementParser.instantiateParser(is), 0, "data");
         } catch (IOException e) {
             fail("Contents at filepath could not be parsed as XML: " + formPath);
             return;
