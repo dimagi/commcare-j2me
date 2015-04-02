@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.xpath.test;
+package org.javarosa.xpath.expr.test;
 
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
@@ -24,6 +24,7 @@ import j2meunit.framework.TestSuite;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
@@ -89,29 +90,15 @@ public class XPathPathExprTest extends TestCase {
     }
 
     public void doTests() {
-        try {
-        BufferedReader br = new BufferedReader(new FileReader(formPath));
-        String line = null;
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-        } catch (Exception e) {
-            System.out.println("XXX couldn't find file");
-            return;
-        }
-
         KXmlParser parser = null;
         TreeElement root = null;
         EvaluationContext ec = new EvaluationContext(null);
 
         // read in xml
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(formPath));
+            InputStream is = System.class.getResourceAsStream(formPath);
             parser = new KXmlParser();
-            parser.setInput(reader);
-        } catch (FileNotFoundException e) {
-            fail("XML file could not be read: " + formPath);
-            return;
+            parser.setInput(is, "UTF-8");
         } catch (XmlPullParserException e) {
             fail("Contents at filepath could not be parsed as XML: " + formPath);
             return;
@@ -119,13 +106,13 @@ public class XPathPathExprTest extends TestCase {
 
         // turn parsed xml into a form instance
         try {
-            root = new TreeElementParser(parser, 0, "instancename").parse();
+            root = new TreeElementParser(parser, 0, "data").parse();
         } catch (Exception e) {
             fail("File couldn't be parsed into a TreeElement: " + formPath);
             return;
         }
 
-        FormInstance instance = new FormInstance(root, "instancename");
+        FormInstance instance = new FormInstance(root, "data");
 
         testEval("count(/places/country/state)", instance, null, new Double(2));
     }
