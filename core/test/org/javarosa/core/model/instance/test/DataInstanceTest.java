@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.javarosa.xpath.expr.test;
+package org.javarosa.core.model.instance.test;
 
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
@@ -58,32 +58,33 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
+ * DataInstance methods tests
  *
  * @author Phillip Mates
  */
 
-public class XPathPathExprTest extends TestCase {
+public class DataInstanceTest extends TestCase {
 
     private static final String formPath = new String("/test_xpathpathexpr.xml");
 
-    public XPathPathExprTest(String name, TestMethod rTestMethod) {
+    public DataInstanceTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
 
-    public XPathPathExprTest(String name) {
+    public DataInstanceTest(String name) {
         super(name);
     }
 
-    public XPathPathExprTest() {
+    public DataInstanceTest() {
         super();
     }
 
     public Test suite() {
         TestSuite aSuite = new TestSuite();
 
-        aSuite.addTest(new XPathPathExprTest("XPath Path Expression Test", new TestMethod() {
+        aSuite.addTest(new DataInstanceTest("Data Instance Test", new TestMethod() {
             public void run(TestCase tc) {
-                ((XPathPathExprTest) tc).doTests();
+                ((DataInstanceTest) tc).doTests();
             }
         }));
 
@@ -91,65 +92,62 @@ public class XPathPathExprTest extends TestCase {
     }
 
     public void doTests() {
-        FormInstance instance = null;
+        // load the xml doc into a form instance
+        FormInstance model = null;
         try {
-            instance = FormLoadingUtils.loadFormInstance(formPath);
+            model = FormLoadingUtils.loadFormInstance(formPath);
         } catch (IOException e) {
             fail("Unable to load form at " + formPath);
         } catch (InvalidStructureException e) {
             fail("Form at " + formPath + " has an invalid structure.");
         }
 
-        // Used to reproduce bug where locations can't handle heterogeneous template paths.
-        // This bug has been fixed and the following test now passes.
-        testEval("/data/places/country[@id ='two']/state[@id = 'beehive_state']", instance, null, "Utah");
-        testEval("/data/places/country[@id ='one']/name", instance, null, "Singapore");
+        EvaluationContext eval_ctx = new EvaluationContext(model);
+
+        // make sure a valid path can be found even when the xml sub-elements
+        // aren't homogeneous in structure
+        assertTrue("Homogeneous template path for a reference",
+                model.hasTemplatePath(exprToRef("/data/places/country[1]/name", eval_ctx)));
+
+        assertTrue("Heterogeneous template path for a reference",
+                model.hasTemplatePath(exprToRef("/data/places/country[1]/state[0]", eval_ctx)));
+
+        assertTrue("Unfound template path for a reference",
+                !model.hasTemplatePath(exprToRef("/data/places/fake[1]/name", eval_ctx)));
+
+        assertTrue("Unfound template path for a reference",
+                !model.hasTemplatePath(exprToRef("/data/places/country[1]/fake", eval_ctx)));
     }
 
-    private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
-        testEval(expr, model, ec, expected, 1.0e-12);
-    }
-
-    private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected, double tolerance) {
-        XPathExpression xpe = null;
-        boolean exceptionExpected = (expected instanceof XPathException);
-
-        if (ec == null) {
-            ec = new EvaluationContext(model);
-        }
-
+    /**
+     * Evaluate an xpath query expression into a reference.
+     *
+     * @param expr xpath expression
+     * @param eval_ctx contextual information needed to evaluate the expression
+     */
+    public TreeReference exprToRef(String expr, EvaluationContext eval_ctx) {
+        XPathPathExpr xpe = null;
         try {
-            xpe = XPathParseTool.parseXPath(expr);
+            xpe = (XPathPathExpr)XPathParseTool.parseXPath(expr);
         } catch (XPathSyntaxException xpse) {
         }
 
         if (xpe == null) {
             fail("Null expression or syntax error " + expr);
+            return null;
         }
 
+        TreeReference ref = null;
         try {
-            Object result = XPathFuncExpr.unpack(xpe.eval(model, ec));
-            if (tolerance != XPathFuncExpr.DOUBLE_TOLERANCE) {
-                System.out.println(expr + " = " + result);
-            }
-
-            if (exceptionExpected) {
-                fail("Expected exception, expression : " + expr);
-            } else if ((result instanceof Double && expected instanceof Double)) {
-                Double o = ((Double) result).doubleValue();
-                Double t = ((Double) expected).doubleValue();
-                if (Math.abs(o - t) > tolerance) {
-                    fail("Doubles outside of tolerance: got " + o + ", expected " + t);
-                }
-            } else if (!expected.equals(result)) {
-                fail("Expected " + expected + ", got " + result);
+            TreeReference genericRef = xpe.getReference();
+            if (genericRef.getContext() == TreeReference.CONTEXT_ORIGINAL) {
+                ref = genericRef.contextualize(eval_ctx.getOriginalContext());
+            } else {
+                ref = genericRef.contextualize(eval_ctx.getContextRef());
             }
         } catch (XPathException xpex) {
-            if (!exceptionExpected) {
-                fail("Did not expect " + xpex.getClass() + " exception");
-            } else if (xpex.getClass() != expected.getClass()) {
-                fail("Did not get expected exception type");
-            }
+            fail("Did not get expected exception type");
         }
+        return ref;
     }
 }

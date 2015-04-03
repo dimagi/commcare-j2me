@@ -583,7 +583,7 @@ public class XPathEvalTest extends TestCase {
 
     private void addDataRef(FormInstance dm, String ref, IAnswerData data) {
         TreeReference treeRef = XPathReference.getPathExpr(ref).getReference(true);
-        treeRef = InlinePositionArgs(treeRef);
+        treeRef = inlinePositionArgs(treeRef);
 
         addNodeRef(dm, treeRef);
 
@@ -593,7 +593,7 @@ public class XPathEvalTest extends TestCase {
         }
     }
 
-    private TreeReference InlinePositionArgs(TreeReference treeRef) {
+    private TreeReference inlinePositionArgs(TreeReference treeRef) {
         //find/replace position predicates
         for (int i = 0; i < treeRef.size(); ++i) {
             Vector<XPathExpression> predicates = treeRef.getPredicate(i);
