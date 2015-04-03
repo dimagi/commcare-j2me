@@ -65,7 +65,6 @@ import org.xmlpull.v1.XmlPullParserException;
 public class XPathPathExprTest extends TestCase {
 
     private static final String formPath = new String("/test_xpathpathexpr.xml");
-    // private static final String formPath = new String("/test_small_xml_example.xml");
 
     public XPathPathExprTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -102,12 +101,9 @@ public class XPathPathExprTest extends TestCase {
         }
 
         // Used to reproduce bug where locations can't handle heterogeneous template paths.
-        // This bug has been fixed and the following test now passes. Expected value should
-        // be Utah, but multiplicity selectors aren't implemented...
-        testEval("/data/places/country[1]/state[0]", instance, null, "");
-
-        // Should be Singapore, but multiplicity selectors aren't implemented...
-        testEval("/data/places/country[0]/name", instance, null, "");
+        // This bug has been fixed and the following test now passes.
+        testEval("/data/places/country[@id ='two']/state[@id = 'beehive_state']", instance, null, "Utah");
+        testEval("/data/places/country[@id ='one']/name", instance, null, "Singapore");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
