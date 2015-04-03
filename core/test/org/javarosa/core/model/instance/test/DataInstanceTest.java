@@ -106,11 +106,17 @@ public class DataInstanceTest extends TestCase {
 
         // make sure a valid path can be found even when the xml sub-elements
         // aren't homogeneous in structure
-        assertTrue("Homogeneous template path reference",
+        assertTrue("Homogeneous template path for a reference",
                 model.hasTemplatePath(exprToRef("/data/places/country[1]/name", eval_ctx)));
 
-        assertTrue("Heterogeneous template path reference",
+        assertTrue("Heterogeneous template path for a reference",
                 model.hasTemplatePath(exprToRef("/data/places/country[1]/state[0]", eval_ctx)));
+
+        assertTrue("Unfound template path for a reference",
+                !model.hasTemplatePath(exprToRef("/data/places/fake[1]/name", eval_ctx)));
+
+        assertTrue("Unfound template path for a reference",
+                !model.hasTemplatePath(exprToRef("/data/places/country[1]/fake", eval_ctx)));
     }
 
     /**
