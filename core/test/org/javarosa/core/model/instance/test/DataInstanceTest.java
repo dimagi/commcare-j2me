@@ -91,6 +91,7 @@ public class DataInstanceTest extends TestCase {
     }
 
     public void doTests() {
+        // load the xml doc into a form instance
         FormInstance model = null;
         try {
             model = FormLoadingUtils.loadFormInstance(formPath);
@@ -100,10 +101,25 @@ public class DataInstanceTest extends TestCase {
             fail("Form at " + formPath + " has an invalid structure.");
         }
 
-        XPathPathExpr xpe = null;
-        String expr = "/data/places/country[1]/state[0]";
-        EvaluationContext ec = new EvaluationContext(model);
+        EvaluationContext eval_ctx = new EvaluationContext(model);
 
+        // make sure a valid path can be found even when the xml sub-elements
+        // aren't homogeneous in structure
+        assertTrue("Homogeneous template path reference",
+                model.hasTemplatePath(exprToRef("/data/places/country[1]/name", eval_ctx)));
+
+        assertTrue("Heterogeneous template path reference",
+                model.hasTemplatePath(exprToRef("/data/places/country[1]/state[0]", eval_ctx)));
+    }
+
+    /**
+     * Evaluate an xpath query expression into a reference.
+     *
+     * @param expr xpath expression
+     * @param eval_ctx contextual information needed to evaluate the expression
+     */
+    public TreeReference exprToRef(String expr, EvaluationContext eval_ctx) {
+        XPathPathExpr xpe = null;
         try {
             xpe = (XPathPathExpr)XPathParseTool.parseXPath(expr);
         } catch (XPathSyntaxException xpse) {
@@ -111,24 +127,20 @@ public class DataInstanceTest extends TestCase {
 
         if (xpe == null) {
             fail("Null expression or syntax error " + expr);
-            return;
+            return null;
         }
 
+        TreeReference ref = null;
         try {
             TreeReference genericRef = xpe.getReference();
-            TreeReference ref;
             if (genericRef.getContext() == TreeReference.CONTEXT_ORIGINAL) {
-                ref = genericRef.contextualize(ec.getOriginalContext());
+                ref = genericRef.contextualize(eval_ctx.getOriginalContext());
             } else {
-                ref = genericRef.contextualize(ec.getContextRef());
+                ref = genericRef.contextualize(eval_ctx.getContextRef());
             }
-
-            // TODO: write tests for this function:
-            model.hasTemplatePath(ref);
-
-            Object result = XPathFuncExpr.unpack(xpe.eval(model, ec));
         } catch (XPathException xpex) {
             fail("Did not get expected exception type");
         }
+        return ref;
     }
 }
