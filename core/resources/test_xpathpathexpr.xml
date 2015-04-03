@@ -1,0 +1,12 @@
+<data>
+  <places>
+      <country>
+          <name>Singapore</name>
+      </country>
+      <country>
+          <name>United States</name>
+          <state>Utah</state>
+          <state>Montana</state>
+      </country>
+  </places>
+</data>
