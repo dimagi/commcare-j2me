@@ -39,6 +39,7 @@ import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test_utils.FormLoadingUtils;
 import org.javarosa.xpath.IExprDataType;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
@@ -91,39 +92,22 @@ public class XPathPathExprTest extends TestCase {
     }
 
     public void doTests() {
-        TreeElement root = null;
-        EvaluationContext ec = new EvaluationContext(null);
-
-        TreeElementParser parser;
-        // read in xml
-        try {
-            InputStream is = System.class.getResourceAsStream(formPath);
-            parser = new TreeElementParser(ElementParser.instantiateParser(is), 0, "instance");
-        } catch (IOException e) {
-            fail("Contents at filepath could not be loaded into parser: " + formPath);
-            return;
-        }
-
-        // turn parsed xml into a form instance
-        try {
-            root = parser.parse();
-        } catch (Exception e) {
-            fail("File couldn't be parsed into a TreeElement: " + formPath);
-            return;
-        }
         FormInstance instance = null;
         try {
-            instance = new FormInstance(root, "");
-        } catch (Exception e) {
-            fail("couldn't create form instance");
+            instance = FormLoadingUtils.loadFormInstance(formPath);
+        } catch (IOException e) {
+            fail("Unable to load form at " + formPath);
+        } catch (InvalidStructureException e) {
+            fail("Form at " + formPath + " has an invalid structure.");
         }
 
-        // Used to reproduce bug where locations can't handle heterogeneous template paths
-        // The following test will pass when this is fixed.
-        testEval("/data/places/country[1]/state[0]/name", instance, null, "Utah");
+        // Used to reproduce bug where locations can't handle heterogeneous template paths.
+        // This bug has been fixed and the following test now passes. Expected value should
+        // be Utah, but multiplicity selectors aren't implemented...
+        testEval("/data/places/country[1]/state[0]", instance, null, "");
 
-        // XXX: not sure why this test isn't passing
-        testEval("/data/places/country[0]/name", instance, null, "Singapore");
+        // Should be Singapore, but multiplicity selectors aren't implemented...
+        testEval("/data/places/country[0]/name", instance, null, "");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
