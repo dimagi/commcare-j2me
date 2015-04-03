@@ -53,12 +53,19 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
+ * Commonly used form loading utilities for testing.
  *
  * @author Phillip Mates
  */
 
 public class FormLoadingUtils {
 
+    /**
+     * Load and parse an XML file into a form instance.
+     *
+     * @param formPath form resource filename that will be loaded at compile
+     * time.
+     */
     public static FormInstance loadFormInstance(String formPath) throws InvalidStructureException, IOException {
         // read in xml
         InputStream is = System.class.getResourceAsStream(formPath);

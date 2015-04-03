@@ -58,6 +58,7 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
+ * DataInstance methods tests
  *
  * @author Phillip Mates
  */
