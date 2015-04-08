@@ -28,11 +28,13 @@
         </path>
         <mkdir dir="${dist}"/>
         <mkdir dir="${build}"/>
+        <mkdir dir="${doc}"/>
     </target>
 
     <target name="clean" description="delete dist and build directories">
         <delete dir="${dist}"/>
         <delete dir="${build}"/>
+        <delete dir="${doc}"/>
     </target>
 
     <target name="compile" depends="extract-libs, init" description="compile the source">
@@ -135,6 +137,11 @@
             </sequential>
         </for>
         <fail if="testresult.global">Unit Tests Failed!</fail>
+    </target>
+
+    <!-- Generate javadocs for current project into ${doc.dir} -->
+    <target name="doc" depends="init" description="generate documentation">
+      <javadoc sourcepath="${src}" destdir="${doc}"/>
     </target>
 
     <!-- ///////////////////////////////////////////// -->
