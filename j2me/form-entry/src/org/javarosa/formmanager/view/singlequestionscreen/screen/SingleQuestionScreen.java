@@ -115,6 +115,11 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
     }
     
     public void configureProgressBar(int cur, int total) {
+        //Mar 17, 2015 - OQPS doesn't properly deal with progress bar 
+        //when repeats exist. In the short term, just let it stay full
+        //rather than crashing
+        if (cur >= total) { cur = total;}
+        
         if(progressBar == null) {
             //#style progressbar
             progressBar = new Gauge(null, false, total, cur);

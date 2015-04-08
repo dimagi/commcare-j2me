@@ -65,6 +65,12 @@
       <include name="**/resources/*.txt"/>
       <include name="**/resources/*.x*ml/"/>
     </fileset>
+  	
+  	<!-- Get the resource files which'll be used -->
+    <fileset id="jr.resources.test" dir="${basedir}/../../core/">
+      <include name="**/resources/*.txt"/>
+      <include name="**/resources/*.x*ml/"/>
+    </fileset>
 
     <mkdir dir="dist"/>
     <mkdir dir="build"/>
@@ -134,6 +140,7 @@
     <mkdir dir="buildTest/tmp"/>
     <copy todir="buildTest/tmp">
       <fileset refid="jr.resources"/>
+      <fileset refid="jr.resources.test"/>
       <flattenmapper/>
     </copy>
     <zip destfile="buildTest/jr-resource-jar.jar" basedir="buildTest/tmp"/>
