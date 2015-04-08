@@ -36,7 +36,6 @@ import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
 
 /**
- *
  * @author Phillip Mates
  */
 public class FormEntryControllerTest extends TestCase {
@@ -69,7 +68,7 @@ public class FormEntryControllerTest extends TestCase {
 
         aSuite.addTest(new FormEntryControllerTest("FormEntryController Test answerQuestion method", new TestMethod() {
             public void run(TestCase tc) {
-                ((FormEntryControllerTest) tc).testAnswerQuestion();
+                ((FormEntryControllerTest)tc).testAnswerQuestion();
             }
         }));
 
@@ -123,8 +122,8 @@ public class FormEntryControllerTest extends TestCase {
      * Check for response code signalling that the answer to a question passed
      * its constraint. Throw a useful error message if this isn't the case.
      *
-     * @param responseCode code returned from FormEntryController after answering a question
-     * @param questionText the descriptor text of the question answered
+     * @param responseCode   code returned from FormEntryController after answering a question
+     * @param questionText   the descriptor text of the question answered
      * @param answerAsString a string representation of the answer value for the question
      */
     private void expectToPassConstraint(int responseCode, String questionText, String answerAsString) {
@@ -144,8 +143,8 @@ public class FormEntryControllerTest extends TestCase {
      * Check for response code signalling that the answer to a question failed
      * its constraint. Throw a useful error message if this isn't the case.
      *
-     * @param responseCode code returned from FormEntryController after answering a question
-     * @param questionText the descriptor text of the question answered
+     * @param responseCode   code returned from FormEntryController after answering a question
+     * @param questionText   the descriptor text of the question answered
      * @param answerAsString a string representation of the answer value for the question
      */
     private void expectToFailConstraint(int responseCode, String questionText, String answerAsString) {

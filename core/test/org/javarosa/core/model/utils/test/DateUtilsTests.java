@@ -62,7 +62,7 @@ public class DateUtilsTests extends TestCase {
 
             dateSuite.addTest(new DateUtilsTests("DateUtilData Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
-                    ((DateUtilsTests) tc).testMaster(testID);
+                    ((DateUtilsTests)tc).testMaster(testID);
                 }
             }));
         }

@@ -85,7 +85,7 @@ public class FormDefTest extends TestCase {
             final int testID = i;
             aSuite.addTest(new FormDefTest("FormDef Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
-                    ((FormDefTest) tc).doTest(testID);
+                    ((FormDefTest)tc).doTest(testID);
                 }
             }));
         }

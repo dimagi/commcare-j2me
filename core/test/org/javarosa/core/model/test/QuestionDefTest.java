@@ -86,7 +86,7 @@ public class QuestionDefTest extends TestCase {
             final int testID = i;
             aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
-                    ((QuestionDefTest) tc).doTest(testID);
+                    ((QuestionDefTest)tc).doTest(testID);
                 }
             }));
         }
@@ -293,7 +293,7 @@ public class QuestionDefTest extends TestCase {
 
         public void formElementStateChanged(IFormElement q, int flags) {
             flag = true;
-            this.q = (QuestionDef) q;
+            this.q = (QuestionDef)q;
             this.flags = flags;
         }
 
