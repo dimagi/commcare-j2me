@@ -37,6 +37,7 @@ import org.javarosa.model.xform.XPathReference;
 import org.javarosa.xpath.IExprDataType;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
+import org.javarosa.xpath.XPathArityException;
 import org.javarosa.xpath.XPathTypeMismatchException;
 import org.javarosa.xpath.XPathUnhandledException;
 import org.javarosa.xpath.XPathUnsupportedException;
@@ -114,7 +115,8 @@ public class XPathEvalTest extends TestCase {
             if (!exceptionExpected) {
                 fail("Did not expect " + xpex.getClass() + " exception");
             } else if (xpex.getClass() != expected.getClass()) {
-                fail("Did not get expected exception type");
+                fail("Expected " + expected.getClass() +
+                        "exception type but was provided" + xpex.getClass());
             }
         }
     }
@@ -412,9 +414,15 @@ public class XPathEvalTest extends TestCase {
         testEval("(false() and true()) != true()", null, null, Boolean.TRUE);
         testEval("-3 < 3 = 6 >= 6", null, null, Boolean.TRUE);
         /* functions, including custom function handlers */
-        testEval("true(5)", null, null, new XPathUnhandledException());
-        testEval("number()", null, null, new XPathUnhandledException());
-        testEval("string('too', 'many', 'args')", null, null, new XPathUnhandledException());
+        testEval("weighted-checklist(5)", null, null, new XPathArityException());
+        testEval("weighted-checklist(5, 5, 5)", null, null, new XPathArityException());
+        testEval("substr('hello')", null, null, new XPathArityException());
+        testEval("join()", null, null, new XPathArityException());
+        testEval("max()", null, null, new XPathArityException());
+        testEval("min()", null, null, new XPathArityException());
+        testEval("true(5)", null, null, new XPathArityException());
+        testEval("number()", null, null, new XPathArityException());
+        testEval("string('too', 'many', 'args')", null, null, new XPathArityException());
         testEval("not-a-function()", null, null, new XPathUnhandledException());
         testEval("testfunc()", null, ec, Boolean.TRUE);
         testEval("add(3, 5)", null, ec, new Double(8.0));
