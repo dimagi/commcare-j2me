@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.view.widgets;
 
@@ -23,7 +23,7 @@ import de.enough.polish.ui.Item;
 
 /**
  * @author Clayton Sims
- * @date Jan 15, 2009 
+ * @date Jan 15, 2009
  *
  */
 public class EmptyWrapperComponent implements IWidgetComponentWrapper {

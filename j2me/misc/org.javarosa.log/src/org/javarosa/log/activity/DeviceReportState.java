@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.log.activity;
 
@@ -47,7 +47,7 @@ import org.xmlpull.v1.XmlSerializer;
  * which is used by multiple states. This one is a non-interactive
  * behind the scenes report, but it's likely that in the future there
  * will exist manual report sending which should be vaguely interactive
- * 
+ *
  * @author ctsims
  *
  */
@@ -55,24 +55,24 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
 
     public static boolean activated = false;
     private boolean force = false;
-    
+
     private static final int LOG_ROLLOVER_SIZE = 750;
-    
+
     public static final String XMLNS = "http://code.javarosa.org/devicereport";
-    
+
     private int reportFormat;
     private long now;
-    
+
     private int weeklyPending;
     private int dailyPending;
-    
+
     private StreamLogSerializer logSerializer;
     protected String fileNameWrittenTo;
-    
+
     protected Vector<String[]> errors;
-    
+
     /**
-     * Create a behind-the-scenes Device Reporting state which manages all operations 
+     * Create a behind-the-scenes Device Reporting state which manages all operations
      * without user intervention.
      */
     public DeviceReportState() {
@@ -81,11 +81,11 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
         //If logging is disabled, these methods default to skipping.
         this.weeklyPending = LogReportUtils.getPendingWeeklyReportType(now);
         this.dailyPending = LogReportUtils.getPendingDailyReportType(now);
-        
+
         //Pick the most verbose pending report.
         this.reportFormat = Math.max(dailyPending,weeklyPending);
     }
-    
+
     public DeviceReportState(int reportFormat) {
         now = new Date().getTime();
         this.reportFormat = reportFormat;
@@ -96,7 +96,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
     public void addSubReport(DeviceReportElement element) {
         this.elements.addElement(element);
     }
-    
+
     public void start() {
         //ensure that this activity is only run once per boot of the application
         if (activated && !force) {
@@ -105,7 +105,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             return;
         }
         activated = true;
-        
+
         if(reportFormat == LogReportUtils.REPORT_FORMAT_SKIP) {
             //If we've gotten 600 logger lines in less than 7 days,
             //it's a problem
@@ -115,7 +115,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             done();
             return;
         }
-        
+
         try {
             errors = new Vector();
             TransportMessage message = new StreamingHTTPMessage(getDestURL()) {
@@ -125,10 +125,10 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
                     createReport(serializer);
                 }
             };
-            
+
             logSerializer = null;
             Logger.log("device-report", "attempting to send");
-            
+
             if(force) {
                 //We should be in a background thread anyway
                 message = TransportService.sendBlocking(message);
@@ -137,14 +137,14 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             } else {
                 SenderThread s = TransportService.send(message);
                 s.addListener(this);
-                
-                //We have no way of knowing whether the message will get 
+
+                //We have no way of knowing whether the message will get
                 //off the phone successfully if it can get cached, the
                 //logs are in the transport layer's hands at that point.
                 if(message.isCacheable()) {
                     onSuccess();
                 }
-            
+
                 done();
             }
         } catch (Exception e) {
@@ -155,26 +155,26 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             done();
         }
     }
-    
+
     public int getIndicatorsProvided() {
         return ProgressIndicator.INDICATOR_STATUS;
     }
-    
+
     public String getCurrentLoadingStatus() {
         return "Sending Device Report";
     }
-    
+
     public double getProgress() {
         return -1;
     }
 
     public abstract String getDestURL();
-        
+
     private void createReport(XmlSerializer o) throws IOException {
         o.startDocument("UTF-8", false);
         o.setPrefix("", XMLNS);
         o.startTag(XMLNS, "device_report");
-        
+
 
         try {
         addHeader(o, errors);
@@ -198,24 +198,24 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             o.endDocument();
         }
     }
-    
+
     private void addHeader(XmlSerializer o, Vector errors) throws IOException {
         String deviceId = PropertyManager._().getSingularProperty(JavaRosaPropertyRules.DEVICE_ID_PROPERTY);
         String reportDate = DateUtils.formatDate(new Date(), DateUtils.FORMAT_HUMAN_READABLE_SHORT);
         String appVersion = PropertyManager._().getSingularProperty("app-version");
-        
+
         writeText(o, "device_id", deviceId);
         writeText(o, "report_date", reportDate);
         writeText(o, "app_version", appVersion);
     }
-    
+
     private void writeUserReport(XmlSerializer serializer, Vector errors) throws IllegalArgumentException, IllegalStateException, IOException {
         IStorageUtility<User> userStorage = StorageManager.getStorage(User.STORAGE_KEY);
         serializer.startTag(XMLNS, "user_subreport");
         try{
             for(IStorageIterator<User> it = userStorage.iterate(); it.hasMore();) {
                 User u = it.nextRecord();
-                try {                    
+                try {
                     writeUser(serializer, errors, u);
                 } catch(Exception e) {
                     logError(errors, new StatusReportException(e,"user_subreport","Error writing user : " + u.getUsername() + "|" + u.getUniqueId()));
@@ -224,9 +224,9 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
         } finally {
             serializer.endTag(XMLNS, "user_subreport");
         }
-        
+
     }
-    
+
     private void writeUser(XmlSerializer serializer, Vector errors, User user) throws IllegalArgumentException, IllegalStateException, IOException {
         serializer.startTag(XMLNS, "user");
         try{
@@ -237,7 +237,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             serializer.endTag(XMLNS, "user");
         }
     }
-    
+
     public static void writeText(XmlSerializer serializer, String element, String text) throws IllegalArgumentException, IllegalStateException, IOException {
         serializer.startTag(XMLNS,element);
         try {
@@ -250,7 +250,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
     }
 
 
-    
+
     private void createTransportSubreport(XmlSerializer o, Vector errors) throws IOException {
         o.startTag(XMLNS, "transport_subreport");
         o.startTag(XMLNS, "number_unsent");
@@ -264,7 +264,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             o.endTag(XMLNS, "transport_subreport");
         }
     }
-    
+
     private void createDeviceLogSubreport(XmlSerializer o, Vector errors) throws IOException {
         Logger.log("logsend", Logger._().logSize() + " entries");
         o.startTag(XMLNS, "log_subreport");
@@ -277,34 +277,34 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             o.endTag(XMLNS, "log_subreport");
         }
     }
-    
+
     private void createRmsSubreport(XmlSerializer o, Vector errors) throws IOException {
         o.startTag(XMLNS, "rms_subreport");
-        
+
         try {
         String[] utils = StorageManager.listRegisteredUtilities();
         for(int i = 0 ; i < utils.length ; ++ i) {
-            //TODO: This is super hacky, revisit it 
+            //TODO: This is super hacky, revisit it
             Object storage = StorageManager.getStorage(utils[i]);
             if(storage instanceof WrappingStorageUtility) {
                 storage = StorageUtilAccessor.getStorage((WrappingStorageUtility)storage);
             }
             if(storage instanceof XmlStatusProvider) {
                 XmlStatusProvider util = (XmlStatusProvider)storage;
-                try { 
+                try {
                     util.getStatusReport(o, XMLNS);
                 } catch(StatusReportException sre) {
                     logError(errors, sre);
                 }
             }
-        } 
-        } finally { 
+        }
+        } finally {
 
             o.endTag(XMLNS, "rms_subreport");
         }
     }
-    
-    
+
+
     private void createPropertiesSubreport(XmlSerializer o, Vector errors) throws IOException {
         o.startTag(XMLNS, "properties_subreport");
         try {
@@ -313,13 +313,13 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             IPropertyRules ruleset = (IPropertyRules)en.nextElement();
             for(Enumeration pen = ruleset.allowableProperties().elements(); pen.hasMoreElements() ;) {
                 String propertyName = (String)pen.nextElement();
-                
+
                 try {
                     Vector list = PropertyManager._().getProperty(propertyName);
                     if(list != null) {
                         String humanName = ruleset.getHumanReadableDescription(propertyName);
                         humanName = (!propertyName.equals(humanName) ? humanName : null);
-                        
+
                         String valueXml = "";
                         if(list.size() == 1) {
                             valueXml = (String)list.elementAt(0);
@@ -333,11 +333,11 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
                             }
                             valueXml += "}";
                         }
-                        
+
                         o.startTag(XMLNS, "property");
                         try {
                             o.attribute(null, "name", propertyName);
-                            
+
                             if (humanName != null) {
                                 writeText(o, "title", humanName);
                             }
@@ -355,7 +355,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             o.endTag(XMLNS, "properties_subreport");
         }
     }
-    
+
     private void logErrors(XmlSerializer o, Vector errors) throws IOException {
         o.startTag(XMLNS, "report_errors");
         try {
@@ -373,19 +373,19 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             o.endTag(XMLNS, "report_errors");
         }
     }
-    
+
     private void logError(Vector errors, StatusReportException sre) {
         if(sre.getParent() != null) {
             sre.getParent().printStackTrace();
         }
         errors.addElement(new String[] {sre.getReportName(), sre.getMessage()});
     }
-    
-    
+
+
 
     public void onChange(TransportMessage message, String remark) {
         // TODO Auto-generated method stub
-        
+
     }
     public void onStatusChange(TransportMessage message) {
         if(message.getStatus() == TransportMessageStatus.SENT) {
@@ -400,18 +400,18 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             //if we failed we need to determine if the logs are too big
             //and either dump to the fileystem or just clear the logs...
             determineLogFallback(LOG_ROLLOVER_SIZE);
-            
+
             //droos: maybe if this still fails after N attempts, then we start to trim the log size
         }
     }
-    
+
     private void onSuccess () {
         if (logSerializer != null) {
             logSerializer.purge();
         }
-        LogReportUtils.setPendingFromNow(now, this.dailyPending > 0, this.weeklyPending > 0);        
+        LogReportUtils.setPendingFromNow(now, this.dailyPending > 0, this.weeklyPending > 0);
     }
-    
+
     private void determineLogFallback(int size) {
         boolean fallback = false;
         //Figure out if we need to dump the logs because they've gotten
@@ -433,7 +433,7 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
             dumpLogFallback(!force);
         }
     }
-    
+
     private void dumpLogFallback(boolean purge) {
         String dumpRef = "";
         long diff = -1;
@@ -452,15 +452,15 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
                 } catch (IOException ioe) {
                     success = false;
                 }
-                
+
                 long now = System.currentTimeMillis();
-                
+
                 diff = now - then;
             }
         } catch(Exception e) {
             e.printStackTrace();
         }
-        
+
         if(purge) {
         try{
                 //No matter _what_, clear the logs if a logger is registered
@@ -468,27 +468,27 @@ public abstract class DeviceReportState implements State, TrivialTransitions, Tr
                     System.out.println("Logger is null. Must have failed to initailize");
                 }
                 Logger._().clearLogs(); //don't need to use LogPurger, since we're not in a background thread
-                
+
                 Logger.log("log", "archived logs to file: " + dumpRef);
                 if (!success) {
                     Logger.log("log", "archive failed! logs lost!!");
                 }
-                
+
                 if(diff != -1) {
                     Logger.log("log", "serialized  " + count + " logs to filesystem in (" + diff + "ms)");
                 }
-                
+
             } catch(Exception e) {
                 //If this fails it's a serious problem, but not sure what to do about it.
                 e.printStackTrace();
             }
         }
-        
+
         if(success) {
             fileNameWrittenTo = dumpRef;
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.core.util.TrivialTransitions#done()

@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.log.activity;
 
@@ -36,7 +36,7 @@ import org.javarosa.log.view.LogViewer;
 /**
  * @author Clayton Sims
  * @date Apr 13, 2009
- * 
+ *
  */
 public abstract class LogManagementState implements TrivialTransitions, State, HandledCommandListener {
 
@@ -51,7 +51,7 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.core.api.IActivity#start(org.javarosa.core.Context)
      */
     public void start() {
@@ -79,7 +79,7 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
      */
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command com, Displayable d) {
         if (d instanceof Alert) {
@@ -107,11 +107,11 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
     }
 
     /**
-     * 
+     *
      */
     private void sendLogs() {
         throw new RuntimeException("LogManagementState.sendLogs(): need to convert to new transport layer");
-        
+
 //        String logData = IncidentLogger._().serializeLogs(new FlatLogSerializer());
 //        ByteArrayPayload payload = new ByteArrayPayload(logData.getBytes(), "",
 //                IDataPayload.PAYLOAD_TYPE_TEXT);
@@ -122,7 +122,7 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
 //                    payload,
 //                    destination,
 //                    TransportManager._().getCurrentTransportMethod(), 0);
-//            
+//
 //            J2MEDisplay.showError("Sending Started", "Log Sending Started");
 //        } catch (IOException e) {
 //            J2MEDisplay.showError("Send Failed", "Log sending failure");
@@ -130,7 +130,7 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
     }
 
     /**
-     * 
+     *
      */
     private void viewLogs() {
         this.viewer.deleteAll();
@@ -142,11 +142,11 @@ public abstract class LogManagementState implements TrivialTransitions, State, H
     }
 
     /**
-     * 
+     *
      */
     private void clearLogs() {
         Logger._().clearLogs();
-        
+
         J2MEDisplay.showError("Logs Cleared", "Logs cleared succesfully");
     }
 

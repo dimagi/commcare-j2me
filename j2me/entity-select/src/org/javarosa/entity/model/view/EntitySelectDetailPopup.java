@@ -45,56 +45,56 @@ import de.enough.polish.ui.StringItem;
 
 public class EntitySelectDetailPopup<E> extends Form implements HandledCommandListener {
     EntitySelectController<E> psa;
-    
+
     int recordID;
     String[] headers;
     String[] data;
     String[] forms;
-    
+
     Command okCmd;
     Command backCmd;
-    
+
     Command[] phoneCallouts;
-    
+
     public EntitySelectDetailPopup (EntitySelectController<E> psa, Entity<E> entity, EntitySet<E> set) {
         //#style entityDetailScreen
         super(Localization.get("entity.detail.title", new String[] {entity.entityType()}));
-        
+
         this.psa = psa;
-        
+
         recordID = entity.getRecordID();
         headers = entity.getHeaders(true);
         data = entity.getLongFields(set.get(recordID));
         forms = entity.getLongForms(false);
-        
+
         phoneCallouts = new Command[data.length];
-        
+
         okCmd = new Command(Localization.get("command.ok"), Command.OK, 1);
         backCmd = new Command(Localization.get("command.back"), Command.BACK, 1);
         addCommand(okCmd);
-        addCommand(backCmd);    
+        addCommand(backCmd);
         setCommandListener(this);
-        
+
         loadData();
     }
-    
+
     public void loadData() {
         int scrHeight = J2MEDisplay.getScreenHeight(320);
         int scrWidth = J2MEDisplay.getScreenWidth(240);
 
         for (int i = 0; i < data.length; i++) {
-            
+
             if("".equals(data[i])) {
                 continue;
             }
-            
+
             //#style patselDetailContainer
             Container c = new Container(false);
-            
+
             //#style patselDetailLabel
             StringItem titleItem = new StringItem("", headers[i]);
             c.add(titleItem);
-            
+
             String text = data[i];
             if("image".equals(forms[i])){
                 try {
@@ -102,7 +102,7 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
                     Image im = null;
                     try {
                         im = Image.createImage(r.getStream());
-                    } catch(OutOfMemoryError ome ){ 
+                    } catch(OutOfMemoryError ome ){
                         ome.printStackTrace();
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
@@ -113,11 +113,11 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
                         int width = scrWidth-16;
                         //scale
                         int[] newDimension = ImageUtils.getNewDimensions(im, height, width);
-                        
+
                         if(newDimension[0] != height || newDimension[1] != width) {
                             im = ImageUtils.resizeImage(im, newDimension[1], newDimension[0]);
                         }
-                        
+
                         //#style patselDetailData
                         ImageItem imItem = new ImageItem(null,im, ImageItem.LAYOUT_CENTER | ImageItem.LAYOUT_VCENTER, "Cannot Display Image");
                         imItem.setLayout(Item.LAYOUT_CENTER);
@@ -138,9 +138,9 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
                 StringItem dataItem = new StringItem("", data[i]);
                 c.add(dataItem);
             }
-            
+
             this.append(c);
-            
+
             if("phone".equals(forms[i])) {
                 phoneCallouts[i] = new Command(Localization.get("command.call",new String[]{headers[i]}), Command.SCREEN, 3);
                 if(data[i] != "") {
@@ -149,14 +149,14 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
             }
         }
     }
-    
+
     public void show () {
         psa.setView(this);
     }
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command cmd, Displayable d) {
         if (d == this) {
@@ -171,18 +171,18 @@ public class EntitySelectDetailPopup<E> extends Form implements HandledCommandLi
                     }
                 }
             }
-        }        
+        }
     }
-    
+
     //exception wrapping is delegated to commandAction
     public boolean handleKeyReleased (int keyCode, int gameAction) {
         boolean ret = super.handleKeyReleased(keyCode, gameAction);
-        
+
         if (gameAction == Canvas.FIRE) {
             commandAction(okCmd, this);
             return true;
         }
-        
+
         return ret;
     }
 }

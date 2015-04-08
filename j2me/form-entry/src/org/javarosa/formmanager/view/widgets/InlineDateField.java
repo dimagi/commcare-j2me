@@ -34,11 +34,11 @@ import de.enough.polish.ui.CustomItem;
 public class InlineDateField extends CustomItem {
 
     // value is the current value of the field, and defaults to no selection (null).
-    private Calendar value; 
-    
+    private Calendar value;
+
     // sel is the current selection of the field, and defaults to today's date.
     private Calendar sel;
-    
+
     // Indicates if the month control is currently selected.
     private int selectionMode;
     private int repeatCount;
@@ -46,19 +46,19 @@ public class InlineDateField extends CustomItem {
     private final int NO_DATE = 2;
     private final int MONTH = 3;
     private final int YEAR = 4;
-    
+
     //private Command clearCmd;
-    
+
     private final String[] monthNames = {"January", "February",
         "March", "April", "May", "June", "July",
         "August", "September", "October", "November",
         "December"};
-    private final String[] dayNames = {"Sunday", "Monday", "Tuesday", 
+    private final String[] dayNames = {"Sunday", "Monday", "Tuesday",
         "Wednesday", "Thursday", "Friday", "Saturday"};
-    
+
     public InlineDateField(String label) {
         super("", null);
-        
+
         // Initialize value to null.
         value = null;
         // Initialize selection to current date.
@@ -66,7 +66,7 @@ public class InlineDateField extends CustomItem {
         selectionMode = DAYS;
         repeatCount = 0;
     }
-    
+
     public int getMinContentHeight() { return 10; }
     public int getMinContentWidth() { return 10; }
     public int getPrefContentHeight(int h) { Font f = Font.getDefaultFont(); return 8 * f.getHeight() + 6; }
@@ -75,11 +75,11 @@ public class InlineDateField extends CustomItem {
   // Handle key presses.
     public boolean handleKeyPressed(int keyCode, int gameAction) {
         try {
-        
+
             int curDay = sel.get(Calendar.DAY_OF_MONTH);
             int daysInMonth = DateUtils.daysInMonth(sel.get(Calendar.MONTH), sel.get(Calendar.YEAR));
             boolean changed = false;
-            
+
             // Handle four arrows.
             if (gameAction == Canvas.RIGHT) {
                 if (selectionMode == YEAR) {
@@ -96,7 +96,7 @@ public class InlineDateField extends CustomItem {
                         selectionMode = NO_DATE;
                         changed = true;
                     }
-                } 
+                }
             } else if (gameAction == Canvas.LEFT) {
                 if (selectionMode == YEAR) {
                     changeMonth(sel, -12);
@@ -119,7 +119,7 @@ public class InlineDateField extends CustomItem {
                 } else if (selectionMode == DAYS) {
                     if (curDay > 7)
                         curDay -= 7;
-                    else 
+                    else
                         selectionMode = MONTH;
                     changed = true;
                 } else if (selectionMode == NO_DATE) {
@@ -150,13 +150,13 @@ public class InlineDateField extends CustomItem {
                 } else if (selectionMode == DAYS) {
                     // If value is null, create a new instance.
                     if (value == null) value = Calendar.getInstance();
-                    
+
                     // Set the value to be the same as the selection.
                     value.setTime(sel.getTime());
                     changed = true;
                 }
             }
-    
+
             // Check if changed flag has been raised and repaint if it has.
             if (changed) {
                 sel.set(Calendar.DAY_OF_MONTH, curDay);
@@ -164,35 +164,35 @@ public class InlineDateField extends CustomItem {
                 return true;
             } else
                 return false;
-            
+
         } catch (Exception e) {
             Logger.die("gui-keydown", e);
             return false;
         }
     }
-    
+
     public boolean handleKeyRepeated(int keyCode, int gameAction) {
-        
+
         if ((selectionMode == YEAR || selectionMode == MONTH)
             && (gameAction == Canvas.LEFT || gameAction == Canvas.RIGHT)) {
 
             try {
-            
+
                 int repeatIncrement;
                 int diff;
-    
+
                 // Increment repeat count.
                 repeatCount++;
-            
+
                 // Determine number of years/months to increment/decrement by.
                 if (repeatCount % 2 == 0) repeatIncrement = 0;
                 else if (repeatCount <= 10) repeatIncrement = 1;
                 else repeatIncrement = 5;
-            
+
                 diff = (gameAction == Canvas.LEFT ? -1 : 1) * (selectionMode == YEAR ? 12 : 1) * repeatIncrement;
-                    
+
                 changeMonth(sel, diff);
-                
+
             } catch (Exception e) {
                 Logger.die("gui-keyrep", e);
             }
@@ -210,18 +210,18 @@ public class InlineDateField extends CustomItem {
         } else
             return false;
     }
-    
-    
+
+
     // Changes the month/year of the given Calendar by diff months.
     private void changeMonth(Calendar cal, int diff) {
         int n = cal.get(Calendar.YEAR) * 12 + cal.get(Calendar.MONTH) + diff;
         cal.set(Calendar.YEAR, n / 12);
         cal.set(Calendar.MONTH, n % 12);
     }
-    
+
     public Date getValue() { return value == null ? null : value.getTime(); }
-    
-    public void setValue(Date d) { 
+
+    public void setValue(Date d) {
         if (d == null) {
             value = null;
             sel = Calendar.getInstance();
@@ -232,7 +232,7 @@ public class InlineDateField extends CustomItem {
         }
         repaint();
     }
-    
+
     // Draw everything.
     public void paint(Graphics g, int width, int height) {
         int anchor = Graphics.HCENTER | Graphics.TOP;
@@ -252,13 +252,13 @@ public class InlineDateField extends CustomItem {
             int strWidth = font.stringWidth(y);
             g.drawRect(width / 2 - strWidth / 2 - 4, 1, strWidth + 6, boxHeight + 2);
         }
-        
+
         // Draw the year.
         g.drawString("<  " + y + "  >", width / 2, 1, anchor);
-        
+
         // Set the ypos for the month.
         int monthY = vSpacing + 2;
-        
+
         // Set the month.
         String m = monthNames[sel.get(Calendar.MONTH)];
 
@@ -267,33 +267,33 @@ public class InlineDateField extends CustomItem {
             int strWidth = font.stringWidth(m);
             g.drawRect(width / 2 - strWidth / 2 - 4, monthY, strWidth + 6, boxHeight + 2);
         }
-        
+
         // Draw the month.
         g.drawString("<  " + m + "  >", width / 2, monthY, anchor);
-        
+
         // Draw the day name abbreviations.
         int dayAbbrY = monthY + vSpacing + 1;
         for (int c = 0; c < 7; c++)
             g.drawString(dayNames[c].substring(0, 1), (int)((0.5 + c) * hSpacing), dayAbbrY, anchor);
-            
+
         // Set up dayCounter.
         int daysInMonth = DateUtils.daysInMonth(sel.get(Calendar.MONTH), sel.get(Calendar.YEAR));
         int dayCounter = -(getDayOfWeekOfFirstDayOfMonth() - 1);
-        
+
         // Draw numbers.
         for (int r = 0; r < 6; r++)
             for (int c = 0; c < 7; c++)
             {
                 // Draw number.
                 if (dayCounter >= 0 && dayCounter < daysInMonth) {
-                    
+
                     int boxX = (int)((0.5 + c) * hSpacing - boxWidth / 2);
                     int boxY = dayAbbrY + (1 + r) * vSpacing;
-                    
+
                     // If this is the currently selected day, draw an outline around it.
                     if (selectionMode == DAYS && dayCounter == sel.get(Calendar.DAY_OF_MONTH) - 1)
                         g.drawRect(boxX, boxY, boxWidth, boxHeight);
-                        
+
                     // If this is the chosen date, draw a background box and switch color to white.
                     if (value != null && dayCounter == value.get(Calendar.DAY_OF_MONTH) - 1
                         && sel.get(Calendar.MONTH) == value.get(Calendar.MONTH)
@@ -301,18 +301,18 @@ public class InlineDateField extends CustomItem {
                         g.fillRect(boxX + 1, boxY + 1, boxWidth - 1, boxHeight - 1);
                         g.setColor(255, 255, 255);
                     }
-                    
+
                     // Draw the number.
                     g.drawString(String.valueOf(dayCounter + 1), boxX + boxWidth / 2 + 1, boxY - 1, anchor);
-                    
+
                     // Ensure color is back to black.
                     g.setColor(0, 0, 0);
                 }
-                
+
                 // Increment day counter.
                 dayCounter++;
             }
-        
+
         // Set the no date string and height.
         String noDate = "No Date";
         int noDateY = dayAbbrY + 6 * vSpacing;
@@ -335,7 +335,7 @@ public class InlineDateField extends CustomItem {
         // Ensure color is back to black.
         g.setColor(0, 0, 0);
     }
-    
+
     private int getDayOfWeekOfFirstDayOfMonth() {
         Calendar first = Calendar.getInstance();
         first.setTime(sel.getTime());

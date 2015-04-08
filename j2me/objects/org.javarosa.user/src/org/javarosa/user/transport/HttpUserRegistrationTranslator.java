@@ -18,15 +18,15 @@ import org.kxml2.kdom.Element;
 import org.xmlpull.v1.XmlSerializer;
 
 public class HttpUserRegistrationTranslator implements UserRegistrationTranslator<SimpleHttpTransportMessage>{
-    
+
     public static final String XMLNS_ORR = "http://openrosa.org/http/response";
     public static final String XMLNS_UR = "http://openrosa.org/user/registration";
-    
+
     User user;
     String registrationUrl;
-    
+
     String prompt;
-    
+
     //A guess for the response OR API version (Used if none is provided by the server).
     String orApiVersion;
 
@@ -35,16 +35,16 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         this.registrationUrl = registrationUrl;
         this.orApiVersion = orApiVersion;
     }
-    
+
     /**
-     * Gets a user registration message that can be used to synchronously register a user. 
+     * Gets a user registration message that can be used to synchronously register a user.
      */
     public SimpleHttpTransportMessage getUserRegistrationMessage() throws IOException {
         SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getBodyFromRegistration(createXmlRegistrationDoc(user)), registrationUrl);
         message.setCacheable(false);
         return message;
     }
-    
+
     private byte[] getBodyFromRegistration(Document registration) {
          XmlSerializer ser = new KXmlSerializer();
          ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -52,7 +52,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
             ser.setOutput(bos, null);
             registration.write(ser);
         } catch (IOException e) {
-            // We don't actually want to ever fail on this report, 
+            // We don't actually want to ever fail on this report,
             e.printStackTrace();
         }
         //Note: If this gets too big, we can just write a wrapper to stream bytes one at a time
@@ -60,39 +60,39 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
          return bos.toByteArray();
 
     }
-    
+
     public User readResponse(SimpleHttpTransportMessage message) throws UnrecognizedResponseException {
         this.prompt = null;
-        
+
         byte[] responseBody = message.getResponseBody();
-        
+
         //Not actually a response
         if(responseBody == null) {
             throw new UnrecognizedResponseException("No response body");
         }
-        
+
         String responseVersion = message.getResponseProperties().getORApiVersion();
         if(responseVersion == null) {
-            //If there's no version from the server, assume it's the same as the 
+            //If there's no version from the server, assume it's the same as the
             //sent version
             responseVersion = orApiVersion;
         }
-        
+
         Document doc = CommUtil.getXMLResponse(responseBody);
         if (doc == null) {
             throw new UnrecognizedResponseException("can't parse xml");
         }
-        
+
         return readResponseDocument(doc);
     }
-    
+
     /**
-     * 
+     *
      * @param response
      * @return
      */
     private User readResponseDocument(Document response) throws UnrecognizedResponseException {
-        
+
         if("OpenRosaResponse".equals(response.getRootElement().getName()) && XMLNS_ORR.equals(response.getRootElement().getNamespace())) {
             return readResponseDocumentNew(response);
         }
@@ -100,7 +100,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         //do we want to look for some kind of 'ok' message? otherwise the server could send back
         //gibberish and we'd still interpret it as a successful registration. ideally, we should
         //require a certain 'ok' token, and throw the exception if it's not present
-        
+
         boolean updates = false;
         for(int i = 0; i < response.getChildCount(); ++i) {
             Object o = response.getChild(i);
@@ -127,8 +127,8 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         }
         return user;
     }
-    
-    
+
+
     //TODO: This should get updated to be part of a universal processor
     private User readResponseDocumentNew(Document doc) throws UnrecognizedResponseException {
         //Only relevant (for now!) for Form Submissions
@@ -138,29 +138,29 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         } catch(Exception e) {
             //No problem if not.
         }
-        
+
         try{
             Element e = doc.getRootElement().getElement(HttpUserRegistrationTranslator.XMLNS_UR,"Registration");
-            
-            try { 
+
+            try {
                 user.setUsername(e.getElement(HttpUserRegistrationTranslator.XMLNS_UR,"username").getText(0));
             } catch(Exception xmlParseError) {
                 //XML PARSING
             }
-            
-            try { 
+
+            try {
                 user.setPassword(e.getElement(HttpUserRegistrationTranslator.XMLNS_UR,"password").getText(0));
             } catch(Exception xmlParseError) {
                 //XML PARSING
             }
-            
-            try { 
+
+            try {
                 user.setUuid(e.getElement(HttpUserRegistrationTranslator.XMLNS_UR,"uuid").getText(0));
             } catch(Exception xmlParseError) {
                 //XML PARSING
             }
-            
-            try { 
+
+            try {
                 e = e.getElement(HttpUserRegistrationTranslator.XMLNS_UR,"user-data");
 
                 for(int j = 0; j < e.getChildCount(); ++j) {
@@ -182,24 +182,24 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         }
         return user;
     }
-    
+
     private Document createXmlRegistrationDoc(User u) {
         Document document = new Document();
         Element root = document.createElement(null,"registration");
         root.setNamespace(XMLNS_UR);
-        
+
         addChildWithText(root,"username",u.getUsername());
-        
+
         addChildWithText(root,"password",u.getPassword());
         addChildWithText(root,"uuid",u.getUniqueId());
-        
+
         addChildWithText(root,"date",DateUtils.formatDate(new Date(),DateUtils.FORMAT_ISO8601));
-        
+
         addChildWithText(root, "registering_phone_id",PropertyManager._().getSingularProperty(JavaRosaPropertyRules.DEVICE_ID_PROPERTY));
-        
-        
+
+
         Element userData =  root.createElement(null,"user_data");
-        
+
         for(Enumeration en = u.listProperties(); en.hasMoreElements() ;) {
             String property = (String)en.nextElement();
             Element data= userData.createElement(null,"data");
@@ -216,7 +216,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
         e.addChild(Element.TEXT, text);
         parent.addChild(Element.ELEMENT, e);
     }
-    
+
     public String getResponseMessageString() {
         return prompt;
     }
@@ -230,7 +230,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
     }
 
     public void prepareMessageForCache(SimpleHttpTransportMessage m) {
-        m.setCacheable(true);            
+        m.setCacheable(true);
     }
 
 }

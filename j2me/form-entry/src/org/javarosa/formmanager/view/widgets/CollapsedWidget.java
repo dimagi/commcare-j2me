@@ -27,17 +27,17 @@ import de.enough.polish.ui.StringItem;
 import de.enough.polish.ui.UiAccess;
 
 /**
- * Default read-only view of a question: a single frame with question QuestionDef (abbreviated) on the left/top and 
+ * Default read-only view of a question: a single frame with question QuestionDef (abbreviated) on the left/top and
  * question answer in readable-text form on the right/bottom.
  */
 public class CollapsedWidget implements IWidgetStyle {
     public static String UPDATE_TEXT = "Update";
-    
+
     private static final Command updateCommand =  new Command(UPDATE_TEXT, Command.ITEM, 1);
-    
+
     private StringItem prompt;
     private StringItem answer;
-    
+
     private boolean seekable = false;
 
     public CollapsedWidget () {
@@ -52,7 +52,7 @@ public class CollapsedWidget implements IWidgetStyle {
     public void initWidget (FormEntryPrompt fep, Container c) {
         //#style split
         UiAccess.setStyle(c); //it is dubious whether this works properly; Chatterbox.babysitStyles() takes care of this for now
-        
+
         //#style splitleft
         Container test = new Container(false);
         prompt = new StringItem(null, null);
@@ -62,9 +62,9 @@ public class CollapsedWidget implements IWidgetStyle {
         }
         test.add(new StringItem(null, null));
         test.add(prompt);
-        
+
         //#style splitright
-        answer = new StringItem(null, null); 
+        answer = new StringItem(null, null);
 
         //polish has a quirk where it really wants to impose the parent styling onto the first item in the
         //container, even if you explicitly override it with a new style. this null item takes the fall
@@ -73,9 +73,9 @@ public class CollapsedWidget implements IWidgetStyle {
         c.add(answer);
     }
 
-    public void refreshWidget (FormEntryPrompt fep, int changeFlags) {    
+    public void refreshWidget (FormEntryPrompt fep, int changeFlags) {
         prompt.setText(fep.getShortText());
-        
+
         String value = fep.getAnswerText();
         if (value != null) {
             answer.setText(value);
@@ -94,7 +94,7 @@ public class CollapsedWidget implements IWidgetStyle {
     public int widgetType() {
         return Constants.CONTROL_UNTYPED;
     }
-    
+
     public void setSeekable(boolean seekable) {
         this.seekable = seekable;
     }

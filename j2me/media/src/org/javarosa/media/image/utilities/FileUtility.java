@@ -27,29 +27,29 @@ import javax.microedition.io.file.FileConnection;
 import javax.microedition.io.file.FileSystemRegistry;
 
 /**
- * Utility class for dealing with files via the FileConnection API.  
+ * Utility class for dealing with files via the FileConnection API.
  * Since this breaks a lot of phones I'm keeping it separate from the core projects
  * by leaving it in the image namespace.  Really this might be its own project.
- * 
+ *
  * @author Cory Zue
  *
  */
 public class FileUtility
 {
     private static final String serviceName = "J2MEFileService";
-    
+
     public String getName()
     {
         return serviceName;
     }
-    
+
     /**
      * Create a directory from the path
      * @param path
      * @return true if the operation succeeded or the directory already existed
      */
     public static boolean createDirectory(String path) {
-        
+
         FileConnection directory = null;
         try {
             directory = (FileConnection) Connector.open(path);
@@ -65,7 +65,7 @@ public class FileUtility
         }
         return true;
     }
-    
+
 
     /**
      * Get a list of root directories on the device
@@ -74,7 +74,7 @@ public class FileUtility
     public static Enumeration getRootNames() {
         return FileSystemRegistry.listRoots();
     }
-    
+
     /**
      * Get the default root directory
      * @return
@@ -87,8 +87,8 @@ public class FileUtility
         }
         return rootName;
     }
-    
-    
+
+
     public static Enumeration listDirectory(String directoryPath) {
         FileConnection dir = null;
         System.out.println("Listing the contents of: " + directoryPath);
@@ -106,14 +106,14 @@ public class FileUtility
                 }};
         } finally {
             close(dir);
-            
+
         }
     }
 
-    
-    
+
+
     /**
-     * Create a file 
+     * Create a file
      * @param fullName
      * @param data
      * @return whether the file was created
@@ -126,27 +126,27 @@ public class FileUtility
             file = (FileConnection) Connector.open(fullName);
             if (!file.exists()) {
                 file.create();
-            }                
+            }
             fos = file.openOutputStream();
             fos.write(data);
-        } catch (IOException ex) {                
+        } catch (IOException ex) {
             handleException(ex);
             return false;
-        } 
-        finally {        
+        }
+        finally {
             close(fos);
             close(file);
         }
         return true;
     }
 
-    
+
     /**
      * Delete a file
      * @param fileName
      */
     public static boolean deleteFile(String fileName) {
-        
+
         FileConnection file = null;
         //boolean isSaved = false;
         try {
@@ -154,11 +154,11 @@ public class FileUtility
             if (file.exists()) {
                 file.delete();
                 return true;
-            }                
-        } catch (Exception ex) {                
+            }
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(file);
         }
         return false;
@@ -189,16 +189,16 @@ public class FileUtility
                 bytesRead += blockSize;
             }
             return toReturn;
-        } catch (Exception ex) {                
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(fis);
             close(file);
         }
         return null;
     }
-    
+
     /**
      * Gets file data from the OS
      * @param fileName
@@ -224,10 +224,10 @@ public class FileUtility
                 bytesRead += blockSize;
             }
             return toReturn;
-        } catch (Exception ex) {                
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(fis);
             close(file);
         }
@@ -246,17 +246,17 @@ public class FileUtility
             //this will not mess up our MD5sums.
             fis = file.openDataInputStream();
             return fis;
-        } catch (Exception ex) {                
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(file);
         }
         return null;
     }
 
 
-    
+
 
     /**
      * Gets the directory with the most recent changes below the one passed in.
@@ -270,7 +270,7 @@ public class FileUtility
         }
         String toReturn = directory;
         try {
-            
+
             Date latestFoundDate = getModifiedDate(directory);
             Enumeration filesBelow = listDirectory(directory);
             // this is not very efficient and could be significantly tweaked if
@@ -303,8 +303,8 @@ public class FileUtility
         return toReturn;
     }
 
-    
-    
+
+
     private static Date getModifiedDate(String fileName) throws IOException {
         FileConnection file = null;
         try {
@@ -348,7 +348,7 @@ public class FileUtility
 
 
     private static void close(InputStream stream) {
-        try {                    
+        try {
             if (stream != null) {
                 stream.close();
             }
@@ -358,13 +358,13 @@ public class FileUtility
 
 
     private static void close(OutputStream stream) {
-        try {                    
+        try {
             if (stream != null) {
                 stream.flush();
                 stream.close();
             }
         } catch (Exception e) {
-        }    
+        }
     }
 
     private static void close(FileConnection connection) {
@@ -373,10 +373,10 @@ public class FileUtility
                 connection.close();
         }
         catch(IOException e) {
-            
+
         }
     }
-    
+
     private static void handleException(Exception ex) {
         // TODO Auto-generated method stub
         System.out.println("Exception caught in FileUtility" + ex.getMessage());
@@ -390,10 +390,10 @@ public class FileUtility
         try {
             file = (FileConnection) Connector.open(fileName);
             return file.fileSize();
-        } catch (Exception ex) {                
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(file);
         }
         return -1;
@@ -402,7 +402,7 @@ public class FileUtility
 
 
 
-    
 
-    
+
+
 }

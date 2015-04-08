@@ -1,23 +1,23 @@
 /* License
- * 
+ *
  * Modifications by Cory Zue, Oct-Nov 2008
  * Copyright 1994-2004 Sun Microsystems, Inc. All Rights Reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *  
+ *
  *  * Redistribution of source code must retain the above copyright notice,
  *      this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistribution in binary form must reproduce the above copyright notice,
  *      this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- * 
+ *
  * Neither the name of Sun Microsystems, Inc. or the names of contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- *  
+ *
  * This software is provided "AS IS," without a warranty of any kind. ALL
  * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
  * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
@@ -29,10 +29,10 @@
  * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY
  * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE,
  * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- *  
+ *
  * You acknowledge that this software is not designed, licensed or intended
  * for use in the design, construction, operation or maintenance of any
- * nuclear facility. 
+ * nuclear facility.
  */
 
 package org.javarosa.media.image.view;
@@ -45,13 +45,13 @@ import javax.microedition.midlet.MIDlet;
 
 public class CameraCanvas extends Canvas {
     //private MIDlet mMIDlet;
-      
+
       public CameraCanvas(MIDlet midlet, VideoControl videoControl) {
         int width = getWidth();
         int height = getHeight();
-        
+
        // mMIDlet = midlet;
-        
+
         videoControl.initDisplayMode(VideoControl.USE_DIRECT_VIDEO, this);
         try {
           videoControl.setDisplayLocation(2, 2);
@@ -63,7 +63,7 @@ public class CameraCanvas extends Canvas {
         }
         videoControl.setVisible(true);
       }
-      
+
       public void paint(Graphics g) {
         int width = getWidth();
         int height = getHeight();
@@ -73,12 +73,11 @@ public class CameraCanvas extends Canvas {
         g.drawRect(0, 0, width - 1, height - 1);
         g.drawRect(1, 1, width - 3, height - 3);
       }
-      
+
          //no exception handling needed
       public void keyPressed(int keyCode) {
        // int action = getGameAction(keyCode);
-        //if (action == FIRE) 
+        //if (action == FIRE)
         //mSnapperMIDlet.capture();
       }
     }
- 

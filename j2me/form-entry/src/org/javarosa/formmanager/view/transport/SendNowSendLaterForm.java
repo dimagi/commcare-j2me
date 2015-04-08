@@ -33,13 +33,13 @@ public class SendNowSendLaterForm extends FramedForm {
     private ChoiceGroup cg;
 
     private boolean seenKeyPressed = false;
-    
+
     public Command commandOk = new Command(Localization.get("polish.command.ok"), Command.OK, 0);
-    
+
     public static final int SEND_NOW_DEFAULT = 0;
     public static final int SEND_LATER = 1;
     public static final int SEND_NOW_SPEC = 2;
-    
+
     public SendNowSendLaterForm(CommandListener activity, ItemStateListener itemListener) {
         this(activity, itemListener, false);
     }
@@ -49,13 +49,13 @@ public class SendNowSendLaterForm extends FramedForm {
         super(cacheAutomatically ? Localization.get("sending.view.done.title") : Localization.get("sending.view.submit"));
 
         setCommandListener(activity);
-        
+
         if(!cacheAutomatically) {
             //#style submitYesNo
             this.cg = new ChoiceGroup(Localization.get("sending.view.when"), Choice.EXCLUSIVE);
-            
+
             setItemStateListener(itemListener);
-            
+
             // NOTE! These Indexes are optimized to be added in a certain
             // order. _DO NOT_ change it without updating the static values
             // for their numerical order.
@@ -66,10 +66,10 @@ public class SendNowSendLaterForm extends FramedForm {
             //#style submitText
             StringItem message = new StringItem(null, Localization.get("sending.view.done"));
             this.append(message);
-            
+
             this.addCommand(commandOk);
         }
-        
+
 
         //TODO: Add this back in for admin users. Who took it out?
         //this.cg.append(Locale.get("sending.view.new"), null);// clients wont need to
@@ -83,7 +83,7 @@ public class SendNowSendLaterForm extends FramedForm {
     public int getCommandChoice() {
         return this.cg.getSelectedIndex();
     }
-    
+
     // fix bug in polish 2.1.0 (and possibly earlier) where keydown event answers the last question
     // in the form, and the keyup event from the same button press is passed to this view, automatically
     // selecting 'send now'

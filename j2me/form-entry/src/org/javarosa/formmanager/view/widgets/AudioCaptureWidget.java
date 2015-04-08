@@ -28,32 +28,32 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 
 /**
- * This class represents a widget to handle audio capture 
+ * This class represents a widget to handle audio capture
  * for the Chatterbox interface
- * 
+ *
  * @author Ndubisi Onuora
  *
  */
 
-public class AudioCaptureWidget extends ExpandedWidget 
+public class AudioCaptureWidget extends ExpandedWidget
 {
-    private PointerAnswerData data;    
+    private PointerAnswerData data;
     private StringItem label;
-    
+
     protected Item getEntryWidget(FormEntryPrompt prompt)
     {
         updateLabel();
         return label;
     }
-    
+
     //@Override
-    protected IAnswerData getWidgetValue() 
+    protected IAnswerData getWidgetValue()
     {
         return data;
     }
 
     //@Override
-    protected void updateWidget(FormEntryPrompt prompt) 
+    protected void updateWidget(FormEntryPrompt prompt)
     {
         // TODO Auto-generated method stub
     }
@@ -61,28 +61,28 @@ public class AudioCaptureWidget extends ExpandedWidget
     protected void setWidgetValue(Object o)
     {
         IDataPointer objectPointer = (IDataPointer)o;
-        if (objectPointer != null) 
+        if (objectPointer != null)
         {
             data = new PointerAnswerData((IDataPointer) o);
-        } 
-        else 
+        }
+        else
         {
             data = null;
         }
         updateLabel();
     }
-    
+
     //@Override
-    public int widgetType() 
+    public int widgetType()
     {
         // TODO Auto-generated method stub\
         return Constants.CONTROL_AUDIO_CAPTURE;
     }
-    
+
     private void updateLabel()
     {
         label = new StringItem("", "");
-        
+
         if(data == null)
         {
             label.setLabel("Use the menu to capture audio");

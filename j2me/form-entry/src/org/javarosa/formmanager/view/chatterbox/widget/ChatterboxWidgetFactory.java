@@ -39,23 +39,23 @@ import de.enough.polish.ui.ChoiceGroup;
 
 public class ChatterboxWidgetFactory {
     Chatterbox cbox;
-        
+
     private FormMultimediaController mediaController;
-    
+
     boolean readOnly = false;
-    
+
     WidgetFactory widgetFactory;
-    
+
     public ChatterboxWidgetFactory (Chatterbox cbox, FormMultimediaController mediaController) {
         this(cbox, mediaController, new WidgetFactory(true));
     }
-    
+
     public ChatterboxWidgetFactory (Chatterbox cbox, FormMultimediaController mediaController, WidgetFactory factory) {
         this.cbox = cbox;
         this.mediaController = mediaController;
         this.widgetFactory = factory;
     }
-    
+
     /**
      * NOTE: Only applicable for Questions right now, not any other kind of IFormElement
      * @param questionIndex
@@ -66,30 +66,30 @@ public class ChatterboxWidgetFactory {
     public ChatterboxWidget getWidget (FormIndex questionIndex, FormEntryModel model, int initViewState) {
         IWidgetStyle collapsedStyle = null;
         IWidgetStyleEditable expandedStyle = null;
-        
+
         FormEntryPrompt prompt = model.getQuestionPrompt(questionIndex);
-        
+
         int controlType = prompt.getControlType();
         int dataType = prompt.getDataType();
-        
+
         String appearanceAttr = prompt.getAppearanceHint();
-        
+
         collapsedStyle = new CollapsedWidget();
         ((CollapsedWidget)collapsedStyle).setSeekable(this.readOnly);
-        
+
         expandedStyle = widgetFactory.getWidget(controlType,dataType,appearanceAttr);
-        
+
         if (collapsedStyle == null || expandedStyle == null) {
             throw new IllegalStateException("No appropriate widget to render question");
         }
-        
+
         expandedStyle.registerMultimediaController(mediaController);
         ChatterboxWidget widget = new ChatterboxWidget(cbox, prompt, initViewState, collapsedStyle, expandedStyle);
         prompt.register(widget);
         return widget;
     }
-    
-    
+
+
     public ChatterboxWidget getNewRepeatWidget (FormIndex index, FormEntryModel model, Chatterbox cbox) {
         //GroupDef repeat = (GroupDef)f.explodeIndex(index).lastElement();
 
@@ -99,25 +99,25 @@ public class ChatterboxWidgetFactory {
             end = end.getNextLevel();
         }
         int multiplicity = end.getInstanceIndex();
-        
+
         FormEntryCaption p = model.getCaptionPrompt(index);
-        
+
         String label; //decide what text form to use.
-    
+
         label = p.getLongText();
         if(label == null){
             label = p.getShortText();
         }
-        
+
         String labelInner = (label == null || label.length() == 0 ? Localization.get("repeat.repitition") : label);
 
         String promptLabel = Localization.get((multiplicity > 0 ? "repeat.message.multiple" : "repeat.message.single"), new String[] {labelInner});
-        
+
         FakedFormEntryPrompt prompt = new FakedFormEntryPrompt(promptLabel,
                                             Constants.CONTROL_SELECT_ONE, Constants.DATATYPE_TEXT);
         prompt.addSelectChoice(new SelectChoice(null,Localization.get("yes"), "y", false));
         prompt.addSelectChoice(new SelectChoice(null,Localization.get("no"), "n", false));
-        
+
         return new ChatterboxWidget(cbox, prompt, ChatterboxWidget.VIEW_EXPANDED, new CollapsedWidget(), new SelectOneEntryWidget(ChoiceGroup.EXCLUSIVE));
     }
 
@@ -125,12 +125,12 @@ public class ChatterboxWidgetFactory {
         FormEntryCaption capt = model.getCaptionPrompt(index);
         Vector<String> choices = capt.getRepetitionsText();
         FormEntryCaption.RepeatOptions repopt = capt.getRepeatOptions();
-        
+
         FakedFormEntryPrompt prompt = new FakedFormEntryPrompt(repopt.header, Constants.CONTROL_SELECT_ONE, Constants.DATATYPE_TEXT);
         for (int i = 0; i < choices.size(); i++) {
             prompt.addSelectChoice(new SelectChoice(null, choices.elementAt(i), "rep" + i, false));
         }
-        
+
         if (repopt.add != null) {
             prompt.addSelectChoice(new SelectChoice(null, repopt.add, "new", false));
         }
@@ -138,28 +138,28 @@ public class ChatterboxWidgetFactory {
             prompt.addSelectChoice(new SelectChoice(null, repopt.delete, "del", false));
         }
         prompt.addSelectChoice(new SelectChoice(null, repopt.done, "done", false));
-        
+
         return new ChatterboxWidget(cbox, prompt, ChatterboxWidget.VIEW_EXPANDED, new CollapsedWidget(), new SelectOneEntryWidget(ChoiceGroup.EXCLUSIVE));
     }
 
     public ChatterboxWidget getRepeatDeleteWidget (FormIndex index, FormEntryModel model, Chatterbox cbox) {
         FormEntryCaption capt = model.getCaptionPrompt(index);
         Vector<String> choices = capt.getRepetitionsText();
-        
+
         FakedFormEntryPrompt prompt = new FakedFormEntryPrompt(capt.getRepeatOptions().delete_header, Constants.CONTROL_SELECT_ONE, Constants.DATATYPE_TEXT);
         for (int i = 0; i < choices.size(); i++) {
             prompt.addSelectChoice(new SelectChoice(null, choices.elementAt(i), "del" + i, false));
         }
-        
+
         return new ChatterboxWidget(cbox, prompt, ChatterboxWidget.VIEW_EXPANDED, new CollapsedWidget(), new SelectOneEntryWidget(ChoiceGroup.EXCLUSIVE));
     }
-    
+
     public ChatterboxWidget getNewLabelWidget(FormIndex index, String text){
         //Label Widget;
         FormEntryPrompt fakePrompt = new FakedFormEntryPrompt(text, Constants.CONTROL_LABEL, Constants.DATATYPE_TEXT);
         return new ChatterboxWidget(cbox, fakePrompt,ChatterboxWidget.VIEW_LABEL, new LabelWidget(), null);
     }
-        
+
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
     }

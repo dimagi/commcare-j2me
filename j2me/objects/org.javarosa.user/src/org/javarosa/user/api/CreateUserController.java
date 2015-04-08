@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.api;
 
@@ -27,10 +27,10 @@ public class CreateUserController implements HandledCommandListener {
 
     private AddUserTransitions transitions;
     private UserForm view;
-    
+
     public final static String PASSWORD_FORMAT_ALPHA_NUMERIC = "a";
     public final static String PASSWORD_FORMAT_NUMERIC = "n";
-    
+
     public final static Command CMD_SAVE = new Command(Localization.get("menu.Save"),
             Command.OK, 2);
     public final static Command CMD_CANCEL = new Command(Localization.get("menu.Exit"),
@@ -47,7 +47,7 @@ public class CreateUserController implements HandledCommandListener {
         this.view.setCommandListener(this);
 
     }
-    
+
     public void setTransitions(AddUserTransitions transitions) {
          this.transitions = transitions;
     }
@@ -55,10 +55,10 @@ public class CreateUserController implements HandledCommandListener {
     public void start() {
         J2MEDisplay.setView(view);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if(c.equals(CMD_SAVE)) {

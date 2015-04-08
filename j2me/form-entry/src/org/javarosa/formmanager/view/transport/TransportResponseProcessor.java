@@ -7,7 +7,7 @@ import org.javarosa.services.transport.TransportMessage;
  * via the transport layer. For example, each application's server may respond with a different payload
  * when a message is successfully sent, and you want your app to show a customized message using the
  * information in this payload.
- * 
+ *
  * @author Drew Roos
  *
  */
@@ -17,7 +17,7 @@ public interface TransportResponseProcessor {
     /**
      * Parse the response from the server after sending a message and construct output to
      * present to the user
-     * 
+     *
      * @param message
      * @return
      */
@@ -32,5 +32,5 @@ public interface TransportResponseProcessor {
      * @return A string containing all of the compiled responses if possible (hasSummativeResponse is true)
      */
     String getSummativeReseponse();
-    
+
 }

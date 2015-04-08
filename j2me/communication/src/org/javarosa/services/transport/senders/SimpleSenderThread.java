@@ -7,11 +7,11 @@ import org.javarosa.services.transport.impl.TransportException;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 
 /**
- * 
+ *
  * A SimpleSenderThread takes a Transporter object and calls its send method
  * repeatedly until it succeeds, over a given number of tries, with a given
  * delay between each try
- * 
+ *
  */
 public class SimpleSenderThread extends SenderThread {
 
@@ -50,8 +50,8 @@ public class SimpleSenderThread extends SenderThread {
         } else {
             Logger.log("send", message.getTag() + " success");
         }
-        
-        
+
+
         if (message.isCacheable()) {
             try {
                 this.messageStore.updateMessage(message);

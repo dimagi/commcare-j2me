@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.demo.applogic;
 
@@ -19,32 +19,32 @@ import org.javarosa.services.transport.TransportMessage;
  *
  */
 public abstract class JRDemoFormTransportState extends FormTransportState implements ISubmitStatusObserver {
-    int formId;    
+    int formId;
     boolean screenDestroyed = false;
     TransportMessage themessage;
-    
+
     public JRDemoFormTransportState(FormInstance tree, SubmissionProfile profile, int formId) throws IOException {
         this(JRDemoContext._().buildMessage(tree, profile), formId);
     }
 
     public JRDemoFormTransportState(TransportMessage message, int formId) {
         super(message);
-        themessage = message; 
+        themessage = message;
         this.formId = formId;
     }
-    
+
     public void start() {
         sender.setObserver(this);
         sender.sendData();
         J2MEDisplay.setView(screen);
     }
-    
+
     ///OVERRIDES
-    
-    
+
+
     /// IMPLEMENTATIONS FOR TRANSPORT STATUS
-    
-    
+
+
     public void onChange(TransportMessage message, String remark) {
         //Doesn't actually reflect a change in send/not sent
         if(!screenDestroyed && screen != null) {
@@ -57,25 +57,25 @@ public abstract class JRDemoFormTransportState extends FormTransportState implem
             screen.onStatusChange(message);
         }
         if(message.isSuccess()) {
-                
+
             //make sure we've got the right message
             if(message.equals(themessage) || message.getCacheIdentifier().equals(themessage.getCacheIdentifier())) {
                 IStorageUtility storage = StorageManager.getStorage(FormInstance.STORAGE_KEY);
-                
+
                 if(storage.exists(formId)) {
                     storage.remove(formId);
                 }
             }
         }
     }
-    
-    
+
+
     //DO NOT REMOVE. S40 BUG WORKAROUNDS
     public abstract void done();
-    public abstract void sendToBackground(); 
+    public abstract void sendToBackground();
 
     //Forward along to children
-    
+
     /**
      * Destroys the current status screen and cleans up any running
      * processes.

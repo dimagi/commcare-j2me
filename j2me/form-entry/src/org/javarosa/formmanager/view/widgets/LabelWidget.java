@@ -25,26 +25,26 @@ import de.enough.polish.ui.UiAccess;
 
 public class LabelWidget implements IWidgetStyle {
     private StringItem label;
-    
+
     public LabelWidget() {
         super();
     }
-    
+
     public void initWidget(FormEntryPrompt prompt, Container c) {
         //#style container
         UiAccess.setStyle(c); //it is dubious whether this works properly; Chatterbox.babysitStyles() takes care of this for now
-        
+
         //#style questiontext
         label = new StringItem(null, null);
-        
+
         c.add(label);
     }
 
     public void refreshWidget(FormEntryPrompt prompt, int changeFlags) {
-        // Clayton Sims - Feb 6, 2009 : Labels are now applicable for questions, so that we can pin 
+        // Clayton Sims - Feb 6, 2009 : Labels are now applicable for questions, so that we can pin
         // question texts for long questions.
         String caption = prompt.getLongText();
-        
+
         label.setText(caption);
     }
 
@@ -55,11 +55,11 @@ public class LabelWidget implements IWidgetStyle {
     public int widgetType() {
         return Constants.CONTROL_LABEL;
     }
-    
+
     public String toString() {
         return label.getText();
     }
-    
+
     public Object clone() {
         return new LabelWidget();
     }

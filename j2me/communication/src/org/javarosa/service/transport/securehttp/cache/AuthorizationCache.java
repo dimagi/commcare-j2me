@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.service.transport.securehttp.cache;
 
@@ -10,19 +10,19 @@ import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessag
 /**
  * The authorization cache contains records of authorization
  * headers which can then be re-used for futher authorization
- * at a later time. 
- * 
+ * at a later time.
+ *
  * @author ctsims
  *
  */
 public class AuthorizationCache {
-    
+
     private Vector<AuthCacheRecord> records;
     private static AuthorizationCache _;
-    
+
     private AuthorizationCache() {
     }
-    
+
     /**
      * Loads the cache and makes it available for use.
      * @return The Authorization Cache.
@@ -36,7 +36,7 @@ public class AuthorizationCache {
         //or something here...
         return _;
     }
-    
+
     /**
      * Caches the provided record for future use.
      * @param record
@@ -53,8 +53,8 @@ public class AuthorizationCache {
         }
         records.addElement(record);
     }
-    
-    /** 
+
+    /**
      * @param message
      * @return An authentication header for the provided message if one could
      * be created. Null if none could.

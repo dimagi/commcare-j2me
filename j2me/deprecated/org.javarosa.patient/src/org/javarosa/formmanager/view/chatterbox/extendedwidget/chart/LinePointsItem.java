@@ -20,8 +20,8 @@ package org.javarosa.formmanager.view.chatterbox.extendedwidget.chart;
 public final class LinePointsItem
 {
 
-    public int yCordPt; // Point 1 
-    public int xCordPt; // Point 2 
+    public int yCordPt; // Point 1
+    public int xCordPt; // Point 2
     private int colorOne;
     private int colorTwo;
     private int colorThree;
@@ -30,7 +30,7 @@ public final class LinePointsItem
 
     public LinePointsItem(String labelX, int yCordPt, int xCordPt, int colorOne, int colorTwo, int colorThree) {
         this.xCordPt = xCordPt;
-        this.yCordPt = yCordPt; 
+        this.yCordPt = yCordPt;
         this.colorOne = colorOne;
         this.colorTwo = colorTwo;
         this.colorThree = colorThree;
@@ -38,12 +38,12 @@ public final class LinePointsItem
         colorField = false;
         // System.out.println("LinePointsItem() --> xCordPt == > " + xCordPt + " yCordPt == " + yCordPt + " colorOne " + colorOne + " colorTwo " + colorTwo + " colorThree " + colorThree ) ;
     }
-    
+
     public boolean isColorField() {
         return colorField;
     }
 
-    
+
     public final int getColorOne() {
         return colorOne;
     }

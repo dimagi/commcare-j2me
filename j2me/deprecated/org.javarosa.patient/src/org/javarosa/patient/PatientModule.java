@@ -25,5 +25,5 @@ public class PatientModule implements IModule {
     public void registerModule() {
         StorageManager.registerStorage(Patient.STORAGE_KEY, Patient.class);
     }
-   
+
 }

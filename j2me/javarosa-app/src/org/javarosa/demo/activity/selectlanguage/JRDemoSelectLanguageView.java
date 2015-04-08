@@ -19,7 +19,7 @@ public class JRDemoSelectLanguageView extends List {
         map = new Hashtable<Integer, String>();
         for (int i = 0; i < languageList.length; i++) {
             if(!languageList[i].equals("default")) {
-                String display = languageList[i]; 
+                String display = languageList[i];
                 try { display = Localization.get(languageList[i]); } catch(Exception e) {/* No translation */}
                 map.put(new Integer(append(display,null)), languageList[i]);
             }
@@ -27,7 +27,7 @@ public class JRDemoSelectLanguageView extends List {
         addCommand(CMD_EXIT);
         addCommand(CMD_BACK);
     }
-    
+
     public String getSelected() {
         return map.get(new Integer(this.getSelectedIndex()));
     }

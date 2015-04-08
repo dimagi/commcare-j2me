@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.api;
 
@@ -16,15 +16,15 @@ public abstract class FormBatchTransportState implements FormBatchTransportState
     //not separating out state/controller/etc, as form send is already kind of a mess
 
 //    MultiSubmitStatusScreen screen;
-//    
+//
 //    FormSender sender;
-//    
+//
 //    FormBatchTransportStateTransitions transitions;
 //
 //    public FormBatchTransportState(Vector messages) {
 //        this(messages, null);
 //    }
-//    
+//
 //    public FormBatchTransportState(Vector messages, TransportResponseProcessor responder) {
 //        FormTransportViews views = new FormTransportViews(this, this, responder);
 //        sender = new FormSender(views,messages);
@@ -41,20 +41,20 @@ public abstract class FormBatchTransportState implements FormBatchTransportState
 //
 //    public void commandAction(Command c, Displayable d) {
 //        CrashHandler.commandAction(this, c, d);
-//    }  
+//    }
 //
 //    public void _commandAction(Command c, Displayable d) {
-//        //It's pretty atrocious, but I don't have time to completely rewrite this right now. 
+//        //It's pretty atrocious, but I don't have time to completely rewrite this right now.
 //        //Any exit from the multiscreen is just a bail.
 //        transitions.done();
 //    }
 //
 //    public void itemStateChanged(Item i) {
 //        CrashHandler.itemStateChanged(this, i);
-//    }  
+//    }
 //
 //    public void _itemStateChanged(Item i) {
-//        //It's pretty atrocious, but I don't have time to completely rewrite this right now. 
+//        //It's pretty atrocious, but I don't have time to completely rewrite this right now.
 //        //Any exit from the multiscreen is just a bail.
 //        transitions.done();
 //    }

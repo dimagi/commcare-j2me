@@ -28,7 +28,7 @@ import org.javarosa.media.image.utilities.FileUtility;
 
 /**
  * Implementation of the data pointer that represents an underlying file on the file system.
- * 
+ *
  * @author Cory Zue
  *
  */
@@ -42,7 +42,7 @@ public class FileDataPointer implements IDataPointer {
     public FileDataPointer() {
         //You shouldn't be calling this unless you are deserializing.
     }
-    
+
     /**
      * Create a FileDataPointer from a file name
      * @param fileName
@@ -50,7 +50,7 @@ public class FileDataPointer implements IDataPointer {
     public FileDataPointer(String fileName) {
         this.fileName = fileName;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.core.model.data.IDataPointer#getData()

@@ -31,7 +31,7 @@ import javax.bluetooth.UUID;
 
 
 /**
- * 
+ *
  * @author Daniel Kayiwa
  *
  */
@@ -68,7 +68,7 @@ public final class BluetoothClient implements DiscoveryListener {
 
     /** Optimization: keeps service search pattern. */
     private UUID[] uuidSet;
-    
+
     /** Reference to the bluetooth event listener. */
     private BluetoothClientListener eventListener;
 
@@ -105,22 +105,22 @@ public final class BluetoothClient implements DiscoveryListener {
         // and only known ones, that allows pictures
         uuidSet[1] = SERVER_UUID;
     }
-    
+
     public String getServiceUrl(){
         searchDevices();
         searchServices();
-        
+
         if(records.size() == 0)
             return null;
         //The first service is enough.
         return ((ServiceRecord)this.records.elementAt(0)).getConnectionURL(ServiceRecord.NOAUTHENTICATE_NOENCRYPT, false);
     }
-    
+
     /**
      * Invoked by system when a new remote device is found -
      * remember the found device.
      */
-    public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {       
+    public void deviceDiscovered(RemoteDevice btDevice, DeviceClass cod) {
         // same device may found several times during single search
         if (devices.indexOf(btDevice) == -1)
             devices.addElement(btDevice);
@@ -219,7 +219,7 @@ public final class BluetoothClient implements DiscoveryListener {
             System.err.println("Can't start inquiry now: " + e);
             return true;
         }
-    
+
         try {
             synchronized(this){
                 wait(); // until devices are found
@@ -262,7 +262,7 @@ public final class BluetoothClient implements DiscoveryListener {
             return false;
         }
 
-       
+
         return true;
     }
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.services.transport.impl;
 
@@ -22,7 +22,7 @@ import org.javarosa.services.transport.TransportMessage;
  *
  */
 public class TransportMessageSerializationWrapper implements SerializationWrapper, IMetaData {
-    
+
     TransportMessage m;
 
     public Class baseType() {
@@ -57,7 +57,7 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.write(out, new ExtWrapTagged(m));
     }
-    
+
 
     public Hashtable getMetaData() {
         Hashtable meta = new Hashtable();
@@ -69,7 +69,7 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
         if(fieldName.equals("cache-id")) {
             return m.getCacheIdentifier();
         }
-        throw new IllegalArgumentException("No metadata field " + fieldName  + " for stored transport messages"); 
+        throw new IllegalArgumentException("No metadata field " + fieldName  + " for stored transport messages");
     }
 
     public String[] getMetaDataFields() {
@@ -77,7 +77,7 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
     }
 
     public void clean() {
-        m = null;        
+        m = null;
     }
 
 }

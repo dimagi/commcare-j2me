@@ -15,8 +15,8 @@
  */
 
 /**
- * An Activity that represents the capture of audio. 
- * 
+ * An Activity that represents the capture of audio.
+ *
  * @author Ndubisi Onuora
  *
  */

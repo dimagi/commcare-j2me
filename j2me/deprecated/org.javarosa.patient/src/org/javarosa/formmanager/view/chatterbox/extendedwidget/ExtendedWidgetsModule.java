@@ -31,19 +31,19 @@ import org.javarosa.model.GraphDataGroup;
 import org.javarosa.xform.parse.XFormParser;
 
 public class ExtendedWidgetsModule implements IModule {
-    
+
     public void registerModule() {
-        
+
         XFormParser.addDataType("recordset", GraphDataGroup.GRAPH_DATA_ID);
-        XFormParser.addModelPrototype(GraphDataGroup.GRAPH_DATA_ID, new GraphDataGroup());        
-        
+        XFormParser.addModelPrototype(GraphDataGroup.GRAPH_DATA_ID, new GraphDataGroup());
+
         XFormParser.registerControlType("table", ImmunizationWidget.CONTROL_IMMUNIZATION);
         //XFormParser.addDataType("jr:vaccinationdata", Immunization.)
-        
+
         String[] classes = {
                 "org.javarosa.model.GraphDataGroup",
         };
-        
+
         PrototypeManager.registerPrototypes(classes);
         ByteArrayOutputStream bis = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(bis);
@@ -61,7 +61,7 @@ public class ExtendedWidgetsModule implements IModule {
             e.printStackTrace();
             throw new RuntimeException("FUCK2");
         }
-        
+
     }
 
 }

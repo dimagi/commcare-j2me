@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.utility;
 
@@ -8,7 +8,7 @@ package org.javarosa.user.utility;
  *
  */
 public class MalformedUserModelException extends Exception {
-    
+
     public MalformedUserModelException(String message) {
         super(message);
     }

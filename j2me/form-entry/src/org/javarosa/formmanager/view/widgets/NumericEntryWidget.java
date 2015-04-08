@@ -33,22 +33,22 @@ import de.enough.polish.ui.TextField;
 public class NumericEntryWidget extends TextEntryWidget {
     private boolean isDecimal;
     IAnswerData template;
-    
+
     public NumericEntryWidget() {
         this(false, new IntegerData());
     }
-    
+
     public NumericEntryWidget(boolean dec, IAnswerData template) {
         super();
         this.isDecimal = dec;
         this.template = template;
     }
-    
+
     protected Item getEntryWidget (FormEntryPrompt prompt) {
         TextField tf = textField();
         int clearNumberType = tf.getConstraints() & ~(TextField.DECIMAL + TextField.NUMERIC);
         tf.setConstraints( clearNumberType | (isDecimal ? TextField.DECIMAL : TextField.NUMERIC));
-        
+
         return super.getEntryWidget(prompt);
     }
 
@@ -56,7 +56,7 @@ public class NumericEntryWidget extends TextEntryWidget {
         template.setValue(o);
         super.setWidgetValue(template.uncast().getString());
     }
-    
+
     protected IAnswerData getWidgetValue () throws InvalidDataException {
         String s = textField().getString().trim();
         if (s == null || s.equals("")) {
@@ -79,27 +79,27 @@ public class NumericEntryWidget extends TextEntryWidget {
             throw new InvalidDataException(message, new UncastData(s));
         }
     }
-    
+
     protected IAnswerData getAnswerTemplate() {
         return template;
     }
-    
+
     protected int guessMaxStringLength(FormEntryPrompt prompt) throws UnpivotableExpressionException{
         //Awful. Need factory for this
         //TODO: Negative numbers?
         if(template instanceof IntegerData) {
             IntegerRangeHint hint = new IntegerRangeHint();
             prompt.requestConstraintHint(hint);
-            
+
             IntegerData maxexample = hint.getMax();
             IntegerData minexample = hint.getMin();
-            
+
             if(minexample != null) {
                 if(((Integer)minexample.getValue()).intValue() < 0) {
-                    throw new UnpivotableExpressionException(); 
+                    throw new UnpivotableExpressionException();
                 }
             }
-            
+
             if(maxexample != null) {
                 int max = ((Integer)maxexample.getValue()).intValue();
                 if(!hint.isMaxInclusive()) {

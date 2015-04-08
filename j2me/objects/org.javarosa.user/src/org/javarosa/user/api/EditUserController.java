@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.api;
 
@@ -21,19 +21,19 @@ import org.javarosa.user.view.UserForm;
  *
  */
 public class EditUserController implements HandledCommandListener {
-    
+
     EditUserTransitions transitions;
-    
+
     UserForm view;
-    
+
     public final static Command CMD_SAVE = new Command(Localization.get("menu.Save"), Command.OK, 2);
     public final static Command CMD_CANCEL = new Command(Localization.get("menu.Exit"), Command.EXIT, 2);
 
-    
+
     public EditUserController(String passwordFormat, User userToEdit) {
         this(passwordFormat, userToEdit, null);
     }
-    
+
     public EditUserController(String passwordFormat, User userToEdit, IUserDecorator decorator) {
         //take this out into an activity
         view = new UserForm("Edit User", decorator);
@@ -41,7 +41,7 @@ public class EditUserController implements HandledCommandListener {
         view.addCommand(CMD_SAVE);
         view.addCommand(CMD_CANCEL);
         view.setCommandListener(this);
-        
+
         view.loadUser(userToEdit);
     }
 
@@ -55,7 +55,7 @@ public class EditUserController implements HandledCommandListener {
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if(c.equals(CMD_SAVE)) {

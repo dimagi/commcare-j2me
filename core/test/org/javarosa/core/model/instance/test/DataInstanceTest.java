@@ -84,7 +84,7 @@ public class DataInstanceTest extends TestCase {
 
         aSuite.addTest(new DataInstanceTest("Data Instance Test", new TestMethod() {
             public void run(TestCase tc) {
-                ((DataInstanceTest) tc).doTests();
+                ((DataInstanceTest)tc).doTests();
             }
         }));
 
@@ -122,7 +122,7 @@ public class DataInstanceTest extends TestCase {
     /**
      * Evaluate an xpath query expression into a reference.
      *
-     * @param expr xpath expression
+     * @param expr     xpath expression
      * @param eval_ctx contextual information needed to evaluate the expression
      */
     public TreeReference exprToRef(String expr, EvaluationContext eval_ctx) {

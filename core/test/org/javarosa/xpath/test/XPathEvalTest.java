@@ -65,7 +65,7 @@ public class XPathEvalTest extends TestCase {
 
         aSuite.addTest(new XPathEvalTest("XPath Evaluation Test", new TestMethod() {
             public void run(TestCase tc) {
-                ((XPathEvalTest) tc).doTests();
+                ((XPathEvalTest)tc).doTests();
             }
         }));
 
@@ -103,8 +103,8 @@ public class XPathEvalTest extends TestCase {
             if (exceptionExpected) {
                 fail("Expected exception, expression : " + expr);
             } else if ((result instanceof Double && expected instanceof Double)) {
-                Double o = ((Double) result).doubleValue();
-                Double t = ((Double) expected).doubleValue();
+                Double o = ((Double)result).doubleValue();
+                Double t = ((Double)expected).doubleValue();
                 if (Math.abs(o - t) > tolerance) {
                     fail("Doubles outside of tolerance [" + o + "," + t + " ]");
                 }
@@ -125,7 +125,7 @@ public class XPathEvalTest extends TestCase {
         EvaluationContext ec = getFunctionHandlers();
 
         FormInstance instance = createTestInstance();
-        
+
         /* unsupporteds */
         testEval("/union | /expr", null, null, new XPathUnsupportedException());
         testEval("/descendant::blah", null, null, new XPathUnsupportedException());
@@ -541,15 +541,15 @@ public class XPathEvalTest extends TestCase {
         testEval("count(/data/strtest[@val = 'a'])", instance, null, new Double(1));
         testEval("count(/data/strtest[@val = 2])", instance, null, new Double(0));
         testEval("count(/data/strtest[@val = /data/string])", instance, null, new Double(1));
-        
 
-        
-        
-        
+
+
+
+
         /* fetching from model */
 //        testEval("/", dm1, null, "");
 //        testEval("/non-existent", dm1, null, "");
-//        
+//
 //        addDataRef(dm1, "/data/test", null);
 //        addNodeRef(dm1, "/empty-group", false);
 //        testEval("/", dm1, null, "");
@@ -558,7 +558,7 @@ public class XPathEvalTest extends TestCase {
 //        testEval("/empty-group/undefined", dm1, null, "");
 //        testEval("/data/test", dm1, null, "");
 //        testEval("/data/test/too-deep", dm1, null, "");
-//        
+//
 
 //        addDataRef(dm1, "/data/date", new DateData(DateUtils.getDate(2006, 6, 13)));
 //
@@ -570,7 +570,7 @@ public class XPathEvalTest extends TestCase {
 //        addDataRef(dm1, "/data/select-one", sod);
 //        addDataRef(dm1, "/data/select-multi", new SelectMultiData(sv));
 //        addDataRef(dm1, "/data/custom", new CustomAnswerData());
-//                
+//
 //        testEval("/data/string", dm1, null, "string");
 //        testEval("/data/int", dm1, null, new Double(17.0));
 //        testEval("/data/date", dm1, null, DateUtils.getDate(2006, 6, 13));
@@ -614,12 +614,12 @@ public class XPathEvalTest extends TestCase {
             if (!(predicates.elementAt(0) instanceof XPathNumericLiteral)) {
                 throw new IllegalArgumentException("only position [] predicates allowed");
             }
-            double d = ((XPathNumericLiteral) predicates.elementAt(0)).d;
-            if (d != (double) ((int) d)) {
+            double d = ((XPathNumericLiteral)predicates.elementAt(0)).d;
+            if (d != (double)((int)d)) {
                 throw new IllegalArgumentException("invalid position: " + d);
             }
 
-            int multiplicity = (int) d - 1;
+            int multiplicity = (int)d - 1;
             if (treeRef.getMultiplicity(i) != TreeReference.INDEX_UNBOUND) {
                 throw new IllegalArgumentException("Cannot inline already qualified steps");
             }
@@ -651,12 +651,12 @@ public class XPathEvalTest extends TestCase {
     private QuestionDef getSelectQuestion (boolean multi) {
         QuestionDef q = new QuestionDef(1, "blah",
                 multi ? Constants.CONTROL_SELECT_MULTI : Constants.CONTROL_SELECT_ONE);
-        
+
         q.addSelectItem("choice 1", "val1");
         q.addSelectItem("choice 2", "val2");
         q.addSelectItem("choice 3", "val3");
         q.addSelectItem("choice 4", "val4");
-        
+
         return q;
     }
     */
@@ -757,7 +757,7 @@ public class XPathEvalTest extends TestCase {
             }
 
             public Object eval(Object[] args, EvaluationContext ec) {
-                return new Double(((Double) args[0]).doubleValue() + ((Double) args[1]).doubleValue());
+                return new Double(((Double)args[0]).doubleValue() + ((Double)args[1]).doubleValue());
             }
         });
 
@@ -939,7 +939,7 @@ public class XPathEvalTest extends TestCase {
             }
 
             public Object eval(Object[] args, EvaluationContext ec) {
-                return ((Boolean) args[0]).booleanValue() ? new CustomSubType() : new CustomType();
+                return ((Boolean)args[0]).booleanValue() ? new CustomSubType() : new CustomType();
             }
         });
 
@@ -992,7 +992,7 @@ public class XPathEvalTest extends TestCase {
             int lastIndex = Math.max(fullName.lastIndexOf('.'), fullName.lastIndexOf('$'));
             sb.append(fullName.substring(lastIndex + 1, fullName.length()));
             sb.append(":");
-            sb.append(oa[i] instanceof Date ? DateUtils.formatDate((Date) oa[i], DateUtils.FORMAT_ISO8601) : oa[i].toString());
+            sb.append(oa[i] instanceof Date ? DateUtils.formatDate((Date)oa[i], DateUtils.FORMAT_ISO8601) : oa[i].toString());
             if (i < oa.length - 1)
                 sb.append(",");
         }
@@ -1073,7 +1073,7 @@ public class XPathEvalTest extends TestCase {
         }
 
         public Object eval(Object[] args, EvaluationContext ec) {
-            val = (String) args[0];
+            val = (String)args[0];
             return Boolean.TRUE;
         }
     };

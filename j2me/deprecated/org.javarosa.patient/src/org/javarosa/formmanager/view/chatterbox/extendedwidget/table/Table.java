@@ -17,9 +17,9 @@
 
 package org.javarosa.formmanager.view.chatterbox.extendedwidget.table;
 /**
- *  
+ *
  * @author Brotecs
- * @date 
+ * @date
  **/
 
 import java.util.Calendar;
@@ -45,7 +45,7 @@ import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 
 public class Table extends CustomItem implements HandledPItemCommandListener {
-    
+
     private static final Command CMD_EDIT = new Command("OK", Command.OK, 1);
     ///private static final Command CMD_DATE_OK = new Command("OK", Command.OK, 1);
 
@@ -63,7 +63,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     public static long[][] recorddate = new long[6][6];
     public static int[][] selectedindex= new int [6][6];
     public static boolean[][] availablecells = new boolean [6][6];
-    // Traversal stuff     
+    // Traversal stuff
     // indicating support of horizontal traversal internal to the CustomItem
     boolean horz;
 
@@ -77,21 +77,21 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     private StringItem question3=  new StringItem("", "3:Unknown. ");
     private StringItem question4 = new StringItem("", "4:Specify Date Given: ");
     public DateField datefield = new DateField("", DateField.DATE);
-    
+
     private Container container;
-    
+
     private boolean isStringitem=false;
     private boolean isDatefield=false;
-    
+
     //private int currentrow;
     //private int currentcol;
-    
+
     public int length=25;
-    
+
     public Table(String title) {
         this(title, null);
     }
-    
+
     public Table(String title, Container container) {
         super(title);
         this.container = container;
@@ -104,12 +104,12 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
        // getRecord();
         datefield.setDate(new Date());
     }
-    
-    public void setData(ImmunizationData data) 
+
+    public void setData(ImmunizationData data)
     {
         Enumeration en = data.getImmunizationRows().elements();
         int currentRow = 0;
-        
+
         while(en.hasMoreElements()) {
             ImmunizationRow row = (ImmunizationRow)en.nextElement();
             for(int i = 0; i < 5 ; ++i ) {
@@ -131,10 +131,10 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
             currentRow++;
         }
     }
-    
+
     public ImmunizationData getData() {
         ImmunizationData data = new ImmunizationData();
-        
+
         //First row is for labels
         for(int i = 1 ; i < rows ; ++i ) {
             ImmunizationRow row = new ImmunizationRow(this.data[i][0]);
@@ -142,16 +142,16 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                 if(selectedindex[i][j] == ExtensionConstants.VACCINATION_GIVEN_ON_DATE) {
                     row.setDose(j-1, selectedindex[i][j], new Date(recorddate[i][j]));
                 } else {
-                    row.setVaccinationDose(j-1, selectedindex[i][j]);    
+                    row.setVaccinationDose(j-1, selectedindex[i][j]);
                 }
             }
             data.addRow(row);
         }
-        
+
         return data;
     }
-    
-    
+
+
     protected int getMinContentHeight() {
         return (rows * dy) + 1;
     }
@@ -208,15 +208,15 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                 }
             }
         }
-        
-        
-       
+
+
+
     }
-    
-    
+
+
 
     protected boolean traverse(int dir, int viewportWidth, int viewportHeight, int[] visRect_inout) {
-        
+
         if (horz && vert) {
             switch (dir) {
             case Canvas.DOWN:
@@ -228,7 +228,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                         currentY++;
                         repaint(currentX * dx, (currentY - 1) * dy, dx, dy);
                         repaint(currentX * dx, currentY * dy, dx, dy);
-                        
+
                     } else {
                         location = LOWER;
 
@@ -327,11 +327,11 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
         }
 
        setInformation();
- 
+
        visRect_inout[0] = currentX;
        visRect_inout[1] = currentY;
        visRect_inout[2] = dx;
-       visRect_inout[3] = dy; 
+       visRect_inout[3] = dy;
        return true;
     }
     private void setInformation()
@@ -352,7 +352,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
              setOptions();
          }
     }
-    
+
     public void removeStringItem()
     {
         container.remove(option);
@@ -382,7 +382,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
     }
     public void keyPressed(int code) {
         try {
-        
+
             if(availablecells[currentY][currentX]) {
                 switch(code)
                 {
@@ -397,7 +397,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                         selectedindex[currentY][currentX] = 1;
                         checkdatefield();
                         break;
-                
+
                     case Canvas.KEY_NUM2:
                         question2.setLabel("");
                         question2.setText("2:No vaccination. ");
@@ -429,7 +429,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                         question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
                         question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
                         Calendar calendar = Calendar.getInstance();
-                            calendar.setTime(new Date());  
+                            calendar.setTime(new Date());
                             calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH)-6);
                             calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR));
                             calendar.set(Calendar.DAY_OF_MONTH,calendar.get(Calendar.DAY_OF_MONTH));
@@ -443,11 +443,11 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
                             break;
                 }
             }
-            
+
         } catch (Exception e) {
             Logger.die("gui-keydown", e);
         }
-        
+
     }
     public void addOptions()
     {
@@ -465,7 +465,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
         question2.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
         question3.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
         question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_PLAIN,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
-        
+
         switch(selectedindex[currentY][currentX]) {
         case 1:
             question1.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
@@ -479,7 +479,7 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
         case 4:
             question4.setFont(Font.getFont(Font.FACE_SYSTEM,Font.STYLE_BOLD,Font.SIZE_MEDIUM)); //get specific Font for ur 'text'
             break;
-            
+
         }
     }
     public void setOptions()
@@ -500,11 +500,11 @@ public class Table extends CustomItem implements HandledPItemCommandListener {
 
     public void commandAction(Command c, Item i) {
         CrashHandler.commandAction(this, c, i);
-    }  
+    }
 
     public void _commandAction(Command c, Item i) {
         if (c == CMD_EDIT) {
-            
+
         }
    }
     public String[][] getText()

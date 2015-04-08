@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
@@ -15,18 +15,18 @@ import de.enough.polish.ui.StyleSheet;
 
 /**
  * @author melissa
- * 
+ *
  */
 public class SingleQuestionScreenFactory {
-    
+
     WidgetFactory widgetFactory;
     FormMultimediaController mediacontroller;
     JrFormEntryController fec;
-    
+
     public SingleQuestionScreenFactory(JrFormEntryController fec, FormMultimediaController controller) {
         this(fec, controller, new WidgetFactory(false));
     }
-    
+
     public SingleQuestionScreenFactory(JrFormEntryController fec, FormMultimediaController controller, WidgetFactory factory) {
         this.widgetFactory = factory;
         this.mediacontroller = controller;
@@ -35,7 +35,7 @@ public class SingleQuestionScreenFactory {
 
     /**
      * Return an appropriate SingleQuestionScreen to display the prompt
-     * 
+     *
      * @param binding
      * @param fromFormView
      * @param goingForward
@@ -56,20 +56,20 @@ public class SingleQuestionScreenFactory {
                 .getStyle(fromFormView || goingForward ? org.javarosa.formmanager.view.singlequestionscreen.Constants.STYLE_TRANSITION_RIGHT
                         : org.javarosa.formmanager.view.singlequestionscreen.Constants.STYLE_TRANSITION_LEFT);
 
-        
+
         IWidgetStyleEditable widget = widgetFactory.getWidget(contType, qType, prompt.getAppearanceHint());
-        
+
         if(widget == null) {
             throw new IllegalStateException("No appropriate screen to render question");
         }
-        
+
         boolean isMinimal = "minimal".equals(prompt.getAppearanceHint());
-        
+
         fec.setMinimal(isMinimal);
-        
+
         widget.registerMultimediaController(mediacontroller);
         screenToReturn = new SingleQuestionScreen(prompt, groupTitle, widget, fec, style);
-        
+
         prompt.register(screenToReturn);
 
         return screenToReturn;
@@ -78,7 +78,7 @@ public class SingleQuestionScreenFactory {
     /**
      * Get a SingleQuestionScreen for acquiring data by methods other than
      * direct user input (e.g. a barcode)
-     * 
+     *
      * @param prompt
      * @param fromFormView
      * @param goingForward

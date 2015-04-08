@@ -11,9 +11,9 @@ public interface FormEntryTransitions {
     final int MEDIA_LOCATION = 4;
 
     public void abort();
-    
+
     public void formEntrySaved(FormDef form, FormInstance instanceData, boolean formWasCompleted);
-    
+
     public void suspendForMediaCapture (int captureType) throws UnavailableServiceException;
-    
+
 }

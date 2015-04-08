@@ -15,7 +15,7 @@
 // */
 //
 ///**
-// * 
+// *
 // */
 //package org.javarosa.formmanager.activity;
 //
@@ -52,17 +52,17 @@
 //public class GetNewFormActivity implements State, CommandListener {
 //
 //    public static final String FILENAME_KEY = "filename";
-//    
+//
 //    // #if app.usefileconnections
 //    private FileBrowser fileBrowser = null;
 //    public String fileBrowserTitle = "Browse XForms";
 //    // #endif
-//    
+//
 //    private IShell parent = null;
-//    
+//
 //    /** Alert if the form cannot load **/
 //    private Alert alert;
-//    
+//
 //    public GetNewFormActivity(IShell p) {
 //        parent = p;
 //    }
@@ -110,7 +110,7 @@
 //        // TODO Auto-generated method stub
 //
 //    }
-//    
+//
 //    /* (non-Javadoc)
 //     * @see org.javarosa.core.api.IActivity#start(org.javarosa.core.Context)
 //     */
@@ -140,20 +140,20 @@
 //        else if( c == FileBrowser.SELECT_FILE_COMMAND) {
 //            // Get ready to dump in the new file
 //            FormDefRMSUtility rms = (FormDefRMSUtility)JavaRosaServiceProvider.instance().getStorageManager().getRMSStorageProvider().getUtility(FormDefRMSUtility.getUtilityName());
-//            
+//
 //            // Figure out which file was selected
 //            try {
 //                FileConnection fc = fileBrowser.getSelectedFile();
 //                InputStream fis = fc.openInputStream();
 //                FormDef form = XFormUtils.getFormFromInputStream(fis);
-//                
+//
 //                // Display a positive or negative alert
 //                if(form == null) {
 //                    // TODO: internationlize this text
 //                    displayError("Cannot load form");
 //                    return;
 //                }
-//                
+//
 //                rms.writeToRMS(form);
 //
 //                // Exit back
@@ -162,10 +162,10 @@
 //                // TODO Auto-generated catch block
 //                e.printStackTrace();
 //            }
-//            
+//
 //        }
 //    }
-//    
+//
 //    private void displayError(String errorMsg) {
 //        alert = new Alert("Form Entry Error",errorMsg,null,AlertType.ERROR);
 //        alert.setTimeout(Alert.FOREVER);
@@ -173,7 +173,7 @@
 //        //For some reason that I really can't figure out, this alert won't display the error text
 //        alert.setCommandListener(this);
 //    }
-//    
+//
 //    /*
 //     * (non-Javadoc)
 //     * @see org.javarosa.core.api.IActivity#setShell(org.javarosa.core.api.IShell)

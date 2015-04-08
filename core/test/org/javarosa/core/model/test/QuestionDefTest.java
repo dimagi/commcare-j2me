@@ -86,7 +86,7 @@ public class QuestionDefTest extends TestCase {
             final int testID = i;
             aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
-                    ((QuestionDefTest) tc).doTest(testID);
+                    ((QuestionDefTest)tc).doTest(testID);
                 }
             }));
         }
@@ -221,10 +221,10 @@ public class QuestionDefTest extends TestCase {
 //        q.setHelpTextID("help text");
 //        q.addSelectChoice(new SelectChoice("choice", "val1"));
 //        q.addSelectChoice(new SelectChoice("","non-loc: choice", "val2", false));
-//        
+//
 //        QuestionObserver qo = new QuestionObserver();
 //        q.registerStateObserver(qo);
-//        
+//
 //        Localizer l = new Localizer();
 //        TableLocaleSource table = new TableLocaleSource();
 //        l.addAvailableLocale("en");
@@ -234,14 +234,14 @@ public class QuestionDefTest extends TestCase {
 //        table.setLocaleMapping("choice", "en: choice");
 //        l.registerLocaleResource("en", table);
 //        l.setLocale("en");
-//        
+//
 //        q.localeChanged("locale", l);
 //        if (!"en: some text".equals(q.getLabelInnerText()) || !"en: help text".equals(q.getHelpText()) ||
 //                !"[{choice}en: choice => val1, non-loc: choice => val2]".equals(q.getChoices().toString()) ||
 //                !qo.flag || qo.flags != FormElementStateListener.CHANGE_LOCALE) {
 //            fail("Improper locale change update");
 //        }
-//    }    
+//    }
 
 
     public void testReferences() {
@@ -293,7 +293,7 @@ public class QuestionDefTest extends TestCase {
 
         public void formElementStateChanged(IFormElement q, int flags) {
             flag = true;
-            this.q = (QuestionDef) q;
+            this.q = (QuestionDef)q;
             this.flags = flags;
         }
 

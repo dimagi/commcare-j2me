@@ -34,7 +34,7 @@ import org.javarosa.j2me.file.J2meFileReference;
 
 /**
  * Implementation of the data pointer that represents an underlying file on the file system.
- * 
+ *
  * @author Cory Zue
  *
  */
@@ -49,17 +49,17 @@ public class ReferenceDataPointer implements IDataPointer {
     public ReferenceDataPointer() {
         //You shouldn't be calling this unless you are deserializing.
     }
-    
+
     /**
      * Create a FileDataPointer from a file name
      * @param fileName
-     * @throws InvalidReferenceException 
+     * @throws InvalidReferenceException
      */
     public ReferenceDataPointer(String referenceName) throws InvalidReferenceException {
         this.referenceName = referenceName;
         ref = ReferenceManager._().DeriveReference(referenceName);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.core.model.data.IDataPointer#getData()

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.api;
 
@@ -22,11 +22,11 @@ import org.javarosa.user.model.User;
 import org.javarosa.user.utility.UserModelProcessor;
 
 /**
- * The Add User Form Entry State is responsible for 
- * running the user entry form for this device and 
+ * The Add User Form Entry State is responsible for
+ * running the user entry form for this device and
  * applying the appropriate Model Processor to deal
  * with any user blocks.
- * 
+ *
  * @author ctsims
  *
  */
@@ -35,21 +35,21 @@ public abstract class CreateUserFormEntryState extends FormEntryState implements
     private String formName;
     private Vector<IPreloadHandler> preloaders;
     private Vector<IFunctionHandler> funcHandlers;
-        
+
     public CreateUserFormEntryState (String formName,
             Vector<IPreloadHandler> preloaders, Vector<IFunctionHandler> funcHandlers) {
         this.formName = formName;
         this.preloaders = preloaders;
         this.funcHandlers = funcHandlers;
     }
-    
+
     public CreateUserFormEntryState (Vector<IPreloadHandler> preloaders, Vector<IFunctionHandler> funcHandlers) {
         this.formName = "http://code.javarosa.org/user_registration";
         this.preloaders = preloaders;
         this.funcHandlers = funcHandlers;
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see org.javarosa.formmanager.api.FormEntryState#getController()
      */
@@ -84,11 +84,11 @@ public abstract class CreateUserFormEntryState extends FormEntryState implements
     public void suspendForMediaCapture(int captureType) {
         //This doesn't mean anything anymore.
     }
-    
-    
+
+
     //For the Nokia JVM Bug
     public abstract void abort();
-    
+
     public abstract void userCreated(User newUser);
     public abstract void cancel();
 }

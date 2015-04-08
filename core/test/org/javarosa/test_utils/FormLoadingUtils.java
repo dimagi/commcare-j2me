@@ -64,7 +64,7 @@ public class FormLoadingUtils {
      * Load and parse an XML file into a form instance.
      *
      * @param formPath form resource filename that will be loaded at compile
-     * time.
+     *                 time.
      */
     public static FormInstance loadFormInstance(String formPath) throws InvalidStructureException, IOException {
         // read in xml

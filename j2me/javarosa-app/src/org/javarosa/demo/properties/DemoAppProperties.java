@@ -27,7 +27,7 @@ import org.javarosa.core.services.properties.IPropertyRules;
 /**
  * Application-specific properties for the JavaRosa reference
  * implementation.
- * 
+ *
  * @author Clayton Sims
  *
  */
@@ -38,14 +38,14 @@ public class DemoAppProperties implements IPropertyRules {
         // http, since it doesn't go in transport layer anymore
         public final static String POST_URL_PROPERTY = "PostURL";
         public final static String FORM_URL_PROPERTY = "form_url";
-        
+
         /**
          * Creates the JavaRosa set of property rules
          */
         public DemoAppProperties() {
             rules = new Hashtable();
             readOnlyProperties = new Vector();
-                        
+
             // PostURL Property
             rules.put(POST_URL_PROPERTY, new Vector());
             rules.put(FORM_URL_PROPERTY, new Vector());
@@ -101,7 +101,7 @@ public class DemoAppProperties implements IPropertyRules {
             }
             return false;
         }
-        
+
         /** (non-Javadoc)
          *  @see org.javarosa.properties.IPropertyRules#checkPropertyUserReadOnly)
          */
@@ -118,7 +118,7 @@ public class DemoAppProperties implements IPropertyRules {
             } else if(FORM_URL_PROPERTY.equals(propertyName)) {
                 return Localization.get("jrdemo.formuri");
             }
-            
+
             return propertyName;
         }
 

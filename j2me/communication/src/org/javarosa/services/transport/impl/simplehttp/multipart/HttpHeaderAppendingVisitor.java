@@ -26,7 +26,7 @@ import org.javarosa.core.services.transport.payload.MultiMessagePayload;
 
 /**
  * @author Clayton Sims
- * @date Dec 18, 2008 
+ * @date Dec 18, 2008
  *
  */
 public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayload> {
@@ -34,18 +34,18 @@ public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayl
     private boolean top = false;
     private boolean first = true;
     private String divider;
-    
+
     private String contentType;
-    
+
     public HttpHeaderAppendingVisitor() {
         top = true;
     }
-    
+
     private HttpHeaderAppendingVisitor(String divider) {
         this.divider = divider;
         this.top = false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.core.services.transport.IDataPayloadVisitor#visit(org.javarosa.core.services.transport.ByteArrayPayload)
      */
@@ -59,7 +59,7 @@ public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayl
     public IDataPayload visit(MultiMessagePayload payload) {
         MultiMessagePayload ret = new MultiMessagePayload();
         if(top) {
-            //TODO: Create a reasonable divider, and 
+            //TODO: Create a reasonable divider, and
             divider = "7_Clj7N9Heh_NJsJunQMlTQoHRzO0-0vA]";
             contentType = "multipart/form-data; boundary=" + divider + "";
         }
@@ -78,7 +78,7 @@ public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayl
     public IDataPayload visit(DataPointerPayload payload) {
         return visitIndividual(payload);
     }
-    
+
     private IDataPayload visitIndividual(IDataPayload payload) {
         if(divider != null) {
             MultiMessagePayload message = new MultiMessagePayload();
@@ -105,10 +105,10 @@ public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayl
                 header.addHeader("Content-Type: ", getContentTypeFromId(payload.getPayloadType()));
                 header.addHeader("Content-Transfer-Encoding: ", "binary");
             }
-            
+
             HttpTransportHeader finalheader = new HttpTransportHeader();
             finalheader.addHeaderNoNewline("\r\n", "");
-            
+
             message.addPayload(divHeader);
             message.addPayload(header);
             message.addPayload(finalheader);
@@ -120,11 +120,11 @@ public class HttpHeaderAppendingVisitor implements IDataPayloadVisitor<IDataPayl
             return payload;
         }
     }
-    
+
     public String getOverallContentType() {
         return contentType;
     }
-    
+
     private String getContentTypeFromId(int id) {
         switch(id) {
         case IDataPayload.PAYLOAD_TYPE_TEXT:

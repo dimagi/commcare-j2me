@@ -20,34 +20,34 @@ public class JRDemoFormListController implements HandledCommandListener {
 
     JRDemoFormListTransitions transitions;
     JRDemoFormListView view;
-    
+
     OrderedHashtable formInfo;
-    
+
     public JRDemoFormListController () {
         formInfo = JRDemoUtil.getFormList();
-        
+
         Vector formNames = new Vector();
         for (Enumeration e = formInfo.elements(); e.hasMoreElements(); ) {
             formNames.addElement(e.nextElement());
         }
 
-        
+
         view = new JRDemoFormListView(Localization.get("jrdemo.formlist.title"), formNames, JRDemoContext._().getUser().isAdminUser());
 
         view.setCommandListener(this);
     }
-    
+
     public void setTransitions (JRDemoFormListTransitions transitions) {
         this.transitions = transitions;
     }
-        
+
     public void start () {
         J2MEDisplay.setView(view);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if (d == view) {
@@ -70,7 +70,7 @@ public class JRDemoFormListController implements HandledCommandListener {
             } else if (c == view.CMD_SETTINGS) {
                 transitions.settings();
             }
-            
+
         }
     }
 }

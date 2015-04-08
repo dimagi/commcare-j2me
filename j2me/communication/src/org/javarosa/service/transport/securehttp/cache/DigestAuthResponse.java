@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.service.transport.securehttp.cache;
 
@@ -19,30 +19,30 @@ import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessag
  * A digest authorization response object which accepts the
  * various parameters associated with digest authentication
  * challenges, and creates the appropriate authorization
- * header for them. 
- * 
+ * header for them.
+ *
  * It is also a cachable response header, capable of creating
  * a new response later for additional messages with the same
  * credentails.
- * 
+ *
  * @author ctsims
  *
  */
 public class DigestAuthResponse implements AuthCacheRecord {
-    
+
     public static final String QOP_UNSPECIFIED = "unspecified";
     public static final String QOP_AUTH = "auth";
     public static final String QOP_AUTH_INT = "auth-int";
-    
+
     private String HA1;
-    
+
     private String URL;
     private Hashtable<String, String> parameters;
-    
+
     public DigestAuthResponse(String URL, String HA1) {
         this(URL, HA1, new OrderedHashtable());
     }
-    
+
     public DigestAuthResponse(String URL, String HA1, Hashtable<String, String> parameters) {
         this.URL = URL;
         this.parameters = parameters;
@@ -57,27 +57,27 @@ public class DigestAuthResponse implements AuthCacheRecord {
      * (non-Javadoc)
      * @see org.javarosa.service.transport.securehttp.cache.AuthCacheRecord#invalidates(org.javarosa.service.transport.securehttp.cache.AuthCacheRecord)
      */
-    public boolean invalidates(AuthCacheRecord record) {        
+    public boolean invalidates(AuthCacheRecord record) {
         if(record.getUrl().equals(this.URL)) { return true; };
-        
+
         //TODO: If the incoming message is a digest, we should
         //possibly invalidate any/all messages that it shares
         //a domain with.
-        
+
         return false;
-        
+
     }
-    
+
     public String get(String key) {
         return parameters.get(key);
     }
-    
+
     public String put(String key, String value) {
         return parameters.put(key,value);
     }
-    
+
     /**
-     * Builds an auth response for the provided message based on the 
+     * Builds an auth response for the provided message based on the
      * parameters currently available for authentication
      * @param message
      * @return An Authenticate HTTP header for the message if one could be
@@ -85,13 +85,13 @@ public class DigestAuthResponse implements AuthCacheRecord {
      */
     public String buildResponse(SimpleHttpTransportMessage message) {
         String qop = parameters.get("qop");
-        
+
         String nonce= AuthUtils.unquote(parameters.get("nonce"));
-        
+
         String uri = AuthUtils.unquote(parameters.get("uri"));
-        
+
         String method = message.getConnectionMethod();
-        
+
         String HA2 = null;
         if(qop != DigestAuthResponse.QOP_AUTH_INT) {
             HA2 = AuthUtils.MD5(method + ":" + uri);
@@ -99,7 +99,7 @@ public class DigestAuthResponse implements AuthCacheRecord {
             try {
                 InputStream stream = message.getContentStream();
                 String entityBody;
-                if(stream == null){ 
+                if(stream == null){
                     entityBody = MD5.toHex("".getBytes());
                 } else {
                         entityBody = new MD5InputStream(stream).getHashCode();
@@ -111,22 +111,22 @@ public class DigestAuthResponse implements AuthCacheRecord {
                 return null;
             }
         }
-        
+
         if(qop == DigestAuthResponse.QOP_UNSPECIFIED) {
             //RFC 2069 Auth
             parameters.put("response", AuthUtils.quote(AuthUtils.MD5(HA1 + ":" + nonce + ":" + HA2)));
         } else {
             String nc = getNonceCount();
-            
+
             //Generate client nonce
             String cnonce = getClientNonce();
-            
+
             //Calculate response
             parameters.put("response", AuthUtils.quote(AuthUtils.MD5(HA1 + ":" + nonce + ":" + nc + ":" + cnonce + ":" + qop + ":" + HA2)));
         }
         return "Digest " + AuthUtils.encodeQuotedParameters(parameters);
     }
-    
+
     private String getClientNonce() {
         if(!parameters.contains("cnonce")) {
             Random r = MathUtils.getRand();
@@ -134,16 +134,16 @@ public class DigestAuthResponse implements AuthCacheRecord {
             for(int i = 0; i < b.length ; ++i) {
                 b[i] = (byte)r.nextInt(256);
             }
-            
+
             String cnonce = MD5.toHex(b);
             parameters.put("cnonce",AuthUtils.quote(cnonce));
             return cnonce;
         } else {
             return AuthUtils.unquote(parameters.get("cnonce"));
         }
-        
+
     }
-    
+
     private String getNonceCount() {
         //The nonce count represents the number of
         //times that the nonce has been used for authentication
@@ -152,13 +152,13 @@ public class DigestAuthResponse implements AuthCacheRecord {
         if(!parameters.containsKey("nc")) {
             String nc = "00000001";
             parameters.put("nc",nc);
-            
+
             return nc;
         } else {
             String nc = parameters.get("nc");
             int count = Integer.parseInt(nc);
             count+=1;
-            
+
             nc = String.valueOf(count);
             //Buffer to the left
             while(nc.length() < 8) {
@@ -167,7 +167,7 @@ public class DigestAuthResponse implements AuthCacheRecord {
             parameters.put("nc",nc);
             return nc;
         }
-        
+
     }
 
     public boolean validFor(String URI) {

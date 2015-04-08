@@ -30,15 +30,15 @@ public class ProgressScreen extends Form{
     public final Command CMD_CANCEL = new Command(Localization.get("polish.command.cancel"),Command.BACK, 1);
     public final Command CMD_RETRY = new Command(Localization.get("menu.retry"),Command.ITEM, 1);
 
-    public ProgressScreen(String title, String msg, CommandListener cmdListener) {    
+    public ProgressScreen(String title, String msg, CommandListener cmdListener) {
         this(title, msg, cmdListener, false);
     }
-    
+
     public ProgressScreen(String title, String msg, CommandListener cmdListener, boolean continuous) {
         super(title);
         //#style focused
         progressbar = new Gauge(msg, false, Gauge.INDEFINITE, continuous ? Gauge.CONTINUOUS_RUNNING : 0);
-        
+
         addCommand(CMD_CANCEL);
         append(progressbar);
         setCommandListener(cmdListener);
@@ -48,19 +48,19 @@ public class ProgressScreen extends Form{
             updater_T.start();
         }
     }
-    
+
     public void setText(String text) {
         progressbar.setLabel(text);
     }
-    
+
     public void closeThread(){
         if(updater_T!=null){
-            updater_T = null;            
+            updater_T = null;
         }
     }
-    
+
     class GaugeUpdater implements Runnable {
-        
+
         public void run() {
 
             while (progressbar.getValue() < progressbar.getMaxValue()) {
@@ -71,5 +71,5 @@ public class ProgressScreen extends Form{
         }
     }
 
-    
+
 }

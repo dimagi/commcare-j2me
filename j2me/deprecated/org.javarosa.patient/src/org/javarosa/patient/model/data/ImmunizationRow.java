@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.patient.model.data;
 
@@ -39,15 +39,15 @@ public class ImmunizationRow implements Externalizable {
     int[] vaccinationDoses = new int[] {-1, -1, -1, -1, -1};
     Date[] vaccinationDates = new Date[5];
     boolean[] cellEnabled = new boolean[] {true,true,true,true,true};
-    
+
     public ImmunizationRow() {
-        
+
     }
-    
+
     public ImmunizationRow(String name) {
         this.vaccinationName = name;
     }
-    
+
     public void setDose(int doseType, int doseStatus, Date doseDate) {
         if(doseType >= 0 && doseType <=4 && doseStatus >= 1 && doseStatus <=4) {
             vaccinationDoses[doseType] = doseStatus;
@@ -56,19 +56,19 @@ public class ImmunizationRow implements Externalizable {
             }
         }
     }
-    
+
     public void setVaccinationDose(int doseType, int doseStatus) {
         setDose(doseType, doseStatus, null);
     }
-    
+
     public Date getDate(int doseType) {
         return vaccinationDates[doseType];
     }
-    
+
     public int getStatus(int doseType) {
         return vaccinationDoses[doseType];
     }
-    
+
     /**
      * @return the cellEnabled
      */
@@ -88,7 +88,7 @@ public class ImmunizationRow implements Externalizable {
      */
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         vaccinationName = (String)ExtUtil.read(in, new ExtWrapNullable(String.class));
-        
+
         for(int i = 0 ; i < 5 ; i++) {
             vaccinationDoses[i] = in.readInt();
         }
@@ -98,7 +98,7 @@ public class ImmunizationRow implements Externalizable {
         for(int i = 0 ; i < 5 ; i++) {
             cellEnabled[i] = in.readBoolean();
         }
-        
+
     }
 
     /* (non-Javadoc)
@@ -106,7 +106,7 @@ public class ImmunizationRow implements Externalizable {
      */
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.write(out, new ExtWrapNullable(vaccinationName));
-        
+
         for(int i = 0 ; i < 5 ; i++) {
             out.writeInt(vaccinationDoses[i]);
         }

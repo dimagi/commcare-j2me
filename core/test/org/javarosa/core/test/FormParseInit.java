@@ -77,7 +77,7 @@ public class FormParseInit {
         do {
             FormEntryCaption fep = femodel.getCaptionPrompt();
             if (fep.getFormElement() instanceof QuestionDef) {
-                return (QuestionDef) fep.getFormElement();
+                return (QuestionDef)fep.getFormElement();
             }
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
 
@@ -92,7 +92,7 @@ public class FormParseInit {
     public QuestionDef getCurrentQuestion() {
         FormEntryCaption fep = femodel.getCaptionPrompt();
         if (fep.getFormElement() instanceof QuestionDef) {
-            return (QuestionDef) fep.getFormElement();
+            return (QuestionDef)fep.getFormElement();
         }
         return null;
     }
@@ -110,15 +110,15 @@ public class FormParseInit {
 
         do {
             if (fep.getFormElement() instanceof QuestionDef)
-                return (QuestionDef) fep.getFormElement();
+                return (QuestionDef)fep.getFormElement();
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
 
         return null;
     }
 
-   /**
-    * @return the FormDef for this form
-    */
+    /**
+     * @return the FormDef for this form
+     */
     public FormDef getFormDef() {
         return xform;
     }
@@ -144,7 +144,7 @@ public class FormParseInit {
 
             if (fep.getFormElement() instanceof QuestionDef) {
                 stuff += "\t[Type:QuestionDef, ";
-                Vector s = ((QuestionDef) fep.getFormElement()).getChoices();
+                Vector s = ((QuestionDef)fep.getFormElement()).getChoices();
                 stuff += "ContainsChoices: " + ((s != null && s.size() > 0) ? "true " : "false") + ", ";
                 if (s != null && s.size() > 0) choiceFlag = true;
             } else if (fep.getFormElement() instanceof FormDef) {
@@ -159,7 +159,7 @@ public class FormParseInit {
             stuff += "ID:" + fep.getFormElement().getID() + ", TextID:" + fep.getFormElement().getTextID() + ",InnerText:" + fep.getFormElement().getLabelInnerText();
             if (choiceFlag) {
 
-                stuff += "] \n\t\t---Choices:" + ((QuestionDef) fep.getFormElement()).getChoices().toString() + "\n";
+                stuff += "] \n\t\t---Choices:" + ((QuestionDef)fep.getFormElement()).getChoices().toString() + "\n";
             } else {
                 stuff += "]\n";
             }

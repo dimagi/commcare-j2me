@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.communication.reporting.view;
 
@@ -25,13 +25,13 @@ import javax.microedition.lcdui.TextField;
 
 /**
  * @author Clayton Sims
- * @date Feb 27, 2009 
+ * @date Feb 27, 2009
  *
  */
 public class FeedbackReportScreen extends TextBox {
     public static final Command SEND_REPORT = new Command("Send Report", 1, Command.OK);
     public static final Command CANCEL = new Command("Cancel", 2, Command.CANCEL);
-    
+
 
     public FeedbackReportScreen(String title) {
         super("Please enter your feedback report.", "", 500, TextField.ANY);

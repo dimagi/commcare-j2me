@@ -38,9 +38,9 @@ public class RecordMIDlet extends MIDlet{
     public void startApp(){
         Display.getDisplay(this).setCurrent(new RecordForm());
     }
-    
+
     public void pauseApp(){}
-    
+
     public void destroyApp(boolean unconditional){}
 }
 
@@ -50,37 +50,37 @@ class RecordForm extends Form implements CommandListener{
     private final Command recordCommand, playCommand;
     private Player p;
     private byte[] recordedSoundArray = null;
-    
+
     public RecordForm(){
-        super("Record Audio");        
+        super("Record Audio");
         messageItem = new StringItem("Record", "Click record to start recording.");
         this.append(messageItem);
         errorItem = new StringItem("", "");
-        this.append(errorItem);        
+        this.append(errorItem);
         recordCommand = new Command("Record", Command.SCREEN, 1);
         this.addCommand(recordCommand);
         playCommand = new Command("Play", Command.SCREEN, 2);
-        this.addCommand(playCommand);        
-       // StringBuffer inhalt = new StringBuffer();        
+        this.addCommand(playCommand);
+       // StringBuffer inhalt = new StringBuffer();
         this.setCommandListener(this);
     }
-    
+
     public void commandAction(Command comm, Displayable disp){
         //Record to file
         if(comm==recordCommand){
-            try{                
+            try{
                 p = Manager.createPlayer("capture://audio?encoding=pcm");
-                p.realize();                
-                RecordControl rc = (RecordControl)p.getControl("RecordControl");                
+                p.realize();
+                RecordControl rc = (RecordControl)p.getControl("RecordControl");
                 ByteArrayOutputStream output = new ByteArrayOutputStream();
-                rc.setRecordStream(output);                
+                rc.setRecordStream(output);
                 rc.startRecord();
                 p.start();
                 messageItem.setText("recording...");
                 Thread.sleep(5000);
                 messageItem.setText("done!");
-                rc.commit();               
-                recordedSoundArray = output.toByteArray();                
+                rc.commit();
+                recordedSoundArray = output.toByteArray();
                 p.close();
             } catch (IOException ioe) {
                 errorItem.setLabel("Error");
@@ -92,7 +92,7 @@ class RecordForm extends Form implements CommandListener{
                 errorItem.setLabel("Error");
                 errorItem.setText(ie.toString());
             }
-        } 
+        }
         //User should be able to replay recording
         else if(comm == playCommand) {
             try {

@@ -40,7 +40,7 @@ import org.javarosa.utilities.file.J2MEFileService;
  * The <code>FileBrowser</code> custom component lets the user list files and
  * directories. It's uses FileConnection Optional Package (JSR 75). The FileConnection
  * Optional Package APIs give J2ME devices access to file systems residing on mobile devices,
- * primarily access to removable storage media such as external memory cards.  
+ * primarily access to removable storage media such as external memory cards.
  * This code has been wrapped in an activity by Cory Zue to work in the JavaRosa framework
  * @author breh
  * @author Cory Zue
@@ -67,12 +67,12 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
 
     public static final int MODE_FILE = 0;
     public static final int MODE_DIRECTORY = 1;
-    
-    
+
+
     public FileBrowseState() {
         this(MODE_FILE);
     }
-    
+
     public FileBrowseState (int mode)
     {
         transitions = this;
@@ -91,27 +91,27 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
         {
             fe.printStackTrace();
         }
-            
+
     }
 
     public void start() {
     //    boolean isAPIAvailable = false;
         if (System.getProperty("microedition.io.file.FileConnection.version") != null) {
             //isAPIAvailable = true;
-            try 
+            try
             {
                 showCurrDir();
-            } 
-            catch (SecurityException e) 
+            }
+            catch (SecurityException e)
             {
                 System.out.println(e);
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 System.out.println(e);
             }
         } else {
-            String splashText = new String("Sorry - not available"); 
+            String splashText = new String("Sorry - not available");
             Alert splashScreen = new Alert(null, splashText, null,
                     AlertType.INFO);
             splashScreen.setTimeout(3000);
@@ -121,7 +121,7 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         System.out.println("updir:" + UP_DIRECTORY);
@@ -141,7 +141,7 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
         } else if (c == returnCommand) {
             List curr = (List)d;
             returnDirectory(curr.getString(curr.getSelectedIndex()));
-        } else if (c == back) 
+        } else if (c == back)
         {
             try
             {
@@ -152,9 +152,9 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
                 System.err.println("An FileException occurred while showing the current directory.");
                 fe.printStackTrace();
             }
-        } 
+        }
         else if (c == cancel) {
-            transitions.cancel(); 
+            transitions.cancel();
         }
     }
 
@@ -165,8 +165,8 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
     public void setMode(int mode) {
         this.mode = mode;
     }
-    
-    private void showCurrDir() throws FileException 
+
+    private void showCurrDir() throws FileException
     {
         String[] strArr;
         List browser;
@@ -183,7 +183,7 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
             browser = new List(currDirName, List.IMPLICIT);
             browser.append(UP_DIRECTORY, null);
         }
-        for(int i = 0; i < strArr.length; ++i) 
+        for(int i = 0; i < strArr.length; ++i)
         {
             String fileName = strArr[i];
             if (fileName.charAt(fileName.length() - 1) == SEP) {
@@ -207,7 +207,7 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
         if (mode == MODE_DIRECTORY) {
             browser.addCommand(returnCommand);
         }
-        
+
         browser.addCommand(cancel);
         browser.setCommandListener(this);
         J2MEDisplay.setView(browser);
@@ -254,17 +254,17 @@ public abstract class FileBrowseState implements DataCaptureTransitions, State, 
         FileDataPointer fdp = new FileDataPointer(fullName);
         transitions.captured(fdp);
     }
-    
+
     private void returnDirectory(String name) {
         returnFile(name);
     }
 
     private void serviceUnavailable(Exception e)
     {
-        System.err.println("The File Service is unavailable.\n QUITTING!");            
+        System.err.println("The File Service is unavailable.\n QUITTING!");
         System.err.println(e.getMessage());
     }
-    
+
     private FileService getFileService() throws UnavailableServiceException
     {
         //#if app.usefileconnections

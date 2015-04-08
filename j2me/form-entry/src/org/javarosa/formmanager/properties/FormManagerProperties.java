@@ -25,7 +25,7 @@ import org.javarosa.core.services.properties.IPropertyRules;
 
 /**
  * Properties for form management and entry.
- * 
+ *
  * @author Clayton Sims
  *
  */
@@ -34,23 +34,23 @@ public class FormManagerProperties implements IPropertyRules {
         Vector readOnlyProperties;
 
         public final static String VIEW_TYPE_PROPERTY = "ViewStyle";
-        
+
         // View Types
         public static final String VIEW_CHATTERBOX = "v_chatterbox";
         public static final String VIEW_SINGLEQUESTIONSCREEN = "v_singlequestionscreen";
-        
+
         public final static String EXTRA_KEY_FORMAT = "extra_key_action";
         public final static String EXTRA_KEY_LANGUAGE_CYCLE = "cycle";
         public final static String EXTRA_KEY_AUDIO_PLAYBACK = "audio";
-        
+
         public final static String LOOSE_MEDIA = "loose_media";
         public final static String LOOSE_MEDIA_YES = "yes";
         public final static String LOOSE_MEDIA_NO = "no";
-        
+
         public final static String PLAY_AUDIO = "play_audio";
         public final static String PLAY_AUDIO_YES = "yes";
         public final static String PLAY_AUDIO_NO = "no";
-        
+
         /**
          * Creates the JavaRosa set of property rules
          */
@@ -62,17 +62,17 @@ public class FormManagerProperties implements IPropertyRules {
             allowableDisplays.addElement(VIEW_CHATTERBOX);
             allowableDisplays.addElement(VIEW_SINGLEQUESTIONSCREEN);
             rules.put(VIEW_TYPE_PROPERTY, allowableDisplays);
-            
+
             Vector hashkeyAudio = new Vector();
             hashkeyAudio.addElement(EXTRA_KEY_LANGUAGE_CYCLE);
             hashkeyAudio.addElement(EXTRA_KEY_AUDIO_PLAYBACK);
             rules.put(EXTRA_KEY_FORMAT,hashkeyAudio);
-            
+
             Vector looseMedia = new Vector();
-            looseMedia.addElement(LOOSE_MEDIA_YES);            
+            looseMedia.addElement(LOOSE_MEDIA_YES);
             looseMedia.addElement(LOOSE_MEDIA_NO);
             rules.put(LOOSE_MEDIA, looseMedia);
-            
+
             Vector playAudio = new Vector();
             playAudio.addElement(PLAY_AUDIO_YES);
             playAudio.addElement(PLAY_AUDIO_NO);
@@ -129,7 +129,7 @@ public class FormManagerProperties implements IPropertyRules {
             }
             return false;
         }
-        
+
         /** (non-Javadoc)
          *  @see org.javarosa.properties.IPropertyRules#checkPropertyUserReadOnly)
          */
@@ -149,7 +149,7 @@ public class FormManagerProperties implements IPropertyRules {
                 return "Should CommCare play audio?";
             }return propertyName;
         }
-        
+
         /*
          * (non-Javadoc)
          * @see org.javarosa.core.services.properties.IPropertyRules#getHumanReadableValue(java.lang.String, java.lang.String)
@@ -159,7 +159,7 @@ public class FormManagerProperties implements IPropertyRules {
                 if(VIEW_CHATTERBOX.equals(value)) {
                     return "Chatterbox";
                 } else if(VIEW_SINGLEQUESTIONSCREEN.equals(value)) {
-                    return "One Question Per Screen"; 
+                    return "One Question Per Screen";
                 }
             }else if(EXTRA_KEY_FORMAT.equals(propertyName)) {
                 if(EXTRA_KEY_AUDIO_PLAYBACK.equals(value)){

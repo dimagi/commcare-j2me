@@ -40,12 +40,12 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 public class User implements Persistable, Restorable, IMetaData
 {
     public static final String STORAGE_KEY = "USER";
-    
+
     public static final String ADMINUSER = "admin";
     public static final String STANDARD = "standard";
     public static final String DEMO_USER = "demo_user";
     public static final String KEY_USER_TYPE = "user_type";
-    
+
     public static final String META_UID = "uid";
     public static final String META_USERNAME = "username";
     public static final String META_ID = "id";
@@ -54,13 +54,13 @@ public class User implements Persistable, Restorable, IMetaData
     private String username;
     private String password;
     private String uniqueId;  //globally-unique id
-    
+
     private boolean rememberMe = false;
-    
+
     private String syncToken;
-    
+
     /** String -> String **/
-    private Hashtable<String,String> properties = new Hashtable<String,String>(); 
+    private Hashtable<String,String> properties = new Hashtable<String,String>();
 
     public User () {
         setUserType(STANDARD);
@@ -69,7 +69,7 @@ public class User implements Persistable, Restorable, IMetaData
     public User(String name, String passw, String uniqueID) {
         this(name, passw, uniqueID, STANDARD);
     }
-    
+
     public User(String name, String passw, String uniqueID, String userType) {
         username = name;
         password = passw;
@@ -130,7 +130,7 @@ public class User implements Persistable, Restorable, IMetaData
             return null;
         }
     }
-    
+
     public void setUserType(String userType) {
         properties.put(KEY_USER_TYPE,userType);
     }
@@ -150,31 +150,31 @@ public class User implements Persistable, Restorable, IMetaData
     public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
     }
-    
+
     public void setUuid(String uuid) {
         this.uniqueId = uuid;
     }
-    
+
     public String getUniqueId() {
         return uniqueId;
     }
-    
+
     public Enumeration listProperties() {
         return this.properties.keys();
     }
-    
+
     public void setProperty(String key, String val) {
         this.properties.put(key, val);
-    } 
-    
+    }
+
     public String getProperty(String key) {
         return (String)this.properties.get(key);
     }
-    
+
     public Hashtable<String, String> getProperties() {
         return this.properties;
     }
-    
+
     public String getRestorableType() {
         return "user";
     }
@@ -184,13 +184,13 @@ public class User implements Persistable, Restorable, IMetaData
         RestoreUtils.addData(dm, "name", username);
         RestoreUtils.addData(dm, "pass", password);
         RestoreUtils.addData(dm, "uuid", uniqueId);
-        RestoreUtils.addData(dm, "remember", new Boolean(rememberMe));        
-        
+        RestoreUtils.addData(dm, "remember", new Boolean(rememberMe));
+
         for (Enumeration e = properties.keys(); e.hasMoreElements(); ) {
             String key = (String)e.nextElement();
             RestoreUtils.addData(dm, "other/" + key, properties.get(key));
         }
-                
+
         return dm;
     }
 
@@ -201,7 +201,7 @@ public class User implements Persistable, Restorable, IMetaData
         RestoreUtils.applyDataType(dm, "user-id", parentRef, Integer.class);
         RestoreUtils.applyDataType(dm, "uuid", parentRef, String.class);
         RestoreUtils.applyDataType(dm, "remember", parentRef, Boolean.class);
-        
+
         // other/* defaults to string
     }
 
@@ -210,7 +210,7 @@ public class User implements Persistable, Restorable, IMetaData
         password = (String)RestoreUtils.getValue("pass", dm);
         uniqueId = (String)RestoreUtils.getValue("uuid", dm);
         rememberMe = RestoreUtils.getBoolean(RestoreUtils.getValue("remember", dm));
-        
+
         TreeElement e = dm.resolveReference(RestoreUtils.absRef("other", dm));
         if (e != null) {
             for (int i = 0; i < e.getNumChildren(); i++) {
@@ -250,7 +250,7 @@ public class User implements Persistable, Restorable, IMetaData
     public String getLastSyncToken() {
         return syncToken;
     }
-    
+
     public void setLastSyncToken(String syncToken) {
         this.syncToken = syncToken;
     }
@@ -266,5 +266,5 @@ public class User implements Persistable, Restorable, IMetaData
         }
         return demo_user;
     }
-    
+
 }

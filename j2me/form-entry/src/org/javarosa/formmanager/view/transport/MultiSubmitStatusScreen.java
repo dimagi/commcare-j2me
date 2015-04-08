@@ -36,15 +36,15 @@ import org.javarosa.services.transport.impl.TransportMessageStatus;
 /**
  * Note: This screen assumes that the model IDs provided will be sent in a more
  * or less sequential fashion.
- * 
+ *
  * @author Clayton Sims
  * @date Jan 11, 2009
- * 
+ *
  */
 public class MultiSubmitStatusScreen extends Form implements
         ISubmitStatusObserver, HandledCommandListener {
-    
-    
+
+
     //TODO: If this screen gets closed, messages need to continue getting processed! Right now this won't happen!
 
     private static final int REFRESH_INTERVAL = 1000;
@@ -56,20 +56,20 @@ public class MultiSubmitStatusScreen extends Form implements
     private int counter = 0;
     private Hashtable ids;
     private int failed = 0;
-    
+
     private Vector<String> responses;
-    
-    private String finalResponse; 
-    
+
+    private String finalResponse;
+
     private TransportResponseProcessor responder;
     private boolean silenceable;
     private String cancelText;
-    private Command cancelCmd; 
-    
+    private Command cancelCmd;
+
     public MultiSubmitStatusScreen(CommandListener listener, TransportResponseProcessor responder) {
         this(listener, responder, true, null);
     }
-    
+
     /**
      * @param listener
      * @param modelIDs
@@ -89,20 +89,20 @@ public class MultiSubmitStatusScreen extends Form implements
         }
 
         this.responder = responder;
-        
+
         responses = new Vector<String>();
         finalResponse = "";
     }
 
     private void setOKCommand() {
-        addCommand(cancelCmd);        
+        addCommand(cancelCmd);
     }
-    
+
     public void reinit(String[] ids) {
         if (!this.silenceable && ids.length == 0) {
             setOKCommand();
         }
-        
+
         deleteAll();
         setModelIDs(ids);
         setMessage();
@@ -131,7 +131,7 @@ public class MultiSubmitStatusScreen extends Form implements
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
 
@@ -143,7 +143,7 @@ public class MultiSubmitStatusScreen extends Form implements
     private void updateStatusDisplay(TransportMessage transportMessage) {
 
         int status = transportMessage.getStatus();
-        
+
         System.out.println("updateStatusDisplay status= " + status);
         this.counter += REFRESH_INTERVAL;
 
@@ -158,7 +158,7 @@ public class MultiSubmitStatusScreen extends Form implements
         }
             // finished
         case TransportMessageStatus.SENT: {
-            
+
             String message = responder.getResponseMessage(transportMessage);
             if(message != null) {
                 if(!responses.contains(message)) {
@@ -192,7 +192,7 @@ public class MultiSubmitStatusScreen extends Form implements
             this.msg.setText(Localization.get("sending.status.error"));
             break;
         }
-        
+
         if(this.currentid == ids.size()) {
             if (!this.silenceable) {
                 setOKCommand();
@@ -201,11 +201,11 @@ public class MultiSubmitStatusScreen extends Form implements
         }
 
     }
-    
+
     public boolean hasErrors () {
         return failed > 0;
     }
-    
+
     private void constructFinalMessage(TransportMessage transportMessage) {
         String message;
         if(responder.hasSummativeResponse()) {
@@ -214,17 +214,17 @@ public class MultiSubmitStatusScreen extends Form implements
         } else {
             message = finalResponse + "\n";
         }
-        if(failed > 0) { 
+        if(failed > 0) {
             message += Localization.get("sending.status.failures", new String[]{String.valueOf(failed)}) + "\n";
         }
 //        if(failed < this.ids.size()) {
 //            message+= getResponseMessage(transportMessage) + "\n";
-//        }    
+//        }
         if(failed == this.ids.size()) {
             message = Localization.get("sending.status.failed");
         }
         this.msg.setText(message);
-        if(this.cancelText != null) { 
+        if(this.cancelText != null) {
             this.removeCommand(cancelCmd);
             cancelCmd = new Command(Localization.get("menu.ok"), Command.OK, 1);
             this.setOKCommand();
@@ -238,13 +238,13 @@ public class MultiSubmitStatusScreen extends Form implements
             return Localization.get("sending.status.success");
         }
     }
-    
+
     /**
      * @return
      */
     private String getCurrentDisplay() {
         return Localization.get("sending.status.multi", new String[] {
-                String.valueOf(currentid + 1), 
+                String.valueOf(currentid + 1),
                 String.valueOf(ids.size()),
                 String.valueOf(currentid),
                 String.valueOf(ids.size())
@@ -253,7 +253,7 @@ public class MultiSubmitStatusScreen extends Form implements
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.formmanager.view.ISubmitStatusScreen#destroy()
      */
     public void destroy() {

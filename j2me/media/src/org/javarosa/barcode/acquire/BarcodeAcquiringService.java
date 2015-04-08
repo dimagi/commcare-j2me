@@ -27,17 +27,17 @@ import org.javarosa.view.singlequestionscreen.widgets.BarcodeQuestionWidget;
 
 /**
  * @author mel
- * 
+ *
  *         A service that handles data acquisition from barcodes. The phone
  *         camera (through mmapi) is used to take a picture of the barcode, and
  *         a BarcodeProcessingService is used to decode it to a string.
- * 
+ *
  */
 //not a real data capture service... seems too tied to the singlequestionscreen api
 public class BarcodeAcquiringService implements DataCaptureService, IAcquiringService {
 
     BarcodeCaptureService barcoder;
-    
+
     public BarcodeAcquiringService (DataCaptureServiceRegistry dc) {
         try {
             barcoder = dc.getBarcodeCaptureService();
@@ -45,18 +45,18 @@ public class BarcodeAcquiringService implements DataCaptureService, IAcquiringSe
             e.printStackTrace();
         }
     }
-    
+
     public String getType() {
         return "singlequestionscreen-barcode";
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
      * (org.javarosa.formmanager.view.FormElementBinding, int)
-     * 
+     *
      * If there is a service that is able to process a barcode from an image,
      * return a barcode widget to capture the image
      */
@@ -69,11 +69,11 @@ public class BarcodeAcquiringService implements DataCaptureService, IAcquiringSe
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
      * (org.javarosa.formmanager.view.FormElementBinding)
-     * 
+     *
      * If there is a service that is able to process a barcode from an image,
      * return a barcode widget to capture the image
      */
@@ -86,11 +86,11 @@ public class BarcodeAcquiringService implements DataCaptureService, IAcquiringSe
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
      * (org.javarosa.formmanager.view.FormElementBinding, java.lang.String)
-     * 
+     *
      * If there is a service that is able to process a barcode from an image,
      * return a barcode widget to capture the image
      */
@@ -104,11 +104,11 @@ public class BarcodeAcquiringService implements DataCaptureService, IAcquiringSe
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.formmanager.view.singlequestionscreen.acquire.IAcquiringService#getWidget
      * (org.javarosa.formmanager.view.FormElementBinding, char)
-     * 
+     *
      * If there is a service that is able to process a barcode from an image,
      * return a barcode widget to capture the image
      */

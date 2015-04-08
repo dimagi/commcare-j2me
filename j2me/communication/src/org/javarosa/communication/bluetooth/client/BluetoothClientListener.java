@@ -18,14 +18,14 @@ package org.javarosa.communication.bluetooth.client;
 
 /**
  * Interface through which the bluetooth client communicates to the user.
- * 
+ *
  * @author Daniel Kayiwa
  *
  */
 public interface BluetoothClientListener {
     /**
      * Called when an error occurs during any bluetooth operation.
-     * 
+     *
      * @param errorMessage - the error message.
      * @param e - the exception, if any, that did lead to this error.
      */

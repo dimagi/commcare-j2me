@@ -20,7 +20,7 @@ import org.javarosa.core.api.IModule;
 import org.javarosa.j2me.services.DataCaptureServiceRegistry;
 
 public class LocationModule implements IModule {
-    
+
     public void registerModule() {
         //#if polish.api.locationapi
         DataCaptureServiceRegistry._().registerService(new org.javarosa.location.service.J2MELocationService());

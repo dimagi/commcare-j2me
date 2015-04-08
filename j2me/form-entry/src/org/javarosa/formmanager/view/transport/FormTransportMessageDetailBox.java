@@ -43,7 +43,7 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see
 //     * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
 //     * .lcdui.Command, javax.microedition.lcdui.Displayable)
@@ -54,9 +54,9 @@
 //        System.out.println("command: " + c.getLabel() + " d: " + d.getTitle());
 //        if (c == FormTransportCommands.CMD_BACK) {
 //            this.activity.showMessageList();
-//        } 
+//        }
 //
-//        
+//
 //        if (c == FormTransportCommands.CMD_SEND) {
 //            int selected = this.activity.getView().getMessageList().getSelectedIndex();
 //            TransportMessage message = (TransportMessage) elementAt(selected,
@@ -67,11 +67,11 @@
 //            JavaRosaServiceProvider.instance().getTransportManager().send(
 //                    message, manager.getCurrentTransportMethod());
 //        }
-//        
+//
 //        throw new RuntimeException("Command " + c.getLabel()
 //                + " uncaught - display:" + d.getTitle());
 //    }
-//    
+//
 //
 //    private Object elementAt(int index, Enumeration en) {
 //        int i = 0;

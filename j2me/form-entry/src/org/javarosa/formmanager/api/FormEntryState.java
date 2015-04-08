@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.api;
 
@@ -21,22 +21,22 @@ import org.javarosa.j2me.view.J2MEDisplay;
  *
  */
 public abstract class FormEntryState implements FormEntryTransitions, State, LocationReceiver {
-    
+
     protected JrFormEntryController controller;
     FormIndex capturing;
-    
+
     public void start () {
         controller = getController();
         controller.setTransitions(this);
         controller.start();
     }
-    
+
     protected abstract JrFormEntryController getController ();
-    
+
     public abstract void abort();
-    
+
     public abstract void formEntrySaved(FormDef form, FormInstance instanceData, boolean formWasCompleted);
-    
+
     public void suspendForMediaCapture (int captureType) throws UnavailableServiceException {
         if(captureType == FormEntryTransitions.MEDIA_LOCATION) {
             DataCaptureServiceRegistry._().getLocationCaptureService();
@@ -50,7 +50,7 @@ public abstract class FormEntryState implements FormEntryTransitions, State, Loc
             throw new UnavailableServiceException("Service Code: " + captureType +" is unavailable");
         }
     }
-    
+
 
     public void fixObtained(Fix fix) {
         controller.answerQuestion(new GeoPointData(new double [] {fix.getLat(), fix.getLon(), fix.getAccuracy(), fix.getAltitude()}));

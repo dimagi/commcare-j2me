@@ -42,14 +42,14 @@ import org.javarosa.utilities.file.J2MEFileService;
 /**
  * An Activity that represents the capture of a single Image.  This will talk to the
  * native device camera and return the selected image.
- * 
+ *
  * @author Cory Zue
  *
  */
 public abstract class ImageCaptureState implements DataCaptureTransitions, State, HandledCommandListener
 {
     // camera needed variables
-    
+
     private Player mPlayer;
     private VideoControl mVideoControl;
     private Command mBackCommand;
@@ -58,11 +58,11 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
     private int width;
     private int height;
     private String fullName;
-    
+
     private FileService fileService;
-    
+
     DataCaptureTransitions transitions;
-    
+
     public ImageCaptureState()
     {
         transitions = this;
@@ -88,13 +88,13 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
         // take a pointer to the context and shell
         showCamera();
     }
-    
+
     public void setResolution(int width, int height) {
         this.width = width;
         this.height = height;
     }
-    
-    
+
+
     /**
      * takes the selected image return it (and control) to the shell
      * Other images are deleted?
@@ -108,7 +108,7 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
         destroy();
         transitions.cancel();
     }
-    
+
     private void showCamera() {
         try {
             mPlayer = Manager.createPlayer("capture://video");
@@ -125,7 +125,7 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
             canvas.addCommand(mBackCommand);
             canvas.addCommand(mCaptureCommand);
             canvas.setCommandListener(this);
-            
+
             J2MEDisplay.setView(canvas);
             mPlayer.start();
         } catch (IOException ioe) {
@@ -153,13 +153,13 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
             System.err.println("The was an error saving the file.");
             fe.printStackTrace();
         }
-        
+
         doError();
     }
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command cmd, Displayable display) {
         if (cmd.equals(this.mBackCommand)) {
@@ -185,23 +185,23 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
             String fileName = "test" + System.currentTimeMillis();
             fullName = saveFile(fileName + ".jpg", imageData);
             doFinish();
-            
+
         }
         catch(FileException fe)
         {
             System.err.println("The was an error saving the file.");
             fe.printStackTrace();
         }
-        catch(Exception me) 
+        catch(Exception me)
         {
             handleException(me);
         }
     }
-    
-    
+
+
     /**
      * This method was used in memory profiling to loop take images at different resolutions until it fails
-    
+
     private void doCaptureLoop() {
         byte[] jpg;
         // add a loop to do this a lot and write them to individual files so we know when we fail
@@ -219,17 +219,17 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
             boolean saved = saveFile(fileName + ".jpg", jpg) == "";
             if (saved) {
                 text += "Success!";
-                
+
             }
             //jpg = mVideoControl.getSnapshot("encoding=jpeg&quality=100&width=2048&height=1536");
             //jpg = mVideoControl.getSnapshot("encoding=jpeg&quality=100&width=1280&height=960");
-        } 
+        }
         catch(FileException fe)
         {
             System.err.println("The was an error saving the file.");
             fe.printStackTrace();
         }
-        catch (MediaException me) 
+        catch (MediaException me)
         {
             handleException(me);
             failures++;
@@ -250,23 +250,23 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
             fe.printStackTrace();
         }
     }
-    
+
      */
-    private String saveFile(String filename, byte[] image) throws FileException 
+    private String saveFile(String filename, byte[] image) throws FileException
     {
         String rootName = fileService.getDefaultRoot();
-        String restorepath = "file:///" + rootName + "JRImages";                
+        String restorepath = "file:///" + rootName + "JRImages";
         fileService.createDirectory(restorepath);
         String fullName = restorepath + "/" + filename;
         if (fileService.createFile(fullName, image)) {
-            System.out.println("Image saved.");    
-            return fullName;    
+            System.out.println("Image saved.");
+            return fullName;
         } else {
             return "";
         }
-        
+
     }
-    
+
     private FileService getFileService() throws UnavailableServiceException
     {
         //#if app.usefileconnections
@@ -275,10 +275,10 @@ public abstract class ImageCaptureState implements DataCaptureTransitions, State
         throw new UnavailableServiceException("Unavailable service: " +  J2MEFileService.serviceName);
         //#endif
     }
-    
+
     private void serviceUnavailable(Exception e)
     {
-        System.err.println("The File Service is unavailable.\n QUITTING!");            
+        System.err.println("The File Service is unavailable.\n QUITTING!");
         System.err.println(e.getMessage());
     }
 }

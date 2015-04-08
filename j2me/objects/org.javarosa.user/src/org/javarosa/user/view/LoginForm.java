@@ -41,10 +41,10 @@ public class LoginForm extends FramedForm {
 
     private ImageButton demoButton;
     private ImageButton loginButton;
-    
+
     private StringItem regularDemoButton;
     private StringItem regularLoginButton;
-    
+
     public final static Command CMD_DEMO_BUTTON = new Command(Localization.get("menu.Demo"),
             Command.ITEM, DEFAULT_COMMAND_PRIORITY);
 
@@ -52,7 +52,7 @@ public class LoginForm extends FramedForm {
             Command.CANCEL, 2);
     public final static Command CMD_LOGIN_BUTTON = new Command(Localization.get("menu.Login"),
             Command.ITEM, DEFAULT_COMMAND_PRIORITY);
-    
+
     public final static Command  CMD_TOOLS = new Command(Localization.get("menu.Tools"),
             Command.ITEM, 4);
 
@@ -66,9 +66,9 @@ public class LoginForm extends FramedForm {
     private boolean demoEnabled = true;
 
     private boolean toolsEnabled;
-    
+
     private boolean imagesEnabled = false;
-    
+
     public LoginForm() {
             //#style loginView
         super(Localization.get("form.login.login"));
@@ -85,14 +85,14 @@ public class LoginForm extends FramedForm {
     }
 
     /**
-     * 
+     *
      * @param title
      * @param extraText
      */
     public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled) {
         this(title, extraText, demoEnabled, toolsEnabled, false);
     }
-    
+
     public LoginForm(String title, String[] extraText, boolean demoEnabled, boolean toolsEnabled, boolean imagesEnabled) {
         //#style loginView
         super(title);
@@ -125,7 +125,7 @@ public class LoginForm extends FramedForm {
                 if (highestID == -1 || userID > highestID)
                     highestID = userID;
             }
-            
+
             tempUser = (User)users.read(highestID);
 
         }
@@ -173,7 +173,7 @@ public class LoginForm extends FramedForm {
                         regularDemoButton.setVisible(true);
                     }
                 }
-                
+
             }
         });
 
@@ -224,7 +224,7 @@ public class LoginForm extends FramedForm {
     }
 
     /**
-     * 
+     *
      */
     private void showVersions() {
         //#if javarosa.login.showbuild
@@ -246,9 +246,9 @@ public class LoginForm extends FramedForm {
     }
 
     /**
-     * 
+     *
      * After login button is clicked, activity asks form to validate user
-     * 
+     *
      * @return
      */
     public boolean validateUser() {
@@ -258,18 +258,18 @@ public class LoginForm extends FramedForm {
         //#    superUserLogin = true;
         //#endif
         //#endif
-        
+
         String usernameEntered = this.usernameField.getString().trim();
         String passwordEntered = this.passwordField.getString().trim();
 
         IStorageIterator ui = users.iterate();
         while (ui.hasMore()) {
             User u = (User)ui.nextRecord();
-            
+
             String xName = u.getUsername();
             String xPass = u.getPassword();
             String xType = u.getUserType();
-            
+
             if (   (xName.equalsIgnoreCase(usernameEntered) ||
                     (superUserLogin && xType.equals(User.ADMINUSER)))
                  && checkPassword(xPass, passwordEntered)) {
@@ -281,14 +281,14 @@ public class LoginForm extends FramedForm {
         return false;
 
     }
-    
+
     private boolean checkPassword(String stored, String input) {
         if(stored.indexOf("$") != -1) {
             String alg = "sha1";
             String salt = (String)DateUtils.split(stored,"$", false).elementAt(1);
             String hashed = SHA1.encodeHex(salt + input);
             String compare = alg + "$" + salt + "$" + hashed;
-            
+
             return stored.equalsIgnoreCase(compare);
         }
         else {

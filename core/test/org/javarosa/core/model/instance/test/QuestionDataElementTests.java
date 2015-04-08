@@ -74,8 +74,8 @@ public class QuestionDataElementTests extends TestCase {
             public boolean referenceMatches(IDataReference reference) {
                 return this.reference.equals(reference.getReference());
             }
-        
-            
+
+
             public IDataReference clone()  {
                 IDataReference newReference = null;
                 try {
@@ -112,8 +112,8 @@ public class QuestionDataElementTests extends TestCase {
             public boolean referenceMatches(IDataReference reference) {
                 return this.intReference.equals(reference.getReference());
             }
-        
-            
+
+
             public IDataReference clone()  {
                 IDataReference newReference = null;
                 try {

@@ -54,7 +54,7 @@ public class ImageUtility {
      * Resizes an image from an input stream.
      * Hat tip: http://eriksdiary.blogspot.com/2008/03/create-thumbnail-in-j2me.html
      * This won't work without jsr-234 support which is pretty much non-existant (at least on Nokias)
-     * at this point. 
+     * at this point.
      * @param src
      * @param width
      * @param height

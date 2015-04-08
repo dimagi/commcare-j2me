@@ -9,11 +9,11 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.IQuestionWidget;
 
 public class FakedFormEntryPrompt extends FormEntryPrompt {
-    
+
     private String text;
     private int controlType;
     private int dataType;
-    
+
     private Vector<SelectChoice> choices;
 
     public FakedFormEntryPrompt(String text, int controlType, int dataType) {
@@ -58,7 +58,7 @@ public class FakedFormEntryPrompt extends FormEntryPrompt {
     public Vector<SelectChoice> getSelectChoices() {
         return choices;
     }
-    
+
     public void addSelectChoice(SelectChoice choice) {
         choice.setIndex(choices.size());
         choices.addElement(choice);
@@ -77,13 +77,13 @@ public class FakedFormEntryPrompt extends FormEntryPrompt {
     }
 
     //==== observer pattern ====//
-    
+
     public void register (IQuestionWidget widget) {
         //do nothing -- this fake prompt is not bound to anything real in the instance
     }
-    
+
     public void unregister () {
-        //do nothing -- this fake prompt is not bound to anything real in the instance        
+        //do nothing -- this fake prompt is not bound to anything real in the instance
     }
 
 
@@ -92,18 +92,18 @@ public class FakedFormEntryPrompt extends FormEntryPrompt {
     public String getQuestionText(String textID){
         return text;
     }
-    
+
     //Ugly hack.
     public String getSpecialFormSelectItemText(Selection sel,String form){
         if(sel == null)return null;
         if(form != null || form != "long" || form != "short" || form != "") return null;
         return sel.choice.getLabelInnerText();
     }
-    
+
     public String getSpecialFormSelectChoiceText(SelectChoice sel,String form){
         return getSpecialFormSelectItemText(sel.selection(),form);
     }
-    
+
     //Hey look, another hack.
     public String getSelectItemText(Selection sel){
         return sel.choice.getLabelInnerText();

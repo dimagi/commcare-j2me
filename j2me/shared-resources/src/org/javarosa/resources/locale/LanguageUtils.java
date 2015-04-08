@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.resources.locale;
 
@@ -25,19 +25,19 @@ import org.javarosa.core.util.PropertyUtils;
 
 /**
  * @author Clayton Sims
- * @date Jun 3, 2009 
+ * @date Jun 3, 2009
  *
  */
 public class LanguageUtils {
     /**
-     * Initializes the language for the application in three steps 
-     * 
+     * Initializes the language for the application in three steps
+     *
      *  1. If the language property exists, fetch it and set the current locale
-     *  2. Otherwise, if the useProperty argument is true, set the default language 
+     *  2. Otherwise, if the useProperty argument is true, set the default language
      *  to the preprocessed value "javarosa.locale.default" if that preprocessed value exists
      *  3. If the value does not exist, use the provided string to set the
      *  application's default language
-     *  
+     *
      * @param useProperty Whether to attempt to pull the default language property
      * @param fallbackDefaultLanguage The language used as a fallback if none
      * can be fetched from the preprocessed value

@@ -30,26 +30,26 @@ import org.javarosa.patient.util.DateValueTuple;
 
 public class GraphDataGroup extends TreeElement {
     public static final int GRAPH_DATA_ID = 11;
-    
+
     IDataReference reference;
-    
+
     public GraphDataGroup() {
         super();
     }
-    
+
     public void setReference(IDataReference reference) {
         this.reference = reference;
     }
-    
-    
+
+
     public IAnswerData getValue() {
         NumericListData returnVal = new NumericListData();
         for (int k1 = 0; k1 < this.getNumChildren(); k1++) {
             TreeElement element = this.getChildAt(k1);
-                
+
                 Date dateValue = null;
                 Integer intValue = null;
-                
+
                 for (int k2 = 0; k2 < element.getNumChildren(); k2++) {
                     TreeElement subElement = element.getChildAt(k2);
                     if("date".equals(subElement.getName())) {
@@ -79,7 +79,7 @@ public class GraphDataGroup extends TreeElement {
         }
         return returnVal;
     }
-    
+
     public void setValue(IAnswerData data) {
         if(data instanceof NumericListData) {
             clearDataNodes();
@@ -99,11 +99,11 @@ public class GraphDataGroup extends TreeElement {
             }
         }
     }
-    
+
     private void clearDataNodes() {
         for (int i = 0; i < this.getNumChildren(); i++) {
             TreeElement element = this.getChildAt(i);
-            
+
             if(element.getName() == "data") {
                 this.removeChild(element);
             }

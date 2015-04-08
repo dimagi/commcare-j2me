@@ -32,26 +32,26 @@ import org.javarosa.j2me.services.exception.FileException;
 
 
 /**
- * 
+ *
  * Service providing File I/O using J2ME libraries.
  * @author Ndubisi Onuora
  *
  */
 
-public class J2MEFileService implements FileService 
+public class J2MEFileService implements FileService
 {
     public static final String serviceName = "file-io";
-    
+
     /**
      * Create a directory from the path
      * @param path
      * @return true if the operation succeeded or the directory already existed
      */
-    public boolean createDirectory(String path) throws FileException 
-    {        
+    public boolean createDirectory(String path) throws FileException
+    {
         FileConnection directory = null;
         boolean dirCreated = false;
-        try 
+        try
         {
             directory = (FileConnection) Connector.open(path);
             if (!directory.exists())
@@ -60,24 +60,24 @@ public class J2MEFileService implements FileService
                 dirCreated = true;
             }
         }
-        catch(IOException ex) 
+        catch(IOException ex)
         {
             //handleException(ex);
             dirCreated = false;
-            throw new FileException("An error occurred with creating a directory.");            
+            throw new FileException("An error occurred with creating a directory.");
         }
-        finally 
+        finally
         {
             close(directory);
         }
         return dirCreated;
     }
-    
+
     public boolean deleteDirectory(String path) throws FileException
     {
         FileConnection directory = null;
         boolean dirDeleted = false;
-        try 
+        try
         {
             directory = (FileConnection)Connector.open(path);
             if(directory.exists() && directory.isDirectory())
@@ -86,35 +86,35 @@ public class J2MEFileService implements FileService
                 dirDeleted = true;
             }
         }
-        catch(IOException ex) 
+        catch(IOException ex)
         {
             //handleException(ex);
             dirDeleted = false;
-            throw new FileException("An error occurred when deleting a directory.");            
+            throw new FileException("An error occurred when deleting a directory.");
         }
-        finally 
+        finally
         {
             close(directory);
         }
         return dirDeleted;
-    }    
-    
+    }
+
     /**
      * Get a list of root directories on the device
      * @return
      */
     public String[] getRootNames() throws FileException
-    {        
+    {
         return enumtoStringArr( FileSystemRegistry.listRoots() );
     }
-    
+
     /**
      * Get the default root directory
      * @return
      */
-    public String getDefaultRoot() throws FileException 
+    public String getDefaultRoot() throws FileException
     {
-        Vector v = new Vector();        
+        Vector v = new Vector();
         addArrtoVec(v, getRootNames());
         Enumeration root = v.elements();
         String rootName = "";
@@ -123,14 +123,14 @@ public class J2MEFileService implements FileService
         }
         return rootName;
     }
-    
+
     private static String[] enumtoStringArr(Enumeration enumer)
     {
         Vector enumerationList = new Vector();
         Enumeration e = enumer;
         while(e.hasMoreElements())
             enumerationList.addElement( (String)e.nextElement() );
-        
+
         return vectorToStringArr(enumerationList);
     }
     /*
@@ -138,9 +138,9 @@ public class J2MEFileService implements FileService
     {
         int vecSize = vec.size();
         Object[] arr = new Object[vecSize];
-        for(int i = 0; i < vecSize; ++i)        
+        for(int i = 0; i < vecSize; ++i)
             arr[i] = vec.elementAt(i);
-        
+
         return arr;
     }
     */
@@ -148,19 +148,19 @@ public class J2MEFileService implements FileService
     {
         int vecSize = vec.size();
         String[] arr = new String[vecSize];
-        for(int i = 0; i < vecSize; ++i)        
+        for(int i = 0; i < vecSize; ++i)
             arr[i] = (String)vec.elementAt(i);
-        
+
         return arr;
     }
-    
+
     private static void addArrtoVec(Vector vec, Object[] arr)
     {
         for(int i = 0; i < arr.length; ++i)
             vec.addElement(arr[i]);
     }
-    
-    public String[]/*Enumeration*/ listDirectory(String directoryPath) throws FileException 
+
+    public String[]/*Enumeration*/ listDirectory(String directoryPath) throws FileException
     {
         FileConnection dir = null;
         System.out.println("Listing the contents of: " + directoryPath);
@@ -168,83 +168,83 @@ public class J2MEFileService implements FileService
         {
             dir = (FileConnection)Connector.open(directoryPath);
             return enumtoStringArr(dir.list());
-        } 
+        }
         catch(IOException ioe)
         {
             throw new FileException("Error listing directory in " + directoryPath + "path");
         }
-        catch(Exception ex) 
+        catch(Exception ex)
         {
             handleException(ex);
             /*
-            return new Enumeration() 
+            return new Enumeration()
             {
-                public boolean hasMoreElements() 
+                public boolean hasMoreElements()
                 {
                     return false;
                 }
-                public Object nextElement() 
+                public Object nextElement()
                 {
                     return null;
                 }
             };
             */
-        } 
-        finally 
+        }
+        finally
         {
-            close(dir);            
-        }        
+            close(dir);
+        }
         return null; //THIS SHOULD NEVER HAPPEN!!!
-    }    
-    
+    }
+
     /**
-     * Create a file 
+     * Create a file
      * @param fullName
      * @param data
      * @return whether the file was created
      */
-    public boolean createFile(String fullName, byte[] data) throws FileException 
+    public boolean createFile(String fullName, byte[] data) throws FileException
     {
         OutputStream fos = null;
         FileConnection file = null;
         boolean isSaved = false;
-        try 
+        try
         {
             file = (FileConnection) Connector.open(fullName);
-            if (!file.exists()) 
+            if (!file.exists())
             {
-                file.create();                
-            }                
+                file.create();
+            }
             fos = file.openOutputStream();
             fos.write(data);
             isSaved = true;
-        } 
-        catch(IOException ex) 
-        {                
+        }
+        catch(IOException ex)
+        {
             //handleException(ex);
             isSaved = false;
-            throw new FileException("Error creating file.");            
-        } 
-        finally 
-        {        
+            throw new FileException("Error creating file.");
+        }
+        finally
+        {
             close(fos);
             close(file);
         }
         return isSaved;
     }
-    
+
     /**
      * Delete a file
      * @param fileName
      */
-    public boolean deleteFile(String fileName) throws FileException 
+    public boolean deleteFile(String fileName) throws FileException
     {
         FileConnection file = null;
         boolean fileDeleted = false;
-        try 
+        try
         {
             file = (FileConnection)Connector.open(fileName);
-            if(file.exists()) 
+            if(file.exists())
             {
                 System.err.println(fileName + " exists");
                 file.delete();
@@ -256,23 +256,23 @@ public class J2MEFileService implements FileService
             }
         }
         catch(IOException ioe)
-        {            
+        {
             handleException(ioe);
             throw new FileException("Error deleting file.");
         }
         catch(Exception ex)
-        {        
+        {
             handleException(ex);
-        } 
-        finally 
-        {        
+        }
+        finally
+        {
             close(file);
         }
         return fileDeleted;
     }
 
     /**
-     * 
+     *
      * @param fileName
      * @return whether or not the file exists
      * @throws FileException
@@ -294,17 +294,17 @@ public class J2MEFileService implements FileService
             close(file);
         }
     }
-    
+
     /**
      * Gets file data from the OS
      * @param fileName
      * @return
      */
-    public byte[] getFileData(String fileName) throws FileException 
+    public byte[] getFileData(String fileName) throws FileException
     {
         InputStream fis = null;
         FileConnection file = null;
-        try 
+        try
         {
             file = (FileConnection) Connector.open(fileName);
             int bytesToRead = (int) file.fileSize();
@@ -312,10 +312,10 @@ public class J2MEFileService implements FileService
             fis = file.openInputStream();
             int bytesRead = 0;
             int blockSize = 1024;
-            while (bytesToRead > bytesRead) 
+            while (bytesToRead > bytesRead)
             {
                 int thisBlock = blockSize;
-                if (bytesToRead - bytesRead < blockSize) 
+                if (bytesToRead - bytesRead < blockSize)
                 {
                     thisBlock = bytesToRead-bytesRead;
                 }
@@ -328,19 +328,19 @@ public class J2MEFileService implements FileService
         {
             throw new FileException("Error obtaining file data.");
         }
-        catch(Exception ex) 
-        {                
-            handleException(ex);            
+        catch(Exception ex)
+        {
+            handleException(ex);
         }
-        finally 
-        {        
+        finally
+        {
             close(fis);
             close(file);
         }
         return null;
     }
 
-    public InputStream getFileDataStream(String fileName) throws FileException 
+    public InputStream getFileDataStream(String fileName) throws FileException
     {
         InputStream fis = null;
         FileConnection file = null;
@@ -349,37 +349,37 @@ public class J2MEFileService implements FileService
             file = (FileConnection)Connector.open(fileName);
             fis = file.openInputStream();
             //return fis;
-        } 
-        catch(Exception ex) 
-        {                
+        }
+        catch(Exception ex)
+        {
             handleException(ex);
             throw new FileException("Error obtaining FileDataStream.");
         }
         finally
-        {        
+        {
             close(file);
         }
         //return null;
         return fis;
     }
-    
+
     public OutputStream getFileOutputStream(String fileName) throws FileException
     {
         OutputStream fos = null;
-        FileConnection file = null;        
-        try 
+        FileConnection file = null;
+        try
         {
             file = (FileConnection)Connector.open(fileName);
             if (!file.exists())
             {
-                file.create();                
-            }                
-            fos = file.openOutputStream();            
-        } 
-        catch(IOException ex) 
+                file.create();
+            }
+            fos = file.openOutputStream();
+        }
+        catch(IOException ex)
         {
             handleException(ex);
-            throw new FileException("Error creating file.");            
+            throw new FileException("Error creating file.");
         }
         finally
         {
@@ -400,44 +400,44 @@ public class J2MEFileService implements FileService
             directory = directory + "/";
         }
         String toReturn = directory;
-        try 
-        {            
+        try
+        {
             Date latestFoundDate = getModifiedDate(directory);
             Vector v = new Vector();
             addArrtoVec(v, listDirectory(directory) );
             Enumeration filesBelow = v.elements();
             // this is not very efficient and could be significantly tweaked if
             // desired. Does way too many trips up and down the tree.
-            while (filesBelow.hasMoreElements()) 
+            while (filesBelow.hasMoreElements())
             {
                 FileConnection subFile = null;
                 String subFileName = (String) filesBelow.nextElement();
-                try 
+                try
                 {
                     String fullPathConstructed = directory + subFileName;
                     subFile = (FileConnection) Connector.open(fullPathConstructed);
-                    if (subFile.isDirectory()) 
+                    if (subFile.isDirectory())
                     {
                         // continue otherwise
                         Date subFileDate = getModifiedDateRecursive(fullPathConstructed);
-                        if (subFileDate.getTime() > latestFoundDate.getTime()) 
+                        if (subFileDate.getTime() > latestFoundDate.getTime())
                         {
                             latestFoundDate = subFileDate;
                             toReturn = fullPathConstructed;
                         }
                     }
-                } 
+                }
                 finally
                 {
                     close(subFile);
                 }
             }
-            if (toReturn != directory) 
+            if (toReturn != directory)
             {
                 return getMostRecentlyModifiedDirectoryBelow(toReturn);
             }
-        } 
-        catch(IOException e) 
+        }
+        catch(IOException e)
         {
             handleException(e);
             toReturn = null;
@@ -445,30 +445,30 @@ public class J2MEFileService implements FileService
         catch(FileException fe)
         {
             System.err.println("An error occurred while attempting to get most recently modified directory below.");
-            fe.printStackTrace();            
+            fe.printStackTrace();
         }
         return toReturn;
-    }    
-    
-    private Date getModifiedDate(String fileName) throws FileException 
+    }
+
+    private Date getModifiedDate(String fileName) throws FileException
     {
         FileConnection file = null;
-        try 
+        try
         {
             file = (FileConnection) Connector.open(fileName);
             return new Date(file.lastModified());
-        } 
+        }
         catch(IOException i)
         {
             throw new FileException("An error occurred while obtaining the modified date of the file " + fileName);
         }
-        finally 
+        finally
         {
             close(file);
         }
     }
 
-    private Date getModifiedDateRecursive(String fileName) throws FileException 
+    private Date getModifiedDateRecursive(String fileName) throws FileException
     {
         FileConnection file = null;
         System.out.println("Recursive modification check - searching: " + fileName);
@@ -478,7 +478,7 @@ public class J2MEFileService implements FileService
         try {
             file = (FileConnection) Connector.open(fileName);
             Date toReturn = new Date(file.lastModified());
-            if (file.isDirectory()) 
+            if (file.isDirectory())
             {
                 Vector v = new Vector();
                 addArrtoVec(v, listDirectory(fileName) );
@@ -496,19 +496,19 @@ public class J2MEFileService implements FileService
                 // nothing to do - the toReturn date is correct
             }
             return toReturn;
-        } 
+        }
         catch(IOException ie)
         {
             throw new FileException("An error occurred while obtaining the modified date recursively.");
         }
-        finally 
+        finally
         {
             close(file);
         }
     }
 
     private void close(InputStream stream) {
-        try {                    
+        try {
             if (stream != null) {
                 stream.close();
             }
@@ -518,13 +518,13 @@ public class J2MEFileService implements FileService
 
 
     private static void close(OutputStream stream) {
-        try {                    
+        try {
             if (stream != null) {
                 stream.flush();
                 stream.close();
             }
         } catch (Exception e) {
-        }    
+        }
     }
 
     private static void close(FileConnection connection) {
@@ -533,11 +533,11 @@ public class J2MEFileService implements FileService
                 connection.close();
         }
         catch(IOException e) {
-            
+
         }
     }
-    
-    private static void handleException(Exception ex) 
+
+    private static void handleException(Exception ex)
     {
         // TODO Auto-generated method stub
         System.out.println("Exception caught in J2MEFileService" + ex.getMessage());
@@ -551,10 +551,10 @@ public class J2MEFileService implements FileService
         try {
             file = (FileConnection) Connector.open(fileName);
             return file.availableSize();
-        } catch (Exception ex) {                
+        } catch (Exception ex) {
             handleException(ex);
-        } 
-        finally {        
+        }
+        finally {
             close(file);
         }
         return -1;

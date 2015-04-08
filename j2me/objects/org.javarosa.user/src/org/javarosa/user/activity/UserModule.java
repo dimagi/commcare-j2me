@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.user.activity;
 
@@ -25,7 +25,7 @@ import org.javarosa.user.model.User;
 
 /**
  * @author Clayton Sims
- * @date Mar 5, 2009 
+ * @date Mar 5, 2009
  *
  */
 public class UserModule implements IModule {

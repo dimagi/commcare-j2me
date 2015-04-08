@@ -38,43 +38,43 @@ import de.enough.polish.ui.Item;
  * GraphWidget is an extended chatterbox widget that draws sets
  * of DateValueTuples onto the screen with dates scaled on the X
  * axis, and values scaled on the Y axis of a colored graph.
- * 
+ *
  * @author Clayton Sims
  *
  */
 public class GraphWidget extends ExpandedWidget {
     private WidgetEscapeComponent wec = new WidgetEscapeComponent();
 
-    public final static int CONTROL_GRAPH = 11; 
-    
+    public final static int CONTROL_GRAPH = 11;
+
     private int resolution = 100;
-    
+
     //The actual chart widget
     LineChart chart;
-    
+
     Integer[] chartXPointsArray = {};
     Integer[] chartYPointsArray = {};
     String [] chartXPointsLabelArray;
-    
+
     /** Integer->IGraphTemplate */
     Map templates = new Map();
-    
+
     IGraphTemplate currentTemplate = null;
-    
+
     Vector data;
-    
+
     public GraphWidget() {
         init();
     }
-    
+
     /**
      * Do the initial setup for the Chart
      */
     private void init() {
         //#style lineChart
-        chart = new LineChart(""); 
+        chart = new LineChart("");
         chart.setUseDefaultColor(false);
-        
+
         chart.setFont(Font.FACE_PROPORTIONAL,Font.STYLE_PLAIN,Font.SIZE_SMALL);
         chart.setDrawAxis(true);
         chart.setPreferredSize(240, 200);
@@ -88,7 +88,7 @@ public class GraphWidget extends ExpandedWidget {
         //chart.setMaxXScaleFactor(18);
         wec.init();
     }
-    
+
     /**
      * Commits the data line (not the template lines), onto the actual chart widget
      */
@@ -96,9 +96,9 @@ public class GraphWidget extends ExpandedWidget {
         for(int i = 0; i < chartXPointsArray.length; i++) {
             chart.insertItem("", chartYPointsArray[i].intValue(), chartXPointsArray[i].intValue(), 0,  0,   255);
         }
-        
+
     }
-    
+
     /**
      * Applies the data from the graph's template to this chart
      * @param data a Vector<DateValueTuple> of measurements that
@@ -119,7 +119,7 @@ public class GraphWidget extends ExpandedWidget {
             }
         }
     }
-    
+
     /**
      * Registers a new template for displaying records on the line chart
      * @param template An IGraphTemplate object that this widget will register
@@ -128,20 +128,20 @@ public class GraphWidget extends ExpandedWidget {
     public void registerTemplate(IGraphTemplate template) {
         templates.put(template.getTemplateName(), template);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.formmanager.view.chatterbox.widget.ExpandedWidget#getEntryWidget(org.javarosa.core.model.QuestionDef)
      */
-    protected Item getEntryWidget(FormEntryPrompt prompt) {        
+    protected Item getEntryWidget(FormEntryPrompt prompt) {
         return wec.wrapEntryWidget(chart);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.formmanager.view.chatterbox.widget.ExpandedWidget#getEntryWidget(org.javarosa.core.model.QuestionDef)
      */
-    public Item getInteractiveWidget() {        
+    public Item getInteractiveWidget() {
         return wec.wrapInteractiveWidget(super.getInteractiveWidget());
     }
 
@@ -152,7 +152,7 @@ public class GraphWidget extends ExpandedWidget {
     public int getNextMode () {
         return wec.wrapNextMode(ExpandedWidget.NEXT_ON_SELECT);
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.formmanager.view.chatterbox.widget.ExpandedWidget#getWidgetValue()
@@ -168,22 +168,22 @@ public class GraphWidget extends ExpandedWidget {
     protected void setWidgetValue(Object o) {
         if(o instanceof Vector) {
             data = (Vector)o;
-            
-            
+
+
             int numPoints = data.size();
-            
+
             int scaledRes = resolution/numPoints;
-            
+
             chartXPointsArray = new Integer[numPoints];
             chartYPointsArray = new Integer[numPoints];
-            
+
             Long minDate = null;
             Long maxDate = null;
-            
+
             Integer minVal = null;
             Integer maxVal = null;
-            
-            
+
+
             Enumeration en = data.elements();
             while(en.hasMoreElements()) {
                 DateValueTuple tuple = (DateValueTuple)en.nextElement();
@@ -194,7 +194,7 @@ public class GraphWidget extends ExpandedWidget {
                 if(maxDate == null || maxDate.longValue() < time) {
                     maxDate = new Long(time);
                 }
-                
+
                 int val = tuple.value;
                 if(minVal == null || minVal.intValue() > val) {
                     minVal = new Integer(val);
@@ -203,18 +203,18 @@ public class GraphWidget extends ExpandedWidget {
                     maxVal = new Integer(val);
                 }
             }
-            
+
             long dateSpan = maxDate.longValue() - minDate.longValue();
             if(dateSpan == 0) {
                 dateSpan = 1;
             }
             //int valSpan = maxVal.intValue() - minVal.intValue();
-            
+
             long dateRes = dateSpan / numPoints;
-            
+
             //int valRes = valSpan / numPoints;
-            
-            
+
+
             Vector xpoints = new Vector();
             Vector ypoints = new Vector();
             en = data.elements();
@@ -227,20 +227,20 @@ public class GraphWidget extends ExpandedWidget {
                 int finalTime = intScaled;
                 Integer xPoint = new Integer(finalTime);
                 Integer val = new Integer(tuple.value);
-                
+
                 xpoints.addElement(xPoint);
                 ypoints.addElement(val);
             }
             xpoints.copyInto(chartXPointsArray);
             ypoints.copyInto(chartYPointsArray);
-            
+
             //chart.setMaxYScaleFactor((maxVal.intValue()*2)/3);
             //chart.setMinYScaleFactor(minVal.intValue());
-            
+
             chart.resetData();
             applyTemplate(data);
             applyData();
-        }        
+        }
     }
 
     /*

@@ -30,23 +30,23 @@ import org.javarosa.patient.util.SelectorParser;
 /**
  * NumericalRecord is a class which stores record entries of an
  * integer type.
- * 
+ *
  * @author Clayton Sims
  *
  */
 public class NumericalRecord implements IPatientRecord {
-    
+
     //Type: NumericalRecordEntry
     //Representation Invariant: entries are in order sorted from earliest to latest
     Vector numericalRecordEntries = new Vector();
-    
+
     public NumericalRecord() {
     }
-    
+
     /**
      * Gets the latest measurement that has been recorded
-     * 
-     * @return The integer value of the latest recorded measurment. 
+     *
+     * @return The integer value of the latest recorded measurment.
      */
     public int getLatestMeasurement() {
         if(numericalRecordEntries.size() < 1 ) {
@@ -59,7 +59,7 @@ public class NumericalRecord implements IPatientRecord {
             return entry.getRecordValue();
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.patient.model.IPatientRecord#getHistoricalRecords(java.lang.String)
@@ -67,10 +67,10 @@ public class NumericalRecord implements IPatientRecord {
     public Vector getHistoricalRecords(String delimeters) {
         return SelectorParser.selectValues(delimeters, numericalRecordEntries);
     }
-    
+
     /**
      * Adds the measurement to this record.
-     * 
+     *
      * @param entry The record entry to be added
      */
     public void addMeasurement(NumericalRecordEntry entry) {

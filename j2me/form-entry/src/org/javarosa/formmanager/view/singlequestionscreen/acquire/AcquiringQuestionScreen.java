@@ -28,7 +28,7 @@ import de.enough.polish.ui.Style;
 /**
  * @author mel An extended SingleQuestionScreen that acquires the answer data
  *         for the question by capturing (and possibly processing) some data
- * 
+ *
  */
 public abstract class AcquiringQuestionScreen extends SingleQuestionScreen {
     protected IAnswerData acquiredData;

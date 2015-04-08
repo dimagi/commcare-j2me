@@ -31,15 +31,15 @@ import org.javarosa.services.transport.senders.SenderThread;
  * elsewhere by code that is actually used and maintained (SendAllUnsentState in the
  * commcare-core repo). the way this handled multi-send was also terrible; it spawned
  * threads for each payload and tried to send them all simultaneously.
- * 
+ *
  * since thread management is now handled in the transport layer itself, this class does
  * not need to be Runnable
- * 
+ *
  */
 
 /**
  * Managing sending forms, both single forms, and multiple forms together
- * 
+ *
  */
 public class FormSender {
 
@@ -55,7 +55,7 @@ public class FormSender {
         this.view = view;
         this.message = message;
     }
-    
+
 
     public void setObserver(ISubmitStatusObserver o) {
         this.observer = o;
@@ -66,7 +66,7 @@ public class FormSender {
             throw new RuntimeException(
                     "null data when trying to send single data");
 
-        try{ 
+        try{
             //#debug debug
             System.out.println("Sending single datum, serialized id="
                     + this.message.getCacheIdentifier());

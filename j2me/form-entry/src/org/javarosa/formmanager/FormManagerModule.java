@@ -32,7 +32,7 @@ public class FormManagerModule implements IModule {
      */
     public void registerModule() {
         String[] prototypes = new String[] { ReferenceDataPointer.class.getName()};
-        PrototypeManager.registerPrototypes(prototypes);    
+        PrototypeManager.registerPrototypes(prototypes);
         PropertyManager._().addRules(new FormManagerProperties());
     }
 

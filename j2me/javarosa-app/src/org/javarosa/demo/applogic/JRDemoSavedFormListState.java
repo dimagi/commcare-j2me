@@ -23,7 +23,7 @@ public class JRDemoSavedFormListState implements JRDemoSavedFormListTransitions{
 
     public void savedFormSelected(int formID,int instanceID) {
     }
-    
+
     public void sendDataFormInstance(final FormInstance data) {
         JRDemoFormTransportState send;
         try {
@@ -33,7 +33,7 @@ public class JRDemoSavedFormListState implements JRDemoSavedFormListTransitions{
             send = new JRDemoFormTransportState(data, profile, data.getID()) {
 
                 public void done() {
-                    new JRDemoSavedFormListState().start();                
+                    new JRDemoSavedFormListState().start();
                 }
 
                 public void sendToBackground() {

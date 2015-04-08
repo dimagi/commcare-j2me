@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.utility;
 
@@ -16,21 +16,21 @@ public class ModelRmsRetrievalMethod implements IFormDefRetrievalMethod {
 
     RMSRetreivalMethod method;
     FormInstance model;
-    
+
     public ModelRmsRetrievalMethod(FormInstance model) {
         construct(model);
         this.model = model;
     }
-    
+
     public ModelRmsRetrievalMethod(int modelId) {
         IStorageUtility instances = StorageManager.getStorage(FormInstance.STORAGE_KEY);
         construct((FormInstance)instances.read(modelId));
     }
-    
+
     private void construct(FormInstance model) {
         method = new RMSRetreivalMethod(model.getFormId());
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.formmanager.utility.IFormDefRetrievalMethod#retreiveFormDef(org.javarosa.core.Context)
      */

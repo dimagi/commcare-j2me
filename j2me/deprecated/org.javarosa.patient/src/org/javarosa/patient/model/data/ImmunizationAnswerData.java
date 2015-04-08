@@ -27,17 +27,17 @@ import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 
 public class ImmunizationAnswerData  implements IAnswerData {
-    
+
     ImmunizationData data;
-    
+
     public ImmunizationAnswerData() {
-        
+
     }
-    
+
     public ImmunizationAnswerData(ImmunizationData data ) {
         this.data = data;
     }
-    
+
     public String getDisplayText() {
         return "Data Table";
     }
@@ -55,7 +55,7 @@ public class ImmunizationAnswerData  implements IAnswerData {
     public void setValue(Object o) {
         data = (ImmunizationData)o;
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.core.model.data.IAnswerData#setValue(java.lang.Object)
      */
@@ -91,5 +91,5 @@ public class ImmunizationAnswerData  implements IAnswerData {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
 }

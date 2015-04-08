@@ -30,7 +30,7 @@ public class FormSummaryController implements HandledPCommandListener {
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable d) {
         if (d == view) {
@@ -59,12 +59,12 @@ public class FormSummaryController implements HandledPCommandListener {
     public static int countUnansweredQuestions(FormEntryModel model, boolean countRequiredOnly) {
         //ctsims - Made this list only count relevant questions
         int counter = 0;
-    
+
         for(FormIndex index = model.incrementIndex(FormIndex.createBeginningOfFormIndex());!index.isEndOfFormIndex();index = model.incrementIndex(index)) {
             if(!model.isIndexRelevant(index)) {
                 continue;
             }
-            
+
             if(model.getEvent(index) == FormEntryController.EVENT_QUESTION) {
                 FormEntryPrompt prompt = model.getQuestionPrompt(index);
                 if(prompt.getAnswerValue() == null) {
@@ -74,32 +74,32 @@ public class FormSummaryController implements HandledPCommandListener {
                 }
             }
         }
-    
+
         return counter;
     }
-    
+
     /**
-     * @param model Form entry model to test index against 
+     * @param model Form entry model to test index against
      * @return number of unanswered questions
      */
 
     public static int countQuestionsToIndex(FormEntryModel model, FormIndex last) {
         //ctsims - Made this list only count relevant questions
         int counter = 0;
-    
+
         for(FormIndex index = model.incrementIndex(FormIndex.createBeginningOfFormIndex());!index.equals(last);index = model.incrementIndex(index)) {
             if(!model.isIndexRelevant(index)) {
                 continue;
             }
-            
+
             if(model.getEvent(index) == FormEntryController.EVENT_QUESTION) {
                 counter++;
             }
         }
-    
+
         return counter;
     }
-    
+
     public void setTransitions(FormSummaryState transitions) {
         this.transistions = transitions;
     }

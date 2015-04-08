@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.user.utility;
 
@@ -25,11 +25,11 @@ import org.javarosa.user.model.User;
 
 /**
  * @author Clayton Sims
- * @date Mar 5, 2009 
+ * @date Mar 5, 2009
  *
  */
 public class UserEntity extends Entity<User> {
-    
+
     String username;
     String type;
 
@@ -46,7 +46,7 @@ public class UserEntity extends Entity<User> {
     public UserEntity factory() {
         return new UserEntity();
     }
-    
+
     public int readEntityId(User u) {
         return u.getID();
     }
@@ -58,7 +58,7 @@ public class UserEntity extends Entity<User> {
         this.username = u.getUsername();
         this.type = u.getUserType();
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.patient.select.activity.IEntity#getHeaders(boolean)
      */
@@ -73,11 +73,11 @@ public class UserEntity extends Entity<User> {
     public String getName() {
         return username;
     }
-    
+
     private String getType() {
         return getType(type);
     }
-    
+
     private String getType(String type) {
         String output = Localization.get("user.entity.unknown");
         if(User.ADMINUSER.equals(type)) {
@@ -89,13 +89,13 @@ public class UserEntity extends Entity<User> {
         }
         return output;
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.patient.select.activity.IEntity#getLongFields(java.lang.Object)
      */
     public String[] getLongFields(User u) {
         String type = getType(u.getUserType());
-        
+
         return new String[]{getName(), type};
     }
 
@@ -115,15 +115,15 @@ public class UserEntity extends Entity<User> {
         }
         return false;
     }
-    
+
     public int[] getSortFields () {
         return new int[] {0};
     }
-    
+
     public String getSortFieldName (int key) {
         return Localization.get("user.entity.username");
     }
-    
+
     public Object getSortKey (int key) {
         if (key == 0) {
             return getName();

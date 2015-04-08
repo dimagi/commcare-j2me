@@ -37,7 +37,7 @@ import org.javarosa.core.services.transport.TransportMessage;
 import org.javarosa.core.services.transport.TransportMethod;
 
 /**
- * 
+ *
  * @author Simon Peter Muwanga
  */
 public class BTTransportMethod implements TransportMethod {
@@ -45,81 +45,81 @@ public class BTTransportMethod implements TransportMethod {
     private static final String name = "Bluetooth";
 
     private ITransportManager manager;
-    
-    private IActivity destinationRetrievalActivity;
-    
 
-    
-    
-    
+    private IActivity destinationRetrievalActivity;
+
+
+
+
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openmrs.transport.TransportMethod#transmit(org.openmrs.transport.TransportMessage)
      */
     public void transmit(TransportMessage message, ITransportManager manager) {
         try{
-        cacheURL(message);        
+        cacheURL(message);
         this.manager = manager;
-        
-        
+
+
         new Thread(new WorkerThread(message)).start();
-        
-        
-        
+
+
+
         }//End try
          catch(Exception e){
             AlertEngine alertEngine = new AlertEngine("ERROR! ioe", e.getMessage()+" Testing", null, AlertType.ERROR);
             JavaRosaServiceProvider.instance().showView(alertEngine);
         }// end catch
     }
-    
+
     protected void cacheURL(TransportMessage message) {
         try{
         String destinationUrl = ((BTTransportDestination)message.getDestination()).getURL();
         //destinationUrl="btspp://00037ABEFE97:1";
-        
+
         Vector existingURLs = JavaRosaServiceProvider.instance().getPropertyManager().getProperty(BTTransportProperties.POST_URL_LIST_PROPERTY);
-        
+
         if(existingURLs!=null){
             if (!existingURLs.contains(destinationUrl)) {
-                
+
                 existingURLs.addElement(destinationUrl);
-                
+
                 JavaRosaServiceProvider.instance().getPropertyManager().setProperty(BTTransportProperties.POST_URL_LIST_PROPERTY,existingURLs);
-            }    
+            }
         }else{
-            //add code to add urls outside the HttpTransportProperties 
+            //add code to add urls outside the HttpTransportProperties
         }
-        
+
     }//End try
      catch(Exception e){
          AlertEngine alertEngine = new AlertEngine("ERROR! ioe", e.getMessage()+" cacheURL()", null, AlertType.ERROR);
             JavaRosaServiceProvider.instance().showView(alertEngine);
     }// end catch
-        
+
     }
 
     /**
-     * 
+     *
      * @author <a href="mailto:m.nuessler@gmail.com">Matthias Nuessler</a>
      */
     class WorkerThread implements Runnable {
-        
-        
-        
+
+
+
         private TransportMessage message;
-        
+
         public WorkerThread(TransportMessage message){
             this.message  = message;
         }
-        
-        
+
+
         /*public void setMessage(TransportMessage message) {
             this.message  = message;
         }*/
-        
-        
+
+
         /*public void cleanStreams(){
             if (in != null) {
                 try {
@@ -142,31 +142,31 @@ public class BTTransportMethod implements TransportMethod {
                     // ignore
                 }
             }
-            
+
         }
 */
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see java.lang.Thread#run()
          */
         public void run() {
-            
+
             //This code works fine. Its for sending a text to the server
             /*try{
                  StreamConnection con = (StreamConnection)Connector.open("btspp://00037ABEFE97:1");
-                 
+
                  DataInputStream in = con.openDataInputStream();
                  DataOutputStream out = con.openDataOutputStream();
                  String theMessage = "Hello from JR Client";
-                 
+
                  out.writeUTF(theMessage);
                  out.flush();
-                 
+
                  String returnedString = in.readUTF();
                  AlertEngine alertEngine = new AlertEngine("Server Response", returnedString, null, AlertType.ERROR);
                     JavaRosaServiceProvider.instance().showView(alertEngine);
-                    
+
                     in.close();
                     out.close();
                     con.close();
@@ -176,61 +176,61 @@ public class BTTransportMethod implements TransportMethod {
                     JavaRosaServiceProvider.instance().showView(alertEngine);
                 }*/
             IDataPayload payload = null;
-                
+
             try{
-                
+
                 payload = message.getPayloadData();
-                
-                    
+
+
                     AlertEngine alertEngine1 = new AlertEngine("payload size: "+ payload.getLength(), "InputStream error, here", null, AlertType.ERROR);
                     JavaRosaServiceProvider.instance().showView(alertEngine1);
-                    
-                
+
+
                 //IDataPayload httpload = (IDataPayload)payload.accept(visitor);
-                    
+
                 /*    HttpTransportDestination destination = (HttpTransportDestination)message.getDestination();
                     con = (HttpConnection) Connector.open(destination.getURL());*/
-                
+
                     BTTransportDestination destination = (BTTransportDestination)message.getDestination();
-                 
+
                     //StreamConnection con = (StreamConnection)Connector.open("btspp://00037ABEFE97:1");
-                 
+
                     StreamConnection con = (StreamConnection)Connector.open(destination.getURL());
                  DataInputStream in = con.openDataInputStream();
                  DataOutputStream out = con.openDataOutputStream();
-                 
+
                  InputStream valueStream = null;
                  int val = -1;
                  try{
                  valueStream = payload.getPayloadStream();
-                 
+
                  val = valueStream.read();//reads the next byte from the inputStream. The byte's value is an int, which is stored in val
-                 
+
                  }
                  catch(Exception e){
                  AlertEngine alertEngine = new AlertEngine("Inputstream: "+val, "InputStream error, here", null, AlertType.ERROR);
                  JavaRosaServiceProvider.instance().showView(alertEngine);
-                 
+
                  }
-                
-                
-                   while(val != -1) 
-                   {        
+
+
+                   while(val != -1)
+                   {
                      out.write(val);
                      val = valueStream.read();
-                     
+
                    }
-                   
-                
+
+
                 //#if debug.output==verbose
                 //System.out.println("PAYLOADDATA:"+new String(message.getPayloadData())+"\nENDPLDATA\n");
                 //#endif
                 valueStream.close();
                 out.flush();
-                
-                
+
+
                 // Get the length and process the data
-                byte[] data; 
+                byte[] data;
                 //int len = (int)con.getLength();
                 int len = in.read();
                 int read;
@@ -255,9 +255,9 @@ public class BTTransportMethod implements TransportMethod {
                     data = buffer.toByteArray();
                     read = data.length;
                 }
-                
+
                 process(data);
-                
+
                 // update status
                 message.setStatus(TransportMessage.STATUS_DELIVERED);
                 //#if debug.output==verbose
@@ -265,13 +265,13 @@ public class BTTransportMethod implements TransportMethod {
                 //#endif
                 message.setChanged();
                 message.notifyObservers(message.getReplyloadData());
-            
-            
+
+
             }catch(Exception e){
                 AlertEngine alertEngine = new AlertEngine("Err:... "+payload+" ...HH","Hi", null, AlertType.ERROR);
                 JavaRosaServiceProvider.instance().showView(alertEngine);
             }
-        
+
         }
 
         private void process(byte data) {
@@ -335,7 +335,7 @@ public class BTTransportMethod implements TransportMethod {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openmrs.transport.TransportMethod#getName()
      */
     public String getName() {
@@ -344,7 +344,7 @@ public class BTTransportMethod implements TransportMethod {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openmrs.transport.TransportMethod#getId()
      */
     public int getId() {
@@ -357,7 +357,7 @@ public class BTTransportMethod implements TransportMethod {
      */
     public ITransportDestination getDefaultDestination() {
         String url = JavaRosaServiceProvider.instance().getPropertyManager().getSingularProperty(BTTransportProperties.POST_URL_PROPERTY);
-        
+
         if(url == null) {
             return null;
         } else {
@@ -366,24 +366,24 @@ public class BTTransportMethod implements TransportMethod {
             String showURL = "Now using "+url;
             AlertEngine alertEngine = new AlertEngine("ERROR! ioe", showURL, null, AlertType.ERROR);
             JavaRosaServiceProvider.instance().showView(alertEngine);
-            
+
             return new BTTransportDestination(url);
         }
     }
     public void setDestinationRetrievalActivity(IActivity activity) {
         destinationRetrievalActivity = activity;
     }
-    
+
     public IActivity getDestinationRetrievalActivity() {
         return destinationRetrievalActivity;
     }
 
-    
+
     public void closeConnections() {
         /*if(primaryWorker!=null){
             primaryWorker.cleanStreams();
         }*/
 
     }
-    
+
 }

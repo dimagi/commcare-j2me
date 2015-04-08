@@ -45,12 +45,12 @@ import de.enough.polish.util.ArrayList;
  * launch a UI that supports displaying a list of images, marking some subset of
  * them and returning those images. New images can also be added via an
  * ImageCaptureActivity.
- * 
+ *
  * @author Cory Zue
- * 
+ *
  */
 public abstract class ImageChooserState implements DataCaptureTransitions, State, HandledCommandListener {
-    
+
     /**
      * String -> IDataPointer map of image names to references
      **/
@@ -59,7 +59,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     //private Form mainFormOld;
     private Form mainForm;
     private ChoiceGroup mainList;
-    
+
     private Command cancelCommand;
     private Command cameraCommand;
     private Command browseCommand;
@@ -67,7 +67,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     private Command viewCommand;
     private Command deleteCommand;
     private Command changeSniffDirectoryCommand;
-    
+
     /**
      * This holds the key to lookup the return value from a capture or browse activity
      * when it gets control back.
@@ -78,13 +78,13 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     private String sniffingPath;
     private FileService fileService;
     private DataCaptureTransitions transitions;
-    
+
     private boolean isSniffingImages = true;
 
     private boolean isActivelySniffing = false;
 
-    
-    public ImageChooserState(MIDlet midlet) 
+
+    public ImageChooserState(MIDlet midlet)
     {
         this.midlet = midlet;
         transitions = this;
@@ -97,8 +97,8 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
         viewCommand = new Command("View", Command.SCREEN, 0);
         deleteCommand = new Command("Delete", Command.SCREEN, 0);
         changeSniffDirectoryCommand = new Command("Change Search Directory", Command.SCREEN, 0);
-        
-        try 
+
+        try
         {
             fileService = getFileService();
         }
@@ -106,7 +106,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
         {
             serviceUnavailable(ue);
         }
-        
+
     }
 
     public void destroy() {
@@ -119,12 +119,12 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
         addImageToUI(data);
         updateView();
     }
-    
+
     public void dirChanged (IDataPointer data) {
         changeSniffingDirectory(data.getDisplayText());
         updateView();
     }
-        
+
     private void updateView() {
         J2MEDisplay.setView(mainForm);
     }
@@ -145,15 +145,15 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
         // mainForm.append("Use the menu options to take pictures or browse.");
 
         // also create the sniffer
-        if(isSniffingImages) 
-        {            
+        if(isSniffingImages)
+        {
             try
             {
                 mainList = new ChoiceGroup("Available Images (searching in " + getImageSniffingPath() + ")", ChoiceGroup.MULTIPLE);
                 sniffer = new ImageSniffer(getImageSniffingPath(), this);
             }
             catch(FileException fe)
-            {                
+            {
                 System.err.println("An error occurred while getting image sniffing path.");
                 System.err.println("Sniffer could not be created. QUITTING!!!");
                 fe.printStackTrace();
@@ -173,13 +173,13 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
      * The path to sniff images
      * @return
      */
-    public String getImageSniffingPath() throws FileException 
+    public String getImageSniffingPath() throws FileException
     {
 
         if (sniffingPath == null) {
             // default
             // file system testing
-            //sniffingPath = "file://localhost/root1/photos/"; 
+            //sniffingPath = "file://localhost/root1/photos/";
             // phone testing
             String rootName = fileService.getDefaultRoot();
             sniffingPath = "file://localhost/" + rootName + "Images/";
@@ -188,15 +188,15 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     }
 
     /**
-     * Set or change the path to sniff images.  
+     * Set or change the path to sniff images.
      * @return
      */
     public void changeSniffingDirectory(String path) {
         sniffingPath = path;
-        
-        if (isActivelySniffing ) { 
+
+        if (isActivelySniffing ) {
             System.out.println("Setting directory to: " + path);
-            sniffer.setSniffDirectory(sniffingPath); 
+            sniffer.setSniffDirectory(sniffingPath);
             mainList.setLabel("Available Images (searching in " + sniffingPath + ")");
         } else {
             throw new RuntimeException("Tried to change the sniffing directory but wasn't sniffing!");
@@ -212,7 +212,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     public void setSniffingImages(boolean toSniff) {
         isSniffingImages = toSniff;
     }
-    
+
     /**
      * Whether a directory is/will be sniffed for images
      * @return
@@ -220,7 +220,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     public boolean isSniffingImages() {
         return isSniffingImages;
     }
-    
+
     /**
      * Add an image to this object in the form of a data pointer
      * @param pointer
@@ -242,12 +242,12 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
                 /*
                  * testing streams // check hack - stream through and make sure
                  * at least that works
-                 * 
+                 *
                  * InputStream s = pointer.getDataStream();
-                 * 
+                 *
                  * byte[] bytes = new byte[1024]; int i = 0; int totalBytesRead =
                  * 0; int bytesRead = s.read(bytes);
-                 * 
+                 *
                  * System.out.println("Reading file: " +
                  * pointer.getDisplayText()); System.out.println("Initial bytes
                  * read: " + bytesRead + " first byte is: " + bytes[0]); while
@@ -256,7 +256,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
                  * read: " + totalBytesRead + " first byte is: " + bytes[0]); }
                  * i++; if (bytesRead != 1024) { break; } bytesRead =
                  * s.read(bytes); }
-                 * 
+                 *
                  */
 
                 // Image img = ImageUtility.resizeImage(pointer.getDataStream(),
@@ -296,7 +296,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable d) {
         if (command.equals(cameraCommand)) {
@@ -326,7 +326,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
     }
 
     private void processReturn() {
-        // if we're going back to the original caller then add the images 
+        // if we're going back to the original caller then add the images
         destroy();
         transitions.captured(getSelectedImages());
     }
@@ -382,7 +382,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
             }
 
             public void captured(IDataPointer[] data) {
-                throw new RuntimeException("not applicable");        
+                throw new RuntimeException("not applicable");
             }
 
             public void noCapture() {
@@ -402,7 +402,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
             }
 
             public void captured(IDataPointer[] data) {
-                throw new RuntimeException("not applicable");        
+                throw new RuntimeException("not applicable");
             }
 
             public void noCapture() {
@@ -430,7 +430,7 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
             }
         }.start();
     }
-    
+
     private FileService getFileService() throws UnavailableServiceException
     {
         //#if app.usefileconnections
@@ -439,17 +439,17 @@ public abstract class ImageChooserState implements DataCaptureTransitions, State
         throw new UnavailableServiceException("Unavailable service: " +  J2MEFileService.serviceName);
         //#endif
     }
-    
+
     private void serviceUnavailable(Exception e)
     {
-        System.err.println("The File Service is unavailable.\n QUITTING!");            
+        System.err.println("The File Service is unavailable.\n QUITTING!");
         System.err.println(e.getMessage());
     }
-    
+
     public void captured (IDataPointer data) {
         throw new RuntimeException("not applicable");
     }
-    
+
     public void noCapture () {
         throw new RuntimeException("not applicable");
     }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.utility;
 
@@ -12,18 +12,18 @@ import org.javarosa.core.services.storage.StorageManager;
 
 /**
  * Retrieves a FormDef from RMS by its XML namespace.
- * 
+ *
  * @author ctsims
  *
  */
 public class NamespaceRetrievalMethod implements IFormDefRetrievalMethod {
 
     FormDef def;
-    
+
     public NamespaceRetrievalMethod(String namespace) {
         IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
         int id;
-        
+
         Vector IDs = forms.getIDsForValue("XMLNS", namespace);
         if (IDs.size() == 1) {
             id = ((Integer)IDs.elementAt(0)).intValue();
@@ -33,11 +33,11 @@ public class NamespaceRetrievalMethod implements IFormDefRetrievalMethod {
 
         load(id);
     }
-    
+
     private void load(int id) {
         IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
         FormDef theForm = (FormDef)forms.read(id);
-        
+
         if (theForm != null) {
             this.def = theForm;
         } else {
@@ -46,7 +46,7 @@ public class NamespaceRetrievalMethod implements IFormDefRetrievalMethod {
             throw new RuntimeException(error);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.formmanager.utility.IFormDefRetrievalMethod#retreiveFormDef()

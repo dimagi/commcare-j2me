@@ -66,16 +66,16 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
     private NewRepeatScreen repeatScreen;
     private String backupTitle;
     private SingleQuestionScreenFactory factory;
-    
+
     //TODO: Replace with something non-static once question count works properly
     private int numQuestions = -1;
-    
+
     private int currentGuess = -1;
-    
+
     public SingleQuestionView(JrFormEntryController controller) {
         this(controller, controller.getModel().getFormTitle());
     }
-    
+
     // GUI elements
     public SingleQuestionView(JrFormEntryController controller, String title) {
         super(controller.getModel().getFormTitle());
@@ -97,7 +97,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
                 captionCount++;
                 String captionText = caption.getLongText();
                 if(captionText != null) {
-                    if(caption.repeats()) { 
+                    if(caption.repeats()) {
                         groupTitle += caption.getRepetitionText(false);
                     } else {
                         groupTitle += caption.getLongText();
@@ -110,7 +110,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
                 groupTitle = groupTitle.substring(0, groupTitle.length() - 2);
             }
         }
-        
+
         String shortPrompt = prompt.getSpecialFormQuestionText(FormEntryCaption.TEXT_FORM_SHORT);
         if(shortPrompt != null ){
             if(groupTitle != "") {
@@ -119,7 +119,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
                 groupTitle += shortPrompt;
             }
         }
-        
+
         if(groupTitle == "") {
             groupTitle = backupTitle;
         }
@@ -128,11 +128,11 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
         if (model.getLanguages() != null && model.getLanguages().length > 0) {
             currentQuestionScreen.addLanguageCommands(model.getLanguages());
         }
-        
+
         if(currentGuess != -1 && controller.isEntryOptimized()) {
             currentQuestionScreen.configureProgressBar(currentGuess,numQuestions);
         }
-        
+
         currentQuestionScreen.setCommandListener(this);
         return currentQuestionScreen;
     }
@@ -162,17 +162,17 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
     private void showFormSummary() {
         //clear guess
         currentGuess = -1;
-        
+
         cleanUpResources();
 
         FormSummaryState summaryState = new FormSummaryState(controller);
         summaryState.start();
     }
-    
+
     private void exit() {
         controller.abort();
     }
-    
+
     private void cleanUpResources() {
         if(currentQuestionScreen != null) {
             currentQuestionScreen.releaseMedia();
@@ -192,7 +192,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
             SingleQuestionScreen view = getView(prompt, this.goingForward);
 
             J2MEDisplay.setView(view);
-            
+
             //CTS - 2/24/2012
             //There's a bug in Polish where sometimes showNotify won't get
             //triggered if we're in a callout to a native screen. Make
@@ -218,7 +218,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable arg1) {
         if (arg1 == repeatScreen) {
@@ -244,7 +244,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
                 try {
                     controller.suspendActivity(FormEntryState.MEDIA_LOCATION);
                 } catch (UnavailableServiceException ue) {
-                    J2MEDisplay.showError(Localization.get("activity.locationcapture.LocationError"), 
+                    J2MEDisplay.showError(Localization.get("activity.locationcapture.LocationError"),
                                           Localization.get("activity.locationcapture.GPSNotAvailable"));
                 }
             }
@@ -312,7 +312,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
         controller.answerQuestion(controller.getModel().getFormIndex(), answer);
         refreshView();
     }
-    
+
     private void endOfForm() {
         int counter = FormSummaryController.countUnansweredQuestions(model, true);
         if (counter > 0) {
@@ -386,19 +386,19 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
             J2MEDisplay.showError(null, txt);
         }
     }
-    
-    private void throwConstraintViolation(IAnswerData answer, String backupMessage) { 
+
+    private void throwConstraintViolation(IAnswerData answer, String backupMessage) {
         String constraintMsg = model.getQuestionPrompt().getConstraintText(answer);
         if(constraintMsg == null || constraintMsg == "") { constraintMsg = backupMessage; }
         String constraintImage = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_IMAGE, answer);
         String constraintAudio = model.getQuestionPrompt().getConstraintText(FormEntryCaption.TEXT_FORM_AUDIO, answer);
-        
+
         Image image = null;
-        
+
         if(constraintImage != null) {
             try {
                 Reference ref = ReferenceManager._().DeriveReference(constraintImage);
-            
+
                 InputStream is = ref.getStream();
                 image = Image.createImage(is);
                 is.close();
@@ -414,7 +414,7 @@ public class SingleQuestionView extends FramedForm implements IFormEntryView,
         }
     }
 
-    public void attachFormMediaController(FormMultimediaController mediacontroller) {    
+    public void attachFormMediaController(FormMultimediaController mediacontroller) {
         this.factory = new SingleQuestionScreenFactory(controller, mediacontroller, new WidgetFactory(controller.isEntryOptimized()));
     }
 }

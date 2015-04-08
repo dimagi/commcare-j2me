@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.entity.model;
 
@@ -12,9 +12,9 @@ import org.javarosa.core.util.Iterator;
  *
  */
 public class StorageEntitySet<E extends Persistable> implements EntitySet<E> {
-    
+
     IStorageUtility<E> storage;
-    
+
     public StorageEntitySet(IStorageUtility<E> storage) {
         this.storage = storage;
     }

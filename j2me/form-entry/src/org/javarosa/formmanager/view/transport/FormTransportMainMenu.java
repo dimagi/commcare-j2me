@@ -63,10 +63,10 @@
 //
 //        return menuItems;
 //    }
-//    
+//
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see
 //     * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
 //     * .lcdui.Command, javax.microedition.lcdui.Displayable)
@@ -84,7 +84,7 @@
 //            int selected = getSelectedIndex();
 //            handleOk(selected);
 //        }
-//        
+//
 //        throw new RuntimeException("Command " + c.getLabel()
 //                + " uncaught - display:" + d.getTitle());
 //    }
@@ -92,16 +92,16 @@
 //    private void handleOk(int selection) {
 //
 //        switch (selection) {
-//        
+//
 //        case SELECT_MODELS:
 //            this.activity.returnViewModels();
 //            return;
-//            
+//
 //        case MESSAGE_QUEUE:
 //            this.activity.returnForDestination();
 //            this.activity.showMessageList();
 //            return;
-//            
+//
 //            // otherwise..
 //        default:
 //            // 1-10-2009 - ctsims
@@ -116,7 +116,7 @@
 //                    .elementAt(transportType);
 //            TransportMethod method = JavaRosaServiceProvider.instance()
 //                    .getTransportManager().getTransportMethod(id.intValue());
-//            
+//
 //            if (method.getId() == TransportMethod.FILE) {
 //                this.activity.returnForDestination();
 //            }
@@ -124,7 +124,7 @@
 //
 //        }
 //    }
-//    
+//
 //    /**
 //     * @return
 //     */

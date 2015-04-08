@@ -189,7 +189,7 @@ public abstract class ImageCaptureScreen extends AcquireScreen implements Comman
             } catch (MediaException me2) {
             }
         }
-        
+
         //Disable this unless we want to use the barcode stuff. This breaks for some reason
         //and someone who knows about the barcode system (and how it works with polish) needs
         //to come fix it

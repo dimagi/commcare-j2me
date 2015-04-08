@@ -58,7 +58,6 @@ import org.kxml2.io.KXmlParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 /**
- *
  * @author Phillip Mates
  */
 
@@ -83,7 +82,7 @@ public class XPathPathExprTest extends TestCase {
 
         aSuite.addTest(new XPathPathExprTest("XPath Path Expression Test", new TestMethod() {
             public void run(TestCase tc) {
-                ((XPathPathExprTest) tc).doTests();
+                ((XPathPathExprTest)tc).doTests();
             }
         }));
 
@@ -136,8 +135,8 @@ public class XPathPathExprTest extends TestCase {
             if (exceptionExpected) {
                 fail("Expected exception, expression : " + expr);
             } else if ((result instanceof Double && expected instanceof Double)) {
-                Double o = ((Double) result).doubleValue();
-                Double t = ((Double) expected).doubleValue();
+                Double o = ((Double)result).doubleValue();
+                Double t = ((Double)expected).doubleValue();
                 if (Math.abs(o - t) > tolerance) {
                     fail("Doubles outside of tolerance: got " + o + ", expected " + t);
                 }

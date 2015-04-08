@@ -20,15 +20,15 @@ import org.javarosa.user.api.transitions.LoginTransitions;
  */
 
 public abstract class LoginState implements LoginTransitions, State {
-    
+
     public void start () {
         LoginController controller = getController();
         controller.setTransitions(this);
         controller.start();
     }
-    
+
     protected LoginController getController () {
         return new LoginController();
     }
-    
+
 }

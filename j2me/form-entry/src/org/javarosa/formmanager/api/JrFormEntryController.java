@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.api;
 
@@ -27,40 +27,40 @@ import org.javarosa.utilities.media.MediaUtils;
 
 /**
  * Extension of {@link FormEntryController} for J2ME.
- * 
+ *
  * @author ctsims
  *
  */
 public class JrFormEntryController extends FormEntryController implements FormMultimediaController {
-    
+
     FormEntryTransitions transitions;
     IFormEntryView view;
     boolean quickEntry = true;
     boolean isMinimal = false;
-    
+
     private static Reference curAudRef = null;
     private static String curAudioURI;
-    
+
     protected static boolean playAudioIfAvailable = true;
-    
+
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
-    
+
     private PlayerListener mMediaLogger;
-    
-    
+
+
     /** Causes audio player to throw runtime exceptions if there are problems instead of failing silently **/
     private boolean audioFailFast = true;
-    
+
     String extraKeyMode;
-    
+
     public JrFormEntryController(JrFormEntryModel model) {
         this(model, FormManagerProperties.EXTRA_KEY_LANGUAGE_CYCLE, false, true);
     }
-    
+
     public JrFormEntryController(JrFormEntryModel model, String extraKeyMode, boolean audioFailFast, boolean quickEntry){
         this(model, extraKeyMode, audioFailFast, quickEntry, false);
     }
-    
+
     public JrFormEntryController(JrFormEntryModel model, String extraKeyMode, boolean audioFailFast, boolean quickEntry, boolean isMinimal) {
         super(model);
         tryToInitDefaultLanguage(model);
@@ -68,7 +68,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         this.audioFailFast = audioFailFast;
         this.quickEntry = quickEntry;
         this.isMinimal = isMinimal;
-        
+
         this.mMediaLogger = new PlayerListener() {
             public void playerUpdate(Player player, String event, Object eventData) {
                 FormEntryPrompt fep = JrFormEntryController.this.getModel().getQuestionPrompt();
@@ -81,7 +81,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                 }
             }
         };
-        
+
         //#if device.identifier == Sony-Ericsson/K610i
         POUND_KEYCODE = Canvas.KEY_STAR;
         //#endif
@@ -106,10 +106,10 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     public JrFormEntryModel getModel () {
         return (JrFormEntryModel)super.getModel();
     }
-    
+
     public void setView(IFormEntryView view) {
         this.view = view;
-        
+
         view.attachFormMediaController(this);
     }
     public IFormEntryView getView(){
@@ -118,11 +118,11 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     public void setTransitions(FormEntryTransitions transitions) {
         this.transitions = transitions;
     }
-    
+
     /**
-     * Handles the given key event, and returns a flag signifying whether 
+     * Handles the given key event, and returns a flag signifying whether
      * the interface should continue trying to handle the event.
-     * 
+     *
      * @param key The key that was pressed
      * @return true if the ui should stop handling this event. False if it
      * is ok to continue processing it.
@@ -132,8 +132,8 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             cycleLanguage();
             return true;
         } else if(FormManagerProperties.EXTRA_KEY_AUDIO_PLAYBACK.equals(getExtraKeyMode()) && key == POUND_KEYCODE){
-            
-            //For now, we'll assume that video playback basically trumps audio playback. 
+
+            //For now, we'll assume that video playback basically trumps audio playback.
             //TODO: Add a way to play videos when extra-key isn't set to audio
             if(player != null) {
                 try {
@@ -148,20 +148,20 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                 }
                 return true;
             }
-            
+
             if(this.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {return false;}
-            
+
             playAudioOnDemand(this.getModel().getQuestionPrompt());
             //We can keep processing this. Audio plays in the background.
             return false;
         }
         return false;
     }
-    
+
     public void start() {
         view.show();
     }
-    
+
     /**
      * Start from a specific index
      * @param index
@@ -169,12 +169,12 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     public void start(FormIndex index){
         view.show(index);
     }
-    
+
     public void abort() {
         view.destroy();
         transitions.abort();
     }
-    
+
     public void saveAndExit(boolean formComplete) {
         if (formComplete){
             this.getModel().getForm().postProcessInstance();
@@ -182,36 +182,36 @@ public class JrFormEntryController extends FormEntryController implements FormMu
         view.destroy();
         transitions.formEntrySaved(this.getModel().getForm(),this.getModel().getForm().getInstance(),formComplete);
     }
-    
+
     public void suspendActivity(int mediaType) throws UnavailableServiceException {
         view.destroy();
         transitions.suspendForMediaCapture(mediaType);
     }
-    
+
     public void cycleLanguage () {
         setLanguage(getModel().getForm().getLocalizer().getNextLocale());
     }
-    
+
     public String getExtraKeyMode() {
         return extraKeyMode;
     }
-    
-    
-    
-    //// New Audio Stuff follows below. I've tried to set it up so that we can split this out into a seperate "view" 
+
+
+
+    //// New Audio Stuff follows below. I've tried to set it up so that we can split this out into a seperate "view"
     //// if you will at a later point.
     /**
      * Checks the boolean playAudioIfAvailable first.
      * Plays the question audio text
      */
     public void playAudioOnLoad(FormEntryPrompt fep){
-        //If the current session is expecting audio playback w/the extrakey, don't 
+        //If the current session is expecting audio playback w/the extrakey, don't
         //play it passively, wait for the button to be pressed.
         if(!FormManagerProperties.EXTRA_KEY_AUDIO_PLAYBACK.equals(extraKeyMode)) {
             playAudio(fep,null);
         }
     }
-    
+
     /**
      * Checks the boolean playAudioIfAvailable first.
      * Plays the question audio text
@@ -219,11 +219,11 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     public void playAudioOnDemand(FormEntryPrompt fep){
         playAudio(fep,null);
     }
-    
+
     public int playAudioOnDemand(FormEntryPrompt fep,SelectChoice select) {
         return playAudio(fep, select);
     }
-    
+
     /**
      * Plays audio for the SelectChoice (if AudioURI is present and media is available)
      * @param fep
@@ -232,7 +232,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
      */
     public int playAudio(FormEntryPrompt fep,SelectChoice select){
         if (!playAudioIfAvailable) return MediaUtils.AUDIO_DISABLED;
-        
+
         String textID;
         curAudioURI = null;
         String tag = null;
@@ -242,11 +242,11 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                 tag = "#";
             } else {
                 return MediaUtils.AUDIO_NO_RESOURCE;
-            }    
+            }
         }else{
             textID = select.getTextID();
             if(textID == null || textID == "") return MediaUtils.AUDIO_NO_RESOURCE;
-            
+
             if (fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO) != null) {
                 curAudioURI = fep.getSpecialFormSelectChoiceText(select, FormEntryCaption.TEXT_FORM_AUDIO);
                 tag = String.valueOf(select.getIndex());
@@ -254,16 +254,16 @@ public class JrFormEntryController extends FormEntryController implements FormMu
                 return MediaUtils.AUDIO_NO_RESOURCE;
             }
         }
-        
+
         //No idea why this is a member variable...
         return MediaUtils.playOrPauseAudio(curAudioURI, tag);
     }
-    
+
 
     public boolean isEntryOptimized() {
         return quickEntry;
     }
-    
+
     //A video player being controlled by this controller
     Player player;
 
@@ -277,7 +277,7 @@ public class JrFormEntryController extends FormEntryController implements FormMu
             detachVideoPlayer(player);
         }
         player.removePlayerListener(mMediaLogger);   // make sure listener doesn't get added multiple times
-        player.addPlayerListener(mMediaLogger);            
+        player.addPlayerListener(mMediaLogger);
         this.player = player;
     }
 
@@ -294,11 +294,11 @@ public class JrFormEntryController extends FormEntryController implements FormMu
     public void stopAudio() {
         MediaUtils.stopAudio();
     }
-    
+
     public void setMinimal(boolean isMinimal){
         this.isMinimal = isMinimal;
     }
-    
+
     public boolean isMinimal(){
         return this.isMinimal;
     }

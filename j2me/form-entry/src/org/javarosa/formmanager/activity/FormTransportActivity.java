@@ -44,9 +44,9 @@
 //
 ///**
 // * Manages the marshalling and sending of XForms through the transport layer
-// * 
+// *
 // * called after completion of PatientEntry activity, for example
-// * 
+// *
 // */
 //public class FormTransportActivity implements CommandListener, MessageListener,
 //        IActivity, ItemStateListener {
@@ -93,13 +93,13 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see org.javarosa.core.api.IActivity#resume(org.javarosa.core.Context)
-//     * 
-//     * 
+//     *
+//     *
 //     * resume will be called ONLY after the user has been prompted to specify a
 //     * destination
-//     * 
+//     *
 //     * @see returnForDestination
 //     */
 //    public void resume(Context globalContext) {
@@ -121,7 +121,7 @@
 //
 //    /**
 //     * This method returns to the shell requesting a new Transport Destination
-//     * 
+//     *
 //     * which is then inserted into context?
 //     */
 //    public void returnForDestination() {
@@ -182,7 +182,7 @@
 //    }
 //
 //    /**
-//     * 
+//     *
 //     */
 //    private void setMainMenuDisplay() {
 //        this.parent.setDisplay(this, new IView() {
@@ -229,7 +229,7 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @seejavax.microedition.lcdui.ItemStateListener#itemStateChanged(javax.
 //     * microedition.lcdui.Item)
 //     */
@@ -243,7 +243,7 @@
 //            this.sender.setDefaultDestination();
 //
 //            if (this.sender.getDestination() != null) {
-//                
+//
 //                //Send the data and create the appropriate display
 //                    this.sender.sendData();
 //            } else {
@@ -269,7 +269,7 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see
 //     * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
 //     * .lcdui.Command, javax.microedition.lcdui.Displayable)
@@ -288,9 +288,9 @@
 //    }
 //
 //    /**
-//     * 
+//     *
 //     * From mssage list
-//     * 
+//     *
 //     * @param message
 //     */
 //    public void handleTransportMessage(TransportMessage message) {
@@ -303,7 +303,7 @@
 //    }
 //
 //    /**
-//     * 
+//     *
 //     */
 //    public void showMessageList() {
 //        this.views.getMessageList().refresh();
@@ -316,7 +316,7 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see org.openmrs.transport.MessageListener#onMessage(java.lang.String)
 //     */
 //    public void onMessage(String message, int messageType) {
@@ -377,7 +377,7 @@
 //
 //    /*
 //     * (non-Javadoc)
-//     * 
+//     *
 //     * @see
 //     * org.javarosa.core.api.IActivity#annotateCommand(org.javarosa.core.api
 //     * .ICommand)

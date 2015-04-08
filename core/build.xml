@@ -7,7 +7,7 @@
     <!-- Include ant contrib library to use fancy things like "for" and "if" tasks -->
     <taskdef resource="net/sf/antcontrib/antlib.xml">
         <classpath>
-          <pathelement location="${ant-contrib}"/>
+            <pathelement location="${ant-contrib}"/>
         </classpath>
     </taskdef>
 
@@ -42,9 +42,9 @@
              "bootstrap class path not set in conjunction with -source 1.5" warning
              add bootclasspath="path/to/java/instance/rt.jar" attribute to javac tag -->
         <javac srcdir="${src}" destdir="${build}"
-            classpathref="classpath"
-            debug="true" debuglevel="lines,source"
-            source="1.5" target="1.5" includeantruntime="false">
+               classpathref="classpath"
+               debug="true" debuglevel="lines,source"
+               source="1.5" target="1.5" includeantruntime="false">
             <!-- Do we want to see lint warnings? -->
             <!-- <compilerarg value="-Xlint:unchecked"/> -->
         </javac>
@@ -61,7 +61,7 @@
          then also set the 'javarosa-deps' property to the path of the library archive (make sure you
          are using the version of the archive compatible with the version you wish to build) -->
     <target name="extract-libs" if="extract-libs-fresh">
-        <unzip src="${javarosa-deps}" dest="${dir.root}" overwrite="true" />
+        <unzip src="${javarosa-deps}" dest="${dir.root}" overwrite="true"/>
     </target>
 
     <target name="packageTestResources" description="pack-up test resource files into jar">
@@ -82,13 +82,14 @@
             <fileset dir="${test-build}" includes="jr-test-resource-jar.jar"/>
             <fileset dir="${dir.lib}" includes="*.jar"/>
             <fileset dir="${dist}" includes="*.jar"/>
-            <dirset dir="${test-build}" >
+            <dirset dir="${test-build}">
                 <exclude name="**/*$*.class"/>
             </dirset>
         </path>
     </target>
 
-    <target name="compileTests" depends="package, packageTestResources" description="compile unit tests">
+    <target name="compileTests" depends="package, packageTestResources"
+            description="compile unit tests">
         <javac destdir="${test-build}" classpathref="test.classpath" includeantruntime="false">
             <src path="${basedir}"/>
             <include name="**/test**/*.java"/>
@@ -97,7 +98,8 @@
     </target>
 
     <target name="test" depends="compileTests" description="Runs all unit tests found in the code">
-        <fileset id="dist.contents.test" dir="${test-build}" includes="**/*.class" excludes="**/*$*.class"/>
+        <fileset id="dist.contents.test" dir="${test-build}" includes="**/*.class"
+                 excludes="**/*$*.class"/>
 
         <!-- Now, convert that source list into a property which is newline seperated, and contains references
                 that start assuming you're in a zip file and in the src directory already -->
@@ -117,10 +119,12 @@
             </chainedmapper>
         </pathconvert>
 
-        <typedef name="instanceof" classname="org.javarosa.build.InstanceOfCondition" onerror="report">
+        <typedef name="instanceof" classname="org.javarosa.build.InstanceOfCondition"
+                 onerror="report">
             <classpath>
-                <pathelement location="${javarosa-dependencies}/j2me/buildfiles/tools/javarosa-ant-libs.jar"/>
-                <path refid="test.classpath" />
+                <pathelement
+                    location="${javarosa-dependencies}/j2me/buildfiles/tools/javarosa-ant-libs.jar"/>
+                <path refid="test.classpath"/>
             </classpath>
         </typedef>
 
@@ -128,9 +132,10 @@
         <for list="${testclasses}" delimiter="${line.separator}" param="testclassname">
             <sequential>
                 <if>
-                    <instanceof classname="@{testclassname}" baseclass="j2meunit.framework.TestCase"/>
+                    <instanceof classname="@{testclassname}"
+                                baseclass="j2meunit.framework.TestCase"/>
                     <then>
-                        <echo message="@{testclassname}" />
+                        <echo message="@{testclassname}"/>
                         <RunTestSuite suite="@{testclassname}"/>
                     </then>
                 </if>
@@ -141,7 +146,7 @@
 
     <!-- Generate javadocs for current project into ${doc.dir} -->
     <target name="doc" depends="init" description="generate documentation">
-      <javadoc sourcepath="${src}" destdir="${doc}"/>
+        <javadoc sourcepath="${src}" destdir="${doc}"/>
     </target>
 
     <!-- ///////////////////////////////////////////// -->
@@ -149,13 +154,15 @@
     <!-- ///////////////////////////////////////////// -->
 
     <!-- Runs a test suite, and sets testresult.global to be true on failure -->
-    <macrodef name="RunTestSuite" description="Runs a test suite, and sets testresult.global to be true on failure">
+    <macrodef name="RunTestSuite"
+              description="Runs a test suite, and sets testresult.global to be true on failure">
         <attribute name="suite"/>
         <!-- Note: The reason that we are using @{suite} as a property is because properties in ANT
             are immutable, and this is a unique identifier -->
         <sequential>
-            <java classname="j2meunit.textui.TestRunner" failonerror="false" fork="true" resultproperty="@{suite}">
-                <classpath refid="test.classpath" />
+            <java classname="j2meunit.textui.TestRunner" failonerror="false" fork="true"
+                  resultproperty="@{suite}">
+                <classpath refid="test.classpath"/>
                 <arg value="@{suite}"/>
             </java>
             <condition property="testresult.global">

@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.log.view;
 
@@ -24,17 +24,17 @@ import javax.microedition.lcdui.StringItem;
 
 /**
  * @author Clayton Sims
- * @date Apr 13, 2009 
+ * @date Apr 13, 2009
  *
  */
 public class LogViewer extends Form {
 
     StringItem logs;
-    
+
     public LogViewer() {
         super("Incident Log");
     }
-    
+
     public void loadLogs(String data) {
         logs = new StringItem("", data);
         this.append(logs);

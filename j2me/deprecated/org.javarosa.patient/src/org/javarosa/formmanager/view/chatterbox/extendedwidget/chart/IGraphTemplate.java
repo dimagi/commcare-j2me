@@ -19,13 +19,13 @@ package org.javarosa.formmanager.view.chatterbox.extendedwidget.chart;
 import java.util.Vector;
 
 public interface IGraphTemplate {
-    
+
     /**
-     * @return the name that is used in XFroms, etc, to distinguish this 
-     * template. 
+     * @return the name that is used in XFroms, etc, to distinguish this
+     * template.
      */
     String getTemplateName();
-    
+
     /**
      * @param data A Vector<DateValueTuple> that represents the data
      * to be drawn on the graph
