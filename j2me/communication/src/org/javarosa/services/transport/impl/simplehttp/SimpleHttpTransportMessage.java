@@ -34,17 +34,17 @@ import org.javarosa.services.transport.impl.TransportMessageStatus;
 /**
  * A message which implements the simplest Http transfer - plain text via POST
  * request
- * 
+ *
  */
 public class SimpleHttpTransportMessage extends BasicTransportMessage {
 
-    
+
     private IDataPayload content;
     /**
      * An http url, to which the message will be POSTed
      */
     private String url;
-    
+
     private String orApiVersion = "1.0";
 
     /**
@@ -53,17 +53,17 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
     private int responseCode;
 
     private byte[] responseBody;
-    
+
     private boolean cacheable = true;
-    
+
     private HttpRequestProperties responseProperties;
-    
+
     private Hashtable<String,String> customHeaders;
-    
+
     protected HttpAuthenticator authenticator;
 
     protected String authentication;
-    
+
     /**
      * Http connection method.
      */
@@ -75,13 +75,13 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
         //ONLY FOR SERIALIZATION
         customHeaders = new Hashtable<String,String>();
     }
-    
+
     public SimpleHttpTransportMessage(String url) {
         this();
         this.url = url;
         this.setHttpConnectionMethod(HttpConnection.GET);
     }
-    
+
     /**
      * @param str
      * @param destinationURL
@@ -122,7 +122,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
     public HttpRequestProperties getRequestProperties() {
         return new HttpRequestProperties(this.getConnectionMethod(), this.getContentLength(), orApiVersion, customHeaders);
     }
-    
+
     public HttpRequestProperties getResponseProperties() {
         return responseProperties;
     }
@@ -130,20 +130,20 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
     public boolean isCacheable() {
         return cacheable;
     }
-    
+
 
     protected IDataPayload getContent() {
         return content;
     }
-    
+
     public void setOpenRosaApiVersion(String orApiVersion) {
         this.orApiVersion = orApiVersion;
     }
-    
+
     public InputStream getContentStream() throws IOException {
         return getContent().getPayloadStream();
     }
-    
+
     public long getContentLength() {
         if(this.getContent() != null) {
             return getContent().getLength();
@@ -151,7 +151,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             return -1;
         }
     }
-    
+
     /**
      * @return
      */
@@ -187,33 +187,33 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
     public void setUrl(String url) {
         this.url = url;
     }
-    
+
     public void setCacheable(boolean cacheable) {
         this.cacheable = cacheable;
     }
-    
+
     public String getConnectionMethod() {
         return this.httpConnectionMethod;
     }
-    
+
     public void setHttpConnectionMethod(String httpConnectionMethod)
     {
         this.httpConnectionMethod = httpConnectionMethod;
-        
+
         //There's no meaning to caching a GET
         if(this.httpConnectionMethod != HttpConnection.POST) {
             setCacheable(false);
         }
     }
-    
+
     public void send() {
-        
+
         if(authenticator == null) {
             this.authenticator = AuthUtils.getStaticAuthenticator();
         }
         HttpConnection conn = null;
-        
-        
+
+
         boolean ex = false;
         long[] responseRead = new long[] {0};
         long responseLength = -1;
@@ -222,15 +222,15 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             System.out.println("Ready to send: " + this);
             conn = getConnection(this.getConnectionMethod());
             System.out.println("Connection: " + conn);
-            
+
             writeBody(conn);
-            
+
             // Get the response
             int responseCode = conn.getResponseCode();
             System.out.println("response code: " + responseCode);
-            
+
             if (responseCode == HttpConnection.HTTP_UNAUTHORIZED) {
-                
+
                 String challenge = AuthenticatedHttpTransportMessage.getChallenge(conn);
                 //If authentication is needed, issue the challenge
                 if (this.issueChallenge(conn, challenge)) {
@@ -240,10 +240,10 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
                     conn.close();
                     conn = getConnection(this.getConnectionMethod());
                     writeBody(conn);
-                    
+
                     responseCode = conn.getResponseCode();
                     System.out.println("Post-Auth response code: " + responseCode);
-                    
+
                     //Handle the new response as-is, if authentication failed,
                     //the sending process can issue a new request.
                     processResponse(conn, responseRead);
@@ -307,22 +307,22 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             reason = "Unknown reason";
             break;
             }
-            
+
             String certinfo = "";
             Certificate cert = certe.getCertificate();
             if (cert != null)
             {
-                
+
                 certinfo += "DN: " + cert.getSubject();
                 certinfo += "Type: " + cert.getType();
                 certinfo += "Version: " + cert.getVersion() + "\r";
                 certinfo += "Serial Number: " + cert.getSerialNumber() + "\r";
                 certinfo += "Signature Algorithm: " + cert.getSigAlgName() + "\r";
             }
-            
+
             ex = true;
             Logger.exception("Certificate error : " + reason +" . Provided cert: " + certinfo, certe);
-            
+
             this.setFailureReason(WrappedException.printException(certe));
             this.incrementFailureCount();
         } catch (Exception e) {
@@ -343,15 +343,15 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             }
         }
     }
-    
+
 
     /**
      * Issues an authentication challenge from the provided HttpConnection
-     * 
+     *
      * @param connection The connection which issued the challenge
      * @param challenge The WWW-Authenticate challenge issued.
      * @return True if the challenge was addressed by the message's authenticator,
-     * and the request should be retried, False if the challenge could not be 
+     * and the request should be retried, False if the challenge could not be
      * addressed.
      */
     public boolean issueChallenge(HttpConnection connection, String challenge) {
@@ -365,18 +365,18 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 
     private long processResponse(HttpConnection conn, long[] responseRead) throws IOException {
         responseProperties = HttpRequestProperties.HttpResponsePropertyFactory(conn);
-        
+
         long responseLength = -1;
 
         DataInputStream is = null;
-        
+
         try {
             responseLength = conn.getLength();
-            
+
             is = (DataInputStream) conn.openDataInputStream();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             StreamsUtil.writeFromInputToOutput(is, baos, responseRead);
-    
+
             // set return information in the message
             this.setResponseBody(baos.toByteArray());
             this.setResponseCode(conn.getResponseCode());
@@ -404,7 +404,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             os = conn.openOutputStream();
             writeBody(os);
         } finally {
-            if(os != null) { 
+            if(os != null) {
                 os.close();
             }
         }
@@ -417,7 +417,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             if (length > TransportService.PAYLOAD_SIZE_REPORTING_THRESHOLD) {
                 Logger.log("send", "size " + length);
             }
-            
+
 //            InputStream stream = payload.getPayloadStream();
 //            try {
 //                ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -427,10 +427,10 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
 //                try {
 //                    stream.close();
 //                } catch(IOException e) {
-//                    
+//
 //                }
 //            }
-            
+
             long[] tally = {0};
             try {
                 StreamsUtil.writeFromInputToOutput(payload.getPayloadStream(), os, tally);
@@ -443,13 +443,13 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             System.out.println("no request body");
         }
     }
-    
+
     public static void logRecv (long total, long read, boolean ex) {
         try {
             boolean hasLength = (total >= 0);    //whether we have total length
             boolean diff;                        //whether bytes read differed from total length
             boolean logIt;                        //whether to log stats
-            
+
             if (hasLength) {
                 diff = (total != read);
                 logIt = (total > TransportService.PAYLOAD_SIZE_REPORTING_THRESHOLD || diff);
@@ -457,7 +457,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
                 logIt = (read > TransportService.PAYLOAD_SIZE_REPORTING_THRESHOLD || ex);
                 diff = false;
             }
-    
+
             if (logIt) {
                 Logger.log("recv", read + (diff ? " of " + total : ""));
             }
@@ -466,7 +466,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
             Logger.exception("TransportMessage.logRecv", e);
         }
     }
-    
+
     /**
      * @param url
      * @return
@@ -474,11 +474,11 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
      */
     private HttpConnection getConnection(String connectionMethod) throws IOException {
         String url = this.getUrl();
-        
+
         //Need to add some URL args if we aren't authenticating
         if(this.authenticator == null) {
             String newArg = "authtype=noauth";
-            
+
             //See if we have any existing args
             if(url.indexOf("?") != -1) {
                 //add to the list
@@ -488,35 +488,35 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
                 url = url + "?" + newArg;
             }
         }
-        
+
         HttpConnection conn = (HttpConnection) Connector.open(url);
         if (conn == null) {
             throw new RuntimeException("Null conn in getConnection()");
         }
-        
+
         HttpRequestProperties requestProps = this.getRequestProperties();
         if (requestProps == null) {
             throw new RuntimeException("Null message.getRequestProperties() in getConnection()");
         }
-        
+
         //Retrieve either the response auth header, or the cached guess
         String authorization = this.getAuthString();
         if(authorization != null) {
             conn.setRequestProperty("Authorization", authorization);
         }
 
-        
+
         requestProps.configureConnection(conn);
-        
+
         return conn;
 
     }
-    
+
     /**
-     * @return the current best-guess authorization header for this message, 
-     * either produced as a response to a WWW-Authenticate challenge, or 
+     * @return the current best-guess authorization header for this message,
+     * either produced as a response to a WWW-Authenticate challenge, or
      * provided by the authentication cache based on previous requests
-     * (if enabled and relevant in the message's authenticator). 
+     * (if enabled and relevant in the message's authenticator).
      */
     public String getAuthString() {
         if(authentication == null && authenticator != null) {
@@ -525,14 +525,14 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
         }
         return authentication;
     }
-    
 
-    
+
+
     public void setHeader(String header, String value) {
         this.customHeaders.put(header, value);
     }
-    
-    
+
+
     public String toString() {
         String s = "#" + getCacheIdentifier() + " (http)";
         if (getResponseCode() > 0)
@@ -548,7 +548,7 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
         content = (IDataPayload)ExtUtil.read(in, new ExtWrapTagged(), pf);
         customHeaders = (Hashtable<String, String>) ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
     }
-        
+
     public void writeExternal(DataOutputStream out) throws IOException {
         super.writeExternal(out);
         ExtUtil.writeString(out,url);
@@ -557,5 +557,5 @@ public class SimpleHttpTransportMessage extends BasicTransportMessage {
         ExtUtil.write(out, new ExtWrapTagged(content));
         ExtUtil.write(out, new ExtWrapMap(customHeaders));
     }
-    
+
 }

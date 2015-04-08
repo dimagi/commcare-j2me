@@ -24,17 +24,17 @@ public interface ISubmitStatusObserver extends TransportListener {
      * processes.
      */
     public void destroy();
-    
+
     /**
-     * 
+     *
      */
-    
+
     /**
      * Receive a message from the sender which breaks the contract between
      * the sender and the screen .
-     * 
+     *
      * @param message A coded message for an issue which arose
      * @param details The details (if any) of the failure
      */
-    public void receiveError(String details); 
+    public void receiveError(String details);
 }

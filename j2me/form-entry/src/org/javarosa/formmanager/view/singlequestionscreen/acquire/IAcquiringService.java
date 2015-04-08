@@ -22,12 +22,12 @@ import de.enough.polish.ui.Style;
 
 /**
  * @author mel
- * 
+ *
  * A service that provides data acquisition widgets
  *
  */
 public interface IAcquiringService {
-    
+
     public AcquiringQuestionScreen getWidget(FormEntryPrompt prompt, Style style);
 
 }

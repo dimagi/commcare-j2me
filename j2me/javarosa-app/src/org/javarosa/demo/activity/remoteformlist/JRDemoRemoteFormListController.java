@@ -21,24 +21,24 @@ public class JRDemoRemoteFormListController implements HandledCommandListener {
     JRDemoRemoteFormListTransitions transitions;
     JRDemoRemoteFormListView view;
     OrderedHashtable formList;
-    
+
     public JRDemoRemoteFormListController(String formListXml) {
         formList = JRDemoUtil.readFormListXML(formListXml);
         view = new JRDemoRemoteFormListView(Localization.get("jrdemo.remoteformlist.title"), formList, JRDemoContext._().getUser().isAdminUser());
         view.setCommandListener(this);
     }
-    
+
     public void setTransitions (JRDemoRemoteFormListTransitions transitions) {
         this.transitions = transitions;
     }
-        
+
     public void start () {
         J2MEDisplay.setView(view);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if (d == view) {
@@ -51,7 +51,7 @@ public class JRDemoRemoteFormListController implements HandledCommandListener {
                 }
             } else if (c == view.CMD_BACK) {
                 transitions.back();
-            } 
+            }
         }
     }
 }

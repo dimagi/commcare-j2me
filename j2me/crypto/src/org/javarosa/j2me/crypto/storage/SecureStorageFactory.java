@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.j2me.crypto.storage;
 
@@ -14,16 +14,16 @@ import org.javarosa.j2me.storage.rms.RMSStorageUtilityIndexed;
  *
  */
 public class SecureStorageFactory implements IStorageFactory {
-    
+
     CryptoSession session;
-    
+
     /**
      * Creates a new storage factory which will create secure storage
      * when necessary for "Secure" tagged data models.
-     *   
+     *
      * @param session A crypto session which will be attached to the storage.
      * Doesn't need to be logged in or otherwise initialized.
-     * 
+     *
      * The session will be handed out to lots of in-memory objects, so the passer
      * should be sure to retain a handle to it in order to modify it during runtime.
      */

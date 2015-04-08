@@ -50,14 +50,14 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
 
 
     public GetFormHttpState() {
-        
+
     }
-    
+
     public abstract String getURL();
 
     public void fetchForm(){
         SimpleHttpTransportMessage message = new SimpleHttpTransportMessage(getURL());
-        
+
         try {
             sendThread = TransportService.send(message);
             sendThread.addListener(this);
@@ -72,11 +72,11 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
         J2MEDisplay.setView(progressScreen);
         fetchForm();
     }
-    
+
     protected ProgressScreen initProgressScreen() {
         return new ProgressScreen("Downloadng","Please Wait. Fetching Form...", this);
     }
-    
+
     public void fail(String message) {
         progressScreen.setText(message);
         progressScreen.addCommand(progressScreen.CMD_RETRY);
@@ -84,7 +84,7 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable display) {
         if(display == progressScreen){
@@ -96,7 +96,7 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
             }
         }
     }
-    
+
     public void process(byte[] response) {
         IStorageUtility formStorage = StorageManager.getStorage(FormDef.STORAGE_KEY);
 
@@ -108,7 +108,7 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
         }
         done();
     }
-    
+
     public void onChange(TransportMessage message, String remark) {
         progressScreen.setText(remark);
     }
@@ -121,6 +121,6 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
             fail("Failure while fetching XForm: " + message.getFailureReason());
         }
     }
-    
+
     public abstract void done();
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.api;
 
@@ -28,14 +28,14 @@ import de.enough.polish.ui.StringItem;
  *
  */
 public class LoginController implements HandledCommandListener {
-    
+
     protected LoginTransitions transitions;
 
     protected LoginForm view;
-    
+
     protected Alert demoModeAlert = null;
     protected String[] extraText;
-    
+
     public LoginController() {
         this(null, true);
     }
@@ -45,24 +45,24 @@ public class LoginController implements HandledCommandListener {
         view.setCommandListener(this);
         view.setPasswordMode(passwordFormat);
     }
-    
+
     public LoginController(String title, String image, String[] extraText, String passwordFormat, boolean showDemo, boolean imagesEnabled) {
         this.extraText = extraText;
         view = new LoginForm(null, this.extraText, showDemo, true, imagesEnabled);
         view.setCommandListener(this);
         view.setPasswordMode(passwordFormat);
-        
+
         if(image != null) {
             //#style loginImage?
             view.append(Graphics.TOP, new ImageItem(null, ImageUtils.getImage(image), ImageItem.LAYOUT_CENTER, ""));
         }
-        
+
         if(title != null) {
             //#style loginTitle?
             view.append(Graphics.TOP, new StringItem(null, title));
         }
     }
-    
+
     public LoginController(String[] extraText, boolean showDemo) {
         this(extraText,CreateUserController.PASSWORD_FORMAT_NUMERIC,showDemo);
     }
@@ -70,7 +70,7 @@ public class LoginController implements HandledCommandListener {
     public void setTransitions (LoginTransitions transitions) {
         this.transitions = transitions;
     }
-    
+
     public void start() {
         J2MEDisplay.setView(view);
     }
@@ -78,7 +78,7 @@ public class LoginController implements HandledCommandListener {
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
     }
-    
+
     // listener for the display
     public void _commandAction(Command c, Displayable d) {
         if (c == LoginForm.CMD_CANCEL_LOGIN) {
@@ -108,9 +108,9 @@ public class LoginController implements HandledCommandListener {
         }
         //#endif
     }
-    
-    
-    // this method is to be overridden by users. 
+
+
+    // this method is to be overridden by users.
     // handle errors here.
     protected void performCustomUserValidation() {
         J2MEDisplay.showError(Localization.get("activity.login.loginincorrect"), Localization.get("activity.login.tryagain"));

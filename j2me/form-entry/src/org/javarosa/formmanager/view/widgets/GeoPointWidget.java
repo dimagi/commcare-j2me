@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.view.widgets;
 
@@ -18,7 +18,7 @@ import de.enough.polish.util.MathUtil;
 
 /**
  * TODO: Add support for a "capture" button
- * 
+ *
  * @author ctsims
  *
  */
@@ -27,12 +27,12 @@ public class GeoPointWidget extends ExpandedWidget {
     Container parent;
     private WidgetEscapeComponent wec = new WidgetEscapeComponent();
 
-    
+
     protected TextField tfLat;
     protected TextField tfLon;
     protected TextField tfAlt;
     protected TextField tfAcc;
-    
+
     public static Command captureCommand = new Command(Localization.get("menu.Capture"), Command.SCREEN, 2);
 
     public GeoPointWidget() {
@@ -74,23 +74,23 @@ public class GeoPointWidget extends ExpandedWidget {
         tfAlt.addCommand(captureCommand);
         parent.add(tfAcc);
         tfAcc.addCommand(captureCommand);
-        
+
         parent.addCommand(captureCommand);
         parent.focusChild(0);
-        
+
         // adding command manually to get Capture to appear in first item
-        
+
         Item wrapper = wec.wrapEntryWidget(parent);
-        
+
         wrapper.addCommand(captureCommand);
-        
+
         return wrapper;
     }
-    
+
     public int getNextMode() {
         return wec.wrapNextMode(super.getNextMode());
     }
-    
+
     public Item getInteractiveWidget() {
         return wec.wrapInteractiveWidget(super.getInteractiveWidget());
     }
@@ -111,7 +111,7 @@ public class GeoPointWidget extends ExpandedWidget {
      * @see org.javarosa.formmanager.view.chatterbox.widget.ExpandedWidget#setWidgetValue(java.lang.Object)
      */
     protected void setWidgetValue(Object o) {
-        double[] value = (double[])o; 
+        double[] value = (double[])o;
         tfLat.setString(""+MathUtil.round(value[0]*10000)/10000.00);
         tfLon.setString(""+MathUtil.round(value[1]*10000)/10000.00);
         tfAlt.setString(""+MathUtil.round(value[2]));

@@ -125,7 +125,7 @@ public class XPathEvalTest extends TestCase {
         EvaluationContext ec = getFunctionHandlers();
 
         FormInstance instance = createTestInstance();
-        
+
         /* unsupporteds */
         testEval("/union | /expr", null, null, new XPathUnsupportedException());
         testEval("/descendant::blah", null, null, new XPathUnsupportedException());
@@ -541,15 +541,15 @@ public class XPathEvalTest extends TestCase {
         testEval("count(/data/strtest[@val = 'a'])", instance, null, new Double(1));
         testEval("count(/data/strtest[@val = 2])", instance, null, new Double(0));
         testEval("count(/data/strtest[@val = /data/string])", instance, null, new Double(1));
-        
 
-        
-        
-        
+
+
+
+
         /* fetching from model */
 //        testEval("/", dm1, null, "");
 //        testEval("/non-existent", dm1, null, "");
-//        
+//
 //        addDataRef(dm1, "/data/test", null);
 //        addNodeRef(dm1, "/empty-group", false);
 //        testEval("/", dm1, null, "");
@@ -558,7 +558,7 @@ public class XPathEvalTest extends TestCase {
 //        testEval("/empty-group/undefined", dm1, null, "");
 //        testEval("/data/test", dm1, null, "");
 //        testEval("/data/test/too-deep", dm1, null, "");
-//        
+//
 
 //        addDataRef(dm1, "/data/date", new DateData(DateUtils.getDate(2006, 6, 13)));
 //
@@ -570,7 +570,7 @@ public class XPathEvalTest extends TestCase {
 //        addDataRef(dm1, "/data/select-one", sod);
 //        addDataRef(dm1, "/data/select-multi", new SelectMultiData(sv));
 //        addDataRef(dm1, "/data/custom", new CustomAnswerData());
-//                
+//
 //        testEval("/data/string", dm1, null, "string");
 //        testEval("/data/int", dm1, null, new Double(17.0));
 //        testEval("/data/date", dm1, null, DateUtils.getDate(2006, 6, 13));
@@ -651,12 +651,12 @@ public class XPathEvalTest extends TestCase {
     private QuestionDef getSelectQuestion (boolean multi) {
         QuestionDef q = new QuestionDef(1, "blah",
                 multi ? Constants.CONTROL_SELECT_MULTI : Constants.CONTROL_SELECT_ONE);
-        
+
         q.addSelectItem("choice 1", "val1");
         q.addSelectItem("choice 2", "val2");
         q.addSelectItem("choice 3", "val3");
         q.addSelectItem("choice 4", "val4");
-        
+
         return q;
     }
     */

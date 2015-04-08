@@ -7,9 +7,9 @@ package org.javarosa.services.transport.impl;
  *
  */
 public class TransportException extends Exception {
-    
+
     /**
-     * 
+     *
      */
     private Exception underlyingException;
 
@@ -17,14 +17,14 @@ public class TransportException extends Exception {
      * @param underlyingException
      */
     public TransportException(Exception underlyingException) {
-    
+
         this.underlyingException = underlyingException;
     }
-    
+
     public TransportException(String message){
         this.underlyingException=new RuntimeException(message);
     }
-    
+
     /* (non-Javadoc)
      * @see java.lang.Throwable#getMessage()
      */

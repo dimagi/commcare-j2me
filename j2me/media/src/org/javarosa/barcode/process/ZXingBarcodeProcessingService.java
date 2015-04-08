@@ -38,7 +38,7 @@ import com.google.zxing.qrcode.QRCodeReader;
 
 /**
  * @author mel
- * 
+ *
  * Use the ZXing library to process a barcode from an image.
  * http://code.google.com/p/zxing/
  *

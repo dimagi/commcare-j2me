@@ -15,13 +15,13 @@
  */
 
 /**
- * 
+ *
  */
 package de.enough.polish.ui;
 
 /**
  * @author Clayton Sims
- * @date Apr 3, 2009 
+ * @date Apr 3, 2009
  *
  */
 public class MoreUIAccess {

@@ -27,13 +27,13 @@ import org.javarosa.j2me.log.HandledCommandListener;
 
 /**
  * @author mel
- * 
+ *
  *         A screen that acquires the answer data for a question
- * 
+ *
  */
 public abstract class AcquireScreen extends Form
         implements HandledCommandListener /* , IFormEntryView */ {
-    
+
     private AcquiringQuestionScreen questionScreen;
     private CommandListener listenerToReturnTo;
     public Command cancelCommand;
@@ -69,7 +69,7 @@ public abstract class AcquireScreen extends Form
 
     /**
      * command handler for screen-specific commands
-     * 
+     *
      * @param command
      * @param arg1
      */
@@ -103,17 +103,17 @@ public abstract class AcquireScreen extends Form
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * javax.microedition.lcdui.CommandListener#commandAction(javax.microedition
      * .lcdui.Command, javax.microedition.lcdui.Displayable)
-     * 
+     *
      * Command handler for generic acquisition commands
      */
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
     }
-    
+
     public void _commandAction(Command command, Displayable arg1) {
 
         if (command == cancelCommand) {
@@ -132,10 +132,10 @@ public abstract class AcquireScreen extends Form
         }
 
     }
-    
+
     private void forwardCommand (Command c, Displayable d) {
         CommandListener cl = listenerToReturnTo;
-        
+
         if (cl instanceof HandledCommandListener) {
             ((HandledCommandListener)cl)._commandAction(c, d);
         } else {

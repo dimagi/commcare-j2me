@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.api;
 
@@ -31,7 +31,7 @@ public abstract class EditUserFormEntryState extends FormEntryState implements E
     private String formName;
     private Vector<IPreloadHandler> preloaders;
     private Vector<IFunctionHandler> funcHandlers;
-        
+
     public EditUserFormEntryState (User u, String formName,
             Vector<IPreloadHandler> preloaders, Vector<IFunctionHandler> funcHandlers) {
         this.formName = formName;
@@ -39,19 +39,19 @@ public abstract class EditUserFormEntryState extends FormEntryState implements E
         this.preloaders = preloaders;
         this.funcHandlers = funcHandlers;
     }
-    
+
     public EditUserFormEntryState (User u, Vector<IPreloadHandler> preloaders, Vector<IFunctionHandler> funcHandlers) {
         this(u, "http://code.javarosa.org/user_registration", preloaders, funcHandlers);
     }
-    
-    
+
+
     /* (non-Javadoc)
      * @see org.javarosa.formmanager.api.FormEntryState#getController()
      */
     protected JrFormEntryController getController() {
         FormDefFetcher fetcher = new FormDefFetcher(new NamespaceRetrievalMethod(formName), preloaders, funcHandlers, new InstanceInitializationFactory());
         JrFormEntryController controller = new JrFormEntryController(new JrFormEntryModel(fetcher.getFormDef()));
-        
+
         //TODO: OQPS
         controller.setView(new Chatterbox(Localization.get("user.create.header"),controller));
         return controller;
@@ -85,7 +85,7 @@ public abstract class EditUserFormEntryState extends FormEntryState implements E
     public void abort() {
         cancel();
     }
-    
+
     public abstract void userEdited(User newUser);
     public abstract void cancel();
 }

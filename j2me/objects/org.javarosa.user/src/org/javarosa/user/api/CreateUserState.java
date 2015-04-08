@@ -10,9 +10,9 @@ public abstract class CreateUserState implements AddUserTransitions, State {
         controller.setTransitions(this);
         controller.start();
     }
-    
+
     protected CreateUserController getController () {
         return new CreateUserController(CreateUserController.PASSWORD_FORMAT_NUMERIC);
     }
-    
+
 }

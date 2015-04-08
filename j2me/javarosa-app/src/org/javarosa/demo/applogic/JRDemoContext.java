@@ -45,41 +45,41 @@ import org.javarosa.xform.util.XFormUtils;
 public class JRDemoContext {
 
     private static JRDemoContext instance;
-    
+
     public static JRDemoContext _ () {
         if (instance == null) {
             instance = new JRDemoContext();
         }
         return instance;
     }
-    
+
     private MIDlet midlet;
     private User user;
 
-    
+
     public void setMidlet(MIDlet m) {
         this.midlet = m;
         J2MEDisplay.init(m);
     }
-    
+
     public MIDlet getMidlet() {
         return midlet;
     }
-    
+
     public void init (MIDlet m) {
         DumpRMS.RMSRecoveryHook(m);
-        
+
         loadModules();
-        
+
         //After load modules, so polish translations can be inserted.
         setMidlet(m);
-        
+
         addCustomLanguages();
         setProperties();
-            
+
         UserUtility.populateAdminUser(m);
         loadRootTranslator();
-    }    
+    }
 
     private void loadModules() {
         new J2MEModule().registerModule();
@@ -92,15 +92,15 @@ public class JRDemoContext {
         new LanguagePackModule().registerModule();
         new LocationModule().registerModule();
     }
-    
-    
+
+
     private void addCustomLanguages() {
         Localization.registerLanguageFile("pt", "/messages_jrdemo_pt.txt");
         Localization.registerLanguageFile("fra", "/messages_jrdemo_fra.txt");
         Localization.registerLanguageFile("zh", "/messages_jrdemo_zh.txt");
         Localization.registerLanguageFile("default", "/messages_jrdemo_default.txt");
     }
-    
+
     private void parseAndProcessLanguageResources(String resourceString) {
         Vector<String> resources = DateUtils.split(resourceString, ",", true);
         for(int i = 0 ; i < resources.size() ; i+=2) {
@@ -120,14 +120,14 @@ public class JRDemoContext {
             }
         }
     }
-    
+
     private void setProperties() {
-        
+
         final String POST_URL = midlet.getAppProperty("JRDemo-Post-Url");
         final String FORM_URL = midlet.getAppProperty("Form-Server-Url");
         final String VIEW_TYPE = midlet.getAppProperty("Default-View");
         final String LANGUAGE = midlet.getAppProperty("cur_locale");
-        
+
         final String LANGUAGE_RESOURCES = midlet.getAppProperty("Locale-Resources");
         PropertyManager._().addRules(new JavaRosaPropertyRules());
         PropertyManager._().addRules(new DemoAppProperties());
@@ -137,34 +137,34 @@ public class JRDemoContext {
         PropertyUtils.initializeProperty(DemoAppProperties.POST_URL_PROPERTY, POST_URL);
         PropertyUtils.initializeProperty(DemoAppProperties.FORM_URL_PROPERTY, FORM_URL);
         PropertyUtils.initializeProperty(FormManagerProperties.VIEW_TYPE_PROPERTY, VIEW_TYPE);
-        
+
         if(LANGUAGE_RESOURCES != null && LANGUAGE_RESOURCES != "") {
             parseAndProcessLanguageResources(LANGUAGE_RESOURCES);
         }
-        
+
         LanguageUtils.initializeLanguage(false, LANGUAGE == null ? "default" : LANGUAGE);
 
     }
-    
+
     public void setUser (User u) {
         this.user = u;
     }
-    
+
     public User getUser () {
         return user;
     }
-    
-    
+
+
     public TransportMessage buildMessage(FormInstance data, SubmissionProfile profile) {
         //Right now we have to just give the message the stream, rather than the payload,
-        //since the transport layer won't take payloads. This should be fixed _as soon 
+        //since the transport layer won't take payloads. This should be fixed _as soon
         //as possible_ so that we don't either (A) blow up the memory or (B) lose the ability
         //to send payloads > than the phones' heap.
-        
+
         if(profile == null) {
             profile = SubmissionTransportHelper.defaultPostSubmission(PropertyManager._().getSingularProperty(DemoAppProperties.POST_URL_PROPERTY));
         }
-        
+
         try {
             return SubmissionTransportHelper.createMessage(data, profile, false);
         } catch (IOException e) {
@@ -172,18 +172,18 @@ public class JRDemoContext {
             throw new RuntimeException("Error Serializing Data to be transported");
         }
     }
-    
+
     public Vector<IPreloadHandler> getPreloaders() {
         Vector<IPreloadHandler> handlers = new Vector<IPreloadHandler>();
         MetaPreloadHandler meta = new MetaPreloadHandler(this.getUser());
         handlers.addElement(meta);
-        return handlers;        
+        return handlers;
     }
-    
+
     public Vector<IFunctionHandler> getFuncHandlers () {
         return null;
     }
-    
+
     public void loadRootTranslator(){
         ReferenceManager._().addRootTranslator(new RootTranslator("jr://images/", "jr://resource/"));
         ReferenceManager._().addRootTranslator(new RootTranslator("jr://audio/", "jr://resource/"));

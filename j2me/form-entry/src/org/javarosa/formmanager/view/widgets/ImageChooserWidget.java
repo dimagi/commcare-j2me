@@ -30,7 +30,7 @@ import de.enough.polish.ui.StringItem;
 /**
  * This class represents a small widget to do an image chooser activity.  It
  * is basically a small display that does a pass through to the ImageChooser
- * 
+ *
  * @author Cory Zue
  *
  */
@@ -38,14 +38,14 @@ import de.enough.polish.ui.StringItem;
 public class ImageChooserWidget extends ExpandedWidget {
 
     private PointerAnswerData data;
-    
+
     private StringItem label;
-    
+
     protected IAnswerData getWidgetValue() {
         return data;
     }
 
-    
+
     protected void setWidgetValue(Object o) {
         IDataPointer casted = (IDataPointer) o;
         if (casted != null) {
@@ -58,24 +58,24 @@ public class ImageChooserWidget extends ExpandedWidget {
 
 
     protected void updateWidget(FormEntryPrompt prompt) {
-        // do nothing? 
-        
+        // do nothing?
+
     }
 
     public int widgetType() {
         return Constants.CONTROL_IMAGE_CHOOSE;
     }
-    
+
     protected Item getEntryWidget (FormEntryPrompt prompt) {
         // //#style textBox
-        
+
         updateLabel();
         return label;
     }
 
 
     private void updateLabel() {
-        
+
         if (label == null) {
             label = new StringItem("", "");
             // this command comes from the other constants file

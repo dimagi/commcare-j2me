@@ -40,7 +40,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
 
     /** DateValueTuple */
     Vector valueList = new Vector();
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.core.model.data.IAnswerData#getDisplayText()
      */
@@ -54,21 +54,21 @@ public class NumericListData implements IAnswerData, IPatientRecord {
     public Object getValue() {
         return valueList;
     }
-    
+
 
     /* (non-Javadoc)
      * @see org.javarosa.core.model.data.IAnswerData#setValue(java.lang.Object)
      */
-    public void setValue(Object o) { 
+    public void setValue(Object o) {
         if(o != null) {
             valueList = (Vector)o;
         }
     }
-    
+
     /**
      * Gets the latest measurement that has been recorded
-     * 
-     * @return The integer value of the latest recorded measurment. 
+     *
+     * @return The integer value of the latest recorded measurment.
      */
     public int getLatestMeasurement() {
         if(valueList.size() < 1 ) {
@@ -81,7 +81,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
             return entry.value;
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.patient.model.IPatientRecord#getHistoricalRecords(java.lang.String)
@@ -89,10 +89,10 @@ public class NumericListData implements IAnswerData, IPatientRecord {
     public Vector getHistoricalRecords(String delimeters) {
         return SelectorParser.selectValues(delimeters, valueList);
     }
-    
+
     /**
      * Adds the measurement to this record.
-     * 
+     *
      * @param entry The record entry to be added
      */
     public void addMeasurement(DateValueTuple entry) {
@@ -111,7 +111,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
     public void mergeList (NumericListData nld) {
         if (nld == null || nld.getValue() == null || ((Vector)nld.getValue()).size() == 0)
             return;
-        
+
         Vector newList = (Vector)nld.getValue();
         Vector merged = new Vector();
         int i = 0, j = 0;
@@ -120,7 +120,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
             DateValueTuple b = (j < newList.size() ? ((DateValueTuple)newList.elementAt(j)) : null);
             long dateA = (a == null ? Long.MAX_VALUE : a.date.getTime());
             long dateB = (b == null ? Long.MAX_VALUE : b.date.getTime());
-            
+
             if (dateA < dateB) {
                 merged.addElement(a);
                 i++;
@@ -137,7 +137,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
         if (merged.size() > 0)
             setValue(merged);
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.core.services.storage.utilities.Externalizable#readExternal(java.io.DataInputStream)
      */
@@ -166,7 +166,7 @@ public class NumericListData implements IAnswerData, IPatientRecord {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
     public IAnswerData cast(UncastData data) throws IllegalArgumentException {
         // TODO Auto-generated method stub
         return null;

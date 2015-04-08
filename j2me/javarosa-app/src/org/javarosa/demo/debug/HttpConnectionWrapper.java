@@ -1,24 +1,24 @@
 package org.javarosa.demo.debug;
 
 /* License
-     * 
+     *
      * Copyright 1994-2005 Sun Microsystems, Inc. All Rights Reserved.
-     * 
+     *
      * Redistribution and use in source and binary forms, with or without
      * modification, are permitted provided that the following conditions
      * are met:
-     *  
+     *
      *  * Redistribution of source code must retain the above copyright notice,
      *    this list of conditions and the following disclaimer.
-     * 
+     *
      *  * Redistribution in binary form must reproduce the above copyright notice,
      *    this list of conditions and the following disclaimer in the
      *    documentation and/or other materials provided with the distribution.
-     * 
+     *
      * Neither the name of Sun Microsystems, Inc. or the names of contributors
      * may be used to endorse or promote products derived from this software
      * without specific prior written permission.
-     *  
+     *
      * This software is provided "AS IS," without a warranty of any kind. ALL
      * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
      * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
@@ -30,10 +30,10 @@ package org.javarosa.demo.debug;
      * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY
      * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE,
      * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
-     *  
+     *
      * You acknowledge that this software is not designed, licensed or intended
      * for use in the design, construction, operation or maintenance of any
-     * nuclear facility. 
+     * nuclear facility.
      */
 
     import java.io.*;
@@ -42,26 +42,26 @@ import javax.microedition.io.*;
 
     /**
      * A wrapper for the HttpConnection interface that logs method
-     * calls and state transitions. Wrap a connection immediately 
+     * calls and state transitions. Wrap a connection immediately
      * after obtaining it from Connector.open. Information is logged
      * according to the log level set the "httpwrapper" logger.
      */
 
     public class HttpConnectionWrapper implements HttpConnection {
-        
+
         // Defines the logger used for logging everything.
-        
+
         public static final Logger logger = Logger.getLogger( "httpwrapper" );
-        
+
         static {
             logger.setLevel( Level.FINE ); // Change this accordingly
         }
-        
+
         public static final String SETUP_STATE = "setup";
         public static final String CONNECTED_STATE = "connected";
         public static final String CLOSED_STATE = "closed";
-        
-        private static final String MSG_ALREADY_CLOSED = 
+
+        private static final String MSG_ALREADY_CLOSED =
                 "Connection has already been closed";
         private static final String MSG_INPUT_STREAM =
                 "Input stream has already been opened";
@@ -69,40 +69,40 @@ import javax.microedition.io.*;
                 "Output stream has already been opened";
         private static final String MSG_NOT_SETUP_STATE =
                 "Not in setup state";
-        
+
         private int                 _id;
         private String              _idString;
         private HttpConnection      _original;
         private String              _state;
         private InputStreamWrapper  _streamIn;
         private OutputStreamWrapper _streamOut;
-        
+
         private static int          _lastID;
-        
+
         /**
          * Constructs a wrapper for an HttpConnection.
          */
-        
+
         public HttpConnectionWrapper( HttpConnection original ) {
             _original = original;
             _state = SETUP_STATE;
             _id = ++_lastID;
             _idString = generateID( _id );
-            
+
             info( "Wrapping HttpConnection " + original.getURL() );
             info( "Entering setup state" );
         }
-        
+
         /**
          * Generates a new string ID for the wrapper.
          */
-        
+
         private static String generateID( int id ) {
             StringBuffer b = new StringBuffer();
             b.append( "[HTTP " );
             b.append( id );
             b.append( "] " );
-            
+
             return b.toString();
         }
 
@@ -110,7 +110,7 @@ import javax.microedition.io.*;
         // Methods that can only be invoked in Setup state. Note that changing values doesn't
         // have any effect once an output stream is open, so to catch these we throw an
         // exception right away.
-        
+
         public void setRequestMethod(String str) throws IOException {
             onlyInSetup( "setRequestMethod" );
             if( _streamOut == null ){
@@ -125,14 +125,14 @@ import javax.microedition.io.*;
                 throw makeException( "setRequestMethod", MSG_OUTPUT_STREAM );
             }
         }
-        
+
         public void setRequestProperty(String str, String str1) throws IOException {
             onlyInSetup( "setRequestProperty" );
             if( _streamOut == null ){
                 info( "setRequestProperty( " + str + ", " + str1 + " )" );
                 try {
                     _original.setRequestProperty( str, str1 );
-                } 
+                }
                 catch( IOException e ){
                     rethrow( "setRequestProperty", e );
                 }
@@ -159,7 +159,7 @@ import javax.microedition.io.*;
             }
             return _streamIn;
         }
-        
+
         public DataInputStream openDataInputStream() throws IOException {
             return new DataInputStream( openInputStream() );
         }
@@ -188,7 +188,7 @@ import javax.microedition.io.*;
         public String getHeaderField(int param) throws IOException {
             transitionToConnected( "getHeaderField" );
             String field = null;
-            
+
             try {
                 field = _original.getHeaderField( param );
             }
@@ -198,7 +198,7 @@ import javax.microedition.io.*;
             info( "getHeaderField( " + param + " ) = " + field );
             return field;
         }
-        
+
         public String getHeaderField(String str) throws IOException {
             transitionToConnected( "getHeaderField" );
             String field = null;
@@ -315,9 +315,9 @@ import javax.microedition.io.*;
             info( "getHeaderFieldKey( " + param + " ) = " + key );
             return key;
         }
-        
+
         //-------------------------------------------------------------------
-        // Methods that technically don't cause a transition to Connected 
+        // Methods that technically don't cause a transition to Connected
         // until the stream is closed
 
         public OutputStream openOutputStream() throws IOException {
@@ -332,31 +332,31 @@ import javax.microedition.io.*;
             }
             return _streamOut;
         }
-        
+
         public DataOutputStream openDataOutputStream() throws IOException {
             return new DataOutputStream( openOutputStream() );
         }
-        
+
         //------------------------------------------------------------------------
-        // Methods that can be invoked as long as the state is not Closed    
+        // Methods that can be invoked as long as the state is not Closed
 
         public void close() throws IOException {
             if( _state == CLOSED_STATE ){
                 throw makeException( "close", MSG_ALREADY_CLOSED );
             }
-            
+
             info( "Entering closed state" );
-            
+
             if( _streamIn != null && !_streamIn.isClosed() ){
                 warning( "The input stream is still open, be sure to close it" );
             }
-            
+
             if( _streamOut != null && !_streamOut.isClosed() ){
                 warning( "The output stream is still open, be sure to close it" );
             }
-            
+
             _state = CLOSED_STATE;
-            
+
             try {
                 _original.close();
             }
@@ -433,27 +433,27 @@ import javax.microedition.io.*;
 
         /**
          * Creates an IOException based on a method name and the given message.
-         * 
+         *
          * @param method the method that is the root of the exception.
          * @param msg    the exception message.
          *
          * @return IOException the new exception.
          */
-        
+
         private IOException makeException( String method, String msg ) {
             StringBuffer b = new StringBuffer();
             b.append( _idString );
             b.append( method );
             b.append( ": " );
             b.append( msg );
-            
+
             String m = b.toString();
-            
+
             logger.warning( m );
             return new IOException( m );
         }
 
-        /** 
+        /**
          * Rethrows an exception after logging it.
          *
          * @param method the method invoked when the exception occurred.
@@ -461,18 +461,18 @@ import javax.microedition.io.*;
          *
          * @throws IOException the original exception.
          */
-        
+
         private void rethrow( String method, IOException e ) throws IOException {
             StringBuffer b = new StringBuffer();
             b.append( _idString );
             b.append( method );
             b.append( " throws exception " );
             b.append( e.toString() );
-            
+
             logger.warning( b.toString() );
             throw e;
         }
-        
+
         /**
          * Ensures that a method is invoked in the setup state only.
          *
@@ -480,36 +480,36 @@ import javax.microedition.io.*;
          *
          * @throws IOException if not in setup state.
          */
-        
+
         private void onlyInSetup( String method ) throws IOException {
             fine( "Invoking " + method );
             if( _state != SETUP_STATE ){
                 throw makeException( method, MSG_NOT_SETUP_STATE );
             }
         }
-        
+
         /**
          * Ensures that a method is not invoked in closed state.
          *
          * @param method the method invoked.
-         * 
+         *
          * @throws IOException if in closed state.
          */
-        
+
         private void notIfClosed( String method ) throws IOException {
             fine( "Invoking " + method );
             if( _state == CLOSED_STATE ){
                 throw makeException( method, MSG_ALREADY_CLOSED );
             }
         }
-        
+
         /**
          * Ensures that a method is not invoked in closed state, but
          * swallows the resulting exception if any.
          *
          * @param method the method invoked.
          */
-        
+
         private void notIfClosedNoThrow( String method ) {
             try {
                 notIfClosed( method );
@@ -518,34 +518,34 @@ import javax.microedition.io.*;
                 // do nothing with it
             }
         }
-        
-        /** 
+
+        /**
          * Transitions from setup to connected state.
          *
          * @param method the method invoked.
          *
          * @throws IOException if in closed state.
          */
-        
+
         private void transitionToConnected( String method ) throws IOException {
             fine( "Invoking " + method );
             if( _state == SETUP_STATE ){
                 info( "Entering connected state" );
                 _state = CONNECTED_STATE;
             }
-            
+
             if( _state != CONNECTED_STATE ){
                 throw makeException( method, MSG_ALREADY_CLOSED );
             }
         }
-        
-        /** 
+
+        /**
          * Transitions from setup to connected state, but swallows
          * the resulting exception if any.
          *
          * @param method the method invoked.
          */
-        
+
         private void transitionToConnectedNoThrow( String method ) {
             try {
                 transitionToConnected( method );
@@ -560,95 +560,95 @@ import javax.microedition.io.*;
          *
          * @param msg the message to log.
          */
-        
+
         private void info( String msg ) {
             logger.info( _idString + msg );
         }
-        
+
         /**
          * Logs the message at the FINE level.
          *
          * @param msg the message to log.
          */
-        
+
         private void fine( String msg ) {
             logger.fine( _idString + msg );
         }
-        
+
         /**
          * Logs the message at the WARNING level.
          *
          * @param msg the message to log.
          */
-        
+
         private void warning( String msg ) {
             logger.warning( _idString + msg );
         }
-        
+
         //--------------------------------------------------------------------------------------------
         // A simple wrapper for tracking when an input stream is closed.
-        
+
         private class InputStreamWrapper extends InputStream {
             private boolean     _isClosed;
             private InputStream _original;
-            
+
             public InputStreamWrapper( InputStream original ) {
                 _original = original;
             }
-            
+
             public void close() throws IOException {
                 info( "Closing input stream" );
-                
+
                 _isClosed = true;
                 _original.close();
             }
-            
+
             public boolean isClosed() {
                 return _isClosed;
             }
-            
+
             public int read() throws IOException {
                 return _original.read();
             }
         }
-        
+
         //--------------------------------------------------------------------------------------------
         // A simple wrapper for tracking when an output stream is closed or flushed.
-        
-        private class OutputStreamWrapper extends OutputStream {   
+
+        private class OutputStreamWrapper extends OutputStream {
             private boolean      _isClosed;
             private OutputStream _original;
-            
+
             /** Creates a new instance of OutputStreamWrapper */
             public OutputStreamWrapper( OutputStream original ) {
                 _original = original;
             }
-            
+
             public void close() throws IOException {
                 info( "Closing output stream" );
-                
+
                 if( _state == SETUP_STATE ){
                     transitionToConnected( "OutputStream.close" );
                 }
-               
+
                 _isClosed = true;
                 _original.close();
             }
-            
+
             public void flush() throws IOException {
                 info( "Flushing output stream" );
-                
+
                 if( _state == SETUP_STATE ){
                     transitionToConnected( "OutputStream.flush" );
                 }
-                
+
                 _original.flush();
             }
-            
+
             public boolean isClosed() {
                 return _isClosed;
             }
-            
+
             public void write(int param) throws IOException {
                 _original.write( param );
             }

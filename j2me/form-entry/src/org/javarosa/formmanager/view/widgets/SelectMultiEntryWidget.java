@@ -29,16 +29,16 @@ import de.enough.polish.ui.Item;
 
 public class SelectMultiEntryWidget extends SelectEntryWidget {
     private WidgetEscapeComponent wec = new WidgetEscapeComponent();
-    
-    
+
+
     public SelectMultiEntryWidget () {
         this(true, false);
     }
-    
+
     public SelectMultiEntryWidget(boolean autoSelect, boolean numericNavigation) {
         super(ChoiceGroup.MULTIPLE, autoSelect, numericNavigation);
     }
-    
+
     protected void setWidgetValue (Object o) {
         Vector vs = (Vector)o;
         for (int i = 0; i < vs.size(); i++) {
@@ -50,11 +50,11 @@ public class SelectMultiEntryWidget extends SelectEntryWidget {
             choiceGroup().touch();
         }
     }
-    
+
     protected Item getEntryWidget(FormEntryPrompt prompt) {
         return wec.wrapEntryWidget(super.getEntryWidget(prompt));
     }
-    
+
     public Item getInteractiveWidget() {
         return wec.wrapInteractiveWidget(super.getInteractiveWidget());
     }
@@ -65,15 +65,15 @@ public class SelectMultiEntryWidget extends SelectEntryWidget {
 
     protected IAnswerData getWidgetValue () {
         Vector vs = new Vector();
-        
+
         for (int i = 0; i < choiceGroup().size(); i++) {
             if (choiceGroup().isSelected(i)) {
                 Selection s = prompt.getSelectChoices().elementAt(i).selection();
-            
+
                 vs.addElement(s);
             }
-        }        
-        
+        }
+
         return (vs.size() == 0 ? null : new SelectMultiData(vs));
     }
     /*
@@ -83,7 +83,7 @@ public class SelectMultiEntryWidget extends SelectEntryWidget {
     public int widgetType() {
         return Constants.CONTROL_SELECT_MULTI;
     }
-    
+
     protected IAnswerData getAnswerTemplate() {
         return new SelectMultiData();
     }

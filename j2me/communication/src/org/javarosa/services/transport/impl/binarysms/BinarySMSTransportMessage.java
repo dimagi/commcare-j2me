@@ -19,20 +19,20 @@ import org.javarosa.services.transport.impl.BasicTransportMessage;
 
 /**
  * SMS message object
- * 
+ *
  * Since the message to be sent may require to be partitioned into more than one
  * SMS payloads, the content of the SMSTransportMessage is a Vector of Strings
  * (in the simplest case, vector size = 1)
- * 
- * 
+ *
+ *
  */
 public class BinarySMSTransportMessage extends BasicTransportMessage {
-        
+
     byte[] raw;
     Vector<byte[]> content;
 
     /**
-     * 
+     *
      */
     private String destinationURL;
 
@@ -42,17 +42,17 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
     public BinarySMSTransportMessage() {
         //ONLY FOR DESERIALIZING
     }
-    
+
     /**
      * @param str
      * @param destinationURL
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
     public BinarySMSTransportMessage(String str, String destinationURL) throws UnsupportedEncodingException {
         this.destinationURL = destinationURL;
         setContent(str.getBytes("UTF-16"));
     }
-    
+
     /**
      * @param str
      * @param destinationURL
@@ -61,24 +61,24 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
         this.destinationURL = destinationURL;
         setContent(bytes);
     }
-    
+
     private void setContent(byte[] bytes) {
         raw = bytes;
         content = new Vector<byte[]>();
         for(int i = 0 ; i <= bytes.length / 140; ++i) {
             int chunk = 140;
             if(i == bytes.length / 140) {
-                //Last chunk, doesn't need to be as long 
+                //Last chunk, doesn't need to be as long
                 chunk = bytes.length % 140;
             }
             if(chunk == 0) {
                 continue;
             }
-            
+
             byte[] message = new byte[chunk];
-            
+
             for(int j = 0 ; j < message.length ; ++j) {
-                message[j] = bytes[i*140 + j]; 
+                message[j] = bytes[i*140 + j];
             }
             content.addElement(message);
         }
@@ -87,7 +87,7 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
     public boolean isCacheable() {
         return true;
     }
-    
+
     public Object getContent() {
         return content;
     }
@@ -106,10 +106,10 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
         this.destinationURL = destinationURL;
     }
 
-    
-    
-    
-    
+
+
+
+
     public void send() {
         MessageConnection conn = null;
         try {
@@ -137,9 +137,9 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
     }
 
     /**
-     * 
+     *
      * Send single sms over a MessageConnection
-     * 
+     *
      * @param content
      *            The content of the SMS to be sent
      * @param conn
@@ -165,10 +165,10 @@ public class BinarySMSTransportMessage extends BasicTransportMessage {
         else
             throw new IllegalArgumentException("Not SMS URL:" + url);
     }
-    
-    
-    
-    
+
+
+
+
     public void readExternal(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
         super.readExternal(in, pf);

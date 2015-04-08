@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.communication.reporting.activity;
 
@@ -33,11 +33,11 @@ import org.javarosa.j2me.view.J2MEDisplay;
 
 /**
  * @author Clayton Sims
- * @date Feb 27, 2009 
+ * @date Feb 27, 2009
  *
  */
 public abstract class FeedbackReportState implements TrivialTransitions, State, HandledCommandListener {
-    
+
     FeedbackReportScreen screen;
 
     public void start() {
@@ -48,26 +48,26 @@ public abstract class FeedbackReportState implements TrivialTransitions, State, 
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if(c.equals(FeedbackReportScreen.SEND_REPORT)) {
             String message = screen.getString();
-            
+
             String url = PropertyManager._().getSingularProperty(FeedbackReportProperties.FEEDBACK_REPORT_SERVER);
-            
+
             String id = PropertyManager._().getSingularProperty("DeviceID");
 
             throw new RuntimeException("Feedback Reporting: needs to be converted to new transport layer");
 //            //TODO: For now, only http is supported, so we hack this to switch to that.
 //            int httpmethod = (new HttpTransportMethod()).getId();
 //            TransportManager._().setCurrentTransportMethod(httpmethod);
-//            
+//
 //            TransportMessage tmessage = new TransportMessage(new ByteArrayPayload(message.getBytes(), "Feedback Message",IDataPayload.PAYLOAD_TYPE_TEXT), new HttpTransportDestination(url),id,-1);
 //            TransportManager._().send(tmessage, httpmethod);
-//            
+//
 //            //TODO: Feedback!
-//            
+//
 //            done();
         } else if (c.equals(FeedbackReportScreen.CANCEL)) {
             done();

@@ -20,19 +20,19 @@ package org.javarosa.patient.activity;
 
 /**
  * An activity to search for a list of patients and then select one.
- * 
+ *
  * @author daniel
  *
  */
 
 //public class PatientSelectActivity extends EntitySelectActivity {
-//    
+//
 //    /** Key for the selected patient. */
 //    public static final String KEY_PATIENT = KEY_ENTITY;
-//    
+//
 //    /**
 //     * Constructs a new patient select activity.
-//     * 
+//     *
 //     * @param appTitle the title of the midlet.
 //     */
 //    public PatientSelectActivity(IShell shell,String appTitle){

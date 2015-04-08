@@ -28,16 +28,16 @@ import de.enough.polish.ui.Item;
 
 /**
  * The base widget for multi and single choice selections.
- * 
+ *
  * NOTE: This class has a number of Hacks that I've made after rooting through
  * the j2me polish source. If polish is behaving unpredictably, it is possibly because
  * of conflicting changes in new Polish versions with this code. I have outlined
  * the latest versions of polish in which the changes appear to work.
- * 
+ *
  * Questions should be directed to csims@dimagi.com
- * 
+ *
  * @author Clayton Sims
- * @date Feb 16, 2009 
+ * @date Feb 16, 2009
  *
  */
 public abstract class SelectEntryWidget extends ExpandedWidget {
@@ -45,24 +45,24 @@ public abstract class SelectEntryWidget extends ExpandedWidget {
     protected boolean autoSelect;
     protected boolean numericNavigation;
     protected FormEntryPrompt prompt;
-    
+
     private CustomChoiceGroup choicegroup;
-    
+
     public SelectEntryWidget (int style, boolean autoSelect, boolean numericNavigation) {
         this.style = style;
         this.autoSelect = autoSelect;
         this.numericNavigation = numericNavigation;
     }
-    
+
     protected Item getEntryWidget (FormEntryPrompt prompt) {
         this.prompt = prompt;
-        
+
         int numChoices = prompt.getSelectChoices().size();
-        
+
         if(numChoices > 9) {
             numericNavigation = false;
         }
-        
+
         CustomChoiceGroup cg = new CustomChoiceGroup("",style, autoSelect, numericNavigation) {
             public void playAudio(int index) {
                 getMultimediaController().playAudioOnDemand(SelectEntryWidget.this.prompt,
@@ -78,25 +78,25 @@ public abstract class SelectEntryWidget extends ExpandedWidget {
                 cg.append("", null);
             }
         }
-        
+
         this.choicegroup = cg;
-        
+
         return cg;
     }
 
     protected CustomChoiceGroup choiceGroup () {
         return this.choicegroup;
     }
-    
+
     protected void updateWidget (FormEntryPrompt prompt) {
         for (int i = 0; i < choiceGroup().size(); i++) {
             SelectChoice sc = prompt.getSelectChoices().elementAt(i);
             Image im = ImageUtils.getImage(prompt.getSpecialFormSelectChoiceText(sc, FormEntryCaption.TEXT_FORM_IMAGE));
 
             choiceGroup().getItem(i).setText(prompt.getSelectChoiceText(sc));
-            
+
             if(im!=null){
-                choiceGroup().getItem(i).setImage(im);            
+                choiceGroup().getItem(i).setImage(im);
             }
         }
     }

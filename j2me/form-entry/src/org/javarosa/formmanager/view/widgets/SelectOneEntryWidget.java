@@ -29,23 +29,23 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
     public SelectOneEntryWidget () {
         this(ChoiceGroup.EXCLUSIVE);
     }
-    
+
     public SelectOneEntryWidget (int style) {
         this(style, true, false);
     }
 
     public SelectOneEntryWidget(int style, boolean autoSelect, boolean numericNavigation) {
         super(style, autoSelect, numericNavigation);
-        
+
         if (style == ChoiceGroup.MULTIPLE) {
             throw new IllegalArgumentException("Cannot use style 'MULTIPLE' on select1 control");
         }
     }
-    
+
     public int getNextMode () {
         return ExpandedWidget.NEXT_ON_ENTRY;
     }
-    
+
     protected void setWidgetValue (Object o) {
         Selection s = (Selection)o;
         if(s.index == -1) {
@@ -59,7 +59,7 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
 
     protected IAnswerData getWidgetValue () {
         int selectedIndex = -1;
-        
+
         for (int i = 0; i < choiceGroup().size(); i++) {
             if (choiceGroup().isSelected(i)) {
                 selectedIndex = i;
@@ -69,16 +69,16 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
         if(selectedIndex == -1) {
             return null;
         }
-        
+
         Selection s = prompt.getSelectChoices().elementAt(selectedIndex).selection();
         return new SelectOneData(s);
     }
-    
+
     public boolean focus () {
         choiceGroup().focusChild(choiceGroup().getSelectedIndex());
         return true;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.javarosa.formmanager.view.chatterbox.widget.IWidgetStyle#widgetType()
@@ -86,7 +86,7 @@ public class SelectOneEntryWidget extends SelectEntryWidget {
     public int widgetType() {
         return Constants.CONTROL_SELECT_ONE;
     }
-    
+
     protected IAnswerData getAnswerTemplate() {
         return new SelectOneData();
     }

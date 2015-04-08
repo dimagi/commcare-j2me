@@ -18,26 +18,26 @@ public class JRDemoSelectLanguageController implements HandledCommandListener {
 
     JRDemoSelectLanguageTransitions transitions;
     JRDemoSelectLanguageView view;
-    
+
     String[] languageList;
-    
+
     public JRDemoSelectLanguageController () {
-        languageList = JRDemoUtil.getLanguageList(); 
+        languageList = JRDemoUtil.getLanguageList();
         view = new JRDemoSelectLanguageView("Choose Initial Language",languageList);
         view.setCommandListener(this);
     }
-    
+
     public void setTransitions (JRDemoSelectLanguageTransitions transitions) {
         this.transitions = transitions;
     }
-        
+
     public void start () {
         J2MEDisplay.setView(view);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if (d == view) {
@@ -48,8 +48,8 @@ public class JRDemoSelectLanguageController implements HandledCommandListener {
                 }
             }else if (c == view.CMD_EXIT) {
                 transitions.exit();
-            } 
+            }
         }
-    } 
-    
+    }
+
 }

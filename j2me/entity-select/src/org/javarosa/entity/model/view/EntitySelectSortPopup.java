@@ -36,7 +36,7 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
     private EntitySelectView<E> psv;
     private EntitySelectController<E> psa;
     private Entity<E> entityPrototype;
-    
+
     private ChoiceGroup sortField;
     private Command cancelCmd;
 
@@ -47,7 +47,7 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
         this.psv = psv;
         this.psa = psa;
         this.entityPrototype = entityPrototype;
-        
+
         sortField = new ChoiceGroup("", Choice.EXCLUSIVE);
 
         int[] sortFields = entityPrototype.getSortFields();
@@ -61,7 +61,7 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
                     if(j == 0) {
                         toChoose = i;
                     }
-                    
+
                     if(sorted.length > 1) {
                         name = (j+1) + ") " + name;
                     }
@@ -72,22 +72,22 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
         if(toChoose != -1) {
             sortField.setSelectedIndex(toChoose, true);
         }
-        
+
         append(sortField);
         sortField.setItemStateListener(this);
-        
+
         cancelCmd = new Command(Localization.get("polish.command.cancel"), Command.CANCEL, 1);
         addCommand(cancelCmd);
         setCommandListener(this);
     }
-    
+
     public void show () {
         psa.setView(this);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command cmd, Displayable d) {
         if (d == this) {
@@ -99,7 +99,7 @@ public class EntitySelectSortPopup<E> extends Form implements HandledCommandList
 
     public void itemStateChanged(Item i) {
         CrashHandler.itemStateChanged(this, i);
-    }  
+    }
 
     public void _itemStateChanged(Item item) {
         if (item == sortField) {

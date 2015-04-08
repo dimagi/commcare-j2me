@@ -25,12 +25,12 @@ import org.javarosa.demo.util.JRDemoUtil;
 
 /**
  * This is the starting point for the JavarosaDemo application
- * 
+ *
  * @author Brian DeRenzi
- * 
+ *
  */
 public class JRDemoMidlet extends MIDlet {
-    
+
     /* (non-Javadoc)
      * @see javax.microedition.midlet.MIDlet#destroyApp(boolean)
      */
@@ -44,7 +44,7 @@ public class JRDemoMidlet extends MIDlet {
     protected void pauseApp() {
 
     }
-    
+
     /* (non-Javadoc)
      * @see javax.microedition.midlet.MIDlet#startApp()
      */

@@ -7,7 +7,7 @@ import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.Style;
 
 class ImageButton extends CustomItem {
-    
+
     private Image _image = null;
     private boolean _down = false;
     private int _clicks = 0;
@@ -15,7 +15,7 @@ class ImageButton extends CustomItem {
     public ImageButton(Image image) {
         this(image, null);
     }
-    
+
     public ImageButton(Image image, Style s) {
         super("", s);
         _image = image;
@@ -24,13 +24,13 @@ class ImageButton extends CustomItem {
     public Image getImage() {
         return _image;
     }
-    
+
     // Is the button currently down?
     public boolean isDown() {
         return _down;
     }
-    
-    // Minimal button size = image size    
+
+    // Minimal button size = image size
     protected int getMinContentHeight() {
         return getImage().getHeight();
     }
@@ -47,7 +47,7 @@ class ImageButton extends CustomItem {
 
     // Button painting procedure
     protected void paint(Graphics g, int w, int h) {
-        // Fill the button with grey color - background 
+        // Fill the button with grey color - background
         g.setColor(0, 0, 0);
         g.fillRect(0, 0, w, h);
         // Draw the image in the center of the button

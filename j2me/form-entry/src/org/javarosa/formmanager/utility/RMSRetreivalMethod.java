@@ -29,11 +29,11 @@ public class RMSRetreivalMethod implements IFormDefRetrievalMethod {
     public RMSRetreivalMethod(int formId) {
         load(formId);
     }
-    
+
     public RMSRetreivalMethod(String formName) {
         IStorageUtilityIndexed forms = (IStorageUtilityIndexed)StorageManager.getStorage(FormDef.STORAGE_KEY);
         int id;
-        
+
         Vector IDs = forms.getIDsForValue("DESCRIPTOR", formName);
         if (IDs.size() == 1) {
             id = ((Integer)IDs.elementAt(0)).intValue();
@@ -43,11 +43,11 @@ public class RMSRetreivalMethod implements IFormDefRetrievalMethod {
 
         load(id);
     }
-    
+
     private void load(int id) {
         IStorageUtility forms = StorageManager.getStorage(FormDef.STORAGE_KEY);
         FormDef theForm = (FormDef)forms.read(id);
-        
+
         if (theForm != null) {
             this.def = theForm;
         } else {
@@ -56,7 +56,7 @@ public class RMSRetreivalMethod implements IFormDefRetrievalMethod {
             throw new RuntimeException(error);
         }
     }
-    
+
     public FormDef retreiveFormDef() {
         return def;
     }

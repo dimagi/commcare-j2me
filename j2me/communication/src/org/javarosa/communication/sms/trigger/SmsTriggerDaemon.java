@@ -20,30 +20,30 @@ import org.javarosa.core.services.PropertyManager;
 
 
 /**
- * 
+ *
  * @author Clayton Sims
  *
  */
 public class SmsTriggerDaemon implements IDaemon {
-    
+
     public static final String DAEMON_NAME = "SMS Trigger Daemon";
-    
+
     boolean running = false;
     String port;
     SmsTriggerService service;
-    
+
     public SmsTriggerDaemon() {
         String propPort = PropertyManager._().getSingularProperty(SmsTriggerProperties.TRIGGER_DEFAULT_PORT);
         if(propPort == null) {
-            propPort = "16361"; 
+            propPort = "16361";
         }
         init(propPort);
     }
-    
+
     public SmsTriggerDaemon(String port) {
         init(port);
     }
-    
+
     private void init(String port) {
         this.port = port;
         service = new SmsTriggerService();
@@ -73,7 +73,7 @@ public class SmsTriggerDaemon implements IDaemon {
             running = service.stop();
         }
     }
-    
+
     public void addTrigger(ISmsTrigger trigger) {
         service.addTrigger(trigger);
     }

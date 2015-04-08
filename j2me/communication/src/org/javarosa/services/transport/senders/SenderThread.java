@@ -10,20 +10,20 @@ import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.services.transport.impl.TransportException;
 
 /**
- * 
+ *
  * A SenderThread takes a Transporter object and calls its send method
  * repeatedly until it succeeds, over a given number of tries, with a given
  * delay between each try
- * 
+ *
  */
 public abstract class SenderThread extends HandledThread {
 
     /**
-     * 
+     *
      */
     public static final int DEFAULT_TRIES = 2;
     /**
-     * 
+     *
      */
     public static final int DEFAULT_DELAY = 30;
 
@@ -36,7 +36,7 @@ public abstract class SenderThread extends HandledThread {
     protected TransportCache messageStore;
 
     protected TransportMessage message;
-    
+
     /**
      * Number of times to try
      */
@@ -50,8 +50,8 @@ public abstract class SenderThread extends HandledThread {
      * Variable used to count down remaining tries
      */
     protected int triesRemaining;
-    
-    
+
+
     /**
      * Flag in case a message is updated before a listener is attached.
      */
@@ -89,7 +89,7 @@ public abstract class SenderThread extends HandledThread {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see java.lang.Thread#run()
      */
     public void _run() {
@@ -97,16 +97,16 @@ public abstract class SenderThread extends HandledThread {
     }
 
     /**
-     * 
+     *
      * Asks the Transporter to send the message, and then takes appropriate
      * action, depending on whether the attempt was successful or not
-     * 
+     *
      * @return The message being sent (with updated status)
      */
     protected void attemptToSend() throws TransportException {
 
         notifyChange("Attempts left: " + this.triesRemaining);
-        
+
         Logger.log("send", "open " + message.getTag());
         message.send();
         if (message.isSuccess()) {
@@ -121,7 +121,7 @@ public abstract class SenderThread extends HandledThread {
     /**
      * If the message has been successfully sent, and had been cached, it should be removed from the
      * TransportQueue
-     * 
+     *
      * @param message
      */
     protected void onSuccess() throws TransportException {
@@ -165,7 +165,7 @@ public abstract class SenderThread extends HandledThread {
      */
     public void addListener(TransportListener listener) {
         this.listeners.addElement(listener);
-        
+
         //In case the message has already changed, let the listener know
         if(hasUpdated) {
             listener.onStatusChange(message);
@@ -194,7 +194,7 @@ public abstract class SenderThread extends HandledThread {
     }
 
     /**
-     * 
+     *
      */
     public void cancel() {
         this.interrupt();

@@ -21,23 +21,23 @@ import org.javarosa.formmanager.api.FormMultimediaController;
 
 
 /**
- * 
+ *
  * A view for displaying a form to the user, and allowing them to fill
- * out values. 
- * 
+ * out values.
+ *
  * @author Drew Roos
  *
  */
 
 //this is generic enough to be renamed 'IActivityView'
 public interface IFormEntryView {
-    
+
     /* form entry views MUST call controller.setFormEntryView(this) in their constructors before they
      * make any calls to the controller!
      */
-    
+
     public void destroy ();
-    
+
     public void show();
 
     /**
@@ -45,6 +45,6 @@ public interface IFormEntryView {
      * @param index
      */
     public void show(FormIndex index);
-    
+
     public void attachFormMediaController(FormMultimediaController mediacontroller);
 }

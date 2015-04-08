@@ -16,7 +16,7 @@ public class JRDemoFormListState implements JRDemoFormListTransitions, State {
     public void start() {
         JRDemoFormListController ctrl = new JRDemoFormListController();
         ctrl.setTransitions(this);
-        ctrl.start();    
+        ctrl.start();
     }
 
     public void formSelected(int formID) {
@@ -31,7 +31,7 @@ public class JRDemoFormListState implements JRDemoFormListTransitions, State {
     public void exit() {
         JRDemoUtil.exit();
     }
-    
+
     public void settings() {
         new PropertyUpdateState () {
             public void done () {

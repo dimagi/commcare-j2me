@@ -34,29 +34,29 @@ import org.javarosa.j2me.view.ProgressIndicator;
  * Entity Select is a reusable activity for selecting a single record from a set of like records. For
  * example, choosing a patient from a list of patients, selecting a saved form from a list of recently
  * saved forms, etc.
- * 
+ *
  * Two things must be passed to the activity to make this work:
- * 
+ *
  *   1) A StorageUtility from which the set of records will be read
- *   
+ *
  *   2) A wrapper class specific to the type of record that provides methods to control the UI and
  *      behavior of the activity (such as which columns to display and their contents, sorting, searching,
  *      and also filtering which records from the StorageUtility to include in the set). This is referred
  *      to as the 'Entity'. The Entity passed in is simply an empty prototype, but a new Entity is cloned
  *      for each record in the selectable set.
- * 
+ *
  * When a record is selected, the activity exits via the 'entitySelected' transition, passing the record ID
  * of the chosen record.
- * 
+ *
  * Optionally, it is possible to branch off to a 'create new entity' workflow from this activity, via the
  * 'newEntity' transition. Once a new entity has been created, this activity can be resumed with the new
  * entity added to the list, or the new entity can be immediately 'selected'. Resuming is done via the
  * newEntity() method in this class. Wiring up to the proper 'entity creation' activity, as well as keeping
  * a reference to this activity (for resuming) is the responsibility of the workflow architect. 'Create new'
  * behavior can be disabled.
- * 
+ *
  * Overall flow of the activity:
- * 
+ *
  *   * The set of selectable records is read from the StorageUtility, a new entity wrapper is created for
  *     each record, relevant fields are cached.
  *   * All entities are displayed as a list, with a few short summary fields displayed for each record
@@ -66,7 +66,7 @@ import org.javarosa.j2me.view.ProgressIndicator;
  *     just that record.
  *   * If they have the right record, they may select it and the activity exits. Or, they may go back to the
  *     list view to choose a different record.
- * 
+ *
  * @author Drew Roos
  *
  * @param <E> underlying base class (e.g., patient, case, saved form, referral, ...) that this activity
@@ -75,31 +75,31 @@ import org.javarosa.j2me.view.ProgressIndicator;
 
 public class EntitySelectController <E> implements ProgressIndicator{
     private EntitySelectTransitions transitions;
-    
+
     private EntitySelectView<E> selView;
-    
+
     protected EntitySet<E> entitySet;
     private Entity<E> entityPrototype;
-    
+
     protected boolean immediatelySelectNewlyCreated;
     protected boolean bailOnEmpty;
-    
+
     Vector<Entity<E>> entities;
-    
+
     int progress = 0;
     int count =1;
-    
+
     public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype) {
         this(title, set, entityPrototype, EntitySelectView.NEW_IN_LIST, true, false);
     }
-    
+
     public EntitySelectController (String title, EntitySet<E> set, Entity<E> entityPrototype, int newMode, boolean immediatelySelectNewlyCreated) {
         this(title, set, entityPrototype, newMode, immediatelySelectNewlyCreated, false);
     }
 
     /**
      * Create a new Entity Select activity instance
-     * 
+     *
      * @param title UI screen title
      * @param entityStorage StorageUtility to pull records from (must return records of type <E>)
      * @param entityPrototype an instance of the Entity -- the wrapper class for the records
@@ -119,51 +119,51 @@ public class EntitySelectController <E> implements ProgressIndicator{
 
         selView = new EntitySelectView<E>(this, entityPrototype, title, newMode);
     }
-    
+
     public void setTransitions (EntitySelectTransitions transitions) {
         this.transitions = transitions;
     }
-    
+
     public void start () {
         loadEntities();
 
         if(entities.isEmpty() && bailOnEmpty && selView.newMode == EntitySelectView.NEW_DISALLOWED) {
             transitions.empty();
             return;
-        } 
-        
+        }
+
         selView.init();
         showList();
     }
 
     private void loadEntities () {
         entities = new Vector<Entity<E>>();
-        
+
         //CTS: 11/28/2011 - Filters are deprecated. Filters should be placed
         //directly in the entity set.
         //EntityFilter<? super E> filter = entityPrototype.getFilter();
-        
+
         progress = 0;
         count = entitySet.getCount();
-        
+
         Iterator<E> ei = entitySet.iterate();
         while (ei.hasMore()) {
             E obj = null;
             obj = ei.nextRecord();
-            
+
             if (obj != null) {
                 loadEntity(obj);
             }
             progress++;
         }
     }
-    
+
     private void loadEntity (E obj) {
         Entity<E> entity = entityPrototype.factory();
         entity.readEntity(obj);
         entities.addElement(entity);
     }
-    
+
     public void setView (Displayable view) {
         J2MEDisplay.setView(view);
     }
@@ -179,10 +179,10 @@ public class EntitySelectController <E> implements ProgressIndicator{
             showList();
         }
     }
-    
+
     public Vector<Integer> search (String key) {
         Vector<Integer> matches = new Vector<Integer>();
-        
+
         if (key == null || key.equals("")) {
             for (int i = 0; i < entities.size(); i++)
                 matches.addElement(new Integer(i));
@@ -194,18 +194,18 @@ public class EntitySelectController <E> implements ProgressIndicator{
                 }
             }
         }
-        
+
         return matches;
     }
-    
+
     public int getRawResultCount() {
         return entities.size();
     }
-    
+
     public void showList () {
         selView.show();
     }
-    
+
     public void itemSelected (int i) {
         Entity<E> entity = entities.elementAt(i);
         if(entity.getHeaders(true) ==null) {
@@ -215,39 +215,39 @@ public class EntitySelectController <E> implements ProgressIndicator{
             psdp.show();
         }
     }
-    
+
     public void entityChosen (int entityID) {
         transitions.entitySelected(entityID);
     }
-    
+
     public void newEntity () {
         transitions.newEntity();
     }
-    
+
     public void exit () {
         transitions.cancel();
     }
-    
+
     public String[] getDataFields (int i) {
         return entities.elementAt(i).getShortFields();
     }
-    
+
     public String[] getTitleData () {
         return entityPrototype.getHeaders(false);
     }
-    
+
     public String[] getColumnFormat(boolean header) {
         return entityPrototype.getForms(header);
     }
-    
+
     public Entity<E> getEntity (int i) {
         return entities.elementAt(i);
-    }    
+    }
 
     public int getRecordID (int i) {
         return entities.elementAt(i).getRecordID();
     }
-    
+
     public void attemptCallout(String number) {
         J2MEDisplay.showError("Not Available", "Calling functionality is not enabled for this application");
     }

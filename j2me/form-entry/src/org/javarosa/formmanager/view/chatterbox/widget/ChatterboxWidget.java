@@ -48,27 +48,27 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
     public static final int VIEW_COLLAPSED = 1;
     /** A Label that will never be interacted with **/
     public static final int VIEW_LABEL = 2;
-    
+
     /** Only valid for Labels **/
     private boolean pinned = false;
-    
+
     private Chatterbox cbox;
     private Command nextCommand;
-    
+
     private int viewState = VIEW_NOT_SET;
     private IWidgetStyle collapsedStyle;
     private IWidgetStyleEditable expandedStyle;
-    
+
     private FormEntryPrompt prompt;
 
     private IWidgetStyle activeStyle;
     //private Style blankSlateStyle;
-    
+
     public ChatterboxWidget (Chatterbox cbox, FormEntryPrompt prompt, int viewState, IWidgetStyle collapsedStyle, IWidgetStyleEditable expandedStyle) {
         this(cbox, prompt, viewState, collapsedStyle, expandedStyle, null);
     }
-            
-    public ChatterboxWidget (Chatterbox cbox, FormEntryPrompt prompt, int viewState, IWidgetStyle collapsedStyle, IWidgetStyleEditable expandedStyle, 
+
+    public ChatterboxWidget (Chatterbox cbox, FormEntryPrompt prompt, int viewState, IWidgetStyle collapsedStyle, IWidgetStyleEditable expandedStyle,
             Style style) {
         super(false, style);
         //blankSlateStyle = this.getStyle();
@@ -76,21 +76,21 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         this.cbox = cbox;
         this.nextCommand = new Command(Localization.get("command.next"), Command.ITEM, 3);
         this.prompt = prompt;
-        
+
         this.collapsedStyle = collapsedStyle;
         this.expandedStyle = expandedStyle;
-                
+
         setViewState(viewState);
     }
-    
+
     public void destroy () {
         if (viewState == VIEW_EXPANDED) {
             detachWidget();
         }
-        
+
         prompt.unregister();
     }
-        
+
     public int getViewState () {
         return viewState;
     }
@@ -102,7 +102,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
 
             this.viewState = viewState;
             activeStyle = getActiveStyle();
-            
+
             activeStyle.initWidget(prompt, this);
             activeStyle.refreshWidget(prompt, FormElementStateListener.CHANGE_INIT);
             if (viewState == VIEW_EXPANDED) {
@@ -118,7 +118,7 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         } else {
             throw new IllegalStateException("Attempt to fetch data from widget not in expanded mode");
         }
-    }    
+    }
 
     public void setFocus () {
         if (viewState == VIEW_EXPANDED) {
@@ -128,8 +128,8 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         } else {
             throw new IllegalStateException("Attempt to focus widget in non-interactive mode");
         }
-    }    
-    
+    }
+
     private IWidgetStyle getActiveStyle () {
         switch (viewState) {
         case VIEW_EXPANDED: return expandedStyle;
@@ -143,27 +143,27 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         if (viewState == VIEW_EXPANDED) {
             detachWidget();
         }
-        
+
         activeStyle.reset();
         clear();
     }
 
     //call-back from QuestionBinding
     public void refreshWidget (int changeFlags) {
-        activeStyle.refreshWidget(prompt, changeFlags);        
+        activeStyle.refreshWidget(prompt, changeFlags);
     }
-        
+
     private void attachWidget () {
         Item widget = expandedStyle.getInteractiveWidget();
-        
+
         widget.addCommand(nextCommand);
         widget.setItemCommandListener(this);
-        
+
         switch(expandedStyle.getNextMode()) {
         case ExpandedWidget.NEXT_ON_MANUAL:
             widget.setDefaultCommand(nextCommand);
             break;
-        case ExpandedWidget.NEXT_ON_ENTRY: 
+        case ExpandedWidget.NEXT_ON_ENTRY:
             widget.setItemStateListener(this);
             break;
         case ExpandedWidget.NEXT_ON_SELECT:
@@ -172,19 +172,19 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         }
         this.focusChild(this.itemsList.size()-1);
     }
-    
+
     public int getRelativeScrollYOffset() {
         if (!this.enableScrolling && this.parent instanceof Container) {
-            
+
             // Clayton Sims - Feb 9, 2009 : Had to go through and modify this code again.
             // The offsets are now accumulated through all of the parent containers, not just
             // one.
             Item walker = this.parent;
             int offset = 0;
-            
+
             //Walk our parent containers and accumulate their offsets.
             while(walker instanceof Container) {
-                // Clayton Sims - Apr 3, 2009 : 
+                // Clayton Sims - Apr 3, 2009 :
                 // If the container can scroll, it's relativeY is useless, it's in a frame and
                 // the relativeY isn't actually applicable.
                 // Actually, this should almost certainly _just_ break out of the loop if
@@ -195,12 +195,12 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
                 }
                 walker = walker.getParent();
             }
-            
+
             //The value returned here (The + offest part) is the fix.
             int absOffset = ((Container)this.parent).getScrollYOffset() + this.relativeY + offset;
-            
+
             return absOffset;
-            
+
             // Clayton Sims - Feb 10, 2009 : Rolled back because it doesn't work on the 3110c, apparently!
             // Fixing soon.
             //return ((Container)this.parent).getScrollYOffset() + this.relativeY + this.parent.relativeY;
@@ -213,21 +213,21 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         //#endif
         return offset;
     }
-    
+
     //Do not try to scroll yourself. Signal upwards that you're part of something else
     public int getScrollHeight() {
         return -1;
     }
 
-    
+
     private void detachWidget () {
         Item widget = expandedStyle.getInteractiveWidget();
         expandedStyle.reset();
-        
+
         switch(expandedStyle.getNextMode()) {
         case ExpandedWidget.NEXT_ON_MANUAL:
             break;
-        case ExpandedWidget.NEXT_ON_ENTRY: 
+        case ExpandedWidget.NEXT_ON_ENTRY:
             widget.setItemStateListener(null);
             break;
         case ExpandedWidget.NEXT_ON_SELECT:
@@ -236,18 +236,18 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
             }
             break;
         }
-                
+
         widget.removeCommand(nextCommand);
         widget.setItemCommandListener((ItemCommandListener)null);
     }
-    
+
     public void commandAction(Command c, Item i) {
         CrashHandler.commandAction(this, c, i);
-    }  
+    }
 
     public void _commandAction(Command c, Item i) {
         System.out.println("cw: command action");
-        
+
         if (i == expandedStyle.getInteractiveWidget() && c == nextCommand) {
             // BWD 23/8/2008 Ticket #69.  Added check for menu open
             // before passing on the hack.
@@ -258,10 +258,10 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
             cbox._commandAction(c, cbox);
         }
     }
-    
+
     public void itemStateChanged(Item i) {
         CrashHandler.itemStateChanged(this, i);
-    }  
+    }
 
     public void _itemStateChanged(Item i) {
         //debugging
@@ -273,12 +273,12 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
                 System.out.println(cg.getString(j) + " " + cg.isSelected(j));
             System.out.println("---");
         }
-        
+
         if (i == expandedStyle.getInteractiveWidget()) {
             cbox.questionAnswered();
         }
     }
-    
+
     public void UIHack (int hackType) {
         if (hackType == Chatterbox.UIHACK_SELECT_PRESS) {
             if (expandedStyle.getNextMode() == ExpandedWidget.NEXT_ON_SELECT && expandedStyle instanceof TextEntryWidget) {
@@ -286,21 +286,21 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
             }
         }
     }
-    
+
     public void showCommands() {
         super.showCommands();
         Item widget = expandedStyle.getInteractiveWidget();
         widget.showCommands();
     }
-    
+
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
     }
-    
+
     public boolean isPinned() {
         return pinned;
     }
-    
+
     public String toString() {
         if(this.activeStyle instanceof LabelWidget) {
             LabelWidget label = (LabelWidget)activeStyle;
@@ -308,8 +308,8 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         }
         return super.toString();
     }
-    
-    
+
+
     public boolean equals(Object o) {
         if(!(o instanceof ChatterboxWidget)) {
             return false;
@@ -318,10 +318,10 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         if(w.getViewState() == this.getViewState() && w.getViewState() == VIEW_LABEL) {
             return this.toString().equals(o.toString());
         }
-        
+
         return this == o;
     }
-    
+
     public Object clone() {
         if(this.getViewState() == ChatterboxWidget.VIEW_LABEL) {
             LabelWidget label = (LabelWidget)this.activeStyle;
@@ -330,19 +330,19 @@ public class ChatterboxWidget extends Container implements IQuestionWidget, Hand
         }
         return null;
     }
-    
+
     public ChatterboxWidget generateHeader() {
         return new ChatterboxWidget(cbox, prompt, ChatterboxWidget.VIEW_LABEL, new LabelWidget(), null);
     }
-    
-    /** 
+
+    /**
      * @return The height of this widget that, when taken off screen, should result
      * in a pinned header.
      */
     public int getPinnableHeight() {
         return this.activeStyle.getPinnableHeight();
     }
-    
+
     public FormEntryPrompt getPrompt () {
         return prompt;
     }

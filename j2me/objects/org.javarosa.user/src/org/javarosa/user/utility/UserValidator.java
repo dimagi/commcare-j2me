@@ -89,15 +89,15 @@ public class UserValidator {
 
             return MISMATCHED_PASSWORDS;
         }
-        
+
         return OK;
 
     }
 
     /**
-     * 
-     * 
-     * 
+     *
+     *
+     *
      * @param status
      */
     public void handleInvalidUser(int status, CommandListener listener) {
@@ -115,7 +115,7 @@ public class UserValidator {
         if (status == UserValidator.MISMATCHED_PASSWORDS) {
             s += ": " + Localization.get("activity.adduser.problem.mismatchingpasswords");
         }
-        
+
         J2MEDisplay.showError(null,s);
     }
 
@@ -143,11 +143,11 @@ public class UserValidator {
         user.setUuid(PropertyUtils.genGUID(25));
         return user;
     }
-    
+
     /**
-     * 
+     *
      * returns true if the given username is already in existence within the RMS
-     * 
+     *
      * @param username
      * @return
      */

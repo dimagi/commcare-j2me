@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.api;
 
@@ -22,11 +22,11 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
     protected CompletedFormOptionsTransitions transitions;
     protected String messageId;
     protected SendNowSendLaterForm view;
-    
+
     public CompletedFormOptionsController(String messageId) {
         this(messageId, false);
     }
-    
+
     public CompletedFormOptionsController(String messageId, boolean cacheAutomatically) {
         this.messageId = messageId;
         view = new SendNowSendLaterForm(this, this, cacheAutomatically);
@@ -42,16 +42,16 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
-        //If we're just on the acknowledgment screen, we always want 
+        //If we're just on the acknowledgment screen, we always want
         //to just skip.
         if(c == view.commandOk) {
             transitions.skipSend(messageId);
             return;
         }
-        
+
         int choice = view.getCommandChoice();
         if(choice == SendNowSendLaterForm.SEND_NOW_DEFAULT) {
             transitions.sendData(messageId);
@@ -62,7 +62,7 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
 
     public void itemStateChanged(Item i) {
         CrashHandler.itemStateChanged(this, i);
-    }  
+    }
 
     public void _itemStateChanged(Item i) {
         switch (view.getCommandChoice()) {
@@ -76,5 +76,5 @@ public class CompletedFormOptionsController implements HandledCommandListener, H
             break;
         }
     }
-    
+
 }

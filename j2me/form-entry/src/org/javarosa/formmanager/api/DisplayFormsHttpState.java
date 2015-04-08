@@ -64,10 +64,10 @@ public abstract class DisplayFormsHttpState implements FormListTransitions, Stat
             formInfo = new Hashtable();
 
             processSurveyList(parser, formInfo);
-            
+
             String[] formlist = new String[ formInfo.size() ];
             Enumeration e = formInfo.keys();//read available form names from hasttable
-    
+
             for(int i=0;i<formInfo.size(); i++)
         {
             items.addElement(e.nextElement());
@@ -93,11 +93,11 @@ public abstract class DisplayFormsHttpState implements FormListTransitions, Stat
             while( parser.nextTag() != XmlPullParser.END_TAG ){
                 //parser file names
                 parser.require(XmlPullParser.START_TAG, null, null);
-                
+
                 String name = parser.getName();
                 String url = parser.getAttributeValue(null, "url");
                 String text = parser.nextText();
-                                
+
                 if(name.equals("form"))
                     {
                     //inItem = true;
@@ -110,7 +110,7 @@ public abstract class DisplayFormsHttpState implements FormListTransitions, Stat
                 parser.require(XmlPullParser.END_TAG, null, "form");
             }
             parser.require(XmlPullParser.END_TAG, null, "forms");
-            
+
             parser.next();
             parser.require(XmlPullParser.END_DOCUMENT, null, null);
 
@@ -128,7 +128,7 @@ public abstract class DisplayFormsHttpState implements FormListTransitions, Stat
 
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable display) {
         if(display == formList){

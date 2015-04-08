@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.services.properties.api;
 
@@ -16,7 +16,7 @@ public abstract class PropertyUpdateState implements State, TrivialTransitions {
     protected PropertyUpdateController getController () {
         return new PropertyUpdateController(this);
     }
-    
+
     public void start() {
         getController().start();
     }

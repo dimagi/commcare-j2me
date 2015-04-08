@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.log.properties;
 
@@ -32,7 +32,7 @@ import org.javarosa.core.services.properties.JavaRosaPropertyRules;
 
 /**
  * @author Clayton Sims
- * @date Apr 13, 2009 
+ * @date Apr 13, 2009
  *
  */
 public class LogPropertyRules implements IPropertyRules {
@@ -40,36 +40,36 @@ public class LogPropertyRules implements IPropertyRules {
     Vector readOnlyProperties;
 
     public final static String LOG_SUBMIT_URL = "log_prop_submit";
-    
+
     public final static String LOG_WEEKLY_SUBMIT = "log_prop_weekly";
-    
+
     public final static String LOG_DAILY_SUBMIT = "log_prop_daily";
-    
+
     public final static String NEVER = "log_never";
     public final static String SHORT = "log_short";
     public final static String FULL = "log_full";
-    
+
     public final static String LOG_NEXT_DAILY_SUBMIT = "log_prop_next_daily";
     public final static String LOG_NEXT_WEEKLY_SUBMIT = "log_prop_next_weekly";
-    
+
     /**
      * Creates the JavaRosa set of property rules
      */
     public LogPropertyRules() {
         rules = new Hashtable();
         readOnlyProperties = new Vector();
-        
+
         // Default properties
         rules.put(LOG_SUBMIT_URL, new Vector());
-        
+
         Vector submissionTypes = new Vector();
         submissionTypes.addElement(NEVER);
         submissionTypes.addElement(SHORT);
         submissionTypes.addElement(FULL);
-        
+
         rules.put(LOG_WEEKLY_SUBMIT, submissionTypes);
         rules.put(LOG_DAILY_SUBMIT, submissionTypes);
-        
+
         rules.put(LOG_NEXT_DAILY_SUBMIT, new Vector());
         readOnlyProperties.addElement(LOG_NEXT_DAILY_SUBMIT);
         rules.put(LOG_NEXT_WEEKLY_SUBMIT, new Vector());
@@ -78,7 +78,7 @@ public class LogPropertyRules implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#allowableValues(String)
      */
     public Vector allowableValues(String propertyName) {
@@ -87,7 +87,7 @@ public class LogPropertyRules implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkValueAllowed(String,
      *      String)
      */
@@ -112,11 +112,11 @@ public class LogPropertyRules implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#allowableProperties()
      */
     public Vector allowableProperties() {
-        //TEST: If logs are disabled, none of these properties are meaningful 
+        //TEST: If logs are disabled, none of these properties are meaningful
         //and they should be disabled to not confuse users.
         if(JavaRosaPropertyRules.LOGS_ENABLED_YES.equals(PropertyManager._().getSingularProperty(JavaRosaPropertyRules.LOGS_ENABLED))) {
             Vector propList = new Vector();
@@ -132,7 +132,7 @@ public class LogPropertyRules implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkPropertyAllowed)
      */
     public boolean checkPropertyAllowed(String propertyName) {
@@ -147,7 +147,7 @@ public class LogPropertyRules implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkPropertyUserReadOnly)
      */
     public boolean checkPropertyUserReadOnly(String propertyName) {
@@ -197,6 +197,6 @@ public class LogPropertyRules implements IPropertyRules {
     public void handlePropertyChanges(String propertyName) {
         //Maybe init the daily/weekly health reports here if
         //the value of logs enabled changes?
-    }    
+    }
 
 }

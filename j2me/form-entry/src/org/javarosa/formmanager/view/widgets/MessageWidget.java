@@ -32,13 +32,13 @@ import de.enough.polish.ui.UiAccess;
 
 /**
  * TODO: make an expandedwidget.
- * 
+ *
  * @author ctsims
  *
  */
 public class MessageWidget extends ExpandedWidget {
     private StringItem ok;
-    
+
     public MessageWidget (boolean showButton) {
         if(showButton) {
             //#style button
@@ -56,7 +56,7 @@ public class MessageWidget extends ExpandedWidget {
     public int getNextMode () {
         return ExpandedWidget.NEXT_ON_MANUAL;
     }
-    
+
 
     public int widgetType() {
         return Constants.CONTROL_TRIGGER;
@@ -72,11 +72,11 @@ public class MessageWidget extends ExpandedWidget {
 
     protected void updateWidget(FormEntryPrompt prompt) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     protected void setWidgetValue(Object o) {
-        //Nope. Not a thing.        
+        //Nope. Not a thing.
     }
 
     protected IAnswerData getWidgetValue() {

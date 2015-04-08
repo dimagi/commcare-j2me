@@ -28,7 +28,7 @@ public class FeedbackReportProperties implements IPropertyRules {
     Vector readOnlyProperties;
 
     public final static String FEEDBACK_REPORT_SERVER = "oj_c_fr";
-    
+
     /**
      * Creates the JavaRosa set of property rules
      */
@@ -38,12 +38,12 @@ public class FeedbackReportProperties implements IPropertyRules {
 
         // Site-specific Fields
         rules.put(FEEDBACK_REPORT_SERVER, new Vector());
-        
+
     }
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#allowableValues(String)
      */
     public Vector allowableValues(String propertyName) {
@@ -52,7 +52,7 @@ public class FeedbackReportProperties implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkValueAllowed(String,
      *      String)
      */
@@ -77,7 +77,7 @@ public class FeedbackReportProperties implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#allowableProperties()
      */
     public Vector allowableProperties() {
@@ -91,7 +91,7 @@ public class FeedbackReportProperties implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkPropertyAllowed)
      */
     public boolean checkPropertyAllowed(String propertyName) {
@@ -106,7 +106,7 @@ public class FeedbackReportProperties implements IPropertyRules {
 
     /**
      * (non-Javadoc)
-     * 
+     *
      * @see org.javarosa.properties.IPropertyRules#checkPropertyUserReadOnly)
      */
     public boolean checkPropertyUserReadOnly(String propertyName) {
@@ -117,7 +117,7 @@ public class FeedbackReportProperties implements IPropertyRules {
         if(FEEDBACK_REPORT_SERVER.equals(propertyName)) {
             return "Feedback Report Server";
          }
-        
+
         return propertyName;
     }
 
@@ -127,7 +127,7 @@ public class FeedbackReportProperties implements IPropertyRules {
     }
 
     public void handlePropertyChanges(String propertyName) {
-        // nothing.  
+        // nothing.
         // what's this method for?
-    }    
+    }
 }

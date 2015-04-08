@@ -33,10 +33,10 @@ import de.enough.polish.ui.Style;
 
 /**
  * @author mel
- * 
+ *
  *         A SingleQuestionScreen-syle widget that adds a scan command for
  *         scaning a barcode
- * 
+ *
  */
 public class BarcodeQuestionWidget extends AcquiringQuestionScreen {
 
@@ -54,7 +54,7 @@ public class BarcodeQuestionWidget extends AcquiringQuestionScreen {
         //#else
         setHint("Type in your answer");
         //#endif
-        
+
         //#style textBox
          tf = new TextField("", "", 200, TextField.ANY);
          if(qDef.instanceNode.required)

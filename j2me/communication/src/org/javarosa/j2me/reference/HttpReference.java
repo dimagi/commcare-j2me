@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.j2me.reference;
 
@@ -21,11 +21,11 @@ public class HttpReference implements Reference {
 
     String URI;
     SecurityFailureListener listener;
-    
+
     public HttpReference(String URI) {
         this(URI, null);
     }
-    
+
     public HttpReference(String URI, SecurityFailureListener listener) {
         this.URI = URI;
         this.listener = listener;
@@ -35,17 +35,17 @@ public class HttpReference implements Reference {
      * @see org.commcare.reference.Reference#doesBinaryExist()
      */
     public boolean doesBinaryExist() throws IOException {
-        //Do HTTP connection stuff? Look for a 404? 
+        //Do HTTP connection stuff? Look for a 404?
         return true;
     }
-    
+
     public InputStream getStream() throws IOException {
         try {
             final HttpConnection connection = (HttpConnection)Connector.open(URI);
             connection.setRequestMethod(HttpConnection.GET);
-            
+
             InputStream httpStream = connection.openInputStream();
-            
+
             //Buffer our stream, since reading small units at a time from the network
             //increases the likelihood of network errors
             return new BufferedInputStream(httpStream) {
@@ -57,7 +57,7 @@ public class HttpReference implements Reference {
                     //where it was supposed to close the connection when the stream was closed,
                     //so we'll go ahead and move this here.
                     connection.close();
-                    
+
                     super.close();
                 }
             };
@@ -68,7 +68,7 @@ public class HttpReference implements Reference {
             throw new IOException("Couldn't retrieve data from " + this.getLocalURI() + " due to lack of permissions.");
         }
     }
-    
+
     public String getURI() {
         return URI;
     }
@@ -92,7 +92,7 @@ public class HttpReference implements Reference {
     public String getLocalURI() {
         return URI;
     }
-    
+
     public Reference[] probeAlternativeReferences() {
         return new Reference [0];
     }

@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.log.view;
 
@@ -23,7 +23,7 @@ import javax.microedition.lcdui.List;
 
 /**
  * @author Clayton Sims
- * @date Apr 13, 2009 
+ * @date Apr 13, 2009
  *
  */
 public class LogManagementView extends List {
@@ -31,6 +31,6 @@ public class LogManagementView extends List {
     public LogManagementView() {
         super("Log Manager", List.IMPLICIT);
     }
-    
+
 
 }

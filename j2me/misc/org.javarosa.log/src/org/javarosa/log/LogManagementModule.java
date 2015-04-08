@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.log;
 
@@ -25,7 +25,7 @@ import org.javarosa.log.properties.LogPropertyRules;
 
 /**
  * @author Clayton Sims
- * @date Apr 13, 2009 
+ * @date Apr 13, 2009
  *
  */
 public class LogManagementModule implements IModule {

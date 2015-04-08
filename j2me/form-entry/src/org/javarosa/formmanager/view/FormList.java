@@ -31,12 +31,12 @@
 //import org.javarosa.core.util.Map;
 //import org.javarosa.formmanager.activity.FormListActivity;
 //
-// 
+//
 //public class FormList extends List implements CommandListener {
-//    
+//
 //    private final static Command CMD_EXIT = new Command(Localization.get("menu.Exit"), Command.BACK, 2);
 //    private final static Command CMD_GETNEWFORMS = new Command(Localization.get("menu.GetNewForms"), Command.SCREEN, 2);
-//    // CZUE added for testing 
+//    // CZUE added for testing
 //    private final static Command CMD_CAMERA = new Command(Localization.get("menu.Camera"), Command.SCREEN, 2);
 //    //Added for debugging(Ndubisi)
 //    private final static Command CMD_RECORDER = new Command(Localization.get("menu.Recorder"), Command.SCREEN, 2);
@@ -46,7 +46,7 @@
 //    private final static Command CMD_DELETE_FORM = new Command(Localization.get("menu.Delete"),Command.SCREEN,4);
 //    private final static Command CMD_SHAREFORMS = new Command(Localization.get("menu.ShareForms"), Command.SCREEN, 2);
 //    private final static Command CMD_SETTINGS = new Command(Localization.get("menu.Settings"), Command.SCREEN, 3);
-//    
+//
 //    public FormList(String title) {
 //        this(title, Choice.IMPLICIT);
 //    }
@@ -56,7 +56,7 @@
 //    }
 //
 //    /**
-//     * 
+//     *
 //     * @param formsPositionTitleMap
 //     * @return Vector of form positions
 //     */
@@ -94,17 +94,17 @@
 //        //#if polish.usePolishGui
 //        this.addCommand(CMD_SETTINGS);
 //        //#endif
-//        
+//
 //        for (int i = 0; i < this.parent.getCustomCommands().size(); i++) {
 //            Command parentCommand = (Command)((ICommand)this.parent.getCustomCommands().elementAt(i)).getCommand();
 //            addCommand(parentCommand);
 //        }
 //    }
 //
-//     
+//
 //    /**
 //     * add form titles to this view, in order
-//     * 
+//     *
 //     * @param formsPositionTitleMap maps ids to form titles
 //     * @return Vector of form positions
 //     */
@@ -125,7 +125,7 @@
 //     * @see javax.microedition.lcdui.CommandListener#commandAction(javax.microedition.lcdui.Command, javax.microedition.lcdui.Displayable)
 //     */
 //    public void commandAction(Command c, Displayable arg1) {
-//        
+//
 //        if (c == List.SELECT_COMMAND) {
 //            Hashtable commands = new Hashtable();
 //            commands.put(Commands.CMD_SELECT_XFORM, new Integer(this.getSelectedIndex()));
@@ -180,7 +180,7 @@
 //            commands.put(Commands.CMD_RECORDER, "");
 //            this.parent.viewCompleted(commands, ViewTypes.FORM_LIST);
 //        }
-//        
+//
 //        /*
 //        if (c == CMD_SHAREFORMS) {
 //            this.mainShell.startBToothClient();
@@ -198,9 +198,9 @@
 //                if (c == parentCommand.getCommand()) {
 //                    Hashtable commands = new Hashtable();
 //                    commands.put(parentCommand.getCommandId(), "");
-//                    this.parent.viewCompleted(commands, ViewTypes.FORM_LIST);        
+//                    this.parent.viewCompleted(commands, ViewTypes.FORM_LIST);
 //                }
-//            }            
+//            }
 //        }
 //    }
 //}

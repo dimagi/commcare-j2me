@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.splashscreen.api;
 
@@ -20,17 +20,17 @@ import de.enough.polish.ui.splash.InitializerSplashScreen;
  *
  */
 public abstract class SplashScreenState implements TrivialTransitions, State, ApplicationInitializer {
-    
+
     protected String picture;
     protected int delay;
-    
+
     protected int backgroundColor = 0xFFFFFF;
     protected int messageColor = 0xFF0000;
-    
+
     public SplashScreenState (String picture) {
         this(picture, 2000);
     }
-    
+
     public SplashScreenState (String picture, int delay) {
         this.picture = picture;
         this.delay = delay;
@@ -48,30 +48,30 @@ public abstract class SplashScreenState implements TrivialTransitions, State, Ap
             image, backgroundColor, null, messageColor, this);
         J2MEDisplay.setView(splashScreen);
     }
-    
+
     public Displayable initApp() {
         try {
-        
+
             try{
                 Thread.sleep(this.delay);
               } catch (Exception e) { }
-    
+
               //we could be doing, like... actual initialization here
-              
+
               done();
-          
+
         } catch (Exception e) {
             Logger.die("splash", e);
         }
-          
+
           //we will set the display ourselves
         return null;
         //i'm not sure this is ideal. if the splash screen sets the display to 'null' (as returned by this
         //function), that could be interpreted as a request for the app to be backgrounded, according to
         //J2ME docs
     }
-    
+
     //added for Nokia JVM bug
     public abstract void done ();
-    
+
 }

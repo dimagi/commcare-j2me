@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.resources.locale;
 
@@ -25,11 +25,11 @@ import org.javarosa.core.services.locale.Localization;
 
 /**
  * @author Clayton Sims
- * @date May 26, 2009 
+ * @date May 26, 2009
  *
  */
 public class LanguagePackModule implements IModule {
-    
+
     public static final String[] locales = new String[] {"default", "en", "sw", "af", "es","fra","zh"};
 
     /* (non-Javadoc)
@@ -43,9 +43,9 @@ public class LanguagePackModule implements IModule {
         Localization.registerLanguageFile(locales[4],"/messages_es.txt");
         Localization.registerLanguageFile(locales[5],"/messages_fra.txt");
         Localization.registerLanguageFile(locales[6],"/messages_zh.txt");
-        
+
         Localization.setDefaultLocale(locales[0]);
-        
+
         Localization.setLocale(locales[0]);
     }
 

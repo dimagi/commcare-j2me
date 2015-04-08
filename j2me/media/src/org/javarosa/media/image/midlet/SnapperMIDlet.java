@@ -1,22 +1,22 @@
 /* License
- * 
+ *
  * Copyright 1994-2004 Sun Microsystems, Inc. All Rights Reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
  * are met:
- *  
+ *
  *  * Redistribution of source code must retain the above copyright notice,
  *      this list of conditions and the following disclaimer.
- * 
+ *
  *  * Redistribution in binary form must reproduce the above copyright notice,
  *      this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- * 
+ *
  * Neither the name of Sun Microsystems, Inc. or the names of contributors
  * may be used to endorse or promote products derived from this software
  * without specific prior written permission.
- *  
+ *
  * This software is provided "AS IS," without a warranty of any kind. ALL
  * EXPRESS OR IMPLIED CONDITIONS, REPRESENTATIONS AND WARRANTIES, INCLUDING
  * ANY IMPLIED WARRANTY OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
@@ -28,10 +28,10 @@
  * INCIDENTAL OR PUNITIVE DAMAGES, HOWEVER CAUSED AND REGARDLESS OF THE THEORY
  * OF LIABILITY, ARISING OUT OF THE USE OF OR INABILITY TO USE THIS SOFTWARE,
  * EVEN IF SUN HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
- *  
+ *
  * You acknowledge that this software is not designed, licensed or intended
  * for use in the design, construction, operation or maintenance of any
- * nuclear facility. 
+ * nuclear facility.
  */
 
 package org.javarosa.media.image.midlet;
@@ -51,21 +51,21 @@ public class SnapperMIDlet
     extends MIDlet
     implements CommandListener {
   private Display mDisplay;
-  
+
   private Form mMainForm;
-  
+
   private Command mExitCommand, mCameraCommand;
   private Command mBackCommand, mCaptureCommand;
-  
+
   private Player mPlayer;
   private VideoControl mVideoControl;
-  
+
   public SnapperMIDlet() {
     mExitCommand = new Command("Exit", Command.EXIT, 0);
     mCameraCommand = new Command("Camera", Command.SCREEN, 0);
     mBackCommand = new Command("Back", Command.BACK, 0);
     mCaptureCommand = new Command("Capture", Command.SCREEN, 0);
-    
+
     mMainForm = new Form("Snapper");
     mMainForm.addCommand(mExitCommand);
     String supports = System.getProperty("video.snapshot.encodings");
@@ -78,18 +78,18 @@ public class SnapperMIDlet
           "device to take pictures.");
     mMainForm.setCommandListener(this);
   }
-  
+
   public void startApp() {
     mDisplay = Display.getDisplay(this);
-    
+
     mDisplay.setCurrent(mMainForm);
   }
-    
+
   public void pauseApp() {}
-  
+
   public void destroyApp(boolean unconditional) {
   }
-  
+
   public void commandAction(Command c, Displayable s) {
     if (c.getCommandType() == Command.EXIT) {
       destroyApp(true);
@@ -108,9 +108,9 @@ public class SnapperMIDlet
     try {
       mPlayer = Manager.createPlayer("capture://video");
       mPlayer.realize();
-      
+
       mVideoControl = (VideoControl)mPlayer.getControl("VideoControl");
-      
+
       Canvas canvas = new CameraCanvas(this, mVideoControl);
       canvas.addCommand(mBackCommand);
       canvas.addCommand(mCaptureCommand);
@@ -133,23 +133,23 @@ public class SnapperMIDlet
     catch (IOException ioe) { handleException(ioe); }
     catch (MediaException me) { handleException(me); }
   }
-  
+
   public void capture() {
     try {
       // Get the image.
       byte[] raw = mVideoControl.getSnapshot(null);
       Image image = Image.createImage(raw, 0, raw.length);
-      
+
       Image thumb = ImageUtility.createThumbnail(image);
-      
+
       // Place it in the main form.
       if (mMainForm.size() > 0 && mMainForm.get(0) instanceof StringItem)
         mMainForm.delete(0);
       mMainForm.append(thumb);
-      
+
       // Flip back to the main form.
       mDisplay.setCurrent(mMainForm);
-      
+
       // Shut down the player.
       mPlayer.close();
       mPlayer = null;
@@ -157,7 +157,7 @@ public class SnapperMIDlet
     }
     catch (MediaException me) { handleException(me); }
   }
-  
+
   private void handleException(Exception e) {
     Alert a = new Alert("Exception", e.toString(), null, null);
     a.setTimeout(Alert.FOREVER);
@@ -165,6 +165,6 @@ public class SnapperMIDlet
     //mDisplay.setCurrent(a, mMainForm);
     throw new RuntimeException("Snapper MIDLlet exception needs to be displayed as an alert, but fixed to use j2me properly");
   }
-  
-  
+
+
 }

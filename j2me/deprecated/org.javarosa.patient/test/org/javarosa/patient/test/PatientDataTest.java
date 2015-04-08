@@ -29,7 +29,7 @@ public class PatientDataTest {
 
     //commented out until entitymgr builds
 //    public static EntityData getTestPatientData(){
-//        
+//
 //        //create patients.
 //        Patient patient = new Patient(new Integer(10),"U/010","Mark","Kasode");
 //        Vector patients = new Vector();
@@ -43,10 +43,10 @@ public class PatientDataTest {
 //        patients.addElement(new Patient(new Integer(8),"U/008","Muwanga","Simon","Peter"));
 //        patients.addElement(new Patient(new Integer(9),"U/009","Frank","Jr","Nkuyahaga"));
 //        patients.addElement(patient);
-//        
+//
 //        EntityList entities = new EntityList(patients,new Patient().getClass());
-//        
-//        
+//
+//
 //        //create patient fields.
 //        Vector patientFields = new Vector();
 //        patientFields.addElement(new EntityField(1,"last_visit_date"));
@@ -54,10 +54,10 @@ public class PatientDataTest {
 //        patientFields.addElement(new EntityField(3,"last_weight"));
 //        patientFields.addElement(new EntityField(4,"last_height"));
 //        patientFields.addElement(new EntityField(5,"who_stage"));
-//        
+//
 //        EntityFieldList fields = new EntityFieldList(patientFields);
-//        
-//        
+//
+//
 //        //create patient field values.
 //        Vector patientFieldValues = new Vector();
 //        patientFields.addElement(new EntityFieldValue(1,10,"01/01/2007"));
@@ -65,9 +65,9 @@ public class PatientDataTest {
 //        patientFields.addElement(new EntityFieldValue(3,10,"67 Kg"));
 //        patientFields.addElement(new EntityFieldValue(4,10,"5 inches"));
 //        patientFields.addElement(new EntityFieldValue(5,10,"III"));
-//        
+//
 //        EntityFieldValueList fieldValues = new EntityFieldValueList(patientFieldValues);
-//        
+//
 //
 //        return new EntityData(entities, fields, fieldValues,new Patient().getClass());
 //    }

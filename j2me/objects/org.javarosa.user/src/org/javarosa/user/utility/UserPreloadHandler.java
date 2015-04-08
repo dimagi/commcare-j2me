@@ -15,7 +15,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.javarosa.user.utility;
 
@@ -28,12 +28,12 @@ import org.javarosa.user.model.User;
 
 /**
  * @author Clayton Sims
- * @date May 12, 2009 
+ * @date May 12, 2009
  *
  */
 public class UserPreloadHandler implements IPreloadHandler {
     User user;
-    
+
     public UserPreloadHandler(User user) {
         this.user = user;
     }
@@ -49,9 +49,9 @@ public class UserPreloadHandler implements IPreloadHandler {
      * @see org.javarosa.core.model.utils.IPreloadHandler#handlePreload(java.lang.String)
      */
     public IAnswerData handlePreload(String preloadParams) {
-        if(preloadParams.equals("username")) { 
+        if(preloadParams.equals("username")) {
             return new UncastData(user.getUsername());
-        } else if(preloadParams.equals("uuid")) { 
+        } else if(preloadParams.equals("uuid")) {
             return new UncastData(user.getUniqueId());
         }
         String property = user.getProperty(preloadParams);

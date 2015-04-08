@@ -29,10 +29,10 @@ import org.javarosa.j2me.services.exception.ImageProcessingException;
 
 /**
  * @author mel
- * 
+ *
  *         Barcode image capture (using MMAPI) and processing (using any
  *         available BarcodeProcessingService)
- * 
+ *
  */
 public class BarcodeCaptureScreen extends ImageCaptureScreen {
 
@@ -94,9 +94,9 @@ public class BarcodeCaptureScreen extends ImageCaptureScreen {
             //#else
             takePictureCommand = new Command("Scan", Command.OK, 3);
             //#endif
-            
+
         }
-            
+
         return takePictureCommand;
     }
 

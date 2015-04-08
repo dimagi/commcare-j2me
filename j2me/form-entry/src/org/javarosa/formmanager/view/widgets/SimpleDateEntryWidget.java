@@ -27,54 +27,54 @@ import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 import de.enough.polish.ui.Item;
 
 /**
- * 
+ *
  * @author Ndubisi Onuora
  *
  */
 
-public class SimpleDateEntryWidget extends ExpandedWidget 
+public class SimpleDateEntryWidget extends ExpandedWidget
 {
     private SimpleDateField dateField;
-    
+
     public SimpleDateEntryWidget()
     {
         dateField = new SimpleDateField("");
     }
-    
+
     public int getNextMode()
     {
         return ExpandedWidget.NEXT_ON_SELECT;
     }
-    
-    protected IAnswerData getWidgetValue() 
+
+    protected IAnswerData getWidgetValue()
     {
         Date d = dateField.getValue();
         return (d == null ? null : new DateData(d));
     }
 
-    protected void updateWidget(FormEntryPrompt prompt) 
+    protected void updateWidget(FormEntryPrompt prompt)
     {
         // TODO Auto-generated method stub
 
     }
-    
+
     protected void setWidgetValue(Object o)
     {
         dateField.setValue((Date)o);
     }
 
-    public int widgetType() 
+    public int widgetType()
     {
         // TODO Auto-generated method stub
         return Constants.CONTROL_INPUT;
     }
-    
-    protected Item getEntryWidget(FormEntryPrompt prompt) 
+
+    protected Item getEntryWidget(FormEntryPrompt prompt)
     {
         // TODO Auto-generated method stub
         return dateField;
     }
-    
+
     protected IAnswerData getAnswerTemplate() {
         return new DateData();
     }

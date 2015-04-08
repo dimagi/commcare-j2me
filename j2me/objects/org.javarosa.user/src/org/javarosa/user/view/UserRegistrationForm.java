@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.user.view;
 
@@ -15,13 +15,13 @@ import de.enough.polish.ui.StringItem;
 public class UserRegistrationForm extends FramedForm {
 
     StringItem message;
-    
+
     public UserRegistrationForm(String title) {
         super(title);
         message = new StringItem("",Localization.get("user.registration.attempt"));
         this.append(message);
     }
-    
+
     public void setText(String text) {
         message.setText(text);
     }

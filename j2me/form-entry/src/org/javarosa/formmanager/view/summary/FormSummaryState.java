@@ -11,7 +11,7 @@ public class FormSummaryState implements FormSummaryTransitions, State{
     public FormSummaryState(JrFormEntryController formController){
         this.formController = formController;
     }
-    
+
     public void start() {
         FormSummaryController controller = new FormSummaryController(formController.getModel());
         controller.setTransitions(this);

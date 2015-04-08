@@ -1,7 +1,7 @@
 package org.javarosa.formmanager.view.singlequestionscreen;
 
 public class Constants {
-    
+
     /**
      * Style codes
      */

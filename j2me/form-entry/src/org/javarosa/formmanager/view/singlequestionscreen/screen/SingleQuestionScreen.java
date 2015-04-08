@@ -47,7 +47,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     protected FormEntryPrompt prompt;
     private Gauge progressBar;
-    
+
     private IWidgetStyleEditable widget;
     protected IAnswerData answer;
     JrFormEntryController fec;
@@ -59,15 +59,15 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
     public Command viewAnswersCommand;
     public Command languageSubMenu;
     public Command[] languageCommands;
-    
+
     Command[] itemCommandQueue;
 
     public Command nextItemCommand = new Command(Localization
             .get("menu.Next"), Command.SCREEN, 1);
-    
+
     //#style button
     public StringItem nextItem = new StringItem(null, Localization.get("button.Next"), Item.BUTTON);
-    
+
     public SingleQuestionScreen(FormEntryPrompt prompt, String groupName, Style style) {
         super(groupName, style);
         throw new RuntimeException("Deprecated!");
@@ -89,18 +89,18 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
         addNavigationWidgets();
         attachWidget();
     }
-    
+
     private void attachWidget () {
         Item item = widget.getInteractiveWidget();
-        
+
         item.addCommand(nextItemCommand);
         item.setItemCommandListener(this);
-        
+
         switch(widget.getNextMode()) {
         case ExpandedWidget.NEXT_ON_MANUAL:
             item.setDefaultCommand(nextItemCommand);
             break;
-        case ExpandedWidget.NEXT_ON_ENTRY: 
+        case ExpandedWidget.NEXT_ON_ENTRY:
             item.setItemStateListener(this);
             break;
         case ExpandedWidget.NEXT_ON_SELECT:
@@ -113,13 +113,13 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
     public IAnswerData getWidgetValue() throws InvalidDataException {
         return widget.getData();
     }
-    
+
     public void configureProgressBar(int cur, int total) {
-        //Mar 17, 2015 - OQPS doesn't properly deal with progress bar 
+        //Mar 17, 2015 - OQPS doesn't properly deal with progress bar
         //when repeats exist. In the short term, just let it stay full
         //rather than crashing
         if (cur >= total) { cur = total;}
-        
+
         if(progressBar == null) {
             //#style progressbar
             progressBar = new Gauge(null, false, total, cur);
@@ -142,7 +142,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
                 Command.BACK, 2);
         viewAnswersCommand = new Command(Localization.get("menu.ViewAnswers"),
                 Command.SCREEN, 3);
-        
+
         exitCommand = new Command(Localization.get("menu.Exit"),Command.EXIT, 2);
 
         this.addCommand(previousCommand);
@@ -164,15 +164,15 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
 //            //#style groupName
 //             StringItem groupNameTitle = new StringItem(null,groupName, Item.LAYOUT_EXPAND);
 //             append(Graphics.BOTTOM, groupNameTitle);
-//            
+//
 //        }
     }
-    
+
     public void addLanguageCommands(String[] availableLocales)
     {
         languageSubMenu = new Command("Language", Command.SCREEN, 2);
         addCommand(languageSubMenu);
-        
+
         languageCommands = new Command[availableLocales.length];
         for (int i = 0; i < languageCommands.length; i++){
             languageCommands[i] = new Command(availableLocales[i], Command.SCREEN, 3);
@@ -213,7 +213,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
             this.callCommandListener(nextItemCommand);
         }
     }
-    
+
     public void commandAction(Command c, Item item) {
         if(isBackgrounded || (loaded && (this.getKeyStates() & UiAccess.FIRE_PRESSED) != 0)) {
             //we're still in the middle of input, delay the outcome until it's done.
@@ -257,7 +257,7 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
             }
         }
         boolean outcome = false;
-        
+
         //#if javarosa.supresscycle
         if(keyCode == POUND_KEYCODE) {
             outcome = false;
@@ -282,15 +282,15 @@ public class SingleQuestionScreen extends FramedForm implements ItemCommandListe
     }
 
     public void refreshWidget(int changeFlags) {
-        widget.refreshWidget(prompt, changeFlags);        
+        widget.refreshWidget(prompt, changeFlags);
     }
-    
+
     public void releaseMedia() {
         widget.releaseMedia();
     }
 
     public void releaseResources() {
-        if(prompt != null) { 
+        if(prompt != null) {
             prompt.unregister();
             widget.reset();
         }

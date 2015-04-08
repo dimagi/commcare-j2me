@@ -10,11 +10,11 @@ import org.javarosa.j2me.services.LocationCaptureService;
 
 
 public class LocationCaptureView extends Form {
-    
+
     public Command cancelCommand;
     public Command okCommand;
     public Command retryCommand;
-    
+
     //#style capturingGauge
     private Gauge busyIndicator = new Gauge(Localization
             .get("activity.locationcapture.waitingforfix"), false, Gauge.INDEFINITE, Gauge.CONTINUOUS_IDLE );

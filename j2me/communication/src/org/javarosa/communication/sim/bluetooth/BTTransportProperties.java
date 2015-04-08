@@ -15,30 +15,30 @@ import org.javarosa.core.services.properties.IPropertyRules;
 public class BTTransportProperties implements IPropertyRules{
     Hashtable rules;
     Vector readOnlyProperties;
-    
+
     public final static String POST_URL_LIST_PROPERTY = "PostURLlist";
     public final static String POST_URL_PROPERTY = "PostURL";
     public final static String GET_URL_PROPERTY = "GetURL";
     public final static String AUTH_URL_PROPERTY = "AuthenticateURL";//for remote server user authentication
-    
+
     public BTTransportProperties(){
-        
+
          rules = new Hashtable();
          readOnlyProperties = new Vector();
 
         System.out.println("testing BTTransporttProperties");
         // PostURL List Property
-        
+
         rules.put(POST_URL_LIST_PROPERTY, new Vector());
-        
-        
+
+
         System.out.println("testing BTTransporttProperties2");
          readOnlyProperties.addElement(POST_URL_LIST_PROPERTY);
             Vector postList = JavaRosaServiceProvider.instance().getPropertyManager().getProperty(POST_URL_LIST_PROPERTY);
             if(postList == null) {
                 JavaRosaServiceProvider.instance().getPropertyManager().setProperty(POST_URL_LIST_PROPERTY, new Vector());
             }
-            
+
             // PostURL Property
             Vector postUrls = new Vector();
             postUrls.addElement(POST_URL_LIST_PROPERTY);
@@ -48,13 +48,13 @@ public class BTTransportProperties implements IPropertyRules{
             Vector getUrls = new Vector();
             //getUrls.addElement(GET_URL_PROPERTY);
             rules.put(GET_URL_PROPERTY, getUrls);
-            
+
             // AuthURL Property
             Vector authUrls = new Vector();
             //getUrls.addElement(GET_URL_PROPERTY);
             rules.put(AUTH_URL_PROPERTY, authUrls);
     }
-    
+
     public Vector allowableProperties() {
         // TODO Auto-generated method stub
          Vector propList = new Vector();
@@ -62,10 +62,10 @@ public class BTTransportProperties implements IPropertyRules{
             while (iter.hasMoreElements()) {
                 propList.addElement(iter.nextElement());
             }
-            return propList; 
-        
+            return propList;
+
         //return null;
-        
+
     }
 
     public Vector allowableValues(String propertyName) {
@@ -73,10 +73,10 @@ public class BTTransportProperties implements IPropertyRules{
         //return null;
          return (Vector)rules.get(propertyName);
     }
-    
+
     public boolean checkPropertyAllowed(String propertyName) {
         // TODO Auto-generated method stub
-        
+
          Enumeration iter = rules.keys();
             while (iter.hasMoreElements()) {
                 if(propertyName.equals(iter.nextElement())) {
@@ -90,7 +90,7 @@ public class BTTransportProperties implements IPropertyRules{
     public boolean checkPropertyUserReadOnly(String propertyName) {
         // TODO Auto-generated method stub
         return readOnlyProperties.contains(propertyName);
-        
+
         //return false;
     }
 
@@ -132,7 +132,7 @@ public class BTTransportProperties implements IPropertyRules{
 
     public void handlePropertyChanges(String propertyName) {
         // TODO Auto-generated method stub
-        
+
     }
 
 }

@@ -73,39 +73,39 @@ import de.enough.polish.ui.UiAccess;
 
 
 public class Chatterbox extends FramedForm implements HandledPCommandListener, IFormEntryView{
-    
+
     private boolean USE_HASH_FOR_AUDIO = true;
     private static int POUND_KEYCODE = Canvas.KEY_POUND;
     private static final String PROMPT_REQUIRED_QUESTION = Localization.get("view.sending.RequiredQuestion");
 
     private static final String PROMPT_DEFAULT_CONSTRAINT_VIOL = Localization.get("form.entry.constraint.msg");
-    
+
     public static int KEY_CENTER_LETS_HOPE = -5;
-    
+
     public static final int UIHACK_SELECT_PRESS = 1;
-    
+
     public static final int Q_NORMAL = 0;
     public static final int Q_REPEAT_JUNCTURE = 1;
     public static final int Q_REPEAT_DELETE = 2;
-    
+
     private JrFormEntryController controller;
     private JrFormEntryModel model;
-    
+
     private ChatterboxWidgetFactory widgetFactory;
     private boolean multiLingual;
     private SortedIndexSet questionIndexes;
     private FormIndex activeQuestionIndex;
-    
+
     /** The active question's index when a key is pressed */
     private FormIndex indexWhenKeyPressed = null;
-    
+
     private boolean activeIsInterstitial = false; //true if the question corresponding to activeQuestionIndex is a 'create new repeat' question
     private boolean deleteInterstitial = false;
     private Vector<FormIndex> uncommittedRepeats = new Vector<FormIndex>();
     //active repeat for deleting? //TODO figure this out
-    
+
     //TODO get the progress bar working
-    
+
     //GUI elements
     private Command backCommand;
     private Command exitNoSaveCommand;
@@ -116,18 +116,18 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     private String[] localeCommandMap;
     //private Command deleteRepeatCommand; //TODO do something with this
     private Gauge progressBar;
-        
+
     public Chatterbox (String formTitle, JrFormEntryController controller) {
         //#style framedForm
         super(formTitle);
         this.controller = controller;
         this.model = controller.getModel();
-        
+
         if (model.isReadOnlyMode()) {
             //#style ReviewFramedForm
             UiAccess.setStyle(this);
         }
-        
+
         //22 Jan, 2009 - csims@dimagi.com
         //This constructor code supresses the ability to scroll the chatterbox by dragging the mouse
         //pointer. This "Feature" was causing tons of problems for our nurses. Let me know if anyone else
@@ -141,22 +141,22 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         multiLingual = (model.getForm().getLocalizer() != null);
         questionIndexes = new SortedIndexSet();
         activeQuestionIndex = FormIndex.createBeginningOfFormIndex(); //null is not allowed
-        
+
         //#if device.identifier == Sony-Ericsson/P1i
         KEY_CENTER_LETS_HOPE = 13;
         //#endif
-        
+
         //#if device.identifier == Sony-Ericsson/K610i
         POUND_KEYCODE = Canvas.KEY_STAR;
         //#endif
-        
+
         if(FormManagerProperties.EXTRA_KEY_AUDIO_PLAYBACK.equals(controller.getExtraKeyMode())){
             USE_HASH_FOR_AUDIO = true;
         }else{
             USE_HASH_FOR_AUDIO = false;
         }
     }
-    
+
 
     public void destroy () {
         for (int i = 0; i < size(); i++) {
@@ -165,23 +165,23 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             cw.releaseResources();
         }
     }
-    
+
     public void show () {
-        //Pre-set the screen for the main container. Otherwise commands for items won't 
-        //show up correctly until this is shown. 
+        //Pre-set the screen for the main container. Otherwise commands for items won't
+        //show up correctly until this is shown.
         UiAccess.setItemScreen(this.container, this);
         initGUI();
         J2MEDisplay.setView(this);
     }
-    
+
     public void show (FormIndex index) {
         J2MEDisplay.setView(this);
     }
-    
+
     private void initGUI () {
         setUpCommands();
         initProgressBar();
-        
+
         //Mode 1: Read only review screen.
         if(model.isReadOnlyMode()) {
             while(controller.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM) {
@@ -200,23 +200,23 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         }
         this.currentlyActiveContainer = this.container;
     }
-    
+
     private void setUpCommands () {
         backCommand = new Command(Localization.get("command.back"), Command.BACK, 2);
         exitNoSaveCommand = new Command(Localization.get("command.exit"), Command.EXIT, 2);
         exitSaveCommand = new Command(Localization.get("command.saveexit"), Command.SCREEN, 4);
         saveCommand = new Command(Localization.get("command.save"), Command.SCREEN, 4);
-        
+
         if (multiLingual) {
             languageSubMenu = new Command(Localization.get("command.language"), Command.SCREEN, 4);
             populateLanguages();
         }
-        
+
         //next command is added on a per-widget basis
-        
+
         //one place for adding back command to prevent accidentally adding it in read only mode
         addBackCommand();
-        
+
         if(!model.isReadOnlyMode()) {
             //CTS (4/27/2010): We don't handle these appropriately, and it does nothing but confuse
             //users when they appear and break stuff.
@@ -224,18 +224,18 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             //addCommand(saveCommand);
         }
 
-        addCommand(exitNoSaveCommand);        
+        addCommand(exitNoSaveCommand);
 
-        
+
         if (languageSubMenu != null) {
             addCommand(languageSubMenu);
             for (int i = 0; i < languageCommands.length; i++)
                 addSubCommand(languageCommands[i], languageSubMenu);
         }
-        
-        setCommandListener(this);        
+
+        setCommandListener(this);
     }
-    
+
     private void populateLanguages () {
         String[] availableLocales = model.getForm().getLocalizer().getAvailableLocales();
         languageCommands = new Command[availableLocales.length];
@@ -261,11 +261,11 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             append(Graphics.BOTTOM, progressBar);
         //}
     }
-    
+
     private void step(int event) {
         step(event, false);
     }
-    
+
     private void step(int event, boolean backwards) {
         switch(event) {
         case FormEntryController.EVENT_BEGINNING_OF_FORM:
@@ -283,12 +283,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             break;
         }
     }
-    
+
     //make given question active; deal with all necessary questions in between
     private void jumpToQuestion (FormIndex questionIndex) {
-        
+
         boolean newRepeat = false;
-        
+
         if (questionIndex.isInForm() && !model.isIndexRelevant(questionIndex)) {
             throw new IllegalStateException("Attempt to jump to irrelevant index!");
         }
@@ -298,14 +298,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 
         //figure out kind of reference and how to handle it
         IFormElement last = model.getForm().getChild(questionIndex);
-        
+
         if (last instanceof GroupDef) {
-            if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR != model.getRepeatStructure() && ((GroupDef)last).getRepeat() &&    
+            if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR != model.getRepeatStructure() && ((GroupDef)last).getRepeat() &&
                 model.getForm().getInstance().resolveReference(model.getForm().getChildInstanceRef(questionIndex)) == null) {
-                
+
                 //We're at a repeat interstitial point. If the group has the right configuration, we are able
                 //to trigger a new repeat here. Otherwise, we'll have to ask the controller to move along.
-                
+
                 if(((GroupDef)last).noAddRemove) {
                     //We can't show anything meaningful here. Go back to the controller.
                     boolean forwards = questionIndex.compareTo(activeQuestionIndex) > 0;
@@ -319,13 +319,13 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                     //All Systems Go. Display an interstitial "Add another FOO" question.
                     newRepeat = true;
                 }
-            } else if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR == model.getRepeatStructure() && 
+            } else if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR == model.getRepeatStructure() &&
                     model.getEvent() == FormEntryController.EVENT_REPEAT_JUNCTURE) {
-                
+
                 //show repeat juncture question here
                 System.out.println("you've reached a repeat");
                 newRepeat = true; //note: hijacking the current interstitial repeat question variable; should rename
-                
+
             } else {
                 boolean forwards = questionIndex.compareTo(activeQuestionIndex) > 0;
                 if(forwards) {
@@ -346,7 +346,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             }
             return;
         }
-                
+
         if (questionIndex.compareTo(activeQuestionIndex) > 0) {
             if (activeQuestionIndex.isInForm()) {
                 if (activeIsInterstitial) {
@@ -355,10 +355,10 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                     ((ChatterboxWidget)get(questionIndexes.indexOf(activeQuestionIndex, true))).setViewState(ChatterboxWidget.VIEW_COLLAPSED);
                 }
             }
-                
+
             FormIndex index = activeQuestionIndex;
             while(!index.equals(questionIndex)) {
-                index = model.incrementIndex(index);                
+                index = model.incrementIndex(index);
                 putQuestion(index, index.equals(questionIndex), newRepeat ? Q_REPEAT_JUNCTURE : Q_NORMAL);
             }
         } else if (questionIndex.compareTo(activeQuestionIndex) <= 0) {
@@ -367,24 +367,24 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 removeFrame(index);
                 index = model.decrementIndex(index);
             }
-            
+
             if (questionIndex.isInForm()) {
                 if (newRepeat) {
                     removeFrame(questionIndex);
                     putQuestion(questionIndex, true, newRepeat ? (deleteInterstitial ? Q_REPEAT_DELETE : Q_REPEAT_JUNCTURE) : Q_NORMAL);
                 } else {
-                    ((ChatterboxWidget)get(questionIndexes.indexOf(questionIndex, true))).setViewState(ChatterboxWidget.VIEW_EXPANDED);    
+                    ((ChatterboxWidget)get(questionIndexes.indexOf(questionIndex, true))).setViewState(ChatterboxWidget.VIEW_EXPANDED);
                 }
             }
         }
-        
+
         if (!questionIndex.equals(activeQuestionIndex) || activeIsInterstitial) {
             activeQuestionIndex = questionIndex;
 
             if (activeQuestionIndex.isInForm()) {
                 int index = questionIndexes.indexOf(activeQuestionIndex, true);
                 ChatterboxWidget widget = (ChatterboxWidget)get(index);
-            
+
                 //Feb 4, 2009 - csims@dimagi.com
                 //The current widget's header should always be pinned in case it overruns the
                 //screen with options
@@ -398,41 +398,41 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 //#endif
 
                 widget.showCommands();
-                
+
                 //Focus's efforts end up trying to scroll the focussed item upwards as if it were
                 //already displayed. If we supress the scrolling ahead of time we prevent the
                 //new item from getting a double-dose of scrolling.
                 int prevheight = this.container.getScrollHeight();
                 this.container.setScrollHeight(-1);
-                
+
                 this.focus(widget, true);
-                
+
                 //Return to normal scrolling behavior.
                 this.container.setScrollHeight(prevheight);
             }
-                
+
             //CTS: Nov 11, 2011 - Disabling this behavior in 1.3, it's causing layout issues.
             //if(controller.isEntryOptimized()) {
                 //FIXME: no!
                 progressBar.setMaxValue(model.getNumQuestions());
-                progressBar.setValue(questionIndexes.size());            
+                progressBar.setValue(questionIndexes.size());
             //}
         }
-        
+
         //CTS: Nov 11, 2011 - actually we want to mimic OQPS here and display back on the first question but use
         //it to exit the form instead.
         addBackCommand();
-        
+
         //UI hacks ho!
         babysitStyles();
     }
-    
+
     private void addBackCommand() {
         if(!this.model.isReadOnlyMode()) {
             this.addCommand(backCommand);
         }
     }
-    
+
     private void updatePins(FormIndex questionIndex) {
         for (int i = 0; i < this.size(); ++i) {
             FormIndex index = this.questionIndexes.get(i);
@@ -440,7 +440,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
 
             //First reset everything by default
             cw.setPinned(false);
-            
+
             if (cw.getViewState() == ChatterboxWidget.VIEW_LABEL) {
                 if (FormIndex.isSubElement(index, questionIndex)) {
                     cw.setPinned(true);
@@ -450,23 +450,23 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             }
         }
     }
-    
+
 
     private void createHeaderForElement(FormIndex questionIndex, boolean newRepeat) {
         FormEntryCaption prompt = model.getCaptionPrompt(questionIndex);
-        
+
         String headerText; //decide what text form to use.
-        
+
         boolean isNew = uncommittedRepeats.contains(model.decrementIndex(questionIndex)); //this is ghetto
         headerText = prompt.getRepetitionText(isNew); //droos: this doesn't feel right... should this if/else be wrapped up in the caption?
         if (headerText == null)
             headerText = prompt.getLongText();
-        
+
         if(headerText != null) {
             if (newRepeat) {
                 removeFrame(activeQuestionIndex);
             }
-            
+
             ChatterboxWidget headerWidget = widgetFactory.getNewLabelWidget(questionIndex, headerText);
             //If there is no valid header, there's no valid header. Possibly no label.
             this.append(headerWidget);
@@ -474,7 +474,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             headerWidget.setPinned(true);
         }
     }
-    
+
     private void removeHeaderForElement(FormIndex questionIndex) {
         //int headerIndex = this.questionIndexes.remove(questionIndex);
         this.removeFrame(questionIndex);
@@ -483,19 +483,19 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
     //create a frame for a question and show it at the appropriate place in the form
     private void putQuestion (FormIndex questionIndex, boolean expanded, int qType) {
         ChatterboxWidget cw = null;
-        
+
         if (!questionIndex.isInForm())
             return;
-        
+
         if (expanded && qType != Q_NORMAL) {
             if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR == model.getRepeatStructure()) {
                 if (qType == Q_REPEAT_JUNCTURE) {
                     //TODO: make rollback work
-//                    if (!forward && uncommittedRepeats.contains(questionIndex)) {                    
+//                    if (!forward && uncommittedRepeats.contains(questionIndex)) {
 //                        controller.deleteRepeat(model.getForm().descendIntoRepeat(questionIndex, model.getRepetitions().size() - 1));
 //                    }
                     uncommittedRepeats.removeElement(questionIndex);
-                    
+
                     cw = widgetFactory.getRepeatJunctureWidget(questionIndex, model, this);
                 } else if (qType == Q_REPEAT_DELETE) {
                     cw = widgetFactory.getRepeatDeleteWidget(questionIndex, model, this);
@@ -511,50 +511,50 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                                           expanded ? ChatterboxWidget.VIEW_EXPANDED
                                                    : ChatterboxWidget.VIEW_COLLAPSED);
         }
-        
+
         if (cw != null) {
             putFrame(cw, questionIndex);
         }
     }
-    
+
     //insert a chatterbox widget into the form at the appropriate place
     private void putFrame (ChatterboxWidget widget, FormIndex questionIndex) {
         int frameIndex = questionIndexes.add(questionIndex);
         insert(frameIndex, widget);
         widget.requestInit();
     }
-    
+
     //remove the frame corresponding to a particular question from display
     private void removeFrame (FormIndex questionIndex) {
         int frameIndex = questionIndexes.remove(questionIndex);
         if (frameIndex == -1)
             return; //question not present in chatterbox (hidden/non-relevant)
-        
+
         ChatterboxWidget cw = (ChatterboxWidget)get(frameIndex);
         cw.destroy();
         delete(frameIndex);
-        
+
         if (questionIndex.equals(activeQuestionIndex) && activeIsInterstitial) {
             activeIsInterstitial = false;
         }
     }
-    
+
     public void formComplete () {
         if(!model.isReadOnlyMode()) {
             controller.jumpToIndex(FormIndex.createEndOfFormIndex());
             babysitStyles();
-            
+
             //if(controller.isEntryOptimized()) {
                 progressBar.setValue(progressBar.getMaxValue());
             //}
-            
+
             repaint();
-            
+
             controller.saveAndExit(true);
         }
     }
-    
-    
+
+
     private ChatterboxWidget activeFrame () {
         int frameIndex = questionIndexes.indexOf(activeQuestionIndex, true);
         if (frameIndex == -1)
@@ -562,7 +562,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         else
             return (ChatterboxWidget)get(frameIndex);
     }
-    
+
     //probably not the most efficient way of doing this...
     private void babysitStyles () {
         for (int i = 0; i < size(); i++) {
@@ -586,14 +586,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         this.requestInit();
         this.requestRepaint();
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
     }
-    
+
     public void _commandAction(Command command, Displayable s) {
         System.out.println("cbox: command action");
-        
+
         if (command == backCommand) {
             if (deleteInterstitial) {
                 deleteInterstitial = false;
@@ -620,7 +620,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             backFromCamera();
         } else if (command.getLabel().equals(CollapsedWidget.UPDATE_TEXT)) { //TODO: Put this static string in a better place.
             System.out.println("not implemented: updating answers from review mode");
-            
+
 //            model.setQuestionIndex(this.questionIndexes.get(this.getCurrentIndex()));
 //            throw new RuntimeException("NOT YET IMPLEMENTED: i don't where to transit to [droos 10/29]");
         } else {
@@ -632,7 +632,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                     }
                 }
             }
-            
+
             if (language != null) {
                 controller.setLanguage(language);
             } else {
@@ -641,7 +641,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         }
     }
 
-    
+
     private void suspendActivity(int mediaType) {
         try {
             controller.suspendActivity(mediaType);
@@ -649,7 +649,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             J2MEDisplay.showError("Unavailable Media Type", e.getMessage());
         }
     }
-    
+
     private void commitAndSave () {
            ChatterboxWidget frame = (activeIsInterstitial ? null : activeFrame());
         if (frame != null) {
@@ -662,10 +662,10 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         //TODO: DEAL;
         controller.saveAndExit(true);
     }
-    
+
     public void questionAnswered () {
         ChatterboxWidget frame = activeFrame();
-    
+
         if(activeQuestionIndex != this.model.getFormIndex()) {
             //this is an error that comes from polish sending two events for button up and button
             //down. We need to make it not send that message twice.
@@ -686,27 +686,27 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 return;
             }
             String answer = ((Selection)frameData.getValue()).getValue();
-            
+
             if (FormEntryModel.REPEAT_STRUCTURE_NON_LINEAR != model.getRepeatStructure()) {
-            
+
                 if (answer.equals("y")) {
                     controller.newRepeat(this.model.getFormIndex());
                     createHeaderForElement(this.model.getFormIndex(), true);
                 }
                 step(controller.stepToNextEvent());
-                
+
             } else {
-            
+
                 if (answer.startsWith("rep")) {
                     removeFrame(this.activeQuestionIndex);
-                    
+
                     int n = Integer.parseInt(answer.substring(3));
                     this.activeQuestionIndex = controller.descendIntoRepeat(n);
 
                     createHeaderForElement(activeQuestionIndex, false);
                 } else if (answer.equals("new")) {
                     removeFrame(this.activeQuestionIndex);
-                    
+
                     uncommittedRepeats.addElement(this.activeQuestionIndex);
                     this.activeQuestionIndex = controller.descendIntoNewRepeat();
 
@@ -718,14 +718,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 } else if (answer.startsWith("del")) {
                     int n = Integer.parseInt(answer.substring(3));
                     controller.deleteRepeat(n);
-                    
+
                     deleteInterstitial = false;
                     jumpToQuestion(this.activeQuestionIndex);
                     return;
                 } else if (answer.equals("done")) {
                     //do nothing
                 }
-                
+
                 step(controller.stepToNextEvent());
 
             }
@@ -737,7 +737,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 //We can't know whether this failed due to a violation of the question
                 //constraint, so if there's a message, display it.
                 IAnswerData uncast = e.getUncastStandin();
-                
+
                 String msg = frame.getPrompt().getConstraintText(uncast);
                 if(msg == null) {
                     this.queueError(null, e.getMessage(), null, null);
@@ -749,7 +749,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                     this.queueError(null, msg, image, audio);
                     return;
                 }
-                
+
             }
             int status = controller.answerQuestion(this.model.getFormIndex(), data);
             if (status == FormEntryController.ANSWER_REQUIRED_BUT_EMPTY) {
@@ -780,12 +780,12 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 indexWhenKeyPressed = keyDownSelectedWidget;
             }
             }
-            
+
         } catch (Exception e) {
             Logger.die("gui-keydown", e);
         }
     }
-    
+
     //no exception handling needed
     public void keyReleased(int keyCode) {
         if(keyCode == KEY_CENTER_LETS_HOPE && !(indexWhenKeyPressed == this.activeQuestionIndex)) {
@@ -800,35 +800,35 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             //#endif
         }
     }
-    
-    
 
-    
+
+
+
     public ChatterboxWidget getWidgetAtIndex(int index) {
         return (ChatterboxWidget)get(index);
     }
-    
+
     private void computeHeaders() {
         int threshold = this.contentY;
         //bar.clearSpans();
-        
+
         // Clayton Sims - Apr 3, 2009 : Removed this code. Tested on the MediaControlSkin
         // and the 3110c, and it seems to be behaving correctly now. this should all
         // be handled by this.contentY above.
         //if(this.topFrame != null && this.topFrame.size() != 0) {
-        //    threshold += this.topFrame.getContentHeight();    
+        //    threshold += this.topFrame.getContentHeight();
         //}
         Vector headers = new Vector();
         for (int i = 0; i < size(); i++) {
             ChatterboxWidget cw = getWidgetAtIndex(i);
-            
+
             //If the widget is in the screen area
             if(cw.getAbsoluteY() + cw.getContentHeight()  > threshold ) {
                 //if(i > 7 && i < 25) {
                     //bar.addSpan(cw.getAbsoluteY() + threshold, cw.getAbsoluteY() + cw.getContentHeight() + threshold);
                 //}
             }
-            
+
             // Test for whether this is a header, and should be pinned to the top of the screen because it is above
             // the visible area
             if(cw.isPinned()) {
@@ -850,14 +850,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             for(int i = 0 ; i < newHeaders.length ; ++i ) {
                 append(Graphics.TOP, newHeaders[i]);
             }
-            
+
             if(this.topFrame != null) {
-                // Clayton Sims - Apr 3, 2009 
+                // Clayton Sims - Apr 3, 2009
                 //Nuclear Option: Just figure everything out again.
                 //Might slow down bad phones. Not sure yet.
                 this.topFrame.requestFullInit();
             }
-            
+
             if(newHeaders.length == 0) {
                 int curOffset = this.getScrollYOffset();
                 this.calculateContentArea(0, 0,this.getWidth(), this.getHeight());
@@ -865,7 +865,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             }
         }
     }
-    
+
     private boolean itemArraysEqual(Item[] array1, Item[] array2) {
         if(array1.length != array2.length) {
             return false;
@@ -882,7 +882,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         }
         return retVal;
     }
-    
+
     /* (non-Javadoc)
      * @see de.enough.polish.ui.Screen#paint(javax.microedition.lcdui.Graphics)
      */
@@ -890,21 +890,21 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
         super.paint(g);
         //There are a lot of things that will need to happen after sizes for dynamic
         //things have been computed. These should happen after a paint.
-        
+
         computeHeaders();
         raiseAlert();
     }
 
     private void backFromCamera() {
         // TODO Auto-generated method stub
-        System.out.println("And we're back...");    
+        System.out.println("And we're back...");
     }
 
     private void doCapture() {
         // TODO Auto-generated method stub
         System.out.println("Click!");
     }
-    
+
     String alertTitle;
     String msg;
     Image alertImage;
@@ -918,14 +918,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                 String aURI = audioURI;
                 long time = new Date().getTime();
 
-    
+
                 public void run() {
                     J2MEDisplay.showError(at, m, alIm);
                     if(aURI != null) {
                         MediaUtils.playAudio(aURI);
                     }
                 }
-                
+
             };
             new HandledThread(r).start();
             alertTitle = null;
@@ -934,14 +934,14 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
             audioURI = null;
         }
     }
-    
+
     private void queueError(String title, String msg, String image, String audio) {
             alertTitle = title;
             this.msg = msg;
-            
+
             //Try to load the image
             this.alertImage = null;
-            if(image != null) { 
+            if(image != null) {
                 try {
                     Reference ref = ReferenceManager._().DeriveReference(image);
                     InputStream in = ref.getStream();
@@ -953,7 +953,7 @@ public class Chatterbox extends FramedForm implements HandledPCommandListener, I
                     Logger.exception(ire);
                 }
             }
-            
+
             //Try to load the image
             this.audioURI = audio;
     }

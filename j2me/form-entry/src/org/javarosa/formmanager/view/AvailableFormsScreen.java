@@ -20,8 +20,8 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.List;
 
 public class AvailableFormsScreen extends List{
-    
-    
+
+
     public final Command CMD_CANCEL = new Command("Cancel",Command.BACK, 1);
 
     public AvailableFormsScreen(String label,String[] elements) {

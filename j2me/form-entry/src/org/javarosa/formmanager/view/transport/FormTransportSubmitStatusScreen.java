@@ -43,7 +43,7 @@ public class FormTransportSubmitStatusScreen extends Form implements
     private int counter = 0;
 
     private TransportResponseProcessor responder;
-    
+
     private static final int REFRESH_INTERVAL = 1000;
     private static final int TIMEOUT = 60000;
 
@@ -52,14 +52,14 @@ public class FormTransportSubmitStatusScreen extends Form implements
         super(Localization.get("sending.status.title"));
         setCommandListener(listener);
         this.responder = responder;
-        
+
         //#style submitText
         this.msg = new StringItem(null, Localization.get("sending.status.going"));
         append(new Spacer(80, 0));
         append(this.msg);
     }
 
-    
+
     public void reinit(String cacheId){
         setCacheId(cacheId);
         this.okCommand = new Command(Localization.get("menu.ok"), Command.OK, 1);
@@ -68,10 +68,10 @@ public class FormTransportSubmitStatusScreen extends Form implements
 
         initTimer();
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
 
@@ -87,14 +87,14 @@ public class FormTransportSubmitStatusScreen extends Form implements
     }
 
     /**
-     * 
+     *
      */
     public void updateStatus() {
         if (cacheId != null){
             TransportMessage message = TransportService.retrieve(cacheId);
             if(message != null) {
                 updateStatus(message);
-                    
+
             }
         }
     }
@@ -138,7 +138,7 @@ public class FormTransportSubmitStatusScreen extends Form implements
             return Localization.get("sending.status.success");
         }
     }
-    
+
     public void destroy() {
         deleteAll();
         this.timer.cancel();

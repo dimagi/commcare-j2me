@@ -34,18 +34,18 @@ import org.javarosa.j2me.view.J2MEDisplay;
  * The SmsTriggerService is a background process which polls
  * for incoming SMS messages, attempts to identify messages
  * that should be consumed, and consumes them.
- * 
+ *
  * @author Clayton Sims
  *
  */
 public class SmsTriggerService extends TimerTask implements MessageListener {
-    
+
     private MessageConnection connection;
     private Vector triggers = new Vector();
     private int pending;
-    
+
     private Timer t;
-    
+
     public boolean start(String port) {
         String address = "sms://:" + port;
         System.out.println("Address: " + address);
@@ -53,7 +53,7 @@ public class SmsTriggerService extends TimerTask implements MessageListener {
             connection = (MessageConnection) Connector.open(address);
             connection.setMessageListener(this);
             pending = 0;
-            
+
             t = new Timer();
             t.schedule(this,1000,1000);
         } catch (IOException e) {
@@ -63,7 +63,7 @@ public class SmsTriggerService extends TimerTask implements MessageListener {
         }
         return true;
     }
-    
+
     public boolean stop() {
         try {
             t.cancel();
@@ -87,7 +87,7 @@ public class SmsTriggerService extends TimerTask implements MessageListener {
                     if (mess instanceof TextMessage) {
                         TextMessage tmsg = (TextMessage) mess;
                         for (Enumeration en = triggers.elements(); en.hasMoreElements();) {
-                            
+
                             ISmsTrigger trigger = (ISmsTrigger) en.nextElement();
                             if (trigger.isConsumable(tmsg)) {
                                 trigger.consume(tmsg);
@@ -100,14 +100,14 @@ public class SmsTriggerService extends TimerTask implements MessageListener {
                 }
             }
         }
-    }    
-    
+    }
+
     public void notifyIncomingMessage(MessageConnection connection) {
         if(connection == this.connection) {
             pending++;
         }
     }
-    
+
     public void addTrigger(ISmsTrigger trigger) {
         triggers.addElement(trigger);
     }

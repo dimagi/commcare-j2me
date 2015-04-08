@@ -14,7 +14,7 @@ import org.javarosa.services.transport.TransportMessage;
 /**
  * Abstract part implementation of TransportMessage, for subclassing by full
  * implementations
- * 
+ *
  */
 public abstract class BasicTransportMessage implements TransportMessage {
 
@@ -100,7 +100,7 @@ public abstract class BasicTransportMessage implements TransportMessage {
         String uuid = this.getCacheIdentifier();
         return (uuid != null ? PropertyUtils.trim(uuid, 6) : "--");
     }
-    
+
     public int getID() {
         return recordId;
     }
@@ -123,7 +123,7 @@ public abstract class BasicTransportMessage implements TransportMessage {
         sent = sent.getTime() == 0 ? null : sent;
         queuingDeadline = ExtUtil.readNumeric(in);
         recordId = (int)ExtUtil.readNumeric(in);
-        
+
         //Enforce the queing deadline
         if(status == TransportMessageStatus.QUEUED && queuingDeadline < new Date().getTime() ) {
             status = TransportMessageStatus.CACHED;

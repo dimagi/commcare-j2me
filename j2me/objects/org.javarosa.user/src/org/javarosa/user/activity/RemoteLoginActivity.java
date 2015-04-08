@@ -79,13 +79,13 @@
 //        //progressScreen = new ProgressScreen("Login In","Please Wait. Contacting Server...",this);
 //    }
 //
-//    
+//
 //    public void contextChanged(Context globalContext) {
 //        context.mergeInContext(globalContext);
 //
 //    }
 //
-//    
+//
 //    public void destroy() {
 //        if(transportManager!=null){
 //            //transportManager.closeSend();
@@ -95,30 +95,30 @@
 //
 //    }
 //
-//    
+//
 //    public Context getActivityContext() {
 //        return context;
 //    }
 //
-//    
+//
 //    public void halt() {
 //        // TODO Auto-generated method stub
 //
 //    }
 //
-//    
+//
 //    public void resume(Context globalContext) {
 //        // TODO Auto-generated method stub
 //
 //    }
 //
-//    
+//
 //    public void setShell(IShell shell) {
 //        this.parent = shell;
 //
 //    }
 //
-//    
+//
 //    public void start(Context context) {
 //        this.context=context;
 //        logScr = new LoginForm(this);
@@ -129,26 +129,26 @@
 //
 //    }
 //
-//    
+//
 //    public void commandAction(Command command, Displayable display) {
-//        
+//
 //        if(command==logScr.CMD_CANCEL_LOGIN){
 //            System.out.println("Clicks on the hem Exit");
 //            Hashtable returnArgs = new Hashtable();
 //            returnArgs.put(COMMAND_KEY, "USER_CANCELLED");
 //            parent.returnFromActivity(this, Constants.ACTIVITY_COMPLETE,returnArgs);
 //        }
-//        
+//
 //    }
 //
 //
 //    public void commandAction(Command command, Item item) {
 //        if(command==logScr.CMD_LOGIN_BUTTON){
 //                if(validateUser()){
-//                    
+//
 //                    final Alert success = logScr.successfulLoginAlert();
 //                    parent.setDisplay(this, new IView() {public Object getScreenObject() {return success;}});
-//                    
+//
 //                    Hashtable returnArgs = new Hashtable();
 //                    returnArgs.put(COMMAND_KEY, "USER_VALIDATED");
 //                    returnArgs.put(USER, logScr.getLoggedInUser());
@@ -163,12 +163,12 @@
 //                    Hashtable returnArgs = new Hashtable();
 //                    returnArgs.put(COMMAND_KEY, "USER_NOT_VALIDATED");
 //                    parent.returnFromActivity(this, Constants.ACTIVITY_COMPLETE,returnArgs);
-//                    
+//
 //                }else{
 //                    //parent.setDisplay(this, progressScreen);
 //                    String loginUrl = JavaRosaServiceProvider.instance().getPropertyManager().getSingularProperty(HttpTransportProperties.AUTH_URL_PROPERTY);
 //                       loginUrl+="?user="+logScr.getUserName()+"&pass="+logScr.getPassWord();
-//                       System.out.println(loginUrl); 
+//                       System.out.println(loginUrl);
 //                    ITransportDestination requestDest= new HttpTransportDestination(loginUrl);
 //                    message = new TransportMessage();
 //                    message.setPayloadData(new ByteArrayPayload("".getBytes(),null,IDataPayload.PAYLOAD_TYPE_TEXT)); //might have to change
@@ -176,7 +176,7 @@
 //                    message.addObserver(this);
 //                    transportManager = (TransportManager)JavaRosaServiceProvider.instance().getTransportManager();
 //                    transportManager.send(message, TransportMethod.HTTP_GCF);
-//                    
+//
 //                }
 //        }
 //
@@ -219,18 +219,18 @@
 //
 //    }
 //
-//    
+//
 //    public void update(Observable observable, Object arg) {
 //        byte[] data = (byte[])arg;
 //        //String response;
 //        String printme = new String(data).trim();
 //        System.out.println("SERVER SAYS: "+printme);
-//        
+//
 //        bin = new ByteArrayInputStream(data);
-//        
+//
 //        //parse info
 //        Hashtable temp = new Hashtable();
-//        
+//
 //        try {
 //            parser.setInput(new InputStreamReader(bin));
 //            parseProfile(parser, temp);
@@ -266,7 +266,7 @@
 //            Hashtable returnArgs = new Hashtable();
 //            returnArgs.put(COMMAND_KEY, "USER_NOT_VALIDATED");
 //            parent.returnFromActivity(this, Constants.ACTIVITY_COMPLETE,returnArgs);
-//            
+//
 //        }else if(response.equals("notfound")){
 //            final Alert fail = new Alert("Error", "Server error: " +response, null, AlertType.ERROR);
 //            fail.setTimeout(1000);
@@ -274,11 +274,11 @@
 //            Hashtable returnArgs = new Hashtable();
 //            returnArgs.put(COMMAND_KEY, "USER_NOT_VALIDATED");
 //            parent.returnFromActivity(this, Constants.ACTIVITY_COMPLETE,returnArgs);
-//            
+//
 //        }
 //
 //    }
-//    
+//
 //    public void saveUser(){
 //        UserRMSUtility userRMS = logScr.getUserRMS();
 //        User discoveredUser = new User();
@@ -287,11 +287,11 @@
 //        discoveredUser.setUserType(User.STANDARD);//make all users standard users? what if they are admin on the server?
 //        logScr.setLoggedInUser(discoveredUser);
 //        userRMS.writeToRMS(discoveredUser);
-//        
+//
 //    }
-//    
+//
 //public void parseProfile(KXmlParser parser, Hashtable formInfo) throws XmlPullParserException{
-//        
+//
 //        try {
 //        //    boolean inItem = false;
 //            parser.nextTag();
@@ -299,11 +299,11 @@
 //            while( parser.nextTag() != XmlPullParser.END_TAG ){
 //                //parser file names
 //                parser.require(XmlPullParser.START_TAG, null, null);
-//                
+//
 //                String name = parser.getName();
 //                //String url = parser.getAttributeValue(null, "url");
 //                String text = parser.nextText();
-//System.out.println("<"+name+">"+text);                
+//System.out.println("<"+name+">"+text);
 //                if(name.equals("response") || name.equals("posturl") || name.equals("geturl") || name.equals("viewtype") )
 //                    {
 //                    //inItem = true;
@@ -316,7 +316,7 @@
 //                //parser.require(XmlPullParser.END_TAG, null, "form");
 //            }
 //            parser.require(XmlPullParser.END_TAG, null, "profile");
-//            
+//
 //            parser.next();
 //            parser.require(XmlPullParser.END_DOCUMENT, null, null);
 //
@@ -331,7 +331,7 @@
 //
 //public void annotateCommand(ICommand command) {//to check what effect this has if left unimplemented
 //    // TODO Auto-generated method stub
-//    
+//
 //}
 //
 //

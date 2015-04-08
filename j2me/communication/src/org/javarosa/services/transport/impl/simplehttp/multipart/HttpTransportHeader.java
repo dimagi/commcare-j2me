@@ -33,46 +33,46 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 
 /**
  * A stream representing an HTTP header.
- * 
+ *
  * @author Clayton Sims
- * @date Dec 18, 2008 
+ * @date Dec 18, 2008
  *
  */
 public class HttpTransportHeader implements IDataPayload {
 
     /** String -> String **/
     Hashtable headers = new Hashtable();
-    
+
     public HttpTransportHeader() {
     }
-    
+
     public void addHeaderNoNewline(String key, String value) {
         headers.put(key, value);
     }
-    
+
     public void addHeader(String key, String value) {
         headers.put(key, value + "\r\n");
     }
-    
+
     public void readExternal(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
         headers = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
     }
-    
+
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.write(out, new ExtWrapMap(headers));
     }
     public Object accept(IDataPayloadVisitor visitor) {
         return null;
     }
-    
+
     public String getPayloadId() {
         return null;
     }
     public InputStream getPayloadStream() {
         return new ByteArrayInputStream(getBytes());
     }
-    
+
     private byte[] getBytes() {
         String header = "";
         Enumeration en = headers.keys();
@@ -83,7 +83,7 @@ public class HttpTransportHeader implements IDataPayload {
         }
         return header.getBytes();
     }
-    
+
     public int getPayloadType() {
         return 0;
     }
@@ -95,8 +95,8 @@ public class HttpTransportHeader implements IDataPayload {
     public long getLength() {
         return getBytes().length;
     }
-    
-    public int getTransportId() { 
+
+    public int getTransportId() {
         return -1;
     }
 }

@@ -7,10 +7,10 @@ import org.javarosa.demo.activity.remoteformlist.JRDemoRemoteFormListTransitions
 public class JRDemoRemoteFormListState implements JRDemoRemoteFormListTransitions, State {
 
     private String formList = null;
-    
+
     public JRDemoRemoteFormListState()
     {
-        
+
     }
 
     public JRDemoRemoteFormListState(String formList)
@@ -20,9 +20,9 @@ public class JRDemoRemoteFormListState implements JRDemoRemoteFormListTransition
 
     public void start() {
         JRDemoRemoteFormListController ctrl = new JRDemoRemoteFormListController(this.formList);
-    
+
         ctrl.setTransitions(this);
-        ctrl.start();    
+        ctrl.start();
     }
 
     public void back() {

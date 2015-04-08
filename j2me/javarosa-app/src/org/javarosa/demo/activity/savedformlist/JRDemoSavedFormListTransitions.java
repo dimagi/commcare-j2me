@@ -7,7 +7,7 @@ public interface JRDemoSavedFormListTransitions {
     void back();
 
     void savedFormSelected(int formId,int instanceId);
-    
+
     public void sendDataFormInstance(FormInstance data);
-    
+
 }

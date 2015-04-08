@@ -15,22 +15,22 @@ public class JRDemoLanguageSelectState implements JRDemoSelectLanguageTransition
     public void start() {
         JRDemoSelectLanguageController ctrl = new JRDemoSelectLanguageController();
         ctrl.setTransitions(this);
-        ctrl.start();    
+        ctrl.start();
     }
-    
-    
+
+
     public void exit ()
     {
     }
-    
+
     public void languageSelected(String language)
     {
         Localization.setLocale(language);
-        
+
         PropertyManager._().setProperty(JavaRosaPropertyRules.CURRENT_LOCALE, language);
-    
+
         new JRDemoSplashScreenState().start();
-        
+
 
     }
 }

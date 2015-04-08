@@ -135,7 +135,7 @@ public class FileBrowser extends List implements HandledCommandListener {
      */
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command c, Displayable d) {
         if (c.equals(SELECT_FILE_COMMAND)) {
@@ -297,7 +297,7 @@ public class FileBrowser extends List implements HandledCommandListener {
 
     private void forwardCommand (Command c, Displayable d) {
         CommandListener cl = getCommandListener();
-        
+
         if (cl instanceof HandledCommandListener) {
             ((HandledCommandListener)cl)._commandAction(c, d);
         } else {

@@ -38,7 +38,7 @@ import de.enough.polish.ui.StringItem;
 /**
  * This class represents a small widget to do an image chooser activity.  It
  * is basically a small display that does a pass through to the ImageChooser
- * 
+ *
  * @author Cory Zue
  *
  */
@@ -46,20 +46,20 @@ import de.enough.polish.ui.StringItem;
 public class QuickCameraWidget extends ExpandedWidget {
 
     private PointerAnswerData data;
-    
+
     private StringItem label;
-    
+
     private WidgetEscapeComponent wec = new WidgetEscapeComponent();
-    
+
     private Container parent;
-    
+
     CameraItem current;
-    
+
     protected IAnswerData getWidgetValue() {
         return data;
     }
 
-    
+
     protected void setWidgetValue(Object o) {
         IDataPointer casted = (IDataPointer) o;
         if (casted != null) {
@@ -71,27 +71,27 @@ public class QuickCameraWidget extends ExpandedWidget {
 
 
     protected void updateWidget(FormEntryPrompt prompt) {
-        // do nothing? 
+        // do nothing?
     }
 
     public int widgetType() {
         return Constants.CONTROL_IMAGE_CHOOSE;
     }
-    
+
     public int getNextMode() {
         return wec.wrapNextMode(super.getNextMode());
     }
-    
+
     public Item getInteractiveWidget() {
         return wec.wrapInteractiveWidget(super.getInteractiveWidget());
     }
-    
+
     protected Item getEntryWidget (FormEntryPrompt prompt) {
         parent = new Container(true);
         init();
         return wec.wrapEntryWidget(parent);
     }
-    
+
     protected void init() {
         parent.clear();
         if(current != null) {
@@ -112,8 +112,8 @@ public class QuickCameraWidget extends ExpandedWidget {
             //getMultimediaController().attachVideoPlayer(ci.getPlayer());
             current.getPlayer().start();
             wrapper.add(current);
-            
-            
+
+
             //#style button
             StringItem retake = new StringItem(null,"Snap",Item.BUTTON);
             retake.setDefaultCommand(new Command("Snap", Command.ITEM, 1));
@@ -130,18 +130,18 @@ public class QuickCameraWidget extends ExpandedWidget {
                 }
             });
             wrapper.add(retake);
-            
+
         } catch (MediaException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            e.printStackTrace();    
+            e.printStackTrace();
         } catch (InvalidReferenceException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } 
-        
+        }
+
         return wrapper;
     }
 
@@ -157,7 +157,7 @@ public class QuickCameraWidget extends ExpandedWidget {
         } catch(SecurityException se){
             se.printStackTrace();
         }
-        
+
         //#style button
         StringItem retake = new StringItem(null,"Retake",Item.BUTTON);
         retake.setDefaultCommand(new Command("Retake", Command.ITEM, 1));
@@ -172,21 +172,21 @@ public class QuickCameraWidget extends ExpandedWidget {
                 }
             }
         });
-        
+
         c.add(retake);
         c.requestDefocus(retake);
         return c;
     }
-    
+
     private void clear() {
         this.data = null;
-        
+
     }
 
     protected IAnswerData getAnswerTemplate() {
         return new PointerAnswerData();
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.formmanager.view.widgets.ExpandedWidget#releaseMedia()
      */

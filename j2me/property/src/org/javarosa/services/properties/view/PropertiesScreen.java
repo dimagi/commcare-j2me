@@ -38,7 +38,7 @@ public class PropertiesScreen extends Form{
     Hashtable itemChoices;
 
     Hashtable changes;
-    
+
     /** item -> String **/
     Hashtable itemForPropertyName;
 
@@ -68,7 +68,7 @@ public class PropertiesScreen extends Form{
 
     private void populateProperties() {
         Vector readOnlys = new Vector();
-        
+
         Vector rulesSets = propertyManager
                 .getRules();
         Enumeration en = rulesSets.elements();
@@ -134,7 +134,7 @@ public class PropertiesScreen extends Form{
                                                 .getHumanReadableDescription(propertyName),
                                         (String) propValues.elementAt(0), 150,
                                         TextField.ANY);
-                                
+
                                 itemForPropertyName.put(input, propertyName);
                             if (rules.checkPropertyUserReadOnly(propertyName)) {
                                 input.setConstraints(TextField.UNEDITABLE);
@@ -163,13 +163,13 @@ public class PropertiesScreen extends Form{
                 }
             }
         }
-        
+
         Enumeration enden = readOnlys.elements();
         while(enden.hasMoreElements()) {
             Item currentElement = (Item)enden.nextElement();
             this.append(currentElement);
         }
-        
+
     }
 
     private void addRMSInfoJ2MEOnly () {
@@ -182,7 +182,7 @@ public class PropertiesScreen extends Form{
             //    int avail = rms.getSizeAvailable();
                 int numRecs = rms.getNumRecords();
                 int perRecord = (numRecs == 0 ? -1 : size / numRecs);
-                
+
                 this.append(new StringItem(null, rmsName));
                 this.append(new StringItem(null, "Used: " + formatBytes(size)));
                 this.append(new StringItem(null, "Records: " + numRecs + (numRecs > 0 ? " (" + formatBytes(perRecord) + " per record)" : "")));
@@ -190,14 +190,14 @@ public class PropertiesScreen extends Form{
             }
         } catch (RecordStoreException rse) { }
     }
-    
+
     // TODO is this unused?
     /*
     private void addRMSInfo() {
         Vector stores = JavaRosaServiceProvider.instance().getStorageManager().getRMSStorageProvider().getUtilityNames();
         int consumedSpace[] = new int[stores.size()];
         int availableSpace[] = new int[stores.size()];
-        
+
         Enumeration names = stores.elements();
         int i = 0;
 
@@ -226,20 +226,20 @@ public class PropertiesScreen extends Form{
 
     }
      */
-    
-    private String formatBytes (int bytes) {       
+
+    private String formatBytes (int bytes) {
         int NUM_DIGITS = 2;
-        
+
         if (bytes <= 0)
             return "err";
-        
+
         double kb = bytes / 1024.;
         String str = String.valueOf(kb);
         if (str.indexOf(".") != -1)
             str = str.substring(0, Math.min(str.indexOf(".") + 1 + NUM_DIGITS, str.length()));
         return str + " KB";
     }
-    
+
 //    private String formatBytes(int bytes) {
 //        if (bytes == -1)
 //            return "error";
@@ -281,7 +281,7 @@ public class PropertiesScreen extends Form{
     public Hashtable getItemChoices() {
         return itemChoices;
     }
-    
+
     public String nameFromItem(Item item) {
         return (String)itemForPropertyName.get(item);
     }

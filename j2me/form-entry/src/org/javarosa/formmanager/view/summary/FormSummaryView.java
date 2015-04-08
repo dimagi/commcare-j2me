@@ -27,9 +27,9 @@ public class FormSummaryView extends List {
     private FormEntryModel model;
 
     public final Command CMD_EXIT = new Command(Localization.get("menu.Exit"), Command.SCREEN, 2);
-    
+
     public final Command CMD_SAVE_EXIT = new Command(Localization.get("menu.SaveAndExit"), Command.SCREEN, 1);
-    
+
     private Entry[] entries;
 
     static class Entry extends ChoiceItem {
@@ -49,7 +49,7 @@ public class FormSummaryView extends List {
         createView();
 
         addCommand(CMD_EXIT);
-        
+
         // TODO: handle readonly
         if (true) {
             addCommand(CMD_SAVE_EXIT);
@@ -137,11 +137,11 @@ public class FormSummaryView extends List {
             String c = caption.getLongText();
             if(c != null) {
                 headertext += c;
-    
+
                 if (caption.getIndex().getInstanceIndex() > -1) {
                     headertext += " " + (caption.getMultiplicity() + 1);
                 }
-    
+
                 headertext += ": ";
             }
         }

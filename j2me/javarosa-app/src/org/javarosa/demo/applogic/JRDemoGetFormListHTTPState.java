@@ -124,9 +124,9 @@ public class JRDemoGetFormListHTTPState implements State,
 
     /*
      * This is actually the method that gets called on status change (?!)
-     * 
+     *
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.services.transport.TransportListener#onChange(org.javarosa
      * .services.transport.TransportMessage, java.lang.String)
@@ -149,9 +149,9 @@ public class JRDemoGetFormListHTTPState implements State,
 
     /*
      * And this seems to get called on completion
-     * 
+     *
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.javarosa.services.transport.TransportListener#onStatusChange(org.
      * javarosa.services.transport.TransportMessage)

@@ -28,47 +28,47 @@ import org.javarosa.core.services.Logger;
 import de.enough.polish.ui.CustomItem;
 
 /**
- * 
+ *
  * @author Ndubisi Onuora
  */
 
-public class SimpleDateField extends CustomItem 
+public class SimpleDateField extends CustomItem
 {
     //private Calendar value;
     private Calendar selection;
-    
+
     //private final int MIN_MONTH = Calendar.JANUARY; //(Assuming it equals 0)
     //private final int MAX_MONTH = Calendar.DECEMBER; //(Assuming it equals 11)
-    
+
     private final int MIN_DAY = 1;
     private final int MAX_DAY = 31;
-    
+
     private final int MIN_YEAR = 1970;
     private final int MAX_YEAR = 2069;
-    
+
     private int prevSelectionMode;
     private int selectionMode; //The mode{YEAR, MONTH, DAY} the user is currently on
     private final int YEAR = 0;
     private final int MONTH = 1;
     private final int DAY = 2;
     /*
-     * No selection prevents user from changing other fields 
+     * No selection prevents user from changing other fields
      * when a key is accidentally pressed.
      */
     private final int NONE = 3;
-    
+
     /*
      * Current value of the month, day, or year
      */
     private int currMonth;
     private int currDay;
     private int currYear;
-    
+
     /*Whether the user prefers the American or European date format
      * (MM/DD/YYYY) American
      * (DD/MM/YYYY) European
      */
-    private int dateFormat; 
+    private int dateFormat;
     private final int AMERICAN = 0;
     private final int EUROPEAN = 1;
 
@@ -80,75 +80,75 @@ public class SimpleDateField extends CustomItem
     private final int SECOND_FIELD = 1;
     private final int THIRD_FIELD = 2;
     private final int FOURTH_FIELD = 3;
-    
-    //2-digit fields 
+
+    //2-digit fields
     private int firstField;
     private int secondField;
-    
+
     //4-digit fields for year
     private int thirdField;
     private int fourthField;
-    
+
     Graphics gObj;
     int width = -1;
     int height = -1;
-    
+
     //Date Rect Position
     int dateRectX = -1;
     int dateRectY = -1;
-    
+
     private int repeatCount;
-    private final String NO_DATE_STR = "No Date"; 
-    
+    private final String NO_DATE_STR = "No Date";
+
     public SimpleDateField(String label)
     {
         super("", null);
         selection = Calendar.getInstance();
         dateFormat = AMERICAN;
         prevSelectionMode = -1;
-        selectionMode = MONTH; //Default is American format    
-        
+        selectionMode = MONTH; //Default is American format
+
         //value = null;
-        
+
         currMonth = selection.get(Calendar.MONTH);
         currDay = selection.get(Calendar.DAY_OF_MONTH);
         currYear = selection.get(Calendar.YEAR);
-                
+
         fieldMode = FIRST_FIELD;
-        
+
         gObj = null;
     }
-    
-    public int getMinContentHeight() 
-    { 
-        return 10; 
+
+    public int getMinContentHeight()
+    {
+        return 10;
     }
-    
+
     public int getMinContentWidth()
-    { 
-        return 10; 
+    {
+        return 10;
     }
-    
+
     public int getPrefContentHeight(int h)
-    { 
-        Font f = Font.getDefaultFont(); 
-        return 8 * f.getHeight() + 6; 
+    {
+        Font f = Font.getDefaultFont();
+        return 8 * f.getHeight() + 6;
     }
-    
+
     public int getPrefContentWidth(int w)
-    { 
-        return 99999; 
+    {
+        return 99999;
     }
-    
+
     public boolean handleKeyPressed(int keyCode, int gameAction)
     {
-        
+
         try {
-        
+
             System.err.println("KeyCode =" + keyCode);
             System.err.println("GameAction =" + gameAction);
             boolean gameActionActivated = handleGameActionPressed(gameAction);
-            
+
             boolean keyCodePressed = false;
             if(selectionMode != NONE)
                 keyCodePressed = handleKeyCodePressed(keyCode);
@@ -159,66 +159,66 @@ public class SimpleDateField extends CustomItem
                 repaint();
             }
             return fieldsChanged;
-            
+
         } catch (Exception e) {
             Logger.die("gui-keydown", e);
             return false;
         }
-            
+
     }
-    
+
     //exception handling delegated to keyPressed
     public boolean handleKeyRepeated(int keyCode, int gameAction)
     {
         //repeatCount = 1;
         handleKeyPressed(keyCode, gameAction);
-        
+
         return false;
     }
-    
+
     //needs no exception handling
     public boolean handleKeyReleased(int keyCode, int gameAction)
     {
         repeatCount = 0;
         return false;
     }
-    
+
     public Date getValue()
     {
         if(selectionMode == NONE)
             return null;
-        Date d = selection.getTime();        
+        Date d = selection.getTime();
         return d;
     }
-    
+
     public void setValue(Date d)
     {
         selection.setTime(d);
     }
-    
+
     private boolean handleGameActionPressed(int gameAction)
     {
         boolean fieldChanged = false;
         if(gameAction == Canvas.UP)
-        {            
+        {
             if(selectionMode == MONTH)
-            {                
+            {
                 ++currMonth;
-                currMonth += repeatCount;                
+                currMonth += repeatCount;
             }
             else if(selectionMode == DAY)
-            {                    
+            {
                 ++currDay;
-                currDay += repeatCount;                
+                currDay += repeatCount;
             }
             else if(selectionMode == YEAR)
-            {                
+            {
                 ++currYear;
                 currYear += repeatCount;
             }
             else
                 fieldChanged = false;
-            
+
             fieldChanged = true;
         }
         else if(gameAction == Canvas.DOWN)
@@ -250,7 +250,7 @@ public class SimpleDateField extends CustomItem
                     }
                     else
                         --currDay;
-                }                
+                }
                 else if(currMonth == Calendar.FEBRUARY)
                 {
                     int febDays = MAX_DAY - 3;
@@ -283,7 +283,7 @@ public class SimpleDateField extends CustomItem
             }
             else
                 fieldChanged = false;
-            
+
             fieldChanged = true;
         }
         else if(gameAction == Canvas.RIGHT)
@@ -308,7 +308,7 @@ public class SimpleDateField extends CustomItem
             {
                 prevSelectionMode = NONE;
                 selectionMode = MONTH;
-            }            
+            }
 
             //European dates
             if(selectionMode == DAY && dateFormat == EUROPEAN)
@@ -332,7 +332,7 @@ public class SimpleDateField extends CustomItem
                 selectionMode = DAY;
             }
             fieldMode = FIRST_FIELD; //Each time the user changes a field, the field mode will reset to the first field.
-            fieldChanged = true;            
+            fieldChanged = true;
         }
         /*
          * Field will always change when left or right button has been pressed.
@@ -359,7 +359,7 @@ public class SimpleDateField extends CustomItem
             {
                 prevSelectionMode = NONE;
                 selectionMode = YEAR;
-            }            
+            }
 
             //European dates
             if(selectionMode == DAY && dateFormat == EUROPEAN)
@@ -384,7 +384,7 @@ public class SimpleDateField extends CustomItem
             }
             fieldMode = FIRST_FIELD; //Each time the user changes a field, the field mode will reset to the first field.
             fieldChanged = true;
-        }        
+        }
         /*
          * Essentially the "okay" for this widget.
          * Makes sure date is valid before final submission
@@ -401,7 +401,7 @@ public class SimpleDateField extends CustomItem
         return fieldChanged;
     }
     /*
-     * Pressing a number when not in the NONE selectionMode will 
+     * Pressing a number when not in the NONE selectionMode will
      * alter the state of the field.
      */
     private boolean handleKeyCodePressed(int keyCode)
@@ -410,14 +410,14 @@ public class SimpleDateField extends CustomItem
          * For each key pressed into of the date fields, the application must wait for the subsequent digit.
          * However in a month field, if the user presses "1" and presses the arrow key, the field automatically becomes "01"
          */
-        
+
         if(keyCode == Canvas.KEY_NUM0)
-        {            
+        {
             switch(fieldMode)
             {
                 case FIRST_FIELD:
                     firstField = 0;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 0;
                     break;
@@ -435,7 +435,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 1;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 1;
                     break;
@@ -453,7 +453,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 2;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 2;
                     break;
@@ -471,7 +471,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 3;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 3;
                     break;
@@ -484,12 +484,12 @@ public class SimpleDateField extends CustomItem
             }
         }
         else if(keyCode == Canvas.KEY_NUM4)
-        {            
+        {
             switch(fieldMode)
             {
                 case FIRST_FIELD:
                     firstField = 4;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 4;
                     break;
@@ -507,7 +507,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 5;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 5;
                     break;
@@ -525,7 +525,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 6;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 6;
                     break;
@@ -543,7 +543,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 7;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 7;
                     break;
@@ -561,7 +561,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 8;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 8;
                     break;
@@ -579,7 +579,7 @@ public class SimpleDateField extends CustomItem
             {
                 case FIRST_FIELD:
                     firstField = 9;
-                    break;                
+                    break;
                 case SECOND_FIELD:
                     secondField = 9;
                     break;
@@ -591,7 +591,7 @@ public class SimpleDateField extends CustomItem
                     break;
             }
         }
-        
+
         else
             return false;
         /*
@@ -599,7 +599,7 @@ public class SimpleDateField extends CustomItem
          * selected.
          * However the fieldMode must be reset each time the selection has changed
          */
-        
+
         System.err.println("SelectionMode=" + selectionMode + "\nPrevSelectionMode=" + prevSelectionMode);
         if(selectionMode == MONTH)
         {
@@ -620,7 +620,7 @@ public class SimpleDateField extends CustomItem
                     --currMonth; //Assuming the user does not start counting at 0 for Januray
                 }
                 ++fieldMode; //Move to next field
-            }            
+            }
             else
             {
                 String monthStr = firstField + "";
@@ -632,7 +632,7 @@ public class SimpleDateField extends CustomItem
             }
         }
         else if(selectionMode == DAY)
-        {            
+        {
             if(prevSelectionMode == DAY)
             {
                 if(fieldMode == FIRST_FIELD)
@@ -645,10 +645,10 @@ public class SimpleDateField extends CustomItem
                 {
                     String dayStr = firstField + "" + secondField + "";
                     System.err.println("Day=" + dayStr);
-                    currDay = Integer.parseInt(dayStr);                    
+                    currDay = Integer.parseInt(dayStr);
                 }
                 ++fieldMode; //Move to next field
-            }            
+            }
             else
             {
                 String dayStr = firstField + "";
@@ -672,19 +672,19 @@ public class SimpleDateField extends CustomItem
                 {
                     String yearStr = firstField + "" + secondField + "";
                     System.err.println("Year=" + yearStr);
-                    currYear = Integer.parseInt(yearStr);                    
+                    currYear = Integer.parseInt(yearStr);
                 }
                 else if(fieldMode == THIRD_FIELD)
                 {
                     String yearStr = firstField + "" + secondField + "" + thirdField + "";
                     System.err.println("Year=" + yearStr);
-                    currYear = Integer.parseInt(yearStr);                    
+                    currYear = Integer.parseInt(yearStr);
                 }
                 else if(fieldMode == FOURTH_FIELD)
                 {
                     String yearStr = firstField + "" + secondField + "" + thirdField + "" + fourthField + "";
                     System.err.println("Year=" + yearStr);
-                    currYear = Integer.parseInt(yearStr);                
+                    currYear = Integer.parseInt(yearStr);
                 }
                 ++fieldMode; //Move to next field
             }
@@ -700,7 +700,7 @@ public class SimpleDateField extends CustomItem
         wrapFieldMode();
         return true;
     }
-    
+
     /*
      * Wraps the field mode according to the date field
      * and the current field mode.
@@ -718,22 +718,22 @@ public class SimpleDateField extends CustomItem
                 fieldMode = FIRST_FIELD;
         }
     }
-    
+
     private void updateDate()
-    {        
+    {
         selection.set(Calendar.MONTH, currMonth);
         selection.set(Calendar.DAY_OF_MONTH, currDay);
         selection.set(Calendar.YEAR, currYear);
     }
-    
+
     /*
      * Resets all fields to 0
-     
+
     private void resetFields()
     {
         firstField = 0;
-        secondField = 0; 
-        thirdField = 0; 
+        secondField = 0;
+        thirdField = 0;
         fourthField = 0;
     }
     */
@@ -741,7 +741,7 @@ public class SimpleDateField extends CustomItem
     {
         return( ((currYear%4 == 0) && (currYear%100 != 0)) || (currYear%400 == 0) );
     }
-    
+
     protected void paint(Graphics g, int w, int h)
     {
         if(gObj == null)
@@ -762,37 +762,37 @@ public class SimpleDateField extends CustomItem
         dateRectY = h/3;
         if(!validDate())
         {
-            invalidDate();        
+            invalidDate();
         }
         drawDateBox(dateRectX - 50, dateRectY + 2);
         int adjMonth = currMonth + 1;
         g.drawString("MM/DD/YYYY", dateRectX + 15, dateRectY - 25, Graphics.TOP|Graphics.RIGHT);
-        
-        //Fit the format for drawing dates        
+
+        //Fit the format for drawing dates
         String adjMonthStr = (new Integer(adjMonth)).toString();
         if(adjMonth < 10 && adjMonth > 0)
             adjMonthStr = "0" + adjMonthStr;
-        
+
         String dayStr = (new Integer(currDay)).toString();
         if(currDay < 10 && currDay > 0)
             dayStr = "0" + dayStr;
-            
+
         g.drawString(adjMonthStr + "/" + dayStr + "/" + currYear, dateRectX, dateRectY, Graphics.TOP|Graphics.RIGHT);
         g.drawString(NO_DATE_STR, dateRectX + (Font.getDefaultFont()).stringWidth(NO_DATE_STR) + 10 , dateRectY, Graphics.TOP|Graphics.RIGHT);
-        
+
     }
-    
+
     private void drawDateBox(int xPos, int yPos)
     {
         int prevColor = gObj.getColor();
         Font font = Font.getDefaultFont();
         int boxWidth = font.stringWidth("30") + 5;
         int boxHeight = font.getHeight() - 2;
-        
+
         String monthStr = (new Integer(currMonth+1)).toString() + " ";
         String dayStr = (new Integer(currDay)).toString() + " ";
         String yearStr = (new Integer(currYear)).toString();
-                
+
         //Clear the previous rectangle on the date field
         if(prevSelectionMode != -1)
         {
@@ -813,7 +813,7 @@ public class SimpleDateField extends CustomItem
                 gObj.fillRect(xPos + font.stringWidth(monthStr) + font.stringWidth(dayStr), yPos, boxWidth, boxHeight);
             }
             else if(prevSelectionMode == NONE)
-            {                                
+            {
                 boxWidth = font.stringWidth(NO_DATE_STR) + 5;
                 gObj.fillRect(xPos + font.stringWidth(monthStr) + font.stringWidth(dayStr) + font.stringWidth(yearStr) + font.stringWidth("  "), yPos, boxWidth, boxHeight);
             }
@@ -841,7 +841,7 @@ public class SimpleDateField extends CustomItem
         }
         gObj.setColor(prevColor);
     }
-    
+
     /*
      * Since the Calendar class starts January at 0, 1 must be subtracted from
      * the current month to ensure consistency.
@@ -851,7 +851,7 @@ public class SimpleDateField extends CustomItem
         boolean valid = false;
         boolean awkMonth = (currMonth == Calendar.APRIL || currMonth == Calendar.JUNE || currMonth == Calendar.SEPTEMBER || currMonth == Calendar.NOVEMBER);
         boolean boundsMonth = ( currMonth > Calendar.DECEMBER ) || ( currMonth < Calendar.JANUARY );
-        
+
         int awkDays = MAX_DAY - 1;
         int febDays = MAX_DAY - 3;
         if(isLeapYear())
@@ -860,10 +860,10 @@ public class SimpleDateField extends CustomItem
         boolean boundsYear = (currYear > MAX_YEAR || currYear < MIN_YEAR);
         //Check for the obvious out of bounds errors
         if(!boundsMonth && !boundsDay && !boundsYear)
-            valid = true;        
+            valid = true;
         return valid;
     }
-    
+
     /*
      * Message to paint to screen in the case of an invalid date.
      */
@@ -877,7 +877,7 @@ public class SimpleDateField extends CustomItem
             gObj.drawString(badDate, width/4, height/3 - 10, Graphics.TOP|Graphics.LEFT);
             System.err.println("Invalid Date!");
             fixDate();
-        }                
+        }
     }
     /*
      * Fixes the date when the user goes under or over
@@ -888,7 +888,7 @@ public class SimpleDateField extends CustomItem
         //if(selectionMode == MONTH)
         //{
             if(currMonth > Calendar.DECEMBER)
-            {    
+            {
                 int diff = currMonth - Calendar.DECEMBER;
                 if(diff == 1)
                     currMonth = Calendar.JANUARY;
@@ -900,7 +900,7 @@ public class SimpleDateField extends CustomItem
                 int diff = currMonth - Calendar.JANUARY;
                 if(diff == -1)
                     currMonth = Calendar.DECEMBER;
-                else                    
+                else
                     currMonth = Calendar.JANUARY;
             }
         //}
@@ -909,7 +909,7 @@ public class SimpleDateField extends CustomItem
             /*
              * Months with 30 days.
              */
-            boolean awkMonth = (currMonth == Calendar.APRIL || currMonth == Calendar.JUNE || currMonth == Calendar.SEPTEMBER || currMonth == Calendar.NOVEMBER); 
+            boolean awkMonth = (currMonth == Calendar.APRIL || currMonth == Calendar.JUNE || currMonth == Calendar.SEPTEMBER || currMonth == Calendar.NOVEMBER);
             if(awkMonth)
             {
                 int lessDays = MAX_DAY - 1;
@@ -968,7 +968,7 @@ public class SimpleDateField extends CustomItem
                     currDay = MAX_DAY;
                 else
                     currDay = MIN_DAY;
-            }                
+            }
         //}
         //else if(selectionMode == YEAR)
         //{
@@ -979,7 +979,7 @@ public class SimpleDateField extends CustomItem
                     currYear = MIN_YEAR;
                 else
                     currYear = MAX_YEAR;
-            }                
+            }
             else if(currYear < MIN_YEAR)
             {
                 int diff = currYear - MIN_YEAR;

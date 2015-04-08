@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.formmanager.view.widgets;
 
@@ -16,19 +16,19 @@ import de.enough.polish.ui.TextField;
  *
  */
 public class WidgetFactory {
-    
+
     PrototypeFactoryDeprecated widgetFactory;
     boolean optimizeEntry;
-    
+
     public WidgetFactory(boolean optimizeEntry) {
         widgetFactory = new PrototypeFactoryDeprecated();
         this.optimizeEntry = optimizeEntry;
     }
-    
+
     public void registerExtendedWidget(int controlType, IWidgetStyle prototype) {
         widgetFactory.addNewPrototype(String.valueOf(controlType), prototype.getClass());
     }
-    
+
     public IWidgetStyleEditable getWidget(int controlType, int dataType, String appearanceAttr) {
         IWidgetStyleEditable expandedStyle = null;
         switch (controlType) {
@@ -51,7 +51,7 @@ public class WidgetFactory {
                 expandedStyle = new DateEntryWidget(true);
                 break;
             case Constants.DATATYPE_DATE:
-                //#if javarosa.useNewDatePicker 
+                //#if javarosa.useNewDatePicker
                 expandedStyle = new SimpleDateEntryWidget();
                 //expandedStyle = new InlineDateEntryWidget();
                 //#else
@@ -90,12 +90,12 @@ public class WidgetFactory {
             break;
         case Constants.CONTROL_AUDIO_CAPTURE:
             expandedStyle = new AudioCaptureWidget();
-            break;    
+            break;
         }
 
-        if (expandedStyle == null) { //catch types text, null, unsupported            
+        if (expandedStyle == null) { //catch types text, null, unsupported
             expandedStyle = new TextEntryWidget();
-            
+
             if("numeric".equals(appearanceAttr)) {
                 //#if polish.TextField.useDirectInput == true && !polish.blackberry
                 //if possible, use the correct input type (numbers generally)
@@ -106,11 +106,11 @@ public class WidgetFactory {
                 ((TextEntryWidget)expandedStyle).setConstraint(TextField.DECIMAL);
                 //#endif
             }
-            
+
             if(controlType == Constants.CONTROL_SECRET) {
                 ((TextEntryWidget)expandedStyle).setConstraint(TextField.PASSWORD);
             }
-            
+
             String name = String.valueOf(controlType); //huh? controlType is an int
             Object widget = widgetFactory.getNewInstance(name);
             if (widget != null) {
@@ -119,7 +119,7 @@ public class WidgetFactory {
         }
         return expandedStyle;
     }
-    
+
     private void pw(int controlType, NumericEntryWidget w) {
         if(controlType == Constants.CONTROL_SECRET) {
             w.setConstraint(TextField.PASSWORD);

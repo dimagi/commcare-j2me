@@ -32,25 +32,25 @@ public abstract class StreamingHTTPMessage extends SimpleHttpTransportMessage {
             }
         }
     }
-    
+
     public abstract void _writeBody(OutputStream os) throws IOException;
-    
+
     public void setCacheable(boolean cacheable) {
         if (cacheable) {
             throw new RuntimeException("streaming messages cannot be cached!");
         }
-        
+
         super.setCacheable(cacheable);
     }
-    
+
     public void setHttpConnectionMethod(String method) {
         if (HttpConnection.GET.equals(method)) {
             throw new RuntimeException("streaming messages must use method POST or PUT");
         }
-        
+
         super.setHttpConnectionMethod(method);
     }
-    
+
     public IDataPayload getContent() {
         throw new RuntimeException("streaming messages have no static content!");
     }
@@ -58,47 +58,47 @@ public abstract class StreamingHTTPMessage extends SimpleHttpTransportMessage {
     public long getContentLength() {
         return -1;
     }
-    
+
     public String toString() {
         String s = "#" + getCacheIdentifier() + " (http-stream)";
         if (getResponseCode() > 0)
             s += " " + getResponseCode();
         return s;
     }
-    
+
     protected class OutputStreamC extends OutputStream {
         public long count;
         public long countAttempt;
         OutputStream os;
-        
+
         public OutputStreamC (OutputStream os) {
             this.os = os;
             this.count = 0;
             this.countAttempt = 0;
         }
-        
+
         public void write(byte[] b) throws IOException {
             countAttempt += b.length;
             os.write(b);
             count = countAttempt;
         }
-        
+
         public void write(byte[] b, int off, int len) throws IOException {
             countAttempt += len;
             os.write(b, off, len);
             count = countAttempt;
         }
-        
+
         public void write(int b) throws IOException {
             countAttempt += 1;
             os.write(b);
             count = countAttempt;
         }
-        
+
         public void close() throws IOException {
             os.close();
         }
-        
+
         public void flush() throws IOException {
             os.flush();
         }

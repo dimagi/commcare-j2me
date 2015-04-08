@@ -36,26 +36,26 @@ public class ImmunizationData implements Externalizable {
 
     /** ImmunizationRow */
     Vector rows;
-    
+
     /** The largest column we'll display due to age */
     int largestAgeColumn; /* Note that we don't persist this value */
-    
+
     public ImmunizationData() {
         rows = new Vector();
     }
-    
+
     public ImmunizationData(Vector rows) {
         this.rows = rows;
     }
-    
+
     public Vector getImmunizationRows() {
          return rows;
     }
-    
+
     public void addRow(ImmunizationRow row) {
         rows.addElement(row);
     }
-    
+
     /**
      * @return the largestAgeColumn
      */

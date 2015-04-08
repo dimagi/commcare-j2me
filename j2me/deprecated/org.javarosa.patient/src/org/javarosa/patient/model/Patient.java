@@ -44,12 +44,12 @@ import org.javarosa.patient.model.data.ImmunizationRow;
 import org.javarosa.patient.model.data.NumericListData;
 
 /**
- * Encapsulates demographic data about a patient and contains 
- * information and records for a single patient. These include 
- * static data types such as a patient's id and name, and also 
+ * Encapsulates demographic data about a patient and contains
+ * information and records for a single patient. These include
+ * static data types such as a patient's id and name, and also
  * historical data records for patients, such as a list of weight
- * measurements . 
- * 
+ * measurements .
+ *
  * @author daniel/ctsims(temp)
  *
  */
@@ -61,46 +61,46 @@ public class Patient implements Persistable, Restorable {
     private static final int INVALID_RECORD_ID = -1;
 
     public static final String STORAGE_KEY = "PATIENT";
-    
+
     /** RMS Record Id */
     private int recordId = INVALID_RECORD_ID;
-    
+
     String prefix;
-    
+
     String familyName;      /** Patient's Family name */
     String middleName;        /** Optional Middle Name */
     String givenName;       /** Patient's surname */
     protected int gender;
     Date birthDate;
     boolean birthDateEstimated;
-    
+
     Date treatmentStartDate;
     String treatmentRegimen;
-    
+
     String patientIdentifier;
     boolean isNewPatient;
-    
+
 
     /* String->NumericListData */
     private Hashtable records = new Hashtable();
-    
+
     /* String->String */
     private Hashtable singles = new Hashtable();
-    
+
     //For now we're statically encoding record types.
     private NumericListData weightRecord = new NumericListData();
-    
+
     private NumericListData heightRecord = new NumericListData();
-    
+
     private NumericListData cd4CountRecord = new NumericListData();
-    
+
     ImmunizationData vaccinationData;
-    
-    public Patient() { 
+
+    public Patient() {
         records.put("weight", weightRecord);
         records.put("height", heightRecord);
         records.put("cd4count", cd4CountRecord);
-        
+
         Vector rows = new Vector();
         ImmunizationRow bcg = new ImmunizationRow("BCG");
         bcg.setCellEnabled(1, false);
@@ -126,14 +126,14 @@ public class Patient implements Persistable, Restorable {
         measles.setCellEnabled(3,false);
         rows.addElement(measles);
         vaccinationData = new ImmunizationData(rows);
-        
+
         //records.put("vaccinations", vaccinationData);
     }
-    
+
     /**
      * Gets the patient whole name which is a concatenation of the
      * given, middle and family names.
-     * 
+     *
      * @return
      */
     public String getName (){
@@ -141,7 +141,7 @@ public class Patient implements Persistable, Restorable {
 
         if(getGivenName() != null && getGivenName().length() != 0)
             s += " " + getGivenName();
-        
+
         if(getMiddleName() != null && getMiddleName().length() != 0)
             s += " " + getMiddleName();
 
@@ -150,7 +150,7 @@ public class Patient implements Persistable, Restorable {
 
         return s;
     }
-    
+
     /**
      * @return the recordId
      */
@@ -191,7 +191,7 @@ public class Patient implements Persistable, Restorable {
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
-    
+
     /**
      * @return the middleName
      */
@@ -230,14 +230,14 @@ public class Patient implements Persistable, Restorable {
     public int getAge () {
         return (int)(birthDate == null ? -1 : ((new Date()).getTime() - birthDate.getTime()) / 31556952000l);
     }
-    
+
     /**
      * @param birthDate the birthDate to set
      */
     public void setBirthDate(Date birthDate) {
         this.birthDate = birthDate;
     }
-    
+
     /**
      * Determines if this is a new record.
      * @return true if the record is new.
@@ -245,7 +245,7 @@ public class Patient implements Persistable, Restorable {
     public boolean isNew(){
         return getID() == INVALID_RECORD_ID;
     }
-    
+
 
     public boolean isNewPatient() {
         return isNewPatient;
@@ -254,26 +254,26 @@ public class Patient implements Persistable, Restorable {
     public void setNewPatient(boolean isNewPatient) {
         this.isNewPatient = isNewPatient;
     }
-    
+
     public String getInitials() {
         String s="";
 
         if(getGivenName() != null && getGivenName().length() > 0)
             s += getGivenName().charAt(0);
-        
+
         if(getMiddleName() != null && getMiddleName().length() > 0)
             s += getMiddleName().charAt(0);
-        
+
         if(getFamilyName() != null && getFamilyName().length() > 0)
             s += getFamilyName().charAt(0);
 
         return s.toUpperCase();
     }
-    
+
     public void setVaccinations(ImmunizationData data ){
         this.vaccinationData = data;
     }
-    
+
     public ImmunizationData getVaccinations() {
         return this.vaccinationData;
     }
@@ -311,13 +311,13 @@ public class Patient implements Persistable, Restorable {
             return null;
         }
     }
-    
+
     public void setRecord (String recordType, Object o) {
         //not needed right now
-        
-        
+
+
     }
-    
+
     public Vector getRecordSet(String recordType, String selector) {
         IPatientRecord record = (IPatientRecord)records.get(recordType);
         if(record == null) {
@@ -325,11 +325,11 @@ public class Patient implements Persistable, Restorable {
         }
         return record.getHistoricalRecords(selector);
     }
-    
+
     public void setRecord(String recordType, NumericListData record) {
         records.put(recordType, record);
     }
-    
+
     //public Vector getMeasurements(String type, String delimeted )
 
     /**
@@ -359,7 +359,7 @@ public class Patient implements Persistable, Restorable {
     public void setPatientIdentifier(String patientIdentifier) {
         this.patientIdentifier = patientIdentifier;
     }
-    
+
     /**
      * @return the treatmentStartDate
      */
@@ -398,7 +398,7 @@ public class Patient implements Persistable, Restorable {
 
         if(getGivenName() != null && getGivenName().length() != 0)
             s += " " + getGivenName();
-        
+
         if(getMiddleName() != null && getMiddleName().length() != 0)
             s += " " + getMiddleName();
 
@@ -412,8 +412,8 @@ public class Patient implements Persistable, Restorable {
             s = "NAMELESS PatientId="+getPatientIdentifier();
         return s;
     }
-    
-    
+
+
     public static final String ALIVE_KEY = "pat_al";
     private static final String ALIVE_YES = "a";
     private static final String ALIVE_NO = "d";
@@ -427,7 +427,7 @@ public class Patient implements Persistable, Restorable {
             return true;
         }
     }
-    
+
     public void setAlive(boolean alive) {
         if(!alive) {
             singles.put(ALIVE_KEY,ALIVE_NO);
@@ -449,11 +449,11 @@ public class Patient implements Persistable, Restorable {
         setNewPatient(ExtUtil.readBool(in));
 
         vaccinationData = (ImmunizationData)ExtUtil.read(in, ImmunizationData.class);
-        
+
         records = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, NumericListData.class));
         singles = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
     }
-    
+
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.writeNumeric(out, recordId);
         ExtUtil.write(out, new ExtWrapNullable(getPrefix()));
@@ -465,36 +465,36 @@ public class Patient implements Persistable, Restorable {
         ExtUtil.write(out, new ExtWrapNullable(getTreatmentStartDate()));
         ExtUtil.write(out, new ExtWrapNullable(getPatientIdentifier()));
         ExtUtil.writeBool(out, isNewPatient());
-        
+
         ExtUtil.write(out, vaccinationData);
-        
+
         ExtUtil.write(out, new ExtWrapMap(records));
         ExtUtil.write(out, new ExtWrapMap(singles));
     }
-    
+
     public void setIdentifier(String identifier){
         setPatientIdentifier(identifier);
     }
-    
+
     public String getIdentifier(){
         return getPatientIdentifier();
     }
-        
+
     //NOTE: This class is still super-shoddy. The things below aren't really well written.
     //The system of attributes and individual values should be written, well, _better_.
-    
+
     public void setValue(String type, String value) {
         singles.put(type, value);
     }
-    
+
     public String getValue(String type) {
         return (String)singles.get(type);
     }
-        
+
     public String getRestorableType () {
         return "patient";
     }
-    
+
     public FormInstance exportData() {
         FormInstance dm = RestoreUtils.createDataModel(this);
         RestoreUtils.addData(dm, "pat-id", patientIdentifier);
@@ -505,15 +505,15 @@ public class Patient implements Persistable, Restorable {
         RestoreUtils.addData(dm, "gender", new Integer(gender));
         RestoreUtils.addData(dm, "birthdate", birthDate);
         RestoreUtils.addData(dm, "birth-est", new Boolean(birthDateEstimated));
-        
+
         for (Enumeration e = singles.keys(); e.hasMoreElements(); ) {
             String key = (String)e.nextElement();
             RestoreUtils.addData(dm, "other/" + key, singles.get(key));
         }
-                
+
         return dm;
     }
-    
+
     public void templateData (FormInstance dm, TreeReference parentRef) {
         RestoreUtils.applyDataType(dm, "pat-id", parentRef, String.class);
         RestoreUtils.applyDataType(dm, "name/family", parentRef, String.class);
@@ -523,20 +523,20 @@ public class Patient implements Persistable, Restorable {
         RestoreUtils.applyDataType(dm, "gender", parentRef, Integer.class);
         RestoreUtils.applyDataType(dm, "birthdate", parentRef, Date.class);
         RestoreUtils.applyDataType(dm, "birth-est", parentRef, Boolean.class);
-        
+
         // other/* defaults to string
     }
-    
+
     public void importData(FormInstance dm) {
         patientIdentifier = (String)RestoreUtils.getValue("pat-id", dm);
-        familyName = (String)RestoreUtils.getValue("name/family", dm);        
-        givenName = (String)RestoreUtils.getValue("name/given", dm);        
-        middleName = (String)RestoreUtils.getValue("name/middle", dm);        
-        prefix = (String)RestoreUtils.getValue("name/prefix", dm);        
-        gender = ((Integer)RestoreUtils.getValue("gender", dm)).intValue();        
-        birthDate = (Date)RestoreUtils.getValue("birthdate", dm);        
-        birthDateEstimated = RestoreUtils.getBoolean(RestoreUtils.getValue("birth-est", dm));    
-        
+        familyName = (String)RestoreUtils.getValue("name/family", dm);
+        givenName = (String)RestoreUtils.getValue("name/given", dm);
+        middleName = (String)RestoreUtils.getValue("name/middle", dm);
+        prefix = (String)RestoreUtils.getValue("name/prefix", dm);
+        gender = ((Integer)RestoreUtils.getValue("gender", dm)).intValue();
+        birthDate = (Date)RestoreUtils.getValue("birthdate", dm);
+        birthDateEstimated = RestoreUtils.getBoolean(RestoreUtils.getValue("birth-est", dm));
+
         TreeElement e = dm.resolveReference(RestoreUtils.absRef("other", dm));
         if ( e != null ){
             for (int i = 0; i < e.getNumChildren(); i++) {

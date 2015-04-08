@@ -8,11 +8,11 @@ import org.javarosa.formmanager.view.ProgressScreen;
 public class JRGetFormHTTPState extends GetFormHttpState {
 
     private String formUrl;
-    
+
     public JRGetFormHTTPState(String formUrl){
         this.formUrl = formUrl;
     }
-    
+
     public String getURL() {
         return this.formUrl;
     }
@@ -20,7 +20,7 @@ public class JRGetFormHTTPState extends GetFormHttpState {
     protected ProgressScreen initProgressScreen() {
         return new ProgressScreenFormDownload(Localization.get("jrdemo.downloading"),Localization.get("jrdemo.fetching"), this);
     }
-    
+
     public void done() {
         new JRDemoFormListState().start();
     }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.services.properties.controller;
 
@@ -26,13 +26,13 @@ import org.javarosa.services.properties.view.PropertiesScreen;
  *
  */
 public class PropertyUpdateController implements HandledCommandListener, HandledItemStateListener{
-    
+
     private PropertiesScreen screen;
-    
+
     private Hashtable changes;
 
     private TrivialTransitions listener;
-    
+
     public static Command CMD_DONE = new Command("Done", Command.BACK, 1);
     public static Command CMD_CANCEL = new Command("Cancel", Command.BACK, 1);
 
@@ -50,10 +50,10 @@ public class PropertyUpdateController implements HandledCommandListener, Handled
     public void start() {
         J2MEDisplay.setView(screen);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command command, Displayable d) {
         if(command == CMD_DONE) {
@@ -64,7 +64,7 @@ public class PropertyUpdateController implements HandledCommandListener, Handled
 
     public void itemStateChanged(Item i) {
         CrashHandler.itemStateChanged(this, i);
-    }  
+    }
 
     public void _itemStateChanged(Item item) {
         if (item instanceof ChoiceGroup) {
@@ -76,7 +76,7 @@ public class PropertyUpdateController implements HandledCommandListener, Handled
                 // This is a weird way to do this, but essentially works as long as there is only
                 // one possible property (which is true for now).
                 Vector<String> currentValue = PropertyManager._().getProperty(propertyName);
-                
+
                 if(currentValue == null) {
                     currentValue = new Vector<String>();
                 }
@@ -106,7 +106,7 @@ public class PropertyUpdateController implements HandledCommandListener, Handled
     /**
      * Used to write changes from the property screen into the property
      * manager.
-     * 
+     *
      * @param changes The changes that have been made to existing properties
      */
     private void commitChanges(Hashtable changes) {

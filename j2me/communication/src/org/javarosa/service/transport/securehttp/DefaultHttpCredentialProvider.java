@@ -1,12 +1,12 @@
 /**
- * 
+ *
  */
 package org.javarosa.service.transport.securehttp;
 
 /**
  * The default provider for http credentials. Simply provides a username
  * and password for HTTP authentication upon request.
- * 
+ *
  * @author ctsims
  *
  */
@@ -14,12 +14,12 @@ public class DefaultHttpCredentialProvider implements HttpCredentialProvider {
 
     String username;
     String password;
-    
+
     public DefaultHttpCredentialProvider(String username, String password) {
         this.username = username;
         this.password = password;
     }
-    
+
     /* (non-Javadoc)
      * @see org.javarosa.service.transport.securehttp.HttpCredentialProvider#acquireCredentials()
      */

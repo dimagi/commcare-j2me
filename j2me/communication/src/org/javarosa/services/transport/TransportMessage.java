@@ -9,41 +9,41 @@ import org.javarosa.services.transport.impl.TransportMessageStatus;
 /**
  * TransportMessage is one of a pair of interfaces which must be implemented in
  * order to extend the Transport Layer
- * 
+ *
  * The other is Transporter
- * 
+ *
  */
 public interface TransportMessage extends Persistable {
 
     public static final String STORAGE_NAME = "transport-message-store";
-    
+
     public void send();
 
     /**
-     * 
+     *
      * Some transport types can sensibly make use of the TransportService's
      * persistent store (e.g. http), some others not (e.g. sms) so that
      * when transport fails, messages are cached to be retried later
-     * 
+     *
      * This method returns true if this kind of Message is cacheable
-     * 
+     *
      * @return
      */
     boolean isCacheable();
-    
+
     /**
-     * 
-     * 
+     *
+     *
      * @return Whether sending has been successful or not
      */
     boolean isSuccess();
 
     /**
-     * 
-     * 
+     *
+     *
      * @return An integer representing the status of the message (whether
      *         queued, cached or sent)
-     * 
+     *
      * @see TransportMessageStatus
      */
     int getStatus();
@@ -64,11 +64,11 @@ public interface TransportMessage extends Persistable {
     int getFailureCount();
 
     /**
-     * 
+     *
      * Every message is persisted in the transport cache before any attempt is
      * made to send it When persisted in the transport cache, it is given a unique
      * id
-     * 
+     *
      * @return The cache-unique identifier assigned to the message
      */
     String getCacheIdentifier();
@@ -79,13 +79,13 @@ public interface TransportMessage extends Persistable {
     void setCacheIdentifier(String id);
 
     /**
-     * 
+     *
      * The TransportService first tries to send a message in a SenderThread.
-     * 
+     *
      * This poses an issue: if the SenderThread is interrupted unexpectedly, a
      * TransportMessage could be stuck with a CACHED status and never get onto
      * the CACHED list to be sent via the "sendCached" method
-     * 
+     *
      * To prevent Messages being stuck with a QUEUED status, a time-limit is
      * set, after which they are considered to be CACHED
      */
@@ -94,7 +94,7 @@ public interface TransportMessage extends Persistable {
     /**
      * @return The time at which the TransportService concludes that the message
      *         is no longer within its initial QueuingThread
-     * 
+     *
      * @see QueueingThread
      */
     long getQueuingDeadline();
@@ -106,6 +106,6 @@ public interface TransportMessage extends Persistable {
 
     Date getSent();
 
-    
+
     String getTag();
 }

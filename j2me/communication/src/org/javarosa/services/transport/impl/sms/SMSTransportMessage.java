@@ -20,17 +20,17 @@ import org.javarosa.services.transport.impl.BasicTransportMessage;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 
 /**
- * 
+ *
  * Wireless Messaging API (JSR-120 or WMA)
- * 
- * 
+ *
+ *
  * SMS message object
- * 
+ *
  * Since the message to be sent may require to be partitioned into more than one
  * SMS payloads, the content of the SMSTransportMessage is a Vector of Strings
  * (in the simplest case, vector size = 1)
- * 
- * 
+ *
+ *
  */
 public class SMSTransportMessage extends BasicTransportMessage {
 
@@ -40,10 +40,10 @@ public class SMSTransportMessage extends BasicTransportMessage {
     public final static int MAX_SMS_BYTES = 140;
 
     /**
-     * 
+     *
      */
     private String destinationURL;
-    
+
     private Vector content;
 
     /**
@@ -52,57 +52,57 @@ public class SMSTransportMessage extends BasicTransportMessage {
     public SMSTransportMessage() {
         //ONLY FOR SERIALIZATION
     }
-    
+
     /**
      * @param str
      * @param destinationURL
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
     public SMSTransportMessage(String payload, String destinationURL) throws UnsupportedEncodingException {
         this.destinationURL = destinationURL;
-        
+
         //Try to convert the string to ascii by outputting UTF-8 and re-importing it. Incompatible
         //(non-7-bit) characters will be read in as extra chars
         String asciiString = new String(payload.getBytes("UTF-8"),"ASCII");
         //A UTF-16 string should always represent the string properly, so it's our gold standard
         String unicodeString = new String(payload.getBytes("UTF-16BE"),"UTF-16BE");
-        
+
         if(asciiString.length() != unicodeString.length()) {
             content = splitSMS(payload, "UTF-16BE");
-        } else {            
+        } else {
             content = splitSMS(payload, "ASCII");
         }
     }
-    
+
     public boolean isCacheable() {
         return false;
     }
     public boolean isShareTransporter(){
         return false;
     }
-    
+
 
     public Object getContent() {
         return content;
     }
 
     /**
-     * 
+     *
      * SMS messages must be 160 bytes or less each.
-     *  
+     *
      * If the message to be sent is greater, it is partitioned.
-     * 
+     *
      * @param str
      * @return Vector of strings to be sent as separate messages
-     * @throws UnsupportedEncodingException 
+     * @throws UnsupportedEncodingException
      */
     private Vector splitSMS(String str, String encoding) throws UnsupportedEncodingException {
         Vector v = new Vector();
-        
+
         String currentMessage = "";
 
         //TODO: This might take a _looooooooooooong_ time if our message is huge. Test.
-        
+
         // Go through one char at a time building output strings in
         // the given encoding
         for(int i = 0 ; i < str.length() ; ++i) {
@@ -114,10 +114,10 @@ public class SMSTransportMessage extends BasicTransportMessage {
                 currentMessage += str.charAt(i);
             }
         }
-        
+
         v.addElement(currentMessage);
-        
-        
+
+
         return v;
     }
 
@@ -134,7 +134,7 @@ public class SMSTransportMessage extends BasicTransportMessage {
     public void setDestinationURL(String destinationURL) {
         this.destinationURL = destinationURL;
     }
-    
+
     public void send() {
         MessageConnection conn = null;
         try {
@@ -142,9 +142,9 @@ public class SMSTransportMessage extends BasicTransportMessage {
 
             // create a MessageConnection
             conn = getConnection(this.getDestinationURL());
-            
+
             //int segments = conn.numberOfSegments(message);
-            
+
 
             // the SMS content has been split into n parts of not more than 140
             // characters
@@ -172,9 +172,9 @@ public class SMSTransportMessage extends BasicTransportMessage {
     }
 
     /**
-     * 
+     *
      * Send single sms over a MessageConnection
-     * 
+     *
      * @param content The content of the SMS to be sent
      * @param conn The connection over which the SMS is to be sent
      * @throws IOException
@@ -199,13 +199,13 @@ public class SMSTransportMessage extends BasicTransportMessage {
             throw new IllegalArgumentException("Not SMS URL:" + url);
     }
 
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         super.readExternal(in, pf);
         content = (Vector)ExtUtil.read(in, new ExtWrapList(String.class));

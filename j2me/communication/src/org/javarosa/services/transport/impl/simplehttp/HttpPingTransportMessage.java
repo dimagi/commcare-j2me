@@ -1,8 +1,8 @@
 package org.javarosa.services.transport.impl.simplehttp;
 
 /**
- 
- * 
+
+ *
  */
 public class HttpPingTransportMessage extends SimpleHttpTransportMessage {
     /**

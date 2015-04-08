@@ -82,14 +82,14 @@
 //        if (c == FormTransportCommands.CMD_DELETEMSG) {
 //            handleDeleteMessage();
 //        }
-//        
-//        
+//
+//
 //        throw new RuntimeException("Command " + c.getLabel()
 //                + " uncaught - display:" + d.getTitle());
 //    }
 //
 //    /**
-//     * 
+//     *
 //     */
 //    private void handleDeleteMessage() {
 //        int selected = getSelectedIndex();
@@ -116,7 +116,7 @@
 //    }
 //
 //    /**
-//     * 
+//     *
 //     */
 //    private void handleDetails() {
 //        int selected = getSelectedIndex();

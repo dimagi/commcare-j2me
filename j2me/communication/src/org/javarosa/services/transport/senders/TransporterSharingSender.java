@@ -18,7 +18,7 @@ public class TransporterSharingSender {
 
     public TransporterSharingSender() {
     }
-    
+
     public void init(Vector messages, TransportCache store, TransportListener listener, int maxConsecutiveFails) {
         this.messages = messages;
         this.cache = store;
@@ -29,14 +29,14 @@ public class TransporterSharingSender {
 
     public void send() {
         System.out.println("Ready to send: "+this.messages.size()+" messages");
-        
+
         int numSuccessful = 0;
         int consecutiveFailures = 0;
         for (int i = 0; i < this.messages.size(); i++) {
             if(halted) {return;}
-            
+
             TransportMessage message = (TransportMessage) this.messages.elementAt(i);
-            
+
             //If we're over our limit, jut go ahead and update the listener for the rest of the messages.
             if(maxConsecutiveFails != -1 && consecutiveFailures >= maxConsecutiveFails) {
                 this.listener.onStatusChange(message);
@@ -53,7 +53,7 @@ public class TransporterSharingSender {
                 if (!message.isSuccess()) {
                     consecutiveFailures++;
                     Logger.log("send-all", "fail on " + (i + 1) + "/" + messages.size() + " " + message.getFailureReason());
-                    
+
                     message.setStatus(TransportMessageStatus.CACHED);
                     this.listener.onStatusChange(message);
 
@@ -74,7 +74,7 @@ public class TransporterSharingSender {
                 } else {
                     numSuccessful++;
                     consecutiveFailures = 0;
-                    
+
                     // SUCCESS - remove from cache
                     this.listener.onStatusChange(message);
                     try {
@@ -89,7 +89,7 @@ public class TransporterSharingSender {
                 Logger.log("sanity", "TransportSharingSender.send msg not cacheable");
             }
         }
-        
+
         String logMsg = (numSuccessful == messages.size() ? "success" : numSuccessful + "/" + messages.size() + " successful");
         String logTag = "send-all-success";
         if(maxConsecutiveFails != -1 && consecutiveFailures >= maxConsecutiveFails) {
@@ -99,7 +99,7 @@ public class TransporterSharingSender {
         }
         Logger.log(logTag, logMsg);
     }
-    
+
     public void halt() {
         halted = true;
     }
@@ -109,5 +109,5 @@ public class TransporterSharingSender {
         messages.removeAllElements();
         System.out.println("Send all unsent completed. Message queue emptied");
     }
-    
+
 }

@@ -28,7 +28,7 @@ import org.javarosa.user.utility.IUserDecorator;
 
 /**
  * Form accessible to admins for adding new users to an application
- * 
+ *
  */
 public class UserForm extends Form {
 
@@ -96,11 +96,11 @@ public class UserForm extends Form {
     }
 
     /**
-     * 
-     * 
+     *
+     *
      * Load the users details into the fields of the form (when editing)
-     * 
-     * 
+     *
+     *
      * @param user
      */
     public void loadUser(User user) {

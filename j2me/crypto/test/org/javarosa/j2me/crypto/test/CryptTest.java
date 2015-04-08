@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.javarosa.j2me.crypto.test;
 
@@ -18,7 +18,7 @@ import org.javarosa.j2me.crypto.util.CryptoSession;
 
 /**
  * @author ctsims
- * 
+ *
  */
 public class CryptTest extends TestCase {
 
@@ -63,7 +63,7 @@ public class CryptTest extends TestCase {
         case 2:
             testCryptSession();
             break;
-        case 3: 
+        case 3:
             testEdges();
             break;
         }
@@ -71,65 +71,65 @@ public class CryptTest extends TestCase {
 
     public void testPBEUtil() {
         byte[] key = genkey();
-        
+
         byte[] wrapped = CryptUtil.wrapKey(key, "javarosarules");
-        
-        
+
+
         byte[] restored = CryptUtil.unWrapKey(wrapped, "javarosarules");
-        
+
         if(!Arrays.areEqual(key,restored)) {
             fail("PBE did not correctly wrap/unwrap key");
         }
-        
+
     }
-    
+
     public void testCryptSession() {
         byte[] key = genkey();
-        
+
         CryptoSession session = new CryptoSession();
         session.logIn(key);
-        
+
         BufferedBlockCipher rawEncrypt = session.getEncrypter();
         BufferedBlockCipher rawDecrypt = session.getDecrypter();
-        
+
         byte[] payload = Hex.decode("11b11454f4b5160a78801cb8c5dcff50");
 
         byte[] t1 = CryptUtil.encrypt(payload,rawEncrypt);
         byte[] t2 = CryptUtil.decrypt(t1, rawDecrypt);
-        
+
         if(!Arrays.areEqual(payload, t2)) {
             fail("Encrypt and Decrypt with raw key in CryptSession failed");
         }
-        
+
         CryptoSession pbeSession = new CryptoSession();
-        
+
         byte[] wrapped = CryptUtil.wrapKey(key, "javarosarules");
         pbeSession.logIn("javarosarules", wrapped);
-        
+
         BufferedBlockCipher pbeEncrypt = pbeSession.getEncrypter();
         BufferedBlockCipher pbeDecrypt = pbeSession.getDecrypter();
 
-        
+
         byte[] t1w = CryptUtil.encrypt(payload, pbeEncrypt);
         if(!Arrays.areEqual(t1, t1w)) {
             fail("Encrypt: PBE and raw key crypto sessions were not equivilant");
         }
-        
+
         byte[] t2w = CryptUtil.decrypt(t1, pbeDecrypt);
         if(!Arrays.areEqual(t2, t2w)) {
             fail("Decrpyt: PBE and raw key crypto sessions were not equivilant");
         }
     }
-    public void testEdges() {        
+    public void testEdges() {
         byte[] key = genkey();
-        
+
         CryptoSession session = new CryptoSession();
         session.logIn(key);
-        
+
         BufferedBlockCipher encrypt = session.getEncrypter();
         BufferedBlockCipher decrypt = session.getDecrypter();
 
-        //Blocks are generally 16 bytes, so hit around those edges. 
+        //Blocks are generally 16 bytes, so hit around those edges.
         test(1, Hex.decode("11b11454f4b5160a78801cb8c5dcff511b11454f4b5160a78801cb8c5dcff5aa"), encrypt, decrypt);
         test(2, Hex.decode("11b11454f4b5160a78801cb8c5dcff511b11454f4b5160a78801cb8c5dcff5"), encrypt, decrypt);
         test(3, Hex.decode("11b11454f4b5160a78801cb8c5dcff511b11454f4b5160a78801cb8c5dcf"), encrypt, decrypt);
@@ -143,22 +143,22 @@ public class CryptTest extends TestCase {
         test(10, Hex.decode("00"), encrypt, decrypt);
         test(11, Hex.decode(""), encrypt, decrypt);
     }
-    
+
     private void test(int n, byte[] payload, BufferedBlockCipher encrypt,  BufferedBlockCipher decrpyt) {
         byte[] t1 = CryptUtil.encrypt(payload,encrypt);
         byte[] t2 = CryptUtil.decrypt(t1, decrpyt);
-        
+
         if(!Arrays.areEqual(payload, t2)) {
             fail("CryptFail: " + n);
         }
 
     }
-    
+
     private byte[] genkey() {
         Random r = new Random();
-        
+
         byte[] key = new byte[32];
-        
+
         for(int i = 0 ; i < key.length ; ++i ) {
             key[i] = (byte)r.nextInt();
         }

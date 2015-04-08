@@ -46,13 +46,13 @@ public class LineChart extends CustomItem {
     public boolean isLabelYTrue;
     public int scaleCount;
     public int width;
-    public int height; 
+    public int height;
     public boolean isShadow;
     public int shadowColoOne;
     public int shadowColorTwo;
     public int shadowColorThree;
     public Font font;
-    
+
     int colorOne;
     int colorTwo;
     int colorThree;
@@ -61,7 +61,7 @@ public class LineChart extends CustomItem {
     private int equalCoordTicker;
     private int pointLabelWidth;
     private int pointLabelHeight;
-    
+
     private int fontSpaceHeight;
 
     private boolean isDefaultColor;
@@ -91,9 +91,9 @@ public class LineChart extends CustomItem {
             shadowColorThree = 100;
             font = Font.getDefaultFont();
     }
-    
+
     /**
-     * Constructor : 
+     * Constructor :
      * Creates a Point object
      */
     public LineChart(String label) {
@@ -103,7 +103,7 @@ public class LineChart extends CustomItem {
     /**
      * Make shadow visible for lines.
      * Param : boolean flag
-     * Return : 
+     * Return :
      */
     public void makeShadowVisible(boolean flag) {
         isShadow = flag;
@@ -111,25 +111,25 @@ public class LineChart extends CustomItem {
 
     /**
      * Resets the Points vector.
-     * Param : 
-     * Return : 
+     * Param :
+     * Return :
      */
     public void resetData() {
         pointsVector = new Vector();
         currentPointVector = new Vector();
         pointsVector.addElement(currentPointVector);
     }
-    
+
     /**
      * Inserts the Point object into point vector
-     * Param : 
+     * Param :
      *          String pointLabel :- labelForPoint
      *          int xCordValue : x cordinate Value for the Point to be drawn
      *          int yCordValue : y cordinate Value for the Point to be drawn
      *          int colorOne, int colorTwo, int colorThree, : RGB Values Of color for the line
-     * Return : 
+     * Return :
      */
-   
+
     public void insertItem(LinePointsItem item) {
         currentPointVector.addElement(item);
         if(item.yCordPt > yScaleFactor) {
@@ -140,50 +140,50 @@ public class LineChart extends CustomItem {
         }
         scaleCount++;
     }
-    
+
     /**
      * Inserts the Point object into point vector
-     * Param : 
+     * Param :
      *          String pointLabel :- labelForPoint
      *          int xCordValue : x cordinate Value for the Point to be drawn
      *          int yCordValue : y cordinate Value for the Point to be drawn
      *          int colorOne, int colorTwo, int colorThree, : RGB Values Of color for the line
-     * Return : 
+     * Return :
      */
-   
+
     public void insertItem(String pointLabel, int yCordValue, int xCordValue,  int colorOne, int colorTwo, int colorThree) {
         insertItem(new LinePointsItem(pointLabel, yCordValue, xCordValue, colorOne, colorTwo, colorThree));
     }
 
     /**
      * Ued to draw the X and Y axis.
-     * Param : 
+     * Param :
      *          Graphics g1 :- Graphics Object
      *          int width : Width of axis.
      *          int height : height of axis
-     * Return : 
+     * Return :
      */
     public void drawAxis(Graphics g1, int width, int height) {
         if(isDrawAxis ) {
             g1.setColor(0, 0, 0);
             g1.drawLine(marginOne, this.height - marginFour, marginOne + width, this.height - marginFour);
             g1.drawLine(marginOne, this.height - marginFour, marginOne, this.height - marginFour - height);
-           
+
         }
     }
-    
+
     /**
-     * This function is used to draw the labels on graph control 
+     * This function is used to draw the labels on graph control
      * Date - 16 April 2008
      **/
     private void drawAxisLabels(Graphics g, int width, int height) {
-        
+
             g.setColor(0xB22222);
             g.drawString("Vert - Weight", marginOne - 15,(this.height - marginFour) + 15, 20);
             Font msgFont = Font.getDefaultFont();
             int LabelOneWidth =  msgFont.stringWidth("Vert - Weight");
             g.drawString("Hori - Age", (marginOne - 15) + LabelOneWidth,(this.height - marginFour) + 15, 20);
-          
+
     }
 
     /**
@@ -213,12 +213,12 @@ public class LineChart extends CustomItem {
     public int getPrefContentWidth(int i1) {
         return width;
     }
-    
+
     /**
      * Used to decide whether the axis to be drawn.
-     * Param : 
-     *          boolean isDrawAxis : 
-     * Return : 
+     * Param :
+     *          boolean isDrawAxis :
+     * Return :
      */
     public void setDrawAxis(boolean isDrawAxis) {
         this.isDrawAxis = isDrawAxis;
@@ -226,21 +226,21 @@ public class LineChart extends CustomItem {
 
     /**
      * Used to set color
-     * Param : 
+     * Param :
      *          int colorFieldOne, int colorFieldTwo, int colorFieldThree : RGB Values of Color.
-     * Return : 
+     * Return :
      */
     public void setColor(int colorFieldOne, int colorFieldTwo, int colorFieldThree) {
         this.colorFieldOne = colorFieldOne;
         this.colorFieldTwo = colorFieldTwo;
         this.colorFieldThree = colorFieldThree;
     }
-    
+
     /**
      * Used to decide whether the color is to be defaultcolor
-     * Param : 
+     * Param :
      *          boolean isDefaultColor:
-     * Return : 
+     * Return :
      */
     public final void setUseDefaultColor(boolean isDefaultColor) {
         this.isDefaultColor = isDefaultColor;
@@ -248,11 +248,11 @@ public class LineChart extends CustomItem {
 
     /**
      * Draws the Graph on screen
-     * Param : 
+     * Param :
      *          Graphics g1 :- Graphics Object
-     *          int width : 
-     *          int height : 
-     * Return : 
+     *          int width :
+     *          int height :
+     * Return :
      */
     public final void paint(Graphics g, int width, int height) {
        // Graphics g1 = g;
@@ -269,8 +269,8 @@ public class LineChart extends CustomItem {
 
     /**
      * Decides margin according to font size
-     * Param : 
-     * Return : 
+     * Param :
+     * Return :
      */
     private void marginAndFontHeight() {
         /*
@@ -281,7 +281,7 @@ public class LineChart extends CustomItem {
         pointLabelHeight = font.getHeight() + 10;
         /*
          * Addition ends here.
-         */ 
+         */
         if(isMarginOneTrue && pointLabelWidth > marginOne - 3) {
             marginOne = pointLabelWidth + 3;
         }
@@ -292,13 +292,13 @@ public class LineChart extends CustomItem {
 
     /**
      * Draws the Chart
-     * Param : 
+     * Param :
      *          Graphics g1 :- Graphics Object
-     *          int width : 
-     *          int height : 
-     * Return : 
+     *          int width :
+     *          int height :
+     * Return :
      */
-    
+
    public final void drawChart(Graphics g, int width, int height) {
         marginAndFontHeight();
         drawAxis(g, width, height);
@@ -312,7 +312,7 @@ public class LineChart extends CustomItem {
                 g.drawLine(marginOne, j1, marginOne - 2, j1);
                 int point = (yScaleFactor * i) / height;
                 pointLabelWidth = font.stringWidth(String.valueOf(point));
-                
+
                 int pointXPosition = marginOne - 3 - pointLabelWidth;
                 int pointYPosition = j1 - pointLabelHeight / 2;
                 if(isDrawPoint & isLabelYTrue) {
@@ -327,7 +327,7 @@ public class LineChart extends CustomItem {
             drawLine(g, pointVector);
         }
     }
-   
+
    public void drawLine(Graphics g, Vector pointVector) {
 
        pointVector.size();
@@ -342,7 +342,7 @@ public class LineChart extends CustomItem {
        } else if (size <= 10) {
            scaleFactor = 6;
        }
-       
+
        do {
            if(size > 10) {
                break;
@@ -352,17 +352,17 @@ public class LineChart extends CustomItem {
            }
            count++;
            LinePointsItem b1 = (LinePointsItem)enumeration.nextElement();
-           
+
            if(isDefaultColor) {
                g.setColor(colorFieldOne, colorFieldTwo, colorFieldThree);
            } else {
                g.setColor(b1.getColorOne(), b1.getColorTwo(), b1.getColorThree());
            }
-           
+
            int pointY2 = this.height - fontSpaceHeight - (height * b1.yCordPt) / (yScaleFactor);
            int pointX2 = marginOne + (width * b1.xCordPt) / (xScaleFactor * scaleFactor);
            // System.out.println("pointX1 ==  " + pointX1 + " pointY1 == " + pointY1 + " pointX2 == " + pointX2 + " pointY2 == " + pointY2);
-           
+
            if(count > -1) {
                g.drawLine(pointX1, pointY1, pointX2, pointY2);
            }
@@ -374,25 +374,25 @@ public class LineChart extends CustomItem {
                    //g.drawLine(pointX2, this.height - fontSpaceHeight, pointX2, (this.height - fontSpaceHeight) + 2);
                }
                pointLabelWidth = font.stringWidth(b1.labelX);
-               
+
                if(isLabelXTrue && (count + 1) % (equalCoordTicker * ticker) == 0) {
                    g.drawString(b1.labelX, pointX2 - pointLabelWidth / 2, (this.height - fontSpaceHeight) + 1, 20);
                }
            }
        } while(true);
    }
-   
+
    public void startNewLine() {
        Vector newVector = new Vector();
        pointsVector.addElement(newVector);
        currentPointVector = newVector;
    }
-     
+
     /**
      * Set Fonts
-     * Param : 
-     *          int i, int j, int k : 
-     * Return : 
+     * Param :
+     *          int i, int j, int k :
+     * Return :
      */
     public void setFont(int i, int j, int k) {
         font = Font.getFont(i, j, k);
@@ -400,9 +400,9 @@ public class LineChart extends CustomItem {
 
     /**
      * Set shadow color
-     * Param : 
-     *          int i, int j, int k : 
-     * Return : 
+     * Param :
+     *          int i, int j, int k :
+     * Return :
      */
     public void setShadowColor(int i, int j, int k) {
         shadowColoOne = i;
@@ -412,9 +412,9 @@ public class LineChart extends CustomItem {
 
     /**
      * Set Margin
-     * Param : 
-     *          int i, int j, int k, int l : 
-     * Return : 
+     * Param :
+     *          int i, int j, int k, int l :
+     * Return :
      */
     public void setMargins(int i, int j, int k, int l) {
         marginOne = l;
@@ -422,12 +422,12 @@ public class LineChart extends CustomItem {
         marginThree = i;
         marginFour = k;
     }
-    
+
     /**
      * Set Preffered size of screen
-     * Param : 
+     * Param :
      *        int width, int height
-     * Return : 
+     * Return :
      */
     public void setPreferredSize(int width, int height) {
         super.setPreferredSize(width, height);
@@ -437,9 +437,9 @@ public class LineChart extends CustomItem {
 
     /**
      * Set MaxValue for the Y Coordinate scaling
-     * Param : 
+     * Param :
      *        int yScaleFactor
-     * Return : 
+     * Return :
      */
     public void setMaxYScaleFactor(int yScaleFactor) {
         this.yScaleFactor = yScaleFactor;
@@ -447,9 +447,9 @@ public class LineChart extends CustomItem {
 
     /**
      * Set Min Value for the Y Coordinate scaling
-     * Param : 
+     * Param :
      *        int yScaleFactor
-     * Return : 
+     * Return :
      */
     public void setMinYScaleFactor(int yScaleFactor) {
         this.yScaleFactor = yScaleFactor;
@@ -457,9 +457,9 @@ public class LineChart extends CustomItem {
 
     /**
      * Set MaxValue for the X Coordinate scaling
-     * Param : 
+     * Param :
      *        int xScaleFactor
-     * Return : 
+     * Return :
      */
     public void setMaxXScaleFactor(int xScaleFactor) {
         this.xScaleFactor = xScaleFactor;
@@ -467,12 +467,12 @@ public class LineChart extends CustomItem {
 
     /**
      * Set Min Value for the x Coordinate scaling
-     * Param : 
+     * Param :
      *        int xScaleFactor
-     * Return : 
+     * Return :
      */
     public void setMinXScaleFactor(int xScaleFactor) {
         this.xScaleFactor = xScaleFactor;
     }
-    
+
 }

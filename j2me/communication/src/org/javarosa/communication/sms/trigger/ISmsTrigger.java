@@ -21,7 +21,7 @@ import javax.wireless.messaging.TextMessage;
 /**
  * An SMS trigger is an action that should be taken when
  * the phone receives an SMS message with a specific header.
- * 
+ *
  * @author Clayton Sims
  *
  */

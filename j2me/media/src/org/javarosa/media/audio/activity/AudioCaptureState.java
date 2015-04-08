@@ -15,8 +15,8 @@
  */
 
 /**
- * An Activity that represents the capture of audio. 
- * 
+ * An Activity that represents the capture of audio.
+ *
  * @author Ndubisi Onuora
  *
  */
@@ -46,53 +46,53 @@ import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.media.image.activity.DataCaptureTransitions;
 import org.javarosa.media.image.model.FileDataPointer;
 
-public abstract class AudioCaptureState implements DataCaptureTransitions, State, HandledCommandListener, Runnable 
+public abstract class AudioCaptureState implements DataCaptureTransitions, State, HandledCommandListener, Runnable
 {
     //private final long FOREVER = 1000000;
     private AudioCaptureService recordService;
-        
-    private Command recordCommand, playCommand, stopCommand, backCommand, 
+
+    private Command recordCommand, playCommand, stopCommand, backCommand,
                     saveCommand, eraseCommand, finishCommand;
     private OutputStream audioDataStream;
     private String fullName, audioFileName;
     private RecorderForm form;
     private FileDataPointer recordFile;
-    
+
     private StringItem messageItem;
     private StringItem errorItem;
-    
-    Thread captureThread;    
+
+    Thread captureThread;
     boolean captureThreadStarted = false;
-    
+
    // private static int counter = 0; //Used for saving files
-    
+
     MIDlet recMid;
     DataCaptureServiceRegistry dc;
     DataCaptureTransitions transitions;
-    
+
     public AudioCaptureState (MIDlet m, DataCaptureServiceRegistry dc)
     {
         recMid = m;
         this.dc = dc;
         transitions = this;
     }
-    
+
     //Finish off construction of Activity
     public void start()
-    {        
+    {
         form = new RecorderForm();
-        
+
         messageItem = form.getMessageItem();
-        errorItem = form.getErrorItem();        
-            
+        errorItem = form.getErrorItem();
+
         initCommands();
         audioFileName = null;
         J2MEDisplay.setView(form);
         form.setCommandListener(this);
-        
+
         try
-        {            
-            recordService = dc.getAudioCaptureService();            
+        {
+            recordService = dc.getAudioCaptureService();
         }
         catch(UnavailableServiceException ue)
         {
@@ -101,7 +101,7 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
         captureThread = new HandledThread(this, "CaptureThread");
     }
 
-    public void destroy() 
+    public void destroy()
     {
         try
         {
@@ -114,52 +114,52 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
             ioe.printStackTrace();
         }
     }
-    
+
     private void initCommands()
     {
         recordCommand = new Command("Record", Command.SCREEN, 0);
         form.addCommand(recordCommand);
-        playCommand = new Command("Play", Command.SCREEN, 1);        
-        stopCommand = new Command("Stop", Command.SCREEN, 0); //Do not add immediately        
-        backCommand = new Command("Back", Command.BACK, 0);        
+        playCommand = new Command("Play", Command.SCREEN, 1);
+        stopCommand = new Command("Stop", Command.SCREEN, 0); //Do not add immediately
+        backCommand = new Command("Back", Command.BACK, 0);
         form.addCommand(backCommand);
         finishCommand = new Command("Finish", Command.OK, 0);
         saveCommand = new Command("Save", Command.SCREEN, 0);
         eraseCommand = new Command("Erase", Command.SCREEN, 0);
     }
-    
+
     public void commandAction(Command c, Displayable d) {
         CrashHandler.commandAction(this, c, d);
-    }  
+    }
 
     public void _commandAction(Command comm, Displayable disp) {
         //Record to file
         if(comm == recordCommand)
-        {            
+        {
             captureThread.setPriority(Thread.currentThread().getPriority() +1 );
             if(!captureThreadStarted)
             {
                 captureThread.start();
-                captureThreadStarted = true;                
+                captureThreadStarted = true;
             }
             else
-                captureThread.run();                        
-        } 
+                captureThread.run();
+        }
         //User should be able to replay recording
         else if(comm == playCommand)
         {
-            try 
+            try
             {
                 playAudio();
-            }  
-            catch(AudioException ae) 
+            }
+            catch(AudioException ae)
             {
-                errorItem.setLabel("Error playing audio");                
+                errorItem.setLabel("Error playing audio");
                 System.err.println(ae.toString());
             }
             catch(FileException fe)
             {
-                errorItem.setLabel("Error playing audio");                
+                errorItem.setLabel("Error playing audio");
                 System.err.println(fe.toString());
             }
         }
@@ -169,14 +169,14 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
             try
             {
                 stop();
-            }             
-            catch(AudioException ae) 
+            }
+            catch(AudioException ae)
             {
                 errorItem.setLabel("Error stopping action");
                 //errorItem.setText(ae.toString());
                 System.err.println(ae.toString());
             }
-        }        
+        }
         else if(comm == backCommand)
         {
             moveBack();
@@ -197,30 +197,30 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
             removeFile();
         }
     }
-    
+
     public void recordAudio() throws AudioException, FileException, InterruptedException
     {
           errorItem.setLabel("");
-          errorItem.setText("");      
-          
+          errorItem.setText("");
+
           recordService.startRecord();
-        
+
           messageItem.setText("Recording...");
-          
+
           form.removeCommand(recordCommand); //"Hide" recordCommand when recording has stopped
           form.addCommand(stopCommand);
-          form.addCommand(saveCommand);  
+          form.addCommand(saveCommand);
     }
-      
+
       public void playAudio() throws AudioException, FileException
       {
           errorItem.setLabel("");
           errorItem.setText("");
-          System.err.println("Attempting to play audio...");          
-          messageItem.setText("Starting the Player...");          
-                    
+          System.err.println("Attempting to play audio...");
+          messageItem.setText("Starting the Player...");
+
           recordService.startPlayback();
-          
+
           try
           {
               if(recMid!= null)
@@ -230,24 +230,24 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
           }
           catch(ConnectionNotFoundException cnfe)
           {
-              cnfe.printStackTrace(); 
+              cnfe.printStackTrace();
               /*If the platform request fails, which it shouldn't, attempt to start playback
-               * through the service.*/              
+               * through the service.*/
                 recordService.startPlayback();
           }
-          
+
           System.err.println("Player has started.");
-          messageItem.setText("Player has started!");          
-          
+          messageItem.setText("Player has started!");
+
           form.removeCommand(eraseCommand);
           form.removeCommand(saveCommand);
           form.removeCommand(playCommand); //"Hide" playCommand when playing has started
           form.removeCommand(recordCommand); //"Hide" recordCommand when playing has started
           form.addCommand(stopCommand); //Show recordCommand when playing has started
-          
+
           //Thread.currentThread().sleep(FOREVER);
       }
-      
+
       //General method to stop recording or playback
       public void stop() throws AudioException
       {
@@ -261,72 +261,72 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
               stopPlaying();
           }
       }
-      
+
       public void stopCapturing() throws AudioException
       {
           errorItem.setLabel("");
           errorItem.setText("");
-          System.err.println("Attempting to stop recording");          
-          
+          System.err.println("Attempting to stop recording");
+
           /*
           captureThread.interrupt();
           captureThread.setPriority(Thread.currentThread().getPriority() -1 );
-          */                    
-          
+          */
+
           recordService.stopRecord();
-          
+
           form.removeCommand(stopCommand); //"Hide" stopCommand when recording desires to resume
           form.addCommand(recordCommand);
           form.addCommand(playCommand);
           form.addCommand(eraseCommand);
           form.addCommand(finishCommand);
-          
+
           messageItem.setText("Stopping the Recorder...");
-          audioDataStream = recordService.getAudio();                                   
-          
-          //System.err.println("Sound size=" + audioDataStream.toByteArray().length);          
-          
+          audioDataStream = recordService.getAudio();
+
+          //System.err.println("Sound size=" + audioDataStream.toByteArray().length);
+
           messageItem.setText("Stopped Recording!");
       }
-      
+
       //Stops the playback of the Recorder
       public void stopPlaying() throws AudioException
       {
           errorItem.setLabel("");
           errorItem.setText("");
-          //Application must wait for Player to finish playing          
+          //Application must wait for Player to finish playing
           recordService.stopPlayback();
           System.err.println("Player has been stopped.");
           messageItem.setText("Stopped Playing!");
-          
+
           form.removeCommand(stopCommand);
           form.addCommand(playCommand);
           form.addCommand(recordCommand);
           form.addCommand(saveCommand);
-          form.addCommand(eraseCommand);          
+          form.addCommand(eraseCommand);
       }
-      
+
       public FileDataPointer getRecordedAudio()
       {
           if(recordFile == null)
               recordFile = new FileDataPointer(fullName);
           return recordFile;
       }
-      
+
       /*
       private void readFile(String fileName)
       {
           try
           {
               String rootName = fileService.getDefaultRoot();
-              String restorepath = "file:///" + rootName + "JRSounds";                
+              String restorepath = "file:///" + rootName + "JRSounds";
               String fullName = restorepath + "/" + fileName;
-          
+
               recordFile = new FileDataPointer(fullName);
               System.err.println("Successfully read Music file");
-          
-              //System.out.println("Sound Size =" + recordFile.getData().length);          
-          
+
+              //System.out.println("Sound Size =" + recordFile.getData().length);
+
               finalizeTask();
           }
           catch(FileException fe)
@@ -336,58 +336,58 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
           }
       }
       */
-      
-      private String saveFile(String filename) 
+
+      private String saveFile(String filename)
       {
           errorItem.setLabel("");
           errorItem.setText("");
-          try 
+          try
           {
               /*
                * Stop capturing if the save command is activated without a subsequent activation of the
-               * stop command. Recorder player must be started but not closed. 
+               * stop command. Recorder player must be started but not closed.
                */
-              
+
               if(recordService.getState() == AudioCaptureService.CAPTURE_STARTED && recordService.getState() != AudioCaptureService.CLOSED)
               {
-                  stopCapturing();                  
+                  stopCapturing();
               }
           }
           catch(AudioException ae)
           {
               System.err.println("An error occured when attempting to stop audio capture!");
-          }          
-          
+          }
+
           try
           {
               recordService.saveRecording(audioFileName);
-              fullName = recordService.getAudioPath();                    
+              fullName = recordService.getAudioPath();
           }
           catch(FileException fe)
           {
               errorItem.setText("Error saving audio.");
               System.err.println(fe);
-              fe.printStackTrace();          
-              
+              fe.printStackTrace();
+
               return "";
           }
-          
+
           System.out.println("Sound saved to:" + fullName);
           messageItem.setText("Saved to:" + fullName);
           recordFile = new FileDataPointer(fullName);
           form.addCommand(eraseCommand);
-          
+
           return fullName;
       }
-      
+
       //Removes the captured audio
       public void removeFile()
       {
           errorItem.setLabel("");
           errorItem.setText("");
-          
+
           boolean eraseSucceeded = false;
-          
+
           try
           {
               recordService.removeRecording();
@@ -408,50 +408,50 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
               form.removeCommand(eraseCommand);
               form.removeCommand(saveCommand);
               form.removeCommand(playCommand);
-          }                    
+          }
       }
-      
+
       //Go back one screen
       public void moveBack()
       {
           System.err.println("Moving back");
           destroy();
-          transitions.cancel();                  
-      }      
-      
+          transitions.cancel();
+      }
+
       //Finish capturing audio, inform shell, and return data as well
       public void finalizeTask()
       {
           System.err.println("Finalizing audio capture");
-          
+
           destroy();
           if (recordFile != null) {
               transitions.captured(recordFile);
           } else {
               transitions.noCapture();
           }
-      }      
-      
+      }
+
       //Actions to perform when service is unavailable
       private void serviceUnavailable(Exception e)
       {
           errorItem.setText("The Audio Capture or File Service is unavailable.\n QUITTING!");
-            
+
           //The only thing the user can do is retreat
           form.removeCommand(recordCommand);
           form.removeCommand(playCommand);
-            
+
           System.err.println(e.getMessage());
-      }      
-            
+      }
+
       //Record audio in a separate thread to keep the command listener alert for stopping
       public void run()
-      {          
+      {
             try
-            {   
+            {
               recordAudio();
-            } 
-            catch(AudioException ae) 
+            }
+            catch(AudioException ae)
             {
                 errorItem.setLabel("Error recording audio");
                 //errorItem.setText(ae.toString());
@@ -463,38 +463,38 @@ public abstract class AudioCaptureState implements DataCaptureTransitions, State
                 //errorItem.setText(ae.toString());
                 System.err.println(fe.toString());
             }
-            catch(InterruptedException ie) 
+            catch(InterruptedException ie)
             {
                 errorItem.setLabel("Error occurred while recording");
                 //errorItem.setText(ie.toString());
                 System.err.println(ie.toString());
             }
-      }  
+      }
 }
 
 class RecorderForm extends Form
 {
     private StringItem messageItem;
-    private StringItem errorItem;    
+    private StringItem errorItem;
 
     public RecorderForm()
-    {        
-        super("Record Audio");        
+    {
+        super("Record Audio");
         messageItem = new StringItem("", "Press Record to start recording.");
         append(messageItem);
         errorItem = new StringItem("", "");
-        append(errorItem);        
-        //StringBuffer inhalt = new StringBuffer();        
+        append(errorItem);
+        //StringBuffer inhalt = new StringBuffer();
     }
-    
+
     public StringItem getMessageItem()
     {
         return messageItem;
     }
-    
+
     public StringItem getErrorItem()
     {
         return errorItem;
     }
-    
+
 }

@@ -35,22 +35,22 @@ import org.javarosa.utilities.file.J2MEFileService;
 
 /**
  * An audio capture service that utilizes J2ME's robust Media API
- * 
+ *
  * @author Ndubisi Onuora
  */
 
-public class J2MEAudioCaptureService implements AudioCaptureService 
+public class J2MEAudioCaptureService implements AudioCaptureService
 {
     public static final String serviceName = DataCaptureService.AUDIO;
     private int serviceState;
-    
+
     private Player recordP;
     private RecordControl recordControl;
     private OutputStream audioDataStream;
-    
+
     private Player playP;
     private InputStream recordedInputStream;
-    
+
     private FileService fileService;
     private String recordFileName;
     private String defaultFileName;
@@ -59,9 +59,9 @@ public class J2MEAudioCaptureService implements AudioCaptureService
     private boolean recordingCreated;
     private boolean recordingDirectoryCreated;
     private String audioFormat;
-    
+
     private int counter;
-    
+
     public J2MEAudioCaptureService() throws UnavailableServiceException
     {
         try
@@ -69,7 +69,7 @@ public class J2MEAudioCaptureService implements AudioCaptureService
             fileService = getFileService();
         }
         catch(UnavailableServiceException ue)
-        {            
+        {
             ue.printStackTrace();
             throw new UnavailableServiceException("File service is unavailable. Unable to start " + serviceName);
         }
@@ -83,26 +83,26 @@ public class J2MEAudioCaptureService implements AudioCaptureService
 
     public String getType()
     {
-        return serviceName;        
+        return serviceName;
     }
-    
+
     //@Override
-    public OutputStream getAudio() 
-    {        
+    public OutputStream getAudio()
+    {
         return audioDataStream;
     }
 
     public int getState()
     {
         return serviceState;
-    }    
-    
+    }
+
     //@Override
     public void startRecord() throws AudioException
     {
         try
         {
-            recordP = Manager.createPlayer("capture://audio");            
+            recordP = Manager.createPlayer("capture://audio");
             recordP.realize();
             recordControl = (RecordControl)recordP.getControl("RecordControl");
             try
@@ -110,7 +110,7 @@ public class J2MEAudioCaptureService implements AudioCaptureService
                 recordFileName = null; //Reset file name to prevent concatenation of previous recordFileName twice
                 createFileName(recordFileName);
                 System.err.println("Recorded Filename=" + recordFileName);
-                audioDataStream = fileService.getFileOutputStream(recordFileName);                
+                audioDataStream = fileService.getFileOutputStream(recordFileName);
             }
             catch(FileException fe)
             {
@@ -122,18 +122,18 @@ public class J2MEAudioCaptureService implements AudioCaptureService
             {
                 throw new AudioException("Could not record audio due to null audio output stream!");
             }
-            
+
             recordControl.setRecordStream(audioDataStream);
             recordControl.startRecord();
-          
+
             recordingCreated = true;
             recordingDeleted = false;
-            recordP.start();        
-      
+            recordP.start();
+
        /*
-        * If the method does not die before here, 
-        * then the capture has officially started.        
-        */       
+        * If the method does not die before here,
+        * then the capture has officially started.
+        */
             serviceState = AudioCaptureService.CAPTURE_STARTED;
         }
         catch(MediaException me)
@@ -153,8 +153,8 @@ public class J2MEAudioCaptureService implements AudioCaptureService
         try
         {
             recordControl.commit();
-            recordP.stop();    
-            
+            recordP.stop();
+
             serviceState = AudioCaptureService.CAPTURE_STOPPED;
         }
         catch(MediaException me)
@@ -165,11 +165,11 @@ public class J2MEAudioCaptureService implements AudioCaptureService
         {
             System.err.println(ioe.getMessage());
         }
-        
+
     }
-    
+
     //@Override
-    public void startPlayback() throws AudioException 
+    public void startPlayback() throws AudioException
     {
         try
         {
@@ -183,17 +183,17 @@ public class J2MEAudioCaptureService implements AudioCaptureService
                 audioDataStream = null;
                 recordedInputStream = null;
                 System.err.println("An error occurred while obtaining the file data stream.");
-                fe.printStackTrace();                
+                fe.printStackTrace();
             }
             if(audioDataStream == null || recordingDeleted)
             {
                 throw new AudioException("No audio data recorded!");
-            }                 
+            }
             playP = Manager.createPlayer(recordedInputStream, "audio/x-wav");
-            
+
             playP.prefetch();
-            playP.start();        
-        
+            playP.start();
+
             serviceState = AudioCaptureService.PLAYBACK_STARTED;
         }
         catch(MediaException me)
@@ -203,14 +203,14 @@ public class J2MEAudioCaptureService implements AudioCaptureService
         catch(IOException ioe)
         {
             System.err.println(ioe.getMessage());
-        }        
+        }
     }
-    
+
     //@Override
-    public void stopPlayback() throws AudioException 
+    public void stopPlayback() throws AudioException
     {
-        if( recordingCreated && (serviceState == AudioCaptureService.PLAYBACK_STARTED) )            
-        {        
+        if( recordingCreated && (serviceState == AudioCaptureService.PLAYBACK_STARTED) )
+        {
             try
             {
                 playP.stop();
@@ -222,24 +222,24 @@ public class J2MEAudioCaptureService implements AudioCaptureService
             }
         }
     }
-    
+
     public String getAudioPath()
     {
         return recordFileName;
     }
-    
+
     public void saveRecording(String fileName) throws FileException
     {
         /*
          * If saveRecording() is not called before a subsequent recording, previous recording will be erased.
          */
         if(!recordingCreated)
-        {            
-            createFileName(fileName);            
+        {
+            createFileName(fileName);
             recordingCreated = true;
         }
     }
-    
+
     public void removeRecording() throws FileException
     {
         if(recordingCreated)
@@ -257,22 +257,22 @@ public class J2MEAudioCaptureService implements AudioCaptureService
                 recordingCreated = false;
                 recordingDeleted = true;
                 --counter;
-            }        
+            }
             catch(IOException ie)
             {
                 System.err.println("Error resetting record control!");
                 System.err.println(ie.getMessage());
-                ie.printStackTrace();            
+                ie.printStackTrace();
             }
             catch(FileException fe)
             {
                 System.err.println(fe.getMessage());
-                fe.printStackTrace();                
+                fe.printStackTrace();
                 throw new FileException("Error removing recorded audio!");
             }
-        }        
+        }
     }
-    
+
       //Retrieve a reference to the first available service
     private FileService getFileService() throws UnavailableServiceException
     {
@@ -282,21 +282,21 @@ public class J2MEAudioCaptureService implements AudioCaptureService
         throw new UnavailableServiceException("Unavailable service: " +  J2MEFileService.serviceName);
         //#endif
     }
-    
+
     private void createFileName(String fileName) throws FileException
-    {        
+    {
         String rootName = fileService.getDefaultRoot();
         String restorepath = "file:///" + rootName + "JRSounds";
         String fullName;
         defaultFileName = "Audio" + counter + audioFormat;
-        
+
         if(!recordingDirectoryCreated)
         {
             //recordDirectory = restorepath;
             fileService.createDirectory(restorepath);
             recordingDirectoryCreated = true;
         }
-        
+
         if(fileName == null)
         {
             fullName = restorepath + "/" + defaultFileName;
@@ -306,27 +306,27 @@ public class J2MEAudioCaptureService implements AudioCaptureService
             if(!fileName.endsWith(audioFormat))
                 fileName += audioFormat;
             fullName = restorepath + "/" + fileName;
-            
+
         }
         recordFileName = fullName;
-    }    
-    
+    }
+
     private void closeRecordingStream() throws IOException
     {
         if(audioDataStream != null && serviceState == CAPTURE_STOPPED)
-        {            
+        {
             audioDataStream.close();
         }
     }
-    
+
     private void closePlaybackStream() throws IOException
-    {        
+    {
         if(recordedInputStream != null && serviceState == PLAYBACK_STOPPED)
-        {            
+        {
             recordedInputStream.close();
         }
     }
-    
+
     //Closes all types of streams that are used
     public void closeStreams() throws IOException
     {
@@ -336,7 +336,7 @@ public class J2MEAudioCaptureService implements AudioCaptureService
             playP.close();
         closeRecordingStream();
         closePlaybackStream();
-        
-        serviceState = AudioCaptureService.CLOSED;        
+
+        serviceState = AudioCaptureService.CLOSED;
     }
 }
