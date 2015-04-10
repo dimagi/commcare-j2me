@@ -46,9 +46,9 @@ public class TreeReferenceTest extends TestCase {
     private TreeReference a2Ref;
     private TreeReference a2extRef;
 
-    private TreeReference apredRef;
-    private TreeReference apredmatchRef;
-    private TreeReference aprednotRef;
+    private TreeReference acPredRef;
+    private TreeReference acPredMatchRef;
+    private TreeReference acPredNotRef;
 
 
     public TreeReferenceTest(String name, TestMethod rTestMethod) {
@@ -87,25 +87,10 @@ public class TreeReferenceTest extends TestCase {
         a2extRef = root.extendRef("a", -1);
         a2extRef.setInstanceName("external");
 
-        apredRef = aRef.clone();
-        apredmatchRef = aRef.clone();
-        aprednotRef = aRef.clone();
+        acPredRef = acRef.clone();
+        acPredMatchRef = acRef.clone();
+        acPredNotRef = acRef.clone();
 
-        try {
-            Vector<XPathExpression> apreds = new Vector<XPathExpression>();
-            apreds.add(XPathParseTool.parseXPath("../b = 'test'"));
-            apredRef.addPredicate(0, apreds);
-
-            Vector<XPathExpression> amatchpreds = new Vector<XPathExpression>();
-            amatchpreds.add(XPathParseTool.parseXPath("../b = 'test'"));
-            apredmatchRef.addPredicate(0, amatchpreds);
-
-            Vector<XPathExpression> anotpreds = new Vector<XPathExpression>();
-            anotpreds.add(XPathParseTool.parseXPath("../b = 'fail'"));
-            aprednotRef.addPredicate(0, anotpreds);
-        } catch (XPathSyntaxException e) {
-            fail("Bad tests! Rewrite xpath expressions for predicate tests");
-        }
 
     }
 
@@ -276,12 +261,44 @@ public class TreeReferenceTest extends TestCase {
     }
 
     private void testPredicates() {
-        if (!apredRef.equals(apredmatchRef)) {
-            fail("/a[..b = 'test'] Did not equal itself!");
+        XPathExpression testPred = null;
+        XPathExpression failPred = null;
+        try {
+            testPred = XPathParseTool.parseXPath("../b = 'test'");
+            failPred = XPathParseTool.parseXPath("../b = 'fail'");
+        } catch (XPathSyntaxException e) {
+            fail("Bad tests! Rewrite xpath expressions for predicate tests");
         }
-        if (apredRef.equals(aprednotRef)) {
-            fail("/a[..b = 'test'] was equal to /a[..b = 'fail']");
-        }
+
+        Vector<XPathExpression> apreds = new Vector<XPathExpression>();
+        Vector<XPathExpression> amatchpreds = new Vector<XPathExpression>();
+        Vector<XPathExpression> anotpreds = new Vector<XPathExpression>();
+
+        apreds.add(testPred);
+        amatchpreds.add(testPred);
+        anotpreds.add(failPred);
+
+        acPredRef.addPredicate(0, apreds);
+        acPredMatchRef.addPredicate(0, amatchpreds);
+        acPredNotRef.addPredicate(0, anotpreds);
+
+        assertTrue("Predicates weren't correctly removed from reference.",
+                !acPredRef.removePredicates().hasPredicates());
+
+        assertTrue("Predicates weren't correctly detected.",
+                acPredRef.hasPredicates());
+
+        assertTrue("Found predicates where they shouldn't be.",
+                acPredRef.getPredicate(1) == null);
+
+        assertTrue("Didn't find predicates where they should be.",
+                acPredRef.getPredicate(0) == apreds);
+
+        assertTrue("/a[..b = 'test'] Did not equal itself!",
+                acPredRef.equals(acPredMatchRef));
+
+        assertTrue("/a[..b = 'test'] was equal to /a[..b = 'fail']",
+                !acPredRef.equals(acPredNotRef));
     }
 
 
