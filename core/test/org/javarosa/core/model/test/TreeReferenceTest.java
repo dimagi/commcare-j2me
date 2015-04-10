@@ -39,6 +39,7 @@ public class TreeReferenceTest extends TestCase {
     TreeReference ace;
     TreeReference bc;
     TreeReference dotc;
+    TreeReference parentRef;
 
     TreeReference dot;
 
@@ -77,6 +78,10 @@ public class TreeReferenceTest extends TestCase {
 
         dot = TreeReference.selfRef();
         dotc = dot.extendRef("c", TreeReference.DEFAULT_MUTLIPLICITY);
+
+        // represent ../
+        parentRef = TreeReference.selfRef();
+        parentRef.incrementRefLevel();
 
         a2 = root.extendRef("a", 2);
         a2ext = root.extendRef("a", -1);
@@ -156,7 +161,12 @@ public class TreeReferenceTest extends TestCase {
             fail("(/a/c/d).subreference(0) should be: /a");
         }
         if (!ac.equals(acd.getSubReference(1))) {
-            fail("(/a/b/c).subreference(1) should be: /a/c");
+            fail("(/a/c/d).subreference(1) should be: /a/c");
+        }
+        try {
+            parentRef.getSubReference(0);
+            fail("(../).subreference(0) should throw an exception");
+        } catch (IllegalArgumentException e) {
         }
     }
 
