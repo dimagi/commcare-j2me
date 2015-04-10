@@ -109,7 +109,7 @@ public class XPathEvalTest extends TestCase {
                     fail("Doubles outside of tolerance [" + o + "," + t + " ]");
                 }
             } else if (!expected.equals(result)) {
-                fail("Expected " + expected + ", got " + result);
+                fail("Expected " + expected + ", got " + result + "| " + expr);
             }
         } catch (XPathException xpex) {
             if (!exceptionExpected) {
@@ -537,6 +537,12 @@ public class XPathEvalTest extends TestCase {
         testEval("count(/data/predtest[@val = /data/string_two])", instance, null, new Double(2));
         testEval("count(/data/predtest[@val = 2])", instance, null, new Double(2));
         testEval("count(/data/predtest[2 = @val])", instance, null, new Double(2));
+        
+        testEval("/data/predtest[position() = 1]/@val", instance, null, new String("2.0"));
+        testEval("/data/predtest[position() = 2]/@val", instance, null, new String("2"));
+        testEval("/data/predtest[position() = 3]/@val", instance, null, new String("string"));
+        
+        testEval("/data/strtest[@val ='b' or @val='string'][position() = 2]/@val", instance, null, new String("string"));
 
         testEval("count(/data/strtest[@val = 'a'])", instance, null, new Double(1));
         testEval("count(/data/strtest[@val = 2])", instance, null, new Double(0));
