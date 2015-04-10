@@ -66,7 +66,7 @@ public class TreeReferenceTest extends TestCase {
         initStuff();
     }
 
-    public void initStuff() {
+    private void initStuff() {
         root = TreeReference.rootRef();
         a = root.extendRef("a", TreeReference.DEFAULT_MUTLIPLICITY);
         b = root.extendRef("b", TreeReference.DEFAULT_MUTLIPLICITY);
@@ -124,9 +124,9 @@ public class TreeReferenceTest extends TestCase {
         return aSuite;
     }
 
-    public final static int NUM_TESTS = 8;
+    private final static int NUM_TESTS = 8;
 
-    public void doTest(int i) {
+    private void doTest(int i) {
         switch (i) {
             case 1:
                 testClones();
@@ -170,12 +170,12 @@ public class TreeReferenceTest extends TestCase {
         }
     }
 
-    public void testSerialization() {
+    private void testSerialization() {
         //TODO: That ^
     }
 
 
-    public void testParentage() {
+    private void testParentage() {
         if (!root.isParentOf(a, true)) {
             fail("/ is a parent of '/a'");
         }
@@ -199,7 +199,7 @@ public class TreeReferenceTest extends TestCase {
         ;
     }
 
-    public void testClones() {
+    private void testClones() {
         if (!a.clone().equals(a)) {
             fail("/a was unable to clone properly");
         }
@@ -214,7 +214,7 @@ public class TreeReferenceTest extends TestCase {
         }
     }
 
-    public void testIntersection() {
+    private void testIntersection() {
         if (!a.intersect(a).equals(a)) {
             fail("intersect(/a,/a) should result in /a");
         }
@@ -241,7 +241,7 @@ public class TreeReferenceTest extends TestCase {
         }
     }
 
-    public void contextualization() {
+    private void contextualization() {
         TreeReference abc = XPathReference.getPathExpr("/a/b/c").getReference();
         TreeReference ab = XPathReference.getPathExpr("/a/b").getReference();
         TreeReference ac = XPathReference.getPathExpr("/a/c").getReference();
@@ -275,7 +275,7 @@ public class TreeReferenceTest extends TestCase {
         }
     }
 
-    public void testPredicates() {
+    private void testPredicates() {
         if (!apred.equals(apredmatch)) {
             fail("/a[..b = 'test'] Did not equal itself!");
         }
@@ -286,15 +286,32 @@ public class TreeReferenceTest extends TestCase {
 
 
     private void testGenericize() {
-        //Generic ref to generic attribute
-        TreeReference attributeRef = XPathReference.getPathExpr("/data/node/@attribute").getReference();
+        // Generic ref to generic attribute
+        TreeReference attributeRef =
+            XPathReference.getPathExpr("/data/node/@attribute").getReference();
 
-        //re-genericize
+        // re-genericize
         TreeReference genericRef = attributeRef.genericize();
 
         if (!attributeRef.equals(genericRef)) {
-            fail("Genericize improperly converted " + attributeRef.toString(true) + " to " + genericRef.toString(true));
+            fail("Genericize improperly converted " + attributeRef.toString(true) +
+                    " to " + genericRef.toString(true));
+        }
+
+        // (/data/a[3]).genericize() ==> /data/a (with a's multiplicity being -1)
+        if (!a.genericize().equals(a2.genericize())) {
+            fail("Genericize improperly converted removed multiplicities of " + 
+                    a2.toString(true) +
+                    ", which should, once genericized, should match" +
+                    a.genericize().toString(true));
+        }
+        // (/data/a[3]).genericize() ==> /data/a (with a's multiplicity being -1)
+        // but 'a' in aRef should have the default multiplicity of 0
+        if (a.equals(a2.genericize())) {
+            fail("Genericize improperly converted removed multiplicities of " + 
+                    a2.toString(true) +
+                    ", which should, once genericized, should match" +
+                    a.toString(true));
         }
     }
 }
-
