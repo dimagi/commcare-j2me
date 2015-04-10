@@ -241,23 +241,25 @@ public class TreeReferenceTest extends TestCase {
 
         TreeReference invalid = floatc.contextualize(floatc2);
 
-        if (!abc.equals(testabc)) {
-            fail("context: c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc.toString(true));
-        }
-        if (!abc.equals(testabc2)) {
-            fail("context: ./c didn't evaluate to " + abc.toString(true) + ", but rather to " + testabc2.toString(true));
-        }
-        if (!ac.equals(testac)) {
-            fail("context: ../c didn't evaluate to " + ac.toString(true) + ", but rather to " + testac.toString(true));
-        }
-        if (invalid != null) {
-            fail("was succesfully able to contextualize against an ambiguous reference. Result was: " + invalid.toString(true));
-        }
+        assertTrue("context: c didn't evaluate to " + abc.toString(true) +
+                ", but rather to " + testabc.toString(true),
+                abc.equals(testabc));
+
+        assertTrue("context: ./c didn't evaluate to " + abc.toString(true) +
+                ", but rather to " + testabc2.toString(true),
+                abc.equals(testabc2));
+
+        assertTrue("context: ../c didn't evaluate to " + ac.toString(true) +
+                ", but rather to " + testac.toString(true),
+                ac.equals(testac));
+
+        assertTrue("Was succesfully able to contextualize against an ambiguous reference.",
+                invalid == null);
 
         TreeReference a2extc = a2extRef.contextualize(a2Ref);
-        if (a2extc.getMultLast() == 2) {
-            fail("Treeref from named instance wrongly accepted multiplicity context from root instance");
-        }
+        assertTrue("Treeref from named instance wrongly accepted multiplicity " +
+                "context from root instance",
+                a2extc.getMultLast() != 2);
     }
 
     private void testPredicates() {
