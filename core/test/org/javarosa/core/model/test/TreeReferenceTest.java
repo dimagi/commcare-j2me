@@ -302,30 +302,47 @@ public class TreeReferenceTest extends TestCase {
 
         // Two tests trying to figure out multiplicity copying during
         // contextualization.
-        //
-        // setup /a[1]/a[2]/a[3] reference
-        System.out.println("setup path that looks like /a[1]/a[2]/a[3]");
-        System.out.println(aaa.toString());
 
         // Test trying to figure out multiplicity copying during contextualization
         // setup ../../a[5] reference
         TreeReference a5 = root.extendRef("a", 5);
         a5.setRefLevel(2);
-        System.out.println("setup path that looks like ../../a[5]");
-        System.out.println(a5.toString());
 
-        // setup expected result /a[1]/a[5] reference
+        // setup expected result /a[2]/a[6] reference
         TreeReference expectedAs = a.extendRef("a", 5);
-        System.out.println("setup path that looks like /a[1]/a[5]");
-        System.out.println(expectedAs.toString());
 
-        // ('../../a[5]').contextualize('/a[1]/a[2]/a[3]') ==> /a[1]/a[5]
-        // XXX: ^ that is right the expected behavior, right?
-        //      not /a[1]/a[2], which is what we get
+        // ('../../a[6]').contextualize('/a[2]/a[3]/a[4]') ==> /a[2]/a[6]
         contextualizeEval = a5.contextualize(aaa);
-        // assertTrue("Got " + contextualizeEval.toString() + " and expected /a[1]/a[5]" +
-        //         " for test of multiplicity copying when level names are same between refs",
-        //         expectedAs.equals(contextualizeEval));
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a[2]/a[6]" +
+                " for test of multiplicity copying when level names are same between refs",
+                expectedAs.equals(contextualizeEval));
+
+        // ('c').contextualize('/a/*') ==> /a/*/c
+        TreeReference wildA = XPathReference.getPathExpr("/a/*").getReference();
+        contextualizeEval = floatc.contextualize(wildA);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/c" +
+                " for test of wildcard merging",
+                wildA.extendRef("c", TreeReference.INDEX_UNBOUND).equals(contextualizeEval));
+
+        // ('../*').contextualize('/a/c') ==> /a/*/
+        // XXX: what should the behavoir for this be?
+        //      /a/c or /a/*
+        TreeReference wildBack = XPathReference.getPathExpr("../*").getReference();
+        contextualizeEval = wildBack.contextualize(acRef);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/" +
+                " for test of wildcard merging",
+                wildA.equals(contextualizeEval));
+
+        // ('../a[6]').contextualize('/a/*/a') ==> /a/*/a[6]
+        TreeReference wildAs = XPathReference.getPathExpr("/a/*").getReference();
+        wildAs = wildAs.extendRef("a", TreeReference.DEFAULT_MUTLIPLICITY);
+        a5.setRefLevel(1);
+        contextualizeEval = a5.contextualize(wildAs);
+        expectedAs = XPathReference.getPathExpr("/a/*").getReference().extendRef("a", 5);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/a[6]" +
+                " for test of multiplicity copying when level names are same between refs",
+                expectedAs.equals(contextualizeEval));
+
 
     }
 
@@ -353,6 +370,15 @@ public class TreeReferenceTest extends TestCase {
         anchorEval = back2c.anchor(aRef);
         assertTrue("/a + ../../c should return null since there are too many ../'s",
                 anchorEval == null);
+
+        // ('../*').anchor('/a/z') ==> /a/*/
+        TreeReference wildBack = XPathReference.getPathExpr("../*").getReference();
+        TreeReference wildA = XPathReference.getPathExpr("/a/*").getReference();
+        TreeReference azRef = XPathReference.getPathExpr("/a/z").getReference();
+        anchorEval = wildBack.anchor(azRef);
+        assertTrue("Got " + anchorEval.toString() + " and expected " + wildA.toString() +
+                " for anchoring with wildcards",
+                wildA.equals(anchorEval));
     }
 
     private void testParent() {
