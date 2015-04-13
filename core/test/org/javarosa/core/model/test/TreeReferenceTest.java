@@ -35,6 +35,7 @@ public class TreeReferenceTest extends TestCase {
     private TreeReference aRef;
     private TreeReference bRef;
     private TreeReference acRef;
+    private TreeReference ac2Ref;
     private TreeReference acdRef;
     private TreeReference aceRef;
     private TreeReference bcRef;
@@ -43,8 +44,16 @@ public class TreeReferenceTest extends TestCase {
 
     private TreeReference dotRef;
 
+    private TreeReference floatc;
+    private TreeReference floatc2;
+    private TreeReference backc;
+    private TreeReference back2c;
+
     private TreeReference a2Ref;
     private TreeReference a2extRef;
+
+    private TreeReference abcRef;
+    private TreeReference abRef;
 
     private TreeReference acPredRef;
     private TreeReference acPredMatchRef;
@@ -76,15 +85,25 @@ public class TreeReferenceTest extends TestCase {
         acdRef = acRef.extendRef("d", TreeReference.DEFAULT_MUTLIPLICITY);
         aceRef = acRef.extendRef("e", TreeReference.DEFAULT_MUTLIPLICITY);
 
+        abcRef = XPathReference.getPathExpr("/a/b/c").getReference();
+        ac2Ref = XPathReference.getPathExpr("/a/c").getReference();
+        abRef = XPathReference.getPathExpr("/a/b").getReference();
+
         dotRef = TreeReference.selfRef();
         dotcRef = dotRef.extendRef("c", TreeReference.DEFAULT_MUTLIPLICITY);
+
+        // some relative references
+        floatc = XPathReference.getPathExpr("c").getReference();
+        floatc2 = XPathReference.getPathExpr("./c").getReference();
+        backc = XPathReference.getPathExpr("../c").getReference();
+        back2c = XPathReference.getPathExpr("../../c").getReference();
 
         // represent ../
         parentRef = TreeReference.selfRef();
         parentRef.incrementRefLevel();
 
         a2Ref = root.extendRef("a", 2);
-        a2extRef = root.extendRef("a", -1);
+        a2extRef = root.extendRef("a", TreeReference.INDEX_UNBOUND);
         a2extRef.setInstanceName("external");
 
         acPredRef = acRef.clone();
@@ -109,7 +128,7 @@ public class TreeReferenceTest extends TestCase {
         return aSuite;
     }
 
-    private final static int NUM_TESTS = 8;
+    private final static int NUM_TESTS = 10;
 
     private void doTest(int i) {
         switch (i) {
@@ -126,15 +145,21 @@ public class TreeReferenceTest extends TestCase {
                 testIntersection();
                 break;
             case 5:
-                contextualization();
+                testAnchor();
                 break;
             case 6:
-                testPredicates();
+                testParent();
                 break;
             case 7:
-                testGenericize();
+                testContextualization();
                 break;
             case 8:
+                testPredicates();
+                break;
+            case 9:
+                testGenericize();
+                break;
+            case 10:
                 testSubreferences();
                 break;
         }
@@ -201,22 +226,22 @@ public class TreeReferenceTest extends TestCase {
 
     private void testIntersection() {
         if (!aRef.intersect(aRef).equals(aRef)) {
-            fail("intersect(/a,/a) should result in /a");
+            fail("intersect(/a, /a) should result in /a");
         }
         if (!acRef.intersect(acRef).equals(acRef)) {
-            fail("intersect(/a/c,/a/c) should result in /a/c");
+            fail("intersect(/a/c, /a/c) should result in /a/c");
         }
         if (!aRef.intersect(dotRef).equals(root)) {
-            fail("intersect(/a,.) should result in /");
+            fail("intersect(/a, .) should result in /");
         }
         if (!acRef.intersect(aRef).equals(aRef)) {
-            fail("intersect(/a/c,/a) should result in /a");
+            fail("intersect(/a/c, /a) should result in /a");
         }
         if (!aRef.intersect(acRef).equals(aRef)) {
-            fail("intersect(/a,/a/c) should result in /a");
+            fail("intersect(/a, /a/c) should result in /a");
         }
         if (!aceRef.intersect(acdRef).equals(acRef)) {
-            fail("intersect(/a/c/d,/a/c/e) should result in /a/c");
+            fail("intersect(/a/c/d, /a/c/e) should result in /a/c");
         }
         if (!aceRef.intersect(bRef).equals(root)) {
             fail("intersect(/a/c/e, /b) should result in /");
@@ -226,40 +251,128 @@ public class TreeReferenceTest extends TestCase {
         }
     }
 
-    private void contextualization() {
-        TreeReference abc = XPathReference.getPathExpr("/a/b/c").getReference();
-        TreeReference ab = XPathReference.getPathExpr("/a/b").getReference();
-        TreeReference ac = XPathReference.getPathExpr("/a/c").getReference();
+    private void testContextualization() {
+        TreeReference contextualizeEval;
 
-        TreeReference floatc = XPathReference.getPathExpr("c").getReference();
-        TreeReference floatc2 = XPathReference.getPathExpr("./c").getReference();
-        TreeReference backc = XPathReference.getPathExpr("../c").getReference();
+        // ('c').contextualize('/a/b') ==> /a/b/c
+        contextualizeEval = floatc.contextualize(abRef);
+        assertTrue("context: c didn't evaluate to " + abcRef.toString() +
+                ", but rather to " + contextualizeEval.toString(),
+                abcRef.equals(contextualizeEval));
 
-        TreeReference testabc = floatc.contextualize(ab);
-        TreeReference testabc2 = floatc2.contextualize(ab);
-        TreeReference testac = backc.contextualize(ab);
+        // ('./c').contextualize('/a/b') ==> /a/b/c
+        contextualizeEval = floatc2.contextualize(abRef);
+        assertTrue("context: ./c didn't evaluate to " + abcRef.toString() +
+                ", but rather to " + contextualizeEval.toString(),
+                abcRef.equals(contextualizeEval));
 
-        TreeReference invalid = floatc.contextualize(floatc2);
+        // TODO: investigate why this test fails when acRef is used instead of
+        // ac2Ref
+        // ('../c').contextualize('/a/b') ==> /a/c
+        contextualizeEval = backc.contextualize(abRef);
+        assertTrue("context: ../c didn't evaluate to " + ac2Ref.toString() +
+                ", but rather to " + contextualizeEval.toString(),
+                ac2Ref.equals(contextualizeEval));
 
-        assertTrue("context: c didn't evaluate to " + abc.toString(true) +
-                ", but rather to " + testabc.toString(true),
-                abc.equals(testabc));
-
-        assertTrue("context: ./c didn't evaluate to " + abc.toString(true) +
-                ", but rather to " + testabc2.toString(true),
-                abc.equals(testabc2));
-
-        assertTrue("context: ../c didn't evaluate to " + ac.toString(true) +
-                ", but rather to " + testac.toString(true),
-                ac.equals(testac));
-
+        // ('c').contextualize('./c') ==> null
+        contextualizeEval = floatc.contextualize(floatc2);
         assertTrue("Was succesfully able to contextualize against an ambiguous reference.",
-                invalid == null);
+                contextualizeEval == null);
 
-        TreeReference a2extc = a2extRef.contextualize(a2Ref);
+        // ('a[-1]').contextualize('a[2]') ==> something like a[position() != 2]
+        contextualizeEval = a2extRef.contextualize(a2Ref);
         assertTrue("Treeref from named instance wrongly accepted multiplicity " +
                 "context from root instance",
-                a2extc.getMultLast() != 2);
+                contextualizeEval.getMultLast() != 2);
+
+        // Two tests trying to figure out multiplicity copying during
+        // contextualization.
+        //
+        // setup /a[1]/a[2]/a[3] reference
+        TreeReference a = root.extendRef("a", 1);
+        TreeReference aa = a.extendRef("a", 2);
+        TreeReference aaa = aa.extendRef("a", 3);
+        System.out.println("setup path that looks like /a[1]/a[2]/a[3]");
+        System.out.println(aaa.toString());
+
+        // Test trying to figure out multiplicity copying during contextualization
+        // setup ../../a[5] reference
+        TreeReference a5 = root.extendRef("a", 5);
+        a5.setRefLevel(2);
+        System.out.println("setup path that looks like ../../a[5]");
+        System.out.println(a5.toString());
+
+        // setup expected result /a[1]/a[5] reference
+        TreeReference expectedAs = a.extendRef("a", 5);
+        System.out.println("setup path that looks like /a[1]/a[5]");
+        System.out.println(expectedAs.toString());
+
+        // ('../../a[5]').contextualize('/a[1]/a[2]/a[3]') ==> /a[1]/a[5]
+        // XXX: ^ that is right the expected behavior, right?
+        //      not /a[1]/a[2], which is what we get
+        contextualizeEval = a5.contextualize(aaa);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a[1]/a[5]" +
+                " for test of multiplicity copying when level names are same between refs",
+                expectedAs.equals(contextualizeEval));
+
+    }
+
+    private void testAnchor() {
+        TreeReference anchorEval;
+        // TODO: investigate why this test fails when acRef is used instead of
+        // ac2Ref
+        // ('../c').anchor('/a/b') ==> a/c
+        anchorEval = backc.anchor(abRef);
+        assertTrue("/a/b/ + ../c should anchor to /a/c not " + anchorEval.toString(),
+                ac2Ref.equals(anchorEval));
+
+        // return clone if absolute ref is being anchored to something
+        // ('/a/c').anchor('./c') ==> a/c
+        anchorEval = ac2Ref.anchor(floatc);
+        assertTrue("./c + /a/c should just return /a/c not " + anchorEval.toString(),
+                ac2Ref.equals(anchorEval));
+
+        // ('./c').anchor('./c') ==> null
+        anchorEval = floatc.anchor(floatc);
+        assertTrue("./c + ./c should return null since trying to anchor to a relative ref",
+                anchorEval == null);
+
+        // ('../c').anchor('/a') ==> null
+        anchorEval = back2c.anchor(aRef);
+        assertTrue("/a + ../../c should return null since there are too many ../'s",
+                anchorEval == null);
+    }
+
+    private void testParent() {
+        TreeReference parentEval;
+
+        // ('/a/b').parent('/a/c') ==> '/a/b'
+        parentEval = abRef.parent(acRef);
+        assertTrue("taking the parent of an absolute ref should return a copy of that ref",
+                abRef.equals(parentEval));
+
+        // ('../c').parent('/a/b') ==> null
+        parentEval = backc.parent(abRef);
+        assertTrue("you can't take the parent of a relative reference, unless it is also relative",
+                parentEval == null);
+
+        // ('../c').parent('../c') ==> null
+        parentEval = backc.parent(backc);
+        assertTrue("The argument to calling 'parent' on a relative reference " +
+                "must be a series of ../'s with no reference level data",
+                parentEval == null);
+
+        // ('../c').parent('../') ==> '../../c/'
+        parentEval = backc.parent(parentRef);
+        assertTrue("calling 'parent' on a relative reference with ../'s should join " +
+                "them with those of the level-less relative argument reference.",
+                back2c.equals(parentEval));
+
+        // ('./c').parent('/a/b') ==> '/a/b/c'
+        parentEval = floatc.parent(abRef);
+        assertTrue("standard call to 'parent' returned " + parentEval.toString() +
+                "instead of expected /a/b/c",
+                abcRef.equals(parentEval));
     }
 
     private void testPredicates() {
@@ -313,24 +426,24 @@ public class TreeReferenceTest extends TestCase {
         TreeReference genericRef = attributeRef.genericize();
 
         if (!attributeRef.equals(genericRef)) {
-            fail("Genericize improperly converted " + attributeRef.toString(true) +
-                    " to " + genericRef.toString(true));
+            fail("Genericize improperly converted " + attributeRef.toString() +
+                    " to " + genericRef.toString());
         }
 
         // (/data/aRef[3]).genericize() ==> /data/aRef (with aRef's multiplicity being -1)
         if (!aRef.genericize().equals(a2Ref.genericize())) {
-            fail("Genericize improperly converted removed multiplicities of " + 
-                    a2Ref.toString(true) +
+            fail("Genericize improperly converted removed multiplicities of " +
+                    a2Ref.toString() +
                     ", which should, once genericized, should match" +
-                    aRef.genericize().toString(true));
+                    aRef.genericize().toString());
         }
         // (/data/aRef[3]).genericize() ==> /data/aRef (with aRef's multiplicity being -1)
         // but 'aRef' in aRef should have the default multiplicity of 0
         if (aRef.equals(a2Ref.genericize())) {
-            fail("Genericize improperly converted removed multiplicities of " + 
-                    a2Ref.toString(true) +
+            fail("Genericize improperly converted removed multiplicities of " +
+                    a2Ref.toString() +
                     ", which should, once genericized, should match" +
-                    aRef.toString(true));
+                    aRef.toString());
         }
     }
 }
