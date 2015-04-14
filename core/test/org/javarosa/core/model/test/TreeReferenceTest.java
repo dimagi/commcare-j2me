@@ -272,13 +272,13 @@ public class TreeReferenceTest extends TestCase {
         // ('c').contextualize('/a/b') ==> /a/b/c
         contextualizeEval = floatc.contextualize(abRef);
         assertTrue("context: c didn't evaluate to " + abcRef.toString() +
-                ", but rather to " + contextualizeEval.toString(),
+                        ", but rather to " + contextualizeEval.toString(),
                 abcRef.equals(contextualizeEval));
 
         // ('./c').contextualize('/a/b') ==> /a/b/c
         contextualizeEval = floatc2.contextualize(abRef);
         assertTrue("context: ./c didn't evaluate to " + abcRef.toString() +
-                ", but rather to " + contextualizeEval.toString(),
+                        ", but rather to " + contextualizeEval.toString(),
                 abcRef.equals(contextualizeEval));
 
         // TODO: investigate why this test fails when acRef is used instead of
@@ -286,7 +286,7 @@ public class TreeReferenceTest extends TestCase {
         // ('../c').contextualize('/a/b') ==> /a/c
         contextualizeEval = backc.contextualize(abRef);
         assertTrue("context: ../c didn't evaluate to " + ac2Ref.toString() +
-                ", but rather to " + contextualizeEval.toString(),
+                        ", but rather to " + contextualizeEval.toString(),
                 ac2Ref.equals(contextualizeEval));
 
         // ('c').contextualize('./c') ==> null
@@ -297,7 +297,7 @@ public class TreeReferenceTest extends TestCase {
         // ('a[-1]').contextualize('a[2]') ==> something like a[position() != 2]
         contextualizeEval = a2extRef.contextualize(a2Ref);
         assertTrue("Treeref from named instance wrongly accepted multiplicity " +
-                "context from root instance",
+                        "context from root instance",
                 contextualizeEval.getMultLast() != 2);
 
         // Two tests trying to figure out multiplicity copying during
@@ -314,14 +314,14 @@ public class TreeReferenceTest extends TestCase {
         // ('../../a[6]').contextualize('/a[2]/a[3]/a[4]') ==> /a[2]/a[6]
         contextualizeEval = a5.contextualize(aaa);
         assertTrue("Got " + contextualizeEval.toString() + " and expected /a[2]/a[6]" +
-                " for test of multiplicity copying when level names are same between refs",
+                        " for test of multiplicity copying when level names are same between refs",
                 expectedAs.equals(contextualizeEval));
 
         // ('c').contextualize('/a/*') ==> /a/*/c
         TreeReference wildA = XPathReference.getPathExpr("/a/*").getReference();
         contextualizeEval = floatc.contextualize(wildA);
         assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/c" +
-                " for test of wildcard merging",
+                        " for test of wildcard merging",
                 wildA.extendRef("c", TreeReference.INDEX_UNBOUND).equals(contextualizeEval));
 
         // ('../*').contextualize('/a/c') ==> /a/*/
@@ -330,7 +330,7 @@ public class TreeReferenceTest extends TestCase {
         TreeReference wildBack = XPathReference.getPathExpr("../*").getReference();
         contextualizeEval = wildBack.contextualize(acRef);
         assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/" +
-                " for test of wildcard merging",
+                        " for test of wildcard merging",
                 wildA.equals(contextualizeEval));
 
         // ('../a[6]').contextualize('/a/*/a') ==> /a/*/a[6]
@@ -340,7 +340,7 @@ public class TreeReferenceTest extends TestCase {
         contextualizeEval = a5.contextualize(wildAs);
         expectedAs = XPathReference.getPathExpr("/a/*").getReference().extendRef("a", 5);
         assertTrue("Got " + contextualizeEval.toString() + " and expected /a/*/a[6]" +
-                " for test of multiplicity copying when level names are same between refs",
+                        " for test of multiplicity copying when level names are same between refs",
                 expectedAs.equals(contextualizeEval));
 
 
@@ -377,7 +377,7 @@ public class TreeReferenceTest extends TestCase {
         TreeReference azRef = XPathReference.getPathExpr("/a/z").getReference();
         anchorEval = wildBack.anchor(azRef);
         assertTrue("Got " + anchorEval.toString() + " and expected " + wildA.toString() +
-                " for anchoring with wildcards",
+                        " for anchoring with wildcards",
                 wildA.equals(anchorEval));
     }
 
@@ -397,19 +397,19 @@ public class TreeReferenceTest extends TestCase {
         // ('../c').parent('../c') ==> null
         parentEval = backc.parent(backc);
         assertTrue("The argument to calling 'parent' on a relative reference " +
-                "must be a series of ../'s with no reference level data",
+                        "must be a series of ../'s with no reference level data",
                 parentEval == null);
 
         // ('../c').parent('../') ==> '../../c/'
         parentEval = backc.parent(parentRef);
         assertTrue("calling 'parent' on a relative reference with ../'s should join " +
-                "them with those of the level-less relative argument reference.",
+                        "them with those of the level-less relative argument reference.",
                 back2c.equals(parentEval));
 
         // ('./c').parent('/a/b') ==> '/a/b/c'
         parentEval = floatc.parent(abRef);
         assertTrue("standard call to 'parent' returned " + parentEval.toString() +
-                "instead of expected /a/b/c",
+                        "instead of expected /a/b/c",
                 abcRef.equals(parentEval));
     }
 
@@ -437,7 +437,7 @@ public class TreeReferenceTest extends TestCase {
     private void testGenericize() {
         // Generic ref to generic attribute
         TreeReference attributeRef =
-            XPathReference.getPathExpr("/data/node/@attribute").getReference();
+                XPathReference.getPathExpr("/data/node/@attribute").getReference();
 
         // re-genericize
         TreeReference genericRef = attributeRef.genericize();
