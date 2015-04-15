@@ -118,7 +118,7 @@ public class FormDefTest extends TestCase {
             // are we changing the value of /data/show?
             if (qRef.toString().equals("/data/show")) {
                 int response = fec.answerQuestion(new StringData("no"));
-                if (response != fec.ANSWER_OK){
+                if (response != fec.ANSWER_OK) {
                     fail("Bad response from fec.answerQuestion()");
                 }
             } else if (q.getID() == 2) {
