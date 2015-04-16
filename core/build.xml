@@ -35,6 +35,7 @@
         <delete dir="${dist}"/>
         <delete dir="${build}"/>
         <delete dir="${doc}"/>
+        <delete dir="${test-build}"/>
     </target>
 
     <target name="compile" depends="extract-libs, init" description="compile the source">
