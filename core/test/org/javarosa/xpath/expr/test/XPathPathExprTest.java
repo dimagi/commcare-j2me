@@ -99,10 +99,10 @@ public class XPathPathExprTest extends TestCase {
         switch (i) {
             case 1:
                 testHeterogeneousPaths();
-                System.out.println("foo");
                 break;
             case 2:
                 testNestedMultiplicities();
+                break;
         }
     }
 
@@ -116,8 +116,6 @@ public class XPathPathExprTest extends TestCase {
     }
 
     private void testNestedMultiplicities() {
-        FormInstance instance = loadInstance("/test_nested_multiplicities.xml");
-
         FormParseInit fpi = new FormParseInit("/test_nested_multiplicities.xml");
         FormDef fd = fpi.getFormDef();
         FormEntryModel fem = fpi.getFormEntryModel();
@@ -176,7 +174,8 @@ public class XPathPathExprTest extends TestCase {
     }
 
     /**
-     * Load a form instance from a path, returning null if any errors occur.
+     * Load a form instance from a path.
+     * Doesn't create a model or main instance.
      *
      * @param formPath path of the form to load, relative to project build
      * @return FormInstance created from the path pointed to, or null if any
