@@ -66,7 +66,7 @@ public class FormDefTest extends TestCase {
     }
 
     public void initStuff() {
-        fpi = new FormParseInit();
+        fpi = new FormParseInit("/ImageSelectTester.xhtml");
         q = fpi.getFirstQuestionDef();
         fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
     }
