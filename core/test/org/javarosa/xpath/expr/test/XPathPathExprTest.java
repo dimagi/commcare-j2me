@@ -115,15 +115,22 @@ public class XPathPathExprTest extends TestCase {
         testEval("/data/places/country[@id ='one']/name", instance, null, "Singapore");
     }
 
+    /**
+     * Some simple xpath expressions with multiple predicates that operate over
+     * nodesets.
+     */
     private void testNestedMultiplicities() {
         FormParseInit fpi = new FormParseInit("/test_nested_multiplicities.xml");
         FormDef fd = fpi.getFormDef();
         FormEntryModel fem = fpi.getFormEntryModel();
 
-        testEval("/data/bikes/manufacturer/model[@id='pista']/@color", fd.getInstance(), null, "seafoam");
-        testEval("join(' ', /data/bikes/manufacturer[@american='yes']/model[@color='silver']/@id)", fd.getInstance(), null, "cross-check vamoots");
-        // testEval("/data/pista-color", fd.getInstance(), null, "seafoam");
-        // testEval("/data/silver-american", fd.getInstance(), null, "cross-check vamoots");
+        testEval("/data/bikes/manufacturer/model[@id='pista']/@color",
+                fd.getInstance(), null, "seafoam");
+        testEval("join(' ', /data/bikes/manufacturer[@american='yes']/model[.=1]/@id)",
+                fd.getInstance(), null, "karate-monkey vamoots");
+        // fails because of [model=1]:
+        testEval("join(' ', /data/bikes/manufacturer[@american='yes'][model=1]/model/@id)",
+                fd.getInstance(), null, new XPathTypeMismatchException());
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
