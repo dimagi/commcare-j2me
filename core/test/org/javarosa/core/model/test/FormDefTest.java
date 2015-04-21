@@ -128,7 +128,7 @@ public class FormDefTest extends TestCase {
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
         do {
-            QuestionDef q = fpi.getCurrentQuestion(); 
+            QuestionDef q = fpi.getCurrentQuestion();
             if (q == null || q.getTextID() == null || q.getTextID() == "") {
                 continue;
             }
