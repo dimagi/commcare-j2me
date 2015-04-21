@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<h:html xmlns:h="http://www.w3.org/1999/xhtml"
+    xmlns:orx="http://openrosa.org/jr/xforms"
+    xmlns="http://www.w3.org/2002/xforms"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:jr="http://openrosa.org/javarosa"
+    xmlns:vellum="http://commcarehq.org/xforms/vellum">
+    <h:head>
+        <h:title>Nested predicates with relative references</h:title>
+        <model>
+            <instance>
+                <data xmlns:jrm="http://dev.commcarehq.org/jr/xforms"
+                    xmlns="http://openrosa.org/formdesigner/73BD6623-B13A-4C07-850E-583899531924"
+                    uiVersion="1"
+                    version="1"
+                    name="New Form">
+
+                    <owner_id></owner_id>
+                </data>
+            </instance>
+
+            <instance id="groups">
+                <root>
+                    <groups id="north-america">
+                        <team id="mobile"></team>
+                        <group id="inc">
+                            <group_data>
+                                <data key="all_field_staff">yes</data>
+                            </group_data>
+                        </group>
+                    </groups>
+
+                    <groups id="africa">
+                        <group id="dwa">
+                            <group_data>
+                                <data key="all_field_staff">yes</data>
+                            </group_data>
+                        </group>
+                    </groups>
+                </root>
+            </instance>
+
+            <!-- <bind -->
+            <!--     nodeset="/data/owner_id" -->
+            <!--     calculate="if(count(instance('groups')/groups/group/group_data/data) &gt; 0 and count(instance('groups')/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]) = 1, instance('groups')/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]/@id, '')" /> -->
+        </model>
+    </h:head>
+
+    <h:body>
+        <!-- <label>Data owner id: -->
+        <!--     <output ref="/data/owner_id"/> -->
+        <!-- </label> -->
+    </h:body>
+</h:html>
