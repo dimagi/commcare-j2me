@@ -66,7 +66,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class XPathPathExprTest extends TestCase {
 
-    public final static int NUM_TESTS = 2;
+    public final static int NUM_TESTS = 3;
 
     public XPathPathExprTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -98,10 +98,13 @@ public class XPathPathExprTest extends TestCase {
     public void doTest(int i) {
         switch (i) {
             case 1:
-                testHeterogeneousPaths();
+                //testHeterogeneousPaths();
                 break;
             case 2:
-                testNestedMultiplicities();
+                //testNestedMultiplicities();
+                break;
+            case 3:
+                testNestedPreds();
                 break;
         }
     }
@@ -122,7 +125,6 @@ public class XPathPathExprTest extends TestCase {
     private void testNestedMultiplicities() {
         FormParseInit fpi = new FormParseInit("/test_nested_multiplicities.xml");
         FormDef fd = fpi.getFormDef();
-        FormEntryModel fem = fpi.getFormEntryModel();
 
         testEval("/data/bikes/manufacturer/model[@id='pista']/@color",
                 fd.getInstance(), null, "seafoam");
@@ -131,6 +133,34 @@ public class XPathPathExprTest extends TestCase {
         // fails because of [model=1]:
         testEval("join(' ', /data/bikes/manufacturer[@american='yes'][model=1]/model/@id)",
                 fd.getInstance(), null, new XPathTypeMismatchException());
+    }
+
+    private void testNestedPreds() {
+        FormParseInit fpi = new FormParseInit("/test_nested_preds_with_rel_refs.xml");
+        FormDef fd = fpi.getFormDef();
+        FormInstance fi = fd.getInstance();
+        FormInstance groupsInstance = (FormInstance)fd.getNonMainInstance("groups");
+        EvaluationContext ec = fd.getEvaluationContext();
+
+        // testEval("join(' ', instance('groups')/root/groups/group/@id)",
+        //         groupsInstance, ec, "inc dwa");
+
+        // find 'group' elements that have a 'team' sibling with id = mobile;
+        // should be 'inc'
+        // testEval("count(instance('groups')/root/groups/group/group_data/data) > 0",
+        //         groupsInstance, ec, true);
+
+        testEval("count(instance('groups')/root/groups/group[../team[@id = 'mobile']]) = 1", groupsInstance, ec, true);
+
+        testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[../team[@id = 'mobile']]) = 1, instance('groups')/root/groups/group[../team[@id = 'mobile']]/@id, '')",
+                groupsInstance, ec, "inc");
+
+        testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]) = 1, instance('groups')/root/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]/@id, '')",
+                groupsInstance, ec, "inc");
+
+
+        testEval("/data/owner_id",
+                fd.getInstance(), null, "inc");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
