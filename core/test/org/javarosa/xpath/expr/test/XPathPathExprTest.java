@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2015 JavaRosa
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package org.javarosa.xpath.expr.test;
 
 import j2meunit.framework.Test;
@@ -98,10 +82,10 @@ public class XPathPathExprTest extends TestCase {
     public void doTest(int i) {
         switch (i) {
             case 1:
-                //testHeterogeneousPaths();
+                testHeterogeneousPaths();
                 break;
             case 2:
-                //testNestedMultiplicities();
+                testNestedMultiplicities();
                 break;
             case 3:
                 testNestedPreds();
@@ -157,13 +141,11 @@ public class XPathPathExprTest extends TestCase {
         testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]) = 1, instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]/@id, '')",
                 groupsInstance, ec, "inc");
 
-        testEval("instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]/@id",
+        testEval("instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . = 'yes']) > 0]/@id",
                 groupsInstance, ec, "inc");
 
         testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]) = 1, instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]/@id, '')",
                 groupsInstance, ec, "inc");
-
-        // testEval("/data/owner_id", fd.getInstance(), null, "inc");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
