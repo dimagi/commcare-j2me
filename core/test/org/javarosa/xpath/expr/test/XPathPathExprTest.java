@@ -128,9 +128,14 @@ public class XPathPathExprTest extends TestCase {
                 fd.getInstance(), null, "seafoam");
         testEval("join(' ', /data/bikes/manufacturer[@american='yes']/model[.=1]/@id)",
                 fd.getInstance(), null, "karate-monkey vamoots");
-        // fails because of [model=1]:
         testEval("join(' ', /data/bikes/manufacturer[@american='yes'][model=1]/model/@id)",
-                fd.getInstance(), null, new XPathTypeMismatchException());
+                fd.getInstance(), null, "vamoots");
+        // if the model elements don't all have values, then the predicate
+        // doesn't evaluate correctly, and we take that as not passing,
+        // returning empty.
+        // TODO: should throw XPathExpression exception?
+        testEval("join(' ', /data/bikes/manufacturer[@american='no'][model=1]/model/@id)",
+                fd.getInstance(), null, "");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {

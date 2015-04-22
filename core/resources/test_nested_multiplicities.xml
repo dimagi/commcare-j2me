@@ -12,13 +12,13 @@
                     <manufacturer id="surly" american="yes">
                         <model id="karate-monkey" color="black">1</model>
                         <model id="long-haul" color="black">0</model>
-                      <model id="cross-check" color="silver"/>
+                        <model id="cross-check" color="silver"/>
                     </manufacturer>
                     <manufacturer id="moots" american="yes">
                         <model id="vamoots" color="silver">1</model>
                     </manufacturer>
                     <manufacturer id="bianchi" american="no">
-                      <model id="pista" color="seafoam"/>
+                        <model id="pista" color="seafoam">1</model>
                       <model id="zolder" color="silver"/>
                     </manufacturer>
                   </bikes>
