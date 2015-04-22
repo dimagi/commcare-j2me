@@ -33,7 +33,7 @@
                     <groups id="africa">
                         <group id="dwa">
                             <group_data>
-                                <data key="all_field_staff">yes</data>
+                                <data key="all_field_staff">no</data>
                             </group_data>
                         </group>
                     </groups>

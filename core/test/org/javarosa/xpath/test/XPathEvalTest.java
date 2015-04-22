@@ -534,10 +534,7 @@ public class XPathEvalTest extends TestCase {
 
         testEval("min(/data/int, /data/int_two)", instance, null, new Double(5.0));
 
-        // XXX: something changed and now 2 != 2.0
-        testEval("count(/data/predtest[@val = /data/string_two])", instance, null, new Double(1));
-        // testEval("count(/data/predtest[@val = /data/string_two])", instance, null, new Double(2));
-
+        testEval("count(/data/predtest[@val = /data/string_two])", instance, null, new Double(2));
         testEval("count(/data/predtest[@val = 2])", instance, null, new Double(2));
         testEval("count(/data/predtest[2 = @val])", instance, null, new Double(2));
 

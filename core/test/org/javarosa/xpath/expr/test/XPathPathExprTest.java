@@ -142,17 +142,13 @@ public class XPathPathExprTest extends TestCase {
         FormInstance groupsInstance = (FormInstance)fd.getNonMainInstance("groups");
         EvaluationContext ec = fd.getEvaluationContext();
 
-        // testEval("join(' ', instance('groups')/root/groups/group/@id)",
-        //         groupsInstance, ec, "inc dwa");
+        testEval("join(' ', instance('groups')/root/groups/group/@id)",
+                groupsInstance, ec, "inc dwa");
+
+        testEval("count(instance('groups')/root/groups[position() = 1]/team[@id = 'mobile'])", groupsInstance, ec, 1.0);
 
         // find 'group' elements that have a 'team' sibling with id = mobile;
         // should be 'inc'
-        // testEval("count(instance('groups')/root/groups/group/group_data/data) > 0",
-        //         groupsInstance, ec, true);
-
-        // testEval("count(instance('groups')/root/groups)", groupsInstance, ec, 2.0);
-        // testEval("count(instance('groups')/root/groups[position() = 1]/team[@id = 'mobile'])", groupsInstance, ec, 1.0);
-
         testEval("instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]/@id", groupsInstance, ec, "inc");
         testEval("count(instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0])", groupsInstance, ec, 1.0);
 
@@ -161,8 +157,11 @@ public class XPathPathExprTest extends TestCase {
         testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]) = 1, instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]/@id, '')",
                 groupsInstance, ec, "inc");
 
-        // testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]) = 1, instance('groups')/root/groups/group[group_data/data[@key = 'all_field_staff' and . ='yes']]/@id, '')",
-        //         groupsInstance, ec, "inc");
+        testEval("instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]/@id",
+                groupsInstance, ec, "inc");
+
+        testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]) = 1, instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]/@id, '')",
+                groupsInstance, ec, "inc");
 
         // testEval("/data/owner_id", fd.getInstance(), null, "inc");
     }
