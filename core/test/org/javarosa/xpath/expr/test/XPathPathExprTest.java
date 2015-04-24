@@ -126,6 +126,11 @@ public class XPathPathExprTest extends TestCase {
         FormInstance groupsInstance = (FormInstance)fd.getNonMainInstance("groups");
         EvaluationContext ec = fd.getEvaluationContext();
 
+        // TODO PLM: test chaining of predicates where second pred would throw
+        // and error if the first pred hadn't already filtered out certain
+        // nodes:
+        // /a/b[filter out first][../a/b/d = foo]
+
         testEval("join(' ', instance('groups')/root/groups/group/@id)",
                 groupsInstance, ec, "inc dwa");
 
