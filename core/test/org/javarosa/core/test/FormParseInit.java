@@ -29,22 +29,13 @@ import org.javarosa.xform.util.XFormUtils;
  */
 
 public class FormParseInit {
-    private String formName = new String("/ImageSelectTester.xhtml");
+    private String formName;
     private FormDef xform;
     private FormEntryController fec;
     private FormEntryModel femodel;
 
-    public FormParseInit() {
-        this.init();
-    }
-
-    /**
-     * Set path of form to be parsed and initalize the form.
-     *
-     * @param uri URI pointing to the xform.
-     */
-    public void setFormToParse(String uri) {
-        formName = uri;
+    public FormParseInit(String formPath) {
+        this.formName = formPath;
         this.init();
     }
 
