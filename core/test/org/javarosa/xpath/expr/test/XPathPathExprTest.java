@@ -114,8 +114,13 @@ public class XPathPathExprTest extends TestCase {
                 fd.getInstance(), null, "seafoam");
         testEval("join(' ', /data/bikes/manufacturer[@american='yes']/model[.=1]/@id)",
                 fd.getInstance(), null, "karate-monkey vamoots");
-        // fails because of [model=1]:
-        testEval("join(' ', /data/bikes/manufacturer[@american='yes'][model=1]/model/@id)",
+        testEval("count(/data/bikes/manufacturer[@american='yes'][count(model[.=1]) > 0]/model/@id)",
+                fd.getInstance(), null, 4.0);
+        testEval("join(' ', /data/bikes/manufacturer[@american='yes'][count(model[.=1]) > 0]/model/@id)",
+                fd.getInstance(), null, "karate-monkey long-haul cross-check vamoots");
+        testEval("join(' ', /data/bikes/manufacturer[@american='yes'][count(model=1) > 0]/model/@id)",
+                fd.getInstance(), null, new XPathTypeMismatchException());
+        testEval("join(' ', /data/bikes/manufacturer[@american='no'][model=1]/model/@id)",
                 fd.getInstance(), null, new XPathTypeMismatchException());
     }
 

@@ -62,6 +62,7 @@ public class TreeReferenceTest extends TestCase {
     private TreeReference acPredRef;
     private TreeReference acPredMatchRef;
     private TreeReference acPredNotRef;
+    private TreeReference acPredRefClone;
     private Vector<XPathExpression> apreds;
     private Vector<XPathExpression> amatchpreds;
     private Vector<XPathExpression> anotpreds;
@@ -124,9 +125,11 @@ public class TreeReferenceTest extends TestCase {
 
         XPathExpression testPred = null;
         XPathExpression failPred = null;
+        XPathExpression passPred = null;
         try {
             testPred = XPathParseTool.parseXPath("../b = 'test'");
             failPred = XPathParseTool.parseXPath("../b = 'fail'");
+            passPred = XPathParseTool.parseXPath("true() = true()");
         } catch (XPathSyntaxException e) {
             fail("Bad tests! Rewrite xpath expressions for predicate tests");
         }
@@ -143,6 +146,19 @@ public class TreeReferenceTest extends TestCase {
         acPredMatchRef.addPredicate(0, amatchpreds);
         acPredNotRef.addPredicate(0, anotpreds);
 
+        
+        //For mutation testing.
+        
+        acPredRefClone = acPredRef.clone();
+        
+        //We know we have a predicate at the 0 position
+        Vector<XPathExpression> acPredRefClonePredicates = acPredRefClone.getPredicate(0);
+        
+        //Update it to add a new predicate
+        acPredRefClonePredicates.add(passPred);
+        
+        //Reset the predicates in our new object
+        acPredRefClone.addPredicate(0, acPredRefClonePredicates);
     }
 
     public Test suite() {
@@ -194,7 +210,15 @@ public class TreeReferenceTest extends TestCase {
             case 10:
                 testSubreferences();
                 break;
+            case 11:
+                testMutation();
+                break;
         }
+    }
+    
+    //Tests ensuring that original references aren't mutated.
+    private void testMutation() {
+        assertTrue("/a/c[] predicate set illegally modified", acPredRef.getPredicate(0).size() != 1);
     }
 
     private void testSubreferences() {
