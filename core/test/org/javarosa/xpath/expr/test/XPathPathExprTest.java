@@ -191,7 +191,7 @@ public class XPathPathExprTest extends TestCase {
      *
      * @param formPath path of the form to load, relative to project build
      * @return FormInstance created from the path pointed to, or null if any
-     *         error occurs.
+     * error occurs.
      */
     private FormInstance loadInstance(String formPath) {
         FormInstance instance = null;
