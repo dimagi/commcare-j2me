@@ -1,4 +1,8 @@
-package org.javarosa.core.model.instance;
+package org.javarosa.core.model.instance.test;
+
+import org.javarosa.core.model.instance.AbstractTreeElement;
+import org.javarosa.core.model.instance.ExternalDataInstance;
+import org.javarosa.core.model.instance.InstanceInitializationFactory;
 
 /**
  * Dummy instance initialization factory used in testing.  Doesn't actually
