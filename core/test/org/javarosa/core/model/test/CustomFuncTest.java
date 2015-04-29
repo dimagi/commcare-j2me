@@ -148,6 +148,14 @@ public class CustomFuncTest extends TestCase {
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
+    /**
+     * Test overriding of built-in functions.
+     * Behaviour should be:
+     *  - Use overridden function but if there's an arity mismatch fall through
+     *    to the default.
+     *  - Makes sure falling through to default still raises additional arity
+     *    mismatches.
+     */
     public void testFormOverride() {
         fpi.setFormToParse("/CustomFunctionTestOverride.xhtml");
 
