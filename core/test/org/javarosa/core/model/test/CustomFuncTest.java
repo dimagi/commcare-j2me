@@ -8,7 +8,6 @@ import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.xpath.XPathArityException;
-import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathUnhandledException;
 
 import java.util.Vector;
@@ -22,7 +21,7 @@ import j2meunit.framework.TestSuite;
  * @author Will Pride
  */
 public class CustomFuncTest extends TestCase {
-    FormParseInit fpi = null;
+    private FormParseInit fpi = null;
 
     public final static int NUM_TESTS = 3;
 
@@ -80,9 +79,7 @@ public class CustomFuncTest extends TestCase {
      * the context with a custom function handler.
      */
     public void testFormFailure() {
-
-        String formName = new String("/CustomFunctionTest.xhtml");
-        fpi.setFormToParse(formName);
+        fpi.setFormToParse("/CustomFunctionTest.xhtml");
 
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
@@ -108,8 +105,7 @@ public class CustomFuncTest extends TestCase {
      * context with a custom function handler.
      */
     public void testFormSuccess() {
-        String formName = new String("/CustomFunctionTest.xhtml");
-        fpi.setFormToParse(formName);
+        fpi.setFormToParse("/CustomFunctionTest.xhtml");
 
         // Custom func to double the numeric argument passed in.
         IFunctionHandler myDouble = new IFunctionHandler() {
@@ -119,8 +115,8 @@ public class CustomFuncTest extends TestCase {
 
             public Object eval(Object[] args, EvaluationContext ec) {
                 Double my_double = (Double)args[0];
-                assertEquals(new Double(2.0), new Double(my_double.doubleValue() * 2));
-                return new Double(my_double.doubleValue() * 2);
+                assertEquals(2.0, my_double * 2.0);
+                return my_double * 2.0;
             }
 
             public Vector getPrototypes() {
@@ -153,8 +149,7 @@ public class CustomFuncTest extends TestCase {
     }
 
     public void testFormOverride() {
-        String formName = new String("/CustomFunctionTestOverride.xhtml");
-        fpi.setFormToParse(formName);
+        fpi.setFormToParse("/CustomFunctionTestOverride.xhtml");
 
         // Override true to take in one argument and return 4.0
         IFunctionHandler myTrue = new IFunctionHandler() {
@@ -166,12 +161,12 @@ public class CustomFuncTest extends TestCase {
                 if (args.length != 1) {
                     throw new XPathArityException(getName(), 1, args.length);
                 }
-                return new Double(4.0);
+                return 4.0;
             }
 
             public Vector getPrototypes() {
                 Class[] proto = {Double.class};
-                Vector v = new Vector();
+                Vector<Class[]> v = new Vector<Class[]>();
                 v.addElement(proto);
                 return v;
             }
@@ -212,7 +207,7 @@ public class CustomFuncTest extends TestCase {
                 // we should've seen the last 2 question in the form
                 return;
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
         fail("error in form expression calculation; the last form" +
                 " question should be relevant");
     }
