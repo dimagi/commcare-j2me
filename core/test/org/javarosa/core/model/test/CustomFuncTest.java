@@ -7,6 +7,7 @@ import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
+import org.javarosa.xpath.XPathArityException;
 import org.javarosa.xpath.XPathUnhandledException;
 
 import java.util.Vector;
@@ -22,8 +23,6 @@ import j2meunit.framework.TestSuite;
 public class CustomFuncTest extends TestCase {
     FormParseInit fpi = null;
 
-    // How many tests does the suite have?
-    // Used to dispatch in doTest's switch statement.
     public final static int NUM_TESTS = 3;
 
     public CustomFuncTest(String name, TestMethod rTestMethod) {
@@ -96,11 +95,10 @@ public class CustomFuncTest extends TestCase {
             try {
                 fec.answerQuestion(new IntegerData(1));
             } catch (XPathUnhandledException e) {
-                System.out.println("Caught exception: " + e + " + which is good.");
+                // we expect the test to fail on parsing
                 return;
             }
             fail("Should have failed parsing here");
-
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
@@ -112,7 +110,8 @@ public class CustomFuncTest extends TestCase {
         String formName = new String("/CustomFunctionTest.xhtml");
         fpi.setFormToParse(formName);
 
-        fpi.getFormDef().exprEvalContext.addFunctionHandler(new IFunctionHandler() {
+        // Custom func to double the numeric argument passed in.
+        IFunctionHandler myDouble = new IFunctionHandler() {
             public String getName() {
                 return "my_double";
             }
@@ -137,18 +136,18 @@ public class CustomFuncTest extends TestCase {
             public boolean realTime() {
                 return false;
             }
-        });
+        };
+
+        fpi.getFormDef().exprEvalContext.addFunctionHandler(myDouble);
 
         FormEntryController fec = fpi.getFormEntryController();
 
         do {
-
             QuestionDef q = fpi.getCurrentQuestion();
             if (q == null) {
                 continue;
             }
             fec.answerQuestion(new IntegerData(1));
-
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
@@ -156,15 +155,17 @@ public class CustomFuncTest extends TestCase {
         String formName = new String("/CustomFunctionTestOverride.xhtml");
         fpi.setFormToParse(formName);
 
-        fpi.getFormDef().exprEvalContext.addFunctionHandler(new IFunctionHandler() {
+        // Override true to take in one argument and return 4.0
+        IFunctionHandler myTrue = new IFunctionHandler() {
             public String getName() {
                 return "true";
             }
 
             public Object eval(Object[] args, EvaluationContext ec) {
-                Double my_double = (Double) args[0];
-                assertEquals(new Double(2.0), new Double(my_double.doubleValue() * 2));
-                return new Double(my_double.doubleValue() * 2);
+                if (args.length != 1) {
+                    throw new XPathArityException(getName(), 1, args.length);
+                }
+                return new Double(4.0);
             }
 
             public Vector getPrototypes() {
@@ -181,18 +182,37 @@ public class CustomFuncTest extends TestCase {
             public boolean realTime() {
                 return false;
             }
-        });
+        };
+
+        fpi.getFormDef().exprEvalContext.addFunctionHandler(myTrue);
 
         FormEntryController fec = fpi.getFormEntryController();
 
+        boolean sawQuestionThree = false;
         do {
-
             QuestionDef q = fpi.getCurrentQuestion();
             if (q == null) {
                 continue;
             }
-            fec.answerQuestion(new IntegerData(1));
-
+            if ("qOne".equals(q.getTextID())) {
+                fec.answerQuestion(new IntegerData(1));
+            } else if ("qTwo".equals(q.getTextID())) {
+                try {
+                fec.answerQuestion(new IntegerData(2));
+                } catch (XPathArityException e) {
+                    // we expect the test to fail on parsing, since it triggers
+                    // a calculation that sends too many args to the overriden
+                    // 'true' function
+                }
+            } else if (q.getID() == 3) {
+                // we expect calling "true()" will default to old behavior
+                sawQuestionThree = true;
+            } else if (q.getID() == 4 && sawQuestionThree) {
+                // we should've seen the last 2 question in the form
+                return;
+            }
         } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        fail("error in form expression calculation; the last form" +
+                " question should be relevant");
     }
 }
