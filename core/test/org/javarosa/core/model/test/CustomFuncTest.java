@@ -33,13 +33,11 @@ import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
 /**
- * @author Phillip Mates
+ * @author Will Pride
  */
 public class CustomFuncTest extends TestCase {
     FormParseInit fpi = null;
 
-    // How many tests does the suite have?
-    // Used to dispatch in doTest's switch statement.
     public final static int NUM_TESTS = 2;
 
     public CustomFuncTest(String name, TestMethod rTestMethod) {
@@ -67,7 +65,7 @@ public class CustomFuncTest extends TestCase {
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
-            aSuite.addTest(new CustomFuncTest("FormDef Test " + i, new TestMethod() {
+            aSuite.addTest(new CustomFuncTest("Custom Function Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
                     ((CustomFuncTest)tc).doTest(testID);
                 }
@@ -88,11 +86,9 @@ public class CustomFuncTest extends TestCase {
         }
     }
 
-
     /**
-     * Make sure that 'current()' expands correctly when used in conditionals
-     * such as in 'relevant' tags. The test answers a question and expects the
-     * correct elements to be re-evaluated and set to not relevant.
+     * Try to use a form that has a custom function defined without extending
+     * the context with a custom function handler.
      */
     public void testFormFailure() {
 
@@ -110,15 +106,19 @@ public class CustomFuncTest extends TestCase {
 
             try {
                 fec.answerQuestion(new IntegerData(1));
-            } catch(XPathUnhandledException e){
+            } catch (XPathUnhandledException e) {
                 System.out.println("Caught exception: " + e + " + which is good.");
                 return;
             }
             fail("Should have failed parsing here");
 
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
+    /**
+     * Successfully use a form that has a custom function by extending the
+     * context with a custom function handler.
+     */
     public void testFormSuccess() {
         String formName = new String("/CustomFunctionTest.xhtml");
         fpi.setFormToParse(formName);
@@ -129,14 +129,14 @@ public class CustomFuncTest extends TestCase {
             }
 
             public Object eval(Object[] args, EvaluationContext ec) {
-                Double my_double = (Double) args[0];
+                Double my_double = (Double)args[0];
                 assertEquals(new Double(2.0), new Double(my_double.doubleValue() * 2));
                 return new Double(my_double.doubleValue() * 2);
             }
 
             public Vector getPrototypes() {
                 Class[] proto = {Double.class};
-                Vector v = new Vector();
+                Vector<Class[]> v = new Vector<Class[]>();
                 v.addElement(proto);
                 return v;
             }
@@ -160,6 +160,6 @@ public class CustomFuncTest extends TestCase {
             }
             fec.answerQuestion(new IntegerData(1));
 
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 }
