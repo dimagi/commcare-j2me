@@ -23,7 +23,7 @@ import j2meunit.framework.TestSuite;
 
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.IDataReference;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.core.model.IFormElement;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IntegerData;
