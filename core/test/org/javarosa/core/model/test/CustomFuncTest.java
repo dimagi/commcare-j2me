@@ -8,6 +8,7 @@ import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.xpath.XPathArityException;
+import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathUnhandledException;
 
 import java.util.Vector;
@@ -198,7 +199,7 @@ public class CustomFuncTest extends TestCase {
                 fec.answerQuestion(new IntegerData(1));
             } else if ("qTwo".equals(q.getTextID())) {
                 try {
-                fec.answerQuestion(new IntegerData(2));
+                    fec.answerQuestion(new IntegerData(2));
                 } catch (XPathArityException e) {
                     // we expect the test to fail on parsing, since it triggers
                     // a calculation that sends too many args to the overriden
