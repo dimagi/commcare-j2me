@@ -40,7 +40,7 @@ public class CustomFuncTest extends TestCase {
 
     // How many tests does the suite have?
     // Used to dispatch in doTest's switch statement.
-    public final static int NUM_TESTS = 2;
+    public final static int NUM_TESTS = 3;
 
     public CustomFuncTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -85,6 +85,9 @@ public class CustomFuncTest extends TestCase {
             case 2:
                 testFormSuccess();
                 break;
+            case 3:
+                testFormOverride();
+                break;
         }
     }
 
@@ -126,6 +129,50 @@ public class CustomFuncTest extends TestCase {
         fpi.getFormDef().exprEvalContext.addFunctionHandler(new IFunctionHandler() {
             public String getName() {
                 return "my_double";
+            }
+
+            public Object eval(Object[] args, EvaluationContext ec) {
+                Double my_double = (Double) args[0];
+                assertEquals(new Double(2.0), new Double(my_double.doubleValue() * 2));
+                return new Double(my_double.doubleValue() * 2);
+            }
+
+            public Vector getPrototypes() {
+                Class[] proto = {Double.class};
+                Vector v = new Vector();
+                v.addElement(proto);
+                return v;
+            }
+
+            public boolean rawArgs() {
+                return false;
+            }
+
+            public boolean realTime() {
+                return false;
+            }
+        });
+
+        FormEntryController fec = fpi.getFormEntryController();
+
+        do {
+
+            QuestionDef q = fpi.getCurrentQuestion();
+            if (q == null) {
+                continue;
+            }
+            fec.answerQuestion(new IntegerData(1));
+
+        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+    }
+
+    public void testFormOverride() {
+        String formName = new String("/CustomFunctionTestOverride.xhtml");
+        fpi.setFormToParse(formName);
+
+        fpi.getFormDef().exprEvalContext.addFunctionHandler(new IFunctionHandler() {
+            public String getName() {
+                return "true";
             }
 
             public Object eval(Object[] args, EvaluationContext ec) {
