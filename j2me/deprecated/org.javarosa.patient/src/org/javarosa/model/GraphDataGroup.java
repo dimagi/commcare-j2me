@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import org.javarosa.core.model.IDataReference;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
@@ -31,13 +31,13 @@ import org.javarosa.patient.util.DateValueTuple;
 public class GraphDataGroup extends TreeElement {
     public static final int GRAPH_DATA_ID = 11;
 
-    IDataReference reference;
+    XPathReference reference;
 
     public GraphDataGroup() {
         super();
     }
 
-    public void setReference(IDataReference reference) {
+    public void setReference(XPathReference reference) {
         this.reference = reference;
     }
 
