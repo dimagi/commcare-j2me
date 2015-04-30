@@ -21,28 +21,20 @@ import j2meunit.framework.TestSuite;
  * @author Will Pride
  */
 public class CustomFuncTest extends TestCase {
-    private FormParseInit fpi = null;
+    private FormParseInit fpi;
 
     public final static int NUM_TESTS = 3;
 
     public CustomFuncTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
-        initForm();
     }
 
     public CustomFuncTest(String name) {
         super(name);
-        initForm();
     }
 
     public CustomFuncTest() {
         super();
-        initForm();
-    }
-
-    public void initForm() {
-        fpi = new FormParseInit();
-        fpi.setFormToParse("/CustomFunctionTest.xhtml");
     }
 
     public Test suite() {
@@ -79,7 +71,7 @@ public class CustomFuncTest extends TestCase {
      * the context with a custom function handler.
      */
     public void testFormFailure() {
-        fpi.setFormToParse("/CustomFunctionTest.xhtml");
+        fpi = new FormParseInit("/CustomFunctionTest.xhtml");
 
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
@@ -105,7 +97,7 @@ public class CustomFuncTest extends TestCase {
      * context with a custom function handler.
      */
     public void testFormSuccess() {
-        fpi.setFormToParse("/CustomFunctionTest.xhtml");
+        fpi = new FormParseInit("/CustomFunctionTest.xhtml");
 
         // Custom func to double the numeric argument passed in.
         IFunctionHandler myDouble = new IFunctionHandler() {
@@ -157,7 +149,7 @@ public class CustomFuncTest extends TestCase {
      *    mismatches.
      */
     public void testFormOverride() {
-        fpi.setFormToParse("/CustomFunctionTestOverride.xhtml");
+        fpi = new FormParseInit("/CustomFunctionTestOverride.xhtml");
 
         // Override true to take in one argument and return 4.0
         IFunctionHandler myTrue = new IFunctionHandler() {
