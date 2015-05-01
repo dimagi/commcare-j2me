@@ -23,7 +23,7 @@ import j2meunit.framework.TestSuite;
 
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.IDataReference;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.core.model.IFormElement;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IntegerData;
@@ -42,8 +42,6 @@ public class FormEntryControllerTest extends TestCase {
     private FormParseInit fpi;
     private FormEntryController fec;
 
-    private String formName = new String("/test_form_entry_controller.xml");
-
     public FormEntryControllerTest() {
         super();
         initForm();
@@ -59,8 +57,7 @@ public class FormEntryControllerTest extends TestCase {
      */
     private void initForm() {
         System.out.println("init FormEntryControllerTest");
-        fpi = new FormParseInit();
-        fpi.setFormToParse(formName);
+        fpi = new FormParseInit("/test_form_entry_controller.xml");
     }
 
     public Test suite() {

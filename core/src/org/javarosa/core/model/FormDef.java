@@ -60,6 +60,7 @@ import org.javarosa.core.util.externalizable.ExtWrapMap;
 import org.javarosa.core.util.externalizable.ExtWrapNullable;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathTypeMismatchException;
 
@@ -317,7 +318,7 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
     }
 
     // don't think this should ever be called(!)
-    public IDataReference getBind() {
+    public XPathReference getBind() {
         throw new RuntimeException("method not implemented");
     }
 
@@ -1385,8 +1386,8 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
             DataInstance instance = formInstances.get(instanceId);
             instance.initialize(factory, instanceId);
         }
-        if (newInstance) {// only preload new forms (we may have to revisit
-            // this)
+        if (newInstance) {
+            // only preload new forms (we may have to revisit this)
             preloadInstance(mainInstance.getRoot());
         }
 

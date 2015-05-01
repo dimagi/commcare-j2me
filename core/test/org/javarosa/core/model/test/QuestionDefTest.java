@@ -26,7 +26,6 @@ import java.util.Vector;
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.IDataReference;
 import org.javarosa.core.model.IFormElement;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.SelectChoice;
@@ -45,6 +44,7 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.model.xform.XPathReference;
 
 public class QuestionDefTest extends TestCase {
     QuestionDef q = null;
@@ -67,7 +67,7 @@ public class QuestionDefTest extends TestCase {
     }
 
     public void initStuff() {
-        fpi = new FormParseInit();
+        fpi = new FormParseInit("/ImageSelectTester.xhtml");
         q = fpi.getFirstQuestionDef();
         fep = new FormEntryPrompt(fpi.getFormDef(), fpi.getFormEntryModel().getFormIndex());
     }
@@ -136,11 +136,9 @@ public class QuestionDefTest extends TestCase {
         testSerialize(q, "b");
     }
 
-    public IDataReference newRef(String xpath) {
-        IDataReference ref = new DummyReference();
-        ref.setReference(xpath);
-        pf.addClass(DummyReference.class);
-        return ref;
+    public XPathReference newRef(String xpath) {
+        pf.addClass(XPathReference.class);
+        return new XPathReference(xpath);
     }
 
     public void testAccessorsModifiers() {
@@ -152,7 +150,7 @@ public class QuestionDefTest extends TestCase {
         }
         testSerialize(q, "c");
 
-        IDataReference ref = newRef("/data");
+        XPathReference ref = newRef("/data");
         q.setBind(ref);
         if (q.getBind() != ref) {
             fail("Ref getter/setter broken");

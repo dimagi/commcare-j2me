@@ -21,29 +21,19 @@ import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
 
-import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.FormDef;
-import org.javarosa.core.model.IDataReference;
-import org.javarosa.core.model.IFormElement;
+import org.javarosa.model.xform.XPathReference;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
-import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.test.FormParseInit;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
-import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.model.xform.XPathReference;
 
 /**
  * @author Phillip Mates
  */
 public class FormDefTest extends TestCase {
-    FormParseInit fpi = null;
 
     // How many tests does the suite have?
     // Used to dispatch in doTest's switch statement.
@@ -51,21 +41,14 @@ public class FormDefTest extends TestCase {
 
     public FormDefTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
-        initForm();
     }
 
     public FormDefTest(String name) {
         super(name);
-        initForm();
     }
 
     public FormDefTest() {
         super();
-        initForm();
-    }
-
-    public void initForm() {
-        fpi = new FormParseInit();
     }
 
     public Test suite() {
@@ -101,8 +84,7 @@ public class FormDefTest extends TestCase {
      * correct elements to be re-evaluated and set to not relevant.
      */
     public void testCurrentFuncInTriggers() {
-        String formName = new String("/trigger_and_current_tests.xml");
-        fpi.setFormToParse(formName);
+        FormParseInit fpi = new FormParseInit("/trigger_and_current_tests.xml");
 
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
@@ -132,14 +114,12 @@ public class FormDefTest extends TestCase {
 
     public void testAnswerConstraint() {
         IntegerData ans = new IntegerData(13);
-        String formName = new String("/ImageSelectTester.xhtml");
-
-        fpi.setFormToParse(formName);
+        FormParseInit fpi = new FormParseInit("/ImageSelectTester.xhtml");
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
         do {
-            QuestionDef q = fpi.getCurrentQuestion();
+            QuestionDef q = fpi.getCurrentQuestion(); 
             if (q == null || q.getTextID() == null || q.getTextID() == "") {
                 continue;
             }
