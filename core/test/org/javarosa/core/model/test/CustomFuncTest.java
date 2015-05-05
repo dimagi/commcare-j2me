@@ -143,10 +143,10 @@ public class CustomFuncTest extends TestCase {
     /**
      * Test overriding of built-in functions.
      * Behaviour should be:
-     *  - Use overridden function but if there's an arity mismatch fall through
-     *    to the default.
-     *  - Makes sure falling through to default still raises additional arity
-     *    mismatches.
+     * - Use overridden function but if there's an arity mismatch fall through
+     * to the default.
+     * - Makes sure falling through to default still raises additional arity
+     * mismatches.
      */
     public void testFormOverride() {
         fpi = new FormParseInit("/CustomFunctionTestOverride.xhtml");
