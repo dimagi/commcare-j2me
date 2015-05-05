@@ -25,7 +25,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import org.javarosa.core.model.IDataReference;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
@@ -42,10 +41,6 @@ public class QuestionDataElementTests extends TestCase {
     StringData stringData;
     IntegerData integerData;
 
-    IDataReference stringReference;
-
-    IDataReference integerReference;
-
     TreeElement stringElement;
     TreeElement intElement;
 
@@ -58,82 +53,6 @@ public class QuestionDataElementTests extends TestCase {
         super.setUp();
         stringData = new StringData("Answer Value");
         integerData = new IntegerData(4);
-
-        stringReference = new IDataReference() {
-            String reference = "stringValue";
-
-            public Object getReference() {
-                return reference;
-            }
-
-            public void setReference(Object reference) {
-                this.reference = (String)reference;
-            }
-
-            /*
-            public boolean referenceMatches(IDataReference reference) {
-                return this.reference.equals(reference.getReference());
-            }
-
-
-            public IDataReference clone()  {
-                IDataReference newReference = null;
-                try {
-                    newReference = (IDataReference)this.getClass().newInstance();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                newReference.setReference(reference);
-                return newReference;
-            }
-            */
-            public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
-            }
-
-            public void writeExternal(DataOutputStream out) throws IOException {
-            }
-
-        };
-
-        integerReference = new IDataReference() {
-            Integer intReference = new Integer(15);
-
-            public Object getReference() {
-                return intReference;
-            }
-
-            public void setReference(Object reference) {
-                this.intReference = (Integer)reference;
-            }
-
-            /*
-            public boolean referenceMatches(IDataReference reference) {
-                return this.intReference.equals(reference.getReference());
-            }
-
-
-            public IDataReference clone()  {
-                IDataReference newReference = null;
-                try {
-                    newReference = (IDataReference)this.getClass().newInstance();
-                } catch (InstantiationException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-                newReference.setReference(intReference);
-                return newReference;
-            }
-            */
-            public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
-            }
-
-            public void writeExternal(DataOutputStream out) throws IOException {
-            }
-
-        };
 
         intElement = new TreeElement("intElement");
         intElement.setValue(integerData);
