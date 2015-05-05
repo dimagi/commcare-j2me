@@ -16,24 +16,24 @@
 
 package org.javarosa.core.model.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.model.xform.XPathReference;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
+import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test.framework.TestMethod;
 
 /**
  * @author Phillip Mates
  */
-public class FormDefTest extends TestCase {
+public class FormDefTest extends AdaptedTestCase {
 
     // How many tests does the suite have?
     // Used to dispatch in doTest's switch statement.
@@ -51,13 +51,13 @@ public class FormDefTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new FormDefTest("FormDef Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((FormDefTest)tc).doTest(testID);
                 }
             }));

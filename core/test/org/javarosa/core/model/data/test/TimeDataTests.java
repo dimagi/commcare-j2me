@@ -16,23 +16,23 @@
 
 package org.javarosa.core.model.data.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Date;
 
-import org.javarosa.core.model.data.TimeData;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
-public class TimeDataTests extends TestCase {
+import org.javarosa.core.model.data.TimeData;
+import org.javarosa.test.framework.TestMethod;
+
+public class TimeDataTests extends AdaptedTestCase {
     Date now;
     Date minusOneHour;
 
     private static int NUM_TESTS = 3;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -53,14 +53,14 @@ public class TimeDataTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new TimeDataTests("TimeData Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((TimeDataTests)tc).testMaster(testID);
                 }
             }));

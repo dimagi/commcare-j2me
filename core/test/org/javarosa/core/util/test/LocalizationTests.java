@@ -16,20 +16,20 @@
 
 package org.javarosa.core.util.test;
 
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
+
 import org.javarosa.core.services.locale.LocalizationUtils;
 import org.javarosa.core.util.OrderedHashtable;
+import org.javarosa.test.framework.TestMethod;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-public class LocalizationTests extends TestCase {
+public class LocalizationTests extends AdaptedTestCase {
 
     private static int NUM_TESTS = 2;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -47,14 +47,14 @@ public class LocalizationTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new LocalizationTests("Localization Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((LocalizationTests)tc).testMaster(testID);
                 }
             }));

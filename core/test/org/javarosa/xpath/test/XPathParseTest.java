@@ -16,22 +16,22 @@
 
 package org.javarosa.xpath.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.core.util.test.ExternalizableTest;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.xpath.XPathParseTool;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.parser.XPathSyntaxException;
 
 
-public class XPathParseTest extends TestCase {
+public class XPathParseTest extends AdaptedTestCase {
     public static String[][] parseTestCases = {
         /* no null expressions */
             {"", null},
@@ -221,7 +221,7 @@ public class XPathParseTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 0; i < parseTestCases.length; i++) {
@@ -229,7 +229,7 @@ public class XPathParseTest extends TestCase {
             final String expected = parseTestCases[i][1];
 
             aSuite.addTest(new XPathParseTest("XPath Parsing Test [" + expr + "]", new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((XPathParseTest)tc).testParse(expr, expected);
                 }
             }));

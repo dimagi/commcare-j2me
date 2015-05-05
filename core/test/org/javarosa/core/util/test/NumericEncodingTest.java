@@ -16,16 +16,16 @@
 
 package org.javarosa.core.util.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.util.externalizable.ExtWrapIntEncoding;
 import org.javarosa.core.util.externalizable.ExtWrapIntEncodingSmall;
 import org.javarosa.core.util.externalizable.ExtWrapIntEncodingUniform;
+import org.javarosa.test.framework.TestMethod;
 
-public class NumericEncodingTest extends TestCase {
+public class NumericEncodingTest extends AdaptedTestCase {
     public NumericEncodingTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -38,10 +38,10 @@ public class NumericEncodingTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
         aSuite.addTest((new NumericEncodingTest("Encoding Test Suite", new TestMethod() {
-            public void run(TestCase tc) {
+            public void run(AdaptedTestCase tc) {
                 ((NumericEncodingTest)tc).testIntEncodingUniform();
                 ((NumericEncodingTest)tc).testIntEncodingSmall();
             }

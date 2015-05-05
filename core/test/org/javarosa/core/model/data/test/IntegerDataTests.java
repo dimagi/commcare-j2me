@@ -16,21 +16,21 @@
 
 package org.javarosa.core.model.data.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.data.IntegerData;
+import org.javarosa.test.framework.TestMethod;
 
-public class IntegerDataTests extends TestCase {
+public class IntegerDataTests extends AdaptedTestCase {
     Integer one;
     Integer two;
 
     private static int NUM_TESTS = 3;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -51,14 +51,14 @@ public class IntegerDataTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new IntegerDataTests("IntegerData Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((IntegerDataTests)tc).testMaster(testID);
                 }
             }));

@@ -16,19 +16,19 @@
 
 package org.javarosa.core.io.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.Random;
 
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
+
 import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.util.ArrayUtilities;
+import org.javarosa.test.framework.TestMethod;
 
-public class BufferedInputStreamTests extends TestCase {
+public class BufferedInputStreamTests extends AdaptedTestCase {
 
     byte[] bytes;
 
@@ -39,7 +39,7 @@ public class BufferedInputStreamTests extends TestCase {
     private static int NUM_TESTS = 2;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -65,14 +65,14 @@ public class BufferedInputStreamTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new BufferedInputStreamTests("DateData Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((BufferedInputStreamTests)tc).testMaster(testID);
                 }
             }));

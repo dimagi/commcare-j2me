@@ -64,6 +64,57 @@
     <target name="extract-libs" if="extract-libs-fresh">
         <unzip src="${javarosa-deps}" dest="${dir.root}" overwrite="true"/>
     </target>
+	
+    <target name="pre-compile-tests">
+        <mkdir dir="${test.out.dir}" />
+        <mkdir dir="${test.out.classes.dir}" />
+    </target>
+
+    <target name="-compile-tests" depends="pre-compile-tests">        
+        <!-- Move resources used by the tests -->
+        <copy todir="${test.out.classes.dir}" verbose="true">
+            <fileset dir="${test.resource.root}/resources/" includes="**"/>
+        </copy>
+        <path id="test.project.javac.classpath">
+            <path refid="classpath" />
+            <path path="${build}" />
+        	<fileset dir="${dir.lib.test}" includes="*.jar"/>
+        </path>
+        <javac debug="true" extdirs="" includeantruntime="false"
+                destdir="${test.out.classes.dir}"
+                classpathref="test.project.javac.classpath">
+            <src path="${test.source.dir}" />
+        </javac>
+    </target>
+
+	
+    <target name="unit-test" depends="compile, -compile-tests" description="Runs JavaRosa unit tests">
+        <mkdir dir="${test.out.reports.dir}" />
+        <path id="junit.classpath">
+            <!-- have to start the classpath with the test outputs, otherwise we'll miss resource files -->
+            <path path="${test.out.classes.dir}" />
+            <path refid="test.project.javac.classpath" />            
+            <path refid="classpath" />
+        </path>
+        <junit showoutput="true" failureproperty="junit.failure" printsummary="yes">
+            <classpath refid="junit.classpath" />
+            <formatter type="plain" />
+            <formatter type="xml" />
+            <batchtest todir="${test.out.reports.dir}">
+                <fileset dir="${test.source.dir}" includes="**/*Test.java" />
+            </batchtest>
+        </junit>
+        <fail if="junit.failure" message="Unit test(s) failed.  See reports!" />
+    </target>
+
+    <target name="generate-report" description="Generates an HTML report from existing test results.">
+        <mkdir dir="${test.out.reports.dir}/html" />
+        <junitreport todir="${test.out.reports.dir}/html">
+            <fileset dir="${test.out.reports.dir}" includes="TEST-*.xml" />
+            <report todir="${test.out.reports.dir}/html" />
+        </junitreport>
+    </target>
+
 
     <target name="packageTestResources" description="pack-up test resource files into jar">
         <mkdir dir="${test-build}"/>

@@ -1,16 +1,13 @@
 package org.javarosa.core.form.api.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.test.DummyFormEntryPrompt;
-import org.javarosa.core.model.test.QuestionDefTest;
 import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.services.locale.Localizer;
 import org.javarosa.core.services.locale.TableLocaleSource;
@@ -20,8 +17,10 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.test.framework.AdaptedTestCase;
+import org.javarosa.test.framework.TestMethod;
 
-public class TextFormTests extends TestCase {
+public class TextFormTests extends AdaptedTestCase {
 
     QuestionDef q = null;
     FormEntryPrompt fep = null;
@@ -57,14 +56,14 @@ public class TextFormTests extends TestCase {
     }
 
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
         System.out.println("Running TextFormTests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
-            aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
-                    ((QuestionDefTest)tc).doTest(testID);
+            aSuite.addTest(new TextFormTests("Text Form Test " + i, new TestMethod() {
+                public void run(AdaptedTestCase tc) {
+                    ((TextFormTests)tc).doTest(testID);
                 }
             }));
         }
@@ -149,10 +148,11 @@ public class TextFormTests extends TestCase {
         while (state != FormEntryController.EVENT_QUESTION) {
             state = fec.stepToNextEvent();
         }
+        fep = fec.getModel().getQuestionPrompt();
 
         if (!fep.getLongText().equals("Full Name"))
-            fail("getLongText() not falling back to default text form correctly");
-        if (!fep.getSpecialFormQuestionText("long").equals(null))
+            fail("getLongText() = " + fep.getLongText() + ": not falling back to default text form correctly");
+        if (!(fep.getSpecialFormQuestionText("long") == null))
             fail("getSpecialFormQuestionText() returning incorrect value");
 
     }
@@ -268,9 +268,7 @@ public class TextFormTests extends TestCase {
         }
 
         q.setHintTextID("hint text id");
-        if (!"help text id".equals(q.getHintTextID()) || q.getHintText() != null) {
-            fail("Help text ID getter/setter broken");
-        }
+        assertEquals("Help text ID getter/setter broken", "hint text id", q.getHintTextID());
     }
 
     public void testPromptsNoLocalizer() {

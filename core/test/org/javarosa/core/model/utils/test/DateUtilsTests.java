@@ -16,19 +16,18 @@
 
 package org.javarosa.core.model.utils.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
+
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.model.utils.DateUtils.DateFields;
+import org.javarosa.test.framework.TestMethod;
 
-public class DateUtilsTests extends TestCase {
+public class DateUtilsTests extends AdaptedTestCase {
 
     private static int NUM_TESTS = 5;
 
@@ -54,14 +53,14 @@ public class DateUtilsTests extends TestCase {
         minusOneHour = new Date(new Date().getTime() - (1000 * 60));
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite dateSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             dateSuite.addTest(new DateUtilsTests("DateUtilData Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((DateUtilsTests)tc).testMaster(testID);
                 }
             }));

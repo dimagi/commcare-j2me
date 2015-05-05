@@ -16,14 +16,14 @@
 
 package org.javarosa.core.model.data.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.data.GeoPointData;
+import org.javarosa.test.framework.TestMethod;
 
-public class GeoPointDataTests extends TestCase {
+public class GeoPointDataTests extends AdaptedTestCase {
 
     private static int NUM_TESTS = 1;
 
@@ -39,14 +39,14 @@ public class GeoPointDataTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new GeoPointDataTests("GeoPointData Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((GeoPointDataTests)tc).testMaster(testID);
                 }
             }));

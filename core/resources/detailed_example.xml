@@ -17,8 +17,17 @@
                         <item id="c" value="30">Item C</item>
                         <item id="d" value="40">Item D</item>
                     </itemdata>
+                    
+                    <val_one>10</val_one>
+                    
+                    <val_two>10</val_two>
+                    
+                    <selected>30</selected>
 
                     <itemsetanswer/>
+                    
+                    <staticval>20</staticval>
+                    <otherval>2</otherval>
 
                     <!-- This is the "root" of the question. The repeat itself is inside. this give us clean namespacing. The name myiterator is the user's definition for the question name -->
                     <myiterator vellum:role="iterator-host" vellum:datasource="formdata"
@@ -73,6 +82,9 @@
             <bind nodeset="/data/myiterator/iterator/@id" vellum:role="iterator-id"
                   vellum:itemid="2K3M4P32OIMJFO324I3I23F"
                   calculate="selected-at(/data/myiterator/elements,../@index)"/>
+            
+            
+            <bind nodeset="/data/itemsetanswer" relevant="/data/itemdata/item[@value > /data/selected]/@id = 'd' "/>
 
             <itext>
                 <translation lang="en" default="">

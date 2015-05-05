@@ -1,5 +1,11 @@
 package org.javarosa.core.model.test;
 
+import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
+
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.condition.EvaluationContext;
@@ -7,20 +13,14 @@ import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.xpath.XPathArityException;
 import org.javarosa.xpath.XPathUnhandledException;
-
-import java.util.Vector;
-
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
 
 /**
  * @author Will Pride
  */
-public class CustomFuncTest extends TestCase {
+public class CustomFuncTest extends AdaptedTestCase {
     private FormParseInit fpi;
 
     public final static int NUM_TESTS = 3;
@@ -37,13 +37,13 @@ public class CustomFuncTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new CustomFuncTest("Custom Function Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((CustomFuncTest)tc).doTest(testID);
                 }
             }));

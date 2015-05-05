@@ -16,19 +16,16 @@
 
 package org.javarosa.core.model.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormElementStateListener;
-import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.IFormElement;
 import org.javarosa.core.model.QuestionDef;
-import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
@@ -37,16 +34,14 @@ import org.javarosa.core.reference.ResourceReferenceFactory;
 import org.javarosa.core.reference.RootTranslator;
 import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.services.locale.Localizer;
-import org.javarosa.core.services.locale.TableLocaleSource;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.form.api.FormEntryCaption;
-import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test.framework.TestMethod;
 
-public class QuestionDefTest extends TestCase {
+public class QuestionDefTest extends AdaptedTestCase {
     QuestionDef q = null;
     FormEntryPrompt fep = null;
     FormParseInit fpi = null;
@@ -79,13 +74,13 @@ public class QuestionDefTest extends TestCase {
         pf = ExtUtil.defaultPrototypes();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
         System.out.println("Running QuestionDefTest tests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((QuestionDefTest)tc).doTest(testID);
                 }
             }));

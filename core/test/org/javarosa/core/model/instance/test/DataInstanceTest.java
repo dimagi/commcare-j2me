@@ -16,46 +16,22 @@
 
 package org.javarosa.core.model.instance.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.condition.EvaluationContext;
-import org.javarosa.core.model.condition.IFunctionHandler;
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.core.model.data.IntegerData;
-import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.test_utils.FormLoadingUtils;
-import org.javarosa.xpath.IExprDataType;
+import org.javarosa.xml.util.InvalidStructureException;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
-import org.javarosa.xpath.XPathTypeMismatchException;
-import org.javarosa.xpath.XPathUnhandledException;
-import org.javarosa.xpath.XPathUnsupportedException;
-import org.javarosa.xpath.expr.XPathExpression;
-import org.javarosa.xpath.expr.XPathFuncExpr;
-import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
-import org.javarosa.xml.ElementParser;
-import org.javarosa.xml.TreeElementParser;
-import org.javarosa.xml.util.InvalidStructureException;
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * DataInstance methods tests
@@ -63,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserException;
  * @author Phillip Mates
  */
 
-public class DataInstanceTest extends TestCase {
+public class DataInstanceTest extends AdaptedTestCase {
 
     private static final String formPath = new String("/test_xpathpathexpr.xml");
 
@@ -79,11 +55,11 @@ public class DataInstanceTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         aSuite.addTest(new DataInstanceTest("Data Instance Test", new TestMethod() {
-            public void run(TestCase tc) {
+            public void run(AdaptedTestCase tc) {
                 ((DataInstanceTest)tc).doTests();
             }
         }));

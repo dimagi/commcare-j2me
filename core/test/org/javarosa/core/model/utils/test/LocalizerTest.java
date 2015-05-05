@@ -16,12 +16,11 @@
 
 package org.javarosa.core.model.utils.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Hashtable;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.services.locale.Localizable;
 import org.javarosa.core.services.locale.Localizer;
@@ -31,8 +30,9 @@ import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.core.util.UnregisteredLocaleException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.core.util.test.ExternalizableTest;
+import org.javarosa.test.framework.TestMethod;
 
-public class LocalizerTest extends TestCase {
+public class LocalizerTest extends AdaptedTestCase {
     public LocalizerTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -45,14 +45,14 @@ public class LocalizerTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new LocalizerTest("Localizer Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((LocalizerTest)tc).testMaster(testID);
                 }
             }));
@@ -61,7 +61,7 @@ public class LocalizerTest extends TestCase {
         return aSuite;
     }
 
-    public final int NUM_TESTS = 31;
+    public static final int NUM_TESTS = 31;
 
     public void testMaster(int testID) {
         //System.out.println("running " + testID);

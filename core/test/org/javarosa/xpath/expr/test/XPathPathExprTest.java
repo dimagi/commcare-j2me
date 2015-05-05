@@ -16,55 +16,32 @@
 
 package org.javarosa.xpath.expr.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.condition.EvaluationContext;
-import org.javarosa.core.model.condition.IFunctionHandler;
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.core.model.data.IntegerData;
-import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.instance.TreeElement;
-import org.javarosa.core.model.instance.TreeReference;
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.form.api.FormEntryModel;
-import org.javarosa.model.xform.XPathReference;
-import org.javarosa.test_utils.FormLoadingUtils;
 import org.javarosa.core.test.FormParseInit;
-import org.javarosa.xpath.IExprDataType;
+import org.javarosa.form.api.FormEntryModel;
+import org.javarosa.test.framework.TestMethod;
+import org.javarosa.test_utils.FormLoadingUtils;
+import org.javarosa.xml.util.InvalidStructureException;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
 import org.javarosa.xpath.XPathTypeMismatchException;
-import org.javarosa.xpath.XPathUnhandledException;
-import org.javarosa.xpath.XPathUnsupportedException;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.expr.XPathFuncExpr;
-import org.javarosa.xpath.expr.XPathNumericLiteral;
-import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
-import org.javarosa.xml.ElementParser;
-import org.javarosa.xml.TreeElementParser;
-import org.javarosa.xml.util.InvalidStructureException;
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 /**
  * @author Phillip Mates
  */
 
-public class XPathPathExprTest extends TestCase {
+public class XPathPathExprTest extends AdaptedTestCase {
 
     public final static int NUM_TESTS = 2;
 
@@ -80,13 +57,13 @@ public class XPathPathExprTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new XPathPathExprTest("XPath Path Expression Test", new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((XPathPathExprTest)tc).doTest(testID);
                 }
             }));
@@ -198,9 +175,13 @@ public class XPathPathExprTest extends TestCase {
         try {
             instance = FormLoadingUtils.loadFormInstance(formPath);
         } catch (IOException e) {
+            e.printStackTrace();
             fail("Unable to load form at " + formPath);
         } catch (InvalidStructureException e) {
+            e.printStackTrace();
             fail("Form at " + formPath + " has an invalid structure.");
+        } catch(Throwable e) {
+            e.printStackTrace();
         }
         return instance;
     }

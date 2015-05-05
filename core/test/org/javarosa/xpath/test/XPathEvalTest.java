@@ -16,13 +16,12 @@
 
 package org.javarosa.xpath.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Date;
 import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.IFunctionHandler;
@@ -34,10 +33,11 @@ import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.xpath.IExprDataType;
+import org.javarosa.xpath.XPathArityException;
 import org.javarosa.xpath.XPathException;
 import org.javarosa.xpath.XPathParseTool;
-import org.javarosa.xpath.XPathArityException;
 import org.javarosa.xpath.XPathTypeMismatchException;
 import org.javarosa.xpath.XPathUnhandledException;
 import org.javarosa.xpath.XPathUnsupportedException;
@@ -47,7 +47,7 @@ import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
 
-public class XPathEvalTest extends TestCase {
+public class XPathEvalTest extends AdaptedTestCase {
     public XPathEvalTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -60,11 +60,11 @@ public class XPathEvalTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         aSuite.addTest(new XPathEvalTest("XPath Evaluation Test", new TestMethod() {
-            public void run(TestCase tc) {
+            public void run(AdaptedTestCase tc) {
                 ((XPathEvalTest)tc).doTests();
             }
         }));

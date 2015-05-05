@@ -16,14 +16,9 @@
 
 package org.javarosa.core.model.instance.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
@@ -31,10 +26,9 @@ import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.utils.ITreeVisitor;
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.test.framework.TestMethod;
 
-public class QuestionDataGroupTests extends TestCase {
+public class QuestionDataGroupTests extends AdaptedTestCase {
     private final String stringElementName = "String Data Element";
     private final String groupName = "TestGroup";
 
@@ -49,7 +43,7 @@ public class QuestionDataGroupTests extends TestCase {
     private static int NUM_TESTS = 9;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -77,14 +71,14 @@ public class QuestionDataGroupTests extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new QuestionDataGroupTests("QuestionDataGroup Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((QuestionDataGroupTests)tc).testMaster(testID);
                 }
             }));

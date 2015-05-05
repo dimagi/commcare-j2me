@@ -16,29 +16,21 @@
 
 package org.javarosa.form.api.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
-import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.model.xform.XPathReference;
-import org.javarosa.core.model.IFormElement;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IntegerData;
-import org.javarosa.core.model.instance.TreeElement;
-import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.test.FormParseInit;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
-import org.javarosa.form.api.FormEntryPrompt;
+import org.javarosa.test.framework.TestMethod;
 
 /**
  * @author Phillip Mates
  */
-public class FormEntryControllerTest extends TestCase {
+public class FormEntryControllerTest extends AdaptedTestCase {
     private FormParseInit fpi;
     private FormEntryController fec;
 
@@ -60,11 +52,11 @@ public class FormEntryControllerTest extends TestCase {
         fpi = new FormParseInit("/test_form_entry_controller.xml");
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         aSuite.addTest(new FormEntryControllerTest("FormEntryController Test answerQuestion method", new TestMethod() {
-            public void run(TestCase tc) {
+            public void run(AdaptedTestCase tc) {
                 ((FormEntryControllerTest)tc).testAnswerQuestion();
             }
         }));

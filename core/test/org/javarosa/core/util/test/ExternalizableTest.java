@@ -16,17 +16,16 @@
 
 package org.javarosa.core.util.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.core.util.externalizable.ExtUtil;
@@ -40,8 +39,9 @@ import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.Externalizable;
 import org.javarosa.core.util.externalizable.ExternalizableWrapper;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.test.framework.TestMethod;
 
-public class ExternalizableTest extends TestCase {
+public class ExternalizableTest extends AdaptedTestCase {
     public ExternalizableTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -54,11 +54,11 @@ public class ExternalizableTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         aSuite.addTest(new ExternalizableTest("Externalizable Test", new TestMethod() {
-            public void run(TestCase tc) {
+            public void run(AdaptedTestCase tc) {
                 ((ExternalizableTest)tc).doTests();
             }
         }));
@@ -66,7 +66,7 @@ public class ExternalizableTest extends TestCase {
         return aSuite;
     }
 
-    public static void testExternalizable(Object orig, Object template, PrototypeFactory pf, TestCase tc, String failMessage) {
+    public static void testExternalizable(Object orig, Object template, PrototypeFactory pf, AdaptedTestCase tc, String failMessage) {
         if (failMessage == null)
             failMessage = "Serialization Failure";
 
@@ -105,11 +105,11 @@ public class ExternalizableTest extends TestCase {
     }
 
     //for outside test suites to call
-    public static void testExternalizable(Externalizable original, TestCase tc, PrototypeFactory pf) {
+    public static void testExternalizable(Externalizable original, AdaptedTestCase tc, PrototypeFactory pf) {
         testExternalizable(original, tc, pf, "Serialization failure for " + original.getClass().getName());
     }
 
-    public static void testExternalizable(Externalizable original, TestCase tc, PrototypeFactory pf, String failMessage) {
+    public static void testExternalizable(Externalizable original, AdaptedTestCase tc, PrototypeFactory pf, String failMessage) {
         testExternalizable(original, original.getClass(), pf, tc, failMessage);
     }
 

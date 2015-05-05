@@ -16,12 +16,11 @@
 
 package org.javarosa.xform.util.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Date;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.IntegerData;
@@ -29,6 +28,7 @@ import org.javarosa.core.model.data.SelectOneData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.data.TimeData;
 import org.javarosa.core.model.instance.TreeElement;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.xform.util.XFormAnswerDataSerializer;
 
 /**
@@ -37,7 +37,7 @@ import org.javarosa.xform.util.XFormAnswerDataSerializer;
  *
  * @author Clayton Sims
  */
-public class XFormAnswerDataSerializerTest extends TestCase {
+public class XFormAnswerDataSerializerTest extends AdaptedTestCase {
     final String stringDataValue = "String Data Value";
     final Integer integerDataValue = new Integer(5);
     final Date dateDataValue = new Date();
@@ -60,7 +60,7 @@ public class XFormAnswerDataSerializerTest extends TestCase {
     private static int NUM_TESTS = 5;
 
     /* (non-Javadoc)
-     * @see j2meunit.framework.TestCase#setUp()
+     * @see org.javarosa.test.framework.TestCase#setUp()
      */
     protected void setUp() throws Exception {
         super.setUp();
@@ -91,14 +91,14 @@ public class XFormAnswerDataSerializerTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
 
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
 
             aSuite.addTest(new XFormAnswerDataSerializerTest("XFormAnswerDataSerializer Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((XFormAnswerDataSerializerTest)tc).testMaster(testID);
                 }
             }));

@@ -16,18 +16,17 @@
 
 package org.javarosa.core.util.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Vector;
 
-import org.javarosa.core.model.test.QuestionDefTest;
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
+
 import org.javarosa.core.util.PrefixTree;
 import org.javarosa.core.util.PrefixTreeNode;
+import org.javarosa.test.framework.TestMethod;
 
-public class PrefixTreeTest extends TestCase {
+public class PrefixTreeTest extends AdaptedTestCase {
     public PrefixTreeTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
     }
@@ -40,13 +39,13 @@ public class PrefixTreeTest extends TestCase {
         super();
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
         System.out.println("Running PrefixTreeTests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new PrefixTreeTest("PrefixTree Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((PrefixTreeTest)tc).doTest(testID);
                 }
             }));

@@ -16,20 +16,20 @@
 
 package org.javarosa.core.model.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import java.util.Vector;
+
+import junit.framework.Test;
+import org.javarosa.test.framework.AdaptedTestCase;
+import junit.framework.TestSuite;
 
 import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.model.xform.XPathReference;
+import org.javarosa.test.framework.TestMethod;
 import org.javarosa.xpath.XPathParseTool;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.parser.XPathSyntaxException;
 
-public class TreeReferenceTest extends TestCase {
+public class TreeReferenceTest extends AdaptedTestCase {
 
     private TreeReference root;
     private TreeReference aRef;
@@ -161,13 +161,13 @@ public class TreeReferenceTest extends TestCase {
         acPredRefClone.addPredicate(0, acPredRefClonePredicates);
     }
 
-    public Test suite() {
+    public static Test suite() {
         TestSuite aSuite = new TestSuite();
         System.out.println("Running TreeReference tests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
             aSuite.addTest(new TreeReferenceTest("TreeReference Test " + i, new TestMethod() {
-                public void run(TestCase tc) {
+                public void run(AdaptedTestCase tc) {
                     ((TreeReferenceTest)tc).doTest(testID);
                 }
             }));
