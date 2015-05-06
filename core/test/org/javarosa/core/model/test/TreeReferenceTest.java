@@ -367,6 +367,14 @@ public class TreeReferenceTest extends TestCase {
                         " for test of multiplicity copying when level names are same between refs",
                 expectedAs.equals(contextualizeEval));
 
+        // ('../../a[6]').contextualize('/a/*/a') ==> /a/a[6]
+        wildAs = XPathReference.getPathExpr("/a/*/a").getReference();
+        a5.setRefLevel(2);
+        contextualizeEval = a5.contextualize(wildAs);
+        expectedAs = XPathReference.getPathExpr("/a").getReference().extendRef("a", 5);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a/a[6]" +
+                        " during specializing wildcard during contextualization.",
+                expectedAs.equals(contextualizeEval));
 
     }
 
