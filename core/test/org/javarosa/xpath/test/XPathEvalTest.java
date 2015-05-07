@@ -427,7 +427,8 @@ public class XPathEvalTest extends TestCase {
         testEval("testfunc()", null, ec, Boolean.TRUE);
         testEval("add(3, 5)", null, ec, new Double(8.0));
         testEval("add('17', '-14')", null, ec, new Double(3.0));
-        testEval("proto()", null, ec, new XPathTypeMismatchException());
+        // proto not setup for 0 arguments
+        testEval("proto()", null, ec, new XPathArityException());
         testEval("proto(5, 5)", null, ec, "[Double:5.0,Double:5.0]");
         testEval("proto(6)", null, ec, "[Double:6.0]");
         testEval("proto('asdf')", null, ec, "[Double:NaN]");
@@ -436,7 +437,10 @@ public class XPathEvalTest extends TestCase {
         testEval("proto(1.1, 'asdf', true())", null, ec, "[Double:1.1,String:asdf,Boolean:true]");
         testEval("proto(false(), false(), false())", null, ec, "[Double:0.0,String:false,Boolean:false]");
         testEval("proto(1.1, 'asdf', inconvertible())", null, ec, new XPathTypeMismatchException());
-        testEval("proto(1.1, 'asdf', true(), 16)", null, ec, new XPathTypeMismatchException());
+
+        // proto not setup for 4 arguments
+        testEval("proto(1.1, 'asdf', true(), 16)", null, ec, new XPathArityException());
+
         testEval("raw()", null, ec, "[]");
         testEval("raw(5, 5)", null, ec, "[Double:5.0,Double:5.0]");
         testEval("raw('7', '7')", null, ec, "[String:7,String:7]");
