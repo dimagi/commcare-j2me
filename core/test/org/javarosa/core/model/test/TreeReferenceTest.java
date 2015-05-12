@@ -328,7 +328,7 @@ public class TreeReferenceTest extends TestCase {
         // contextualization.
 
         // Test trying to figure out multiplicity copying during contextualization
-        // setup ../../a[5] reference
+        // setup ../../a[6] reference
         TreeReference a5 = root.extendRef("a", 5);
         a5.setRefLevel(2);
 
@@ -340,6 +340,16 @@ public class TreeReferenceTest extends TestCase {
         assertTrue("Got " + contextualizeEval.toString() + " and expected /a[2]/a[6]" +
                         " for test of multiplicity copying when level names are same between refs",
                 expectedAs.equals(contextualizeEval));
+
+        // setup expected result /a[2]/a[3] reference
+        expectedAs = a.extendRef("a", 2);
+
+        // ('../../a').contextualize('/a[2]/a[3]/a[4]') ==> /a[2]/a[3]
+        contextualizeEval = a5.genericize().contextualize(aaa);
+        assertTrue("Got " + contextualizeEval.toString() + " and expected /a[2]/a[3]" +
+                        " for test of multiplicity copying when level names are same between refs",
+                expectedAs.equals(contextualizeEval));
+
 
         // ('c').contextualize('/a/*') ==> /a/*/c
         TreeReference wildA = XPathReference.getPathExpr("/a/*").getReference();
