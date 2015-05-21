@@ -110,12 +110,13 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
     private Vector outputFragments;
 
     public Hashtable<TreeReference, Vector<Triggerable>> triggerIndex;
-    private Hashtable<TreeReference, Condition> conditionRepeatTargetIndex;
 
     /**
      * Associates repeatable nodes with the Condition that determines their
      * relevancy.
      */
+    private Hashtable<TreeReference, Condition> conditionRepeatTargetIndex;
+
     public EvaluationContext exprEvalContext;
 
     private QuestionPreloader preloader = new QuestionPreloader();
