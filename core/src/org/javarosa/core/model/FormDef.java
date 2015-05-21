@@ -246,9 +246,9 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
      * @return
      */
     public Vector explodeIndex(FormIndex index) {
-        Vector indexes = new Vector();
-        Vector multiplicities = new Vector();
-        Vector elements = new Vector();
+        Vector<Integer> indexes = new Vector();
+        Vector<Integer> multiplicities = new Vector();
+        Vector<IFormElement> elements = new Vector();
 
         collapseIndex(index, indexes, multiplicities, elements);
         return elements;
@@ -262,9 +262,9 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
      * @return
      */
     public TreeReference getChildInstanceRef(FormIndex index) {
-        Vector indexes = new Vector();
-        Vector multiplicities = new Vector();
-        Vector elements = new Vector();
+        Vector<Integer> indexes = new Vector();
+        Vector<Integer> multiplicities = new Vector();
+        Vector<IFormElement> elements = new Vector();
 
         collapseIndex(index, indexes, multiplicities, elements);
         return getChildInstanceRef(elements, multiplicities);
@@ -278,12 +278,14 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
      * @param multiplicities
      * @return
      */
-    public TreeReference getChildInstanceRef(Vector elements, Vector multiplicities) {
-        if (elements.size() == 0)
+    public TreeReference getChildInstanceRef(Vector<IFormElement> elements,
+                                             Vector<Integer> multiplicities) {
+        if (elements.size() == 0) {
             return null;
+        }
 
         // get reference for target element
-        TreeReference ref = FormInstance.unpackReference(((IFormElement)elements.lastElement()).getBind()).clone();
+        TreeReference ref = FormInstance.unpackReference((elements.lastElement()).getBind()).clone();
         for (int i = 0; i < ref.size(); i++) {
             //There has to be a better way to encapsulate this
             if (ref.getMultiplicity(i) != TreeReference.INDEX_ATTRIBUTE) {
@@ -293,15 +295,16 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
 
         // fill in multiplicities for repeats along the way
         for (int i = 0; i < elements.size(); i++) {
-            IFormElement temp = (IFormElement)elements.elementAt(i);
+            IFormElement temp = elements.elementAt(i);
             if (temp instanceof GroupDef && ((GroupDef)temp).getRepeat()) {
                 TreeReference repRef = FormInstance.unpackReference(temp.getBind());
                 if (repRef.isParentOf(ref, false)) {
-                    int repMult = ((Integer)multiplicities.elementAt(i)).intValue();
+                    int repMult = (multiplicities.elementAt(i)).intValue();
                     ref.setMultiplicity(repRef.size() - 1, repMult);
                 } else {
-                    return null; // question/repeat hierarchy is not consistent
-                    // with instance instance and bindings
+                    // question/repeat hierarchy is not consistent with
+                    // instance instance and bindings
+                    return null;
                 }
             }
         }
@@ -434,6 +437,15 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
         return relev;
     }
 
+    /**
+     * Does the repeat group at the given index enable users to add more items,
+     * and if so, has the user reached the item limit?
+     *
+     * @param repeatRef   Reference pointing to a particular repeat item
+     * @param repeatIndex Id for looking up the repeat group
+     * @return Do the current constraints on the repeat group allow for adding
+     * more children?
+     */
     public boolean canCreateRepeat(TreeReference repeatRef, FormIndex repeatIndex) {
         GroupDef repeat = (GroupDef)this.getChild(repeatIndex);
 
@@ -444,24 +456,30 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
             if (repeat.getCountReference() != null) {
                 int currentMultiplicity = repeatIndex.getElementMultiplicity();
 
-                AbstractTreeElement countNode = this.getMainInstance().resolveReference(repeat.getConextualizedCountReference(repeatRef));
+                TreeReference absPathToCount = repeat.getConextualizedCountReference(repeatRef);
+                AbstractTreeElement countNode = this.getMainInstance().resolveReference(absPathToCount);
                 if (countNode == null) {
-                    throw new XPathTypeMismatchException("Could not find the location " + repeat.getConextualizedCountReference(repeatRef).toString() + " where the repeat at " + repeatRef.toString(false) + " is looking for its count");
+                    throw new XPathTypeMismatchException("Could not find the location " +
+                            absPathToCount.toString() + " where the repeat at " +
+                            repeatRef.toString(false) + " is looking for its count");
                 }
                 //get the total multiplicity possible
-                IAnswerData count = countNode.getValue();
-                int fullcount = -1;
-                if (count == null) {
-                    fullcount = 0;
+                IAnswerData boxedCount = countNode.getValue();
+                int count;
+                if (boxedCount == null) {
+                    count = 0;
                 } else {
                     try {
-                        fullcount = ((Integer)new IntegerData().cast(count.uncast()).getValue()).intValue();
+                        count = ((Integer)new IntegerData().cast(boxedCount.uncast()).getValue()).intValue();
                     } catch (IllegalArgumentException iae) {
-                        throw new XPathTypeMismatchException("The repeat count value \"" + count.uncast().getString() + "\" at " + repeat.getConextualizedCountReference(repeatRef).toString() + " must be a number!");
+                        throw new XPathTypeMismatchException("The repeat count value \"" +
+                                boxedCount.uncast().getString() +
+                                "\" at " + absPathToCount.toString() +
+                                " must be a number!");
                     }
                 }
 
-                if (fullcount <= currentMultiplicity) {
+                if (count <= currentMultiplicity) {
                     return false;
                 }
             } else {
@@ -1448,7 +1466,10 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
         ExtUtil.write(dos, new ExtWrapListPoly(extensions));
     }
 
-    public void collapseIndex(FormIndex index, Vector indexes, Vector multiplicities, Vector elements) {
+    public void collapseIndex(FormIndex index,
+                              Vector<Integer> indexes,
+                              Vector<Integer> multiplicities,
+                              Vector<IFormElement> elements) {
         if (!index.isInForm()) {
             return;
         }
@@ -1495,9 +1516,9 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
 
 
     public int getNumRepetitions(FormIndex index) {
-        Vector indexes = new Vector();
-        Vector multiplicities = new Vector();
-        Vector elements = new Vector();
+        Vector<Integer> indexes = new Vector();
+        Vector<Integer> multiplicities = new Vector();
+        Vector<IFormElement> elements = new Vector();
 
         if (!index.isInForm()) {
             throw new RuntimeException("not an in-form index");
@@ -1520,9 +1541,9 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
     public FormIndex descendIntoRepeat(FormIndex index, int repIndex) {
         int numRepetitions = getNumRepetitions(index);
 
-        Vector indexes = new Vector();
-        Vector multiplicities = new Vector();
-        Vector elements = new Vector();
+        Vector<Integer> indexes = new Vector();
+        Vector<Integer> multiplicities = new Vector();
+        Vector<IFormElement> elements = new Vector();
         collapseIndex(index, indexes, multiplicities, elements);
 
         if (repIndex == -1) {
