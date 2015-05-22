@@ -558,7 +558,7 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
             // the two), otherwise we can end up failing to trigger when the
             // ignored context exists and the used one doesn't
 
-            Triggerable existingTriggerable = triggerables.elementAt(existingIx);
+            Triggerable existingTriggerable = (Triggerable)triggerables.elementAt(existingIx);
 
             existingTriggerable.contextRef = existingTriggerable.contextRef.intersect(t.contextRef);
 
@@ -878,7 +878,7 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
         // XXX PLM: tv changes in size throughout this loop.
         //          Do we actually want to loop over the newly added elements?
         for (int i = 0; i < tv.size(); i++) {
-            Triggerable t = tv.elementAt(i);
+            Triggerable t = (Triggerable)tv.elementAt(i);
             fillTriggeredElements(t, tv);
         }
 
@@ -887,7 +887,7 @@ public class FormDef implements IFormElement, Localizable, Persistable, IMetaDat
         //'triggerables' is topologically-ordered by dependencies, so evaluate the triggerables in 'tv'
         //in the order they appear in 'triggerables'
         for (int i = 0; i < triggerables.size(); i++) {
-            Triggerable t = triggerables.elementAt(i);
+            Triggerable t = (Triggerable)triggerables.elementAt(i);
             if (tv.contains(t)) {
                 evaluateTriggerable(t, anchorRef);
             }
