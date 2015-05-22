@@ -58,7 +58,7 @@ public abstract class Triggerable implements Externalizable {
     public Vector<TreeReference> targets;
 
     /**
-     * Current reference which is the "Basis" of the trigerrables being
+     * Current reference which is the "Basis" of the triggerables being
      * evaluated. This is the highest common root of all of the targets being
      * evaluated.
      */
@@ -161,7 +161,7 @@ public abstract class Triggerable implements Externalizable {
 
         for (int i = 0; i < targets.size(); i++) {
             TreeReference targetRef =
-                    ((TreeReference)targets.elementAt(i)).contextualize(ec.getContextRef());
+                    targets.elementAt(i).contextualize(ec.getContextRef());
             Vector v = ec.expandReference(targetRef);
 
             for (int j = 0; j < v.size(); j++) {
