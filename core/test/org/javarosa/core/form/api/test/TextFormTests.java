@@ -1,13 +1,9 @@
 package org.javarosa.core.form.api.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.QuestionDef;
+import org.javarosa.core.model.QuestionString;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.test.DummyFormEntryPrompt;
 import org.javarosa.core.model.test.QuestionDefTest;
@@ -20,6 +16,11 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
+
+import j2meunit.framework.Test;
+import j2meunit.framework.TestCase;
+import j2meunit.framework.TestMethod;
+import j2meunit.framework.TestSuite;
 
 public class TextFormTests extends TestCase {
 
@@ -247,7 +248,10 @@ public class TextFormTests extends TestCase {
 
         QuestionDef q = new QuestionDef();
 
-        q.setHintTextID("help");
+        QuestionString helpString = new QuestionString("long");
+        helpString.setTextId("help");
+
+        q.putQuestionString("long", helpString);
         FormEntryPrompt fep = new DummyFormEntryPrompt(l, "prompt", q);
 
         if (!"loc: long text".equals(fep.getLongText())) {
@@ -267,22 +271,20 @@ public class TextFormTests extends TestCase {
             fail("Long text ID getter/setter broken");
         }
 
-        q.setHintTextID("hint text id");
-        if (!"help text id".equals(q.getHintTextID()) || q.getHintText() != null) {
+        QuestionString hint = new QuestionString("hint");
+        hint.setTextId("hint text id");
+        q.putQuestionString("hint", hint);
+        if (!"help text id".equals(q.getQuestionString("hint").getTextId()) || q.getQuestionString("hint") != null) {
             fail("Help text ID getter/setter broken");
         }
     }
 
     public void testPromptsNoLocalizer() {
+
         QuestionDef q = new QuestionDef();
 
-        q.setLabelInnerText("labelInnerText");
-        if (!"labelInnerText".equals(q.getLabelInnerText())) {
-            fail("LabelInnerText getter/setter broken");
-        }
-
-        q.setHintText("help text");
-        if (!"help text".equals(q.getHintText())) {
+        q.putQuestionString("help", new QuestionString("help", "help text"));
+        if (!"help text".equals(q.getQuestionString("help"))) {
             fail("Help text getter/setter broken");
         }
     }

@@ -14,12 +14,17 @@
                     <find-mirc/>
                     <non-local/>
                     <consTest/>
+                    <consTest2/>
+                    <consTest3/>
+                    <GOAT>Tom Brady</GOAT>
                 </icons>
             </instance>
 
             <bind nodeset="/icons/name" required="true()"/>
             <bind nodeset="/icons/find-mirc" required="true()"/>
-            <bind nodeset="/icons/consTest" type="xsd:int" constraint=". > 10"/>
+            <bind nodeset="/icons/consTest" type="xsd:int" constraint=". > 10" jr:constraintMsg="Old Constraint"/>
+            <bind nodeset="/icons/consTest2" type="xsd:int" constraint=". < 10" jr:constraintMsg="Old Constraint Bad"/>
+            <bind nodeset="/icons/consTest3" type="xsd:int" constraint=". < 10" jr:constraintMsg="Old Constraint Bad 2"/>
 
             <itext>
                 <translation lang="English" default="">
@@ -58,7 +63,19 @@
                         <value form="short">AltText</value>
                     </text>
                     <text id="constraint-test">
-                        <value>Should Be Less than 10</value>
+                    <value>Should Be Less than 10</value>
+                    </text>
+                    <text id="constraint-test-2">
+                        <value>Should Be More than 10</value>
+                    </text>
+                    <text id="constraint-test-2-alert">
+                        <value>New Alert</value>
+                    </text>
+                    <text id="constraint-test-3">
+                        <value>Should Be More than 10</value>
+                    </text>
+                    <text id="constraint-test-3-alert">
+                        <value>The best QB of all time: <output value="/icons/GOAT"/></value>
                     </text>
                 </translation>
 
@@ -89,5 +106,13 @@
         </select1>
         <input ref="non-local"><label>Non-Localized label inner text!</label></input>
         <input ref="consTest"><label ref="jr:itext('constraint-test')"/></input>
+        <input ref="consTest2">
+            <label ref="jr:itext('constraint-test-2')"/>
+            <alert ref="jr:itext('constraint-test-2-alert')"/>
+        </input>
+        <input ref="consTest3">
+            <label ref="jr:itext('constraint-test-3')"/>
+            <alert ref="jr:itext('constraint-test-3-alert')"/>
+        </input>
     </h:body>
 </h:html>
