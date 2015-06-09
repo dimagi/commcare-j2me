@@ -37,7 +37,7 @@ public class FormDefTest extends TestCase {
 
     // How many tests does the suite have?
     // Used to dispatch in doTest's switch statement.
-    public final static int NUM_TESTS = 2;
+    public final static int NUM_TESTS = 3;
 
     public FormDefTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -73,6 +73,9 @@ public class FormDefTest extends TestCase {
                 break;
             case 2:
                 testCurrentFuncInTriggers();
+                break;
+            case 3:
+                testSetValuePredicate();
                 break;
         }
     }
@@ -135,4 +138,33 @@ public class FormDefTest extends TestCase {
             }
         } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
     }
+    
+    /**
+     * Test setvalue expressions which have predicate references
+     */
+    public void testSetValuePredicate() {
+        FormParseInit fpi = new FormParseInit("/test_setvalue_predicate.xml");
+        FormEntryController fec = fpi.getFormEntryController();
+        fpi.getFormDef().initialize(true,null);
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+
+        boolean testPassed = false;
+        do {
+            if(fec.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {
+                continue;
+            }
+            String text = fec.getModel().getQuestionPrompt().getQuestionText();
+            //check for our test
+            if(text.indexOf("Test") != -1) {
+                if(text.indexOf("pass") != -1) {
+                    testPassed = true;
+                }
+            }
+            
+        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        if(!testPassed) {
+            fail("Setvalue Predicate Target Test");
+        }
+    }
+
 }
