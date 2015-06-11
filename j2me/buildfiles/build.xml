@@ -6,7 +6,7 @@
   <property file="build.properties"/>
 
   <fileset id="jr.sources" dir="../../">
-    <include name="core/src/**/*.java"/>
+    <include name="core/src/main/**/*.java"/>
     <include name="j2me/**/src/**/*.java"/>
 
     <!-- exclude this until we've worked out issues with bluetooth apis -->
