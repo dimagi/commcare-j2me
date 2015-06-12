@@ -18,11 +18,11 @@ dependencies {
       testCompile group: 'junit', name: 'junit', version: '4.+'
 }
 
-def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
-
 jar {
     baseName = "javarosa-libraries"
 }
+
+def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
 
 /* for use primarily by the build server to extract the required 3rd-party
 libraries into the javarosa source tree. to use this in your own build, set the
