@@ -120,8 +120,12 @@ public abstract class Entity <E> {
      */
     public abstract String[] getHeaders (boolean detailed);
 
-    public String[] getStyleHints (boolean header) {
-        return new String[this.getHeaders(false).length];
+    public int[] getStyleHints (boolean header) {
+        int[] empty = new int[this.getHeaders(false).length];
+        for(int i = 0; i < empty.length ; ++i ) {
+            empty[i] = -1;
+        }
+        return empty;
     }
 
     /**

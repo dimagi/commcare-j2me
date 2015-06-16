@@ -181,11 +181,11 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
         }
     }
 
-    private String[] padHints(String[] hints) {
+    private int[] padHints(int[] hints) {
         if(hints.length == 1) {
-            String[] padded = new String[2];
+				int[] padded = new int[2];
             padded[0] = hints[0];
-            padded[1] = "0";
+				padded[1] = 0;
             return padded;
         } else {
             return hints;
@@ -203,30 +203,23 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
         }
     }
 
-    private Style genStyleFromHints(String[] hints) {
+    private Style genStyleFromHints(int[] hints) {
 
         //polish doesn't deal with one column properly, so we need to create a second column with 0 width.
         hints = padHints(hints);
 
         int screenwidth = J2MEDisplay.getScreenWidth(240);
         
-        // J2ME assumes that all widths are static, so remove any trailing '%' characters.
-        for (int i = 0; i < hints.length; i++) {
-            if (hints[i].indexOf("%") != -1) {
-                hints[i] = hints[i].substring(0, hints[i].indexOf("%"));
-            }
-        }
-
-        Style style = new Style();
+            Style style = new Style();
         style.addAttribute("columns", new Integer(hints.length));
 
         int fullSize = 100;
         int sharedBetween = 0;
-        for(String hint : hints) {
-            if(hint == null) {
-                sharedBetween ++;
+        for(int hint : hints) {
+            if(hint != -1) {
+                fullSize -= hint;
             } else {
-                fullSize -= Integer.parseInt(hint);
+                sharedBetween ++;
             }
         }
 
@@ -234,9 +227,9 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
         int averagePixels = (int)(Math.floor((average / 100.0) * screenwidth));
 
         String columnswidth = "";
-        for(String hint : hints) {
-            int width = hint == null ? averagePixels :
-                (int)Math.floor((((double)Integer.parseInt(hint))/100.0) * screenwidth);
+        for(int hint : hints) {
+            int width = hint == -1? averagePixels :
+                (int)Math.floor((((double)hint)/100.0)*screenwidth);
             columnswidth += width + ",";
         }
         columnswidth = columnswidth.substring(0, columnswidth.lastIndexOf(','));
