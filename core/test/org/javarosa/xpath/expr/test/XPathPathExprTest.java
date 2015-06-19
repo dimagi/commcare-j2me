@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2015 JavaRosa
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package org.javarosa.xpath.expr.test;
 
 import j2meunit.framework.Test;
@@ -66,7 +50,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 public class XPathPathExprTest extends TestCase {
 
-    public final static int NUM_TESTS = 2;
+    public final static int NUM_TESTS = 3;
 
     public XPathPathExprTest(String name, TestMethod rTestMethod) {
         super(name, rTestMethod);
@@ -103,6 +87,9 @@ public class XPathPathExprTest extends TestCase {
             case 2:
                 testNestedMultiplicities();
                 break;
+            case 3:
+                testNestedPreds();
+                break;
         }
     }
 
@@ -122,7 +109,6 @@ public class XPathPathExprTest extends TestCase {
     private void testNestedMultiplicities() {
         FormParseInit fpi = new FormParseInit("/test_nested_multiplicities.xml");
         FormDef fd = fpi.getFormDef();
-        FormEntryModel fem = fpi.getFormEntryModel();
 
         testEval("/data/bikes/manufacturer/model[@id='pista']/@color",
                 fd.getInstance(), null, "seafoam");
@@ -136,6 +122,44 @@ public class XPathPathExprTest extends TestCase {
                 fd.getInstance(), null, new XPathTypeMismatchException());
         testEval("join(' ', /data/bikes/manufacturer[@american='no'][model=1]/model/@id)",
                 fd.getInstance(), null, new XPathTypeMismatchException());
+    }
+
+    /**
+     * Test nested predicates that have relative and absolute references.
+     */
+    private void testNestedPreds() {
+        FormParseInit fpi = new FormParseInit("/test_nested_preds_with_rel_refs.xml");
+        FormDef fd = fpi.getFormDef();
+        FormInstance fi = fd.getInstance();
+        FormInstance groupsInstance = (FormInstance)fd.getNonMainInstance("groups");
+        EvaluationContext ec = fd.getEvaluationContext();
+
+        // TODO PLM: test chaining of predicates where second pred would throw
+        // and error if the first pred hadn't already filtered out certain
+        // nodes:
+        // /a/b[filter out first][../a/b/d = foo]
+
+        testEval("join(' ', instance('groups')/root/groups/group/@id)",
+                groupsInstance, ec, "inc dwa");
+
+        testEval("count(instance('groups')/root/groups[position() = 1]/team[@id = 'mobile'])",
+                groupsInstance, ec, 1.0);
+
+        // find 'group' elements that have a 'team' sibling with id = mobile;
+        testEval("instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]/@id",
+                groupsInstance, ec, "inc");
+
+        testEval("count(instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]) = 1",
+                groupsInstance, ec, true);
+
+        testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]) = 1, instance('groups')/root/groups/group[count(../team[@id = 'mobile']) > 0]/@id, '')",
+                groupsInstance, ec, "inc");
+
+        testEval("instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . = 'yes']) > 0]/@id",
+                groupsInstance, ec, "inc");
+
+        testEval("if(count(instance('groups')/root/groups/group/group_data/data) > 0 and count(instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]) = 1, instance('groups')/root/groups/group[count(group_data/data[@key = 'all_field_staff' and . ='yes']) > 0]/@id, '')",
+                groupsInstance, ec, "inc");
     }
 
     private void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {

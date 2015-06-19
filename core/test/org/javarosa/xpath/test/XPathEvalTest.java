@@ -547,9 +547,6 @@ public class XPathEvalTest extends TestCase {
         testEval("count(/data/strtest[@val = /data/string])", instance, null, new Double(1));
 
 
-
-
-
         /* fetching from model */
 //        testEval("/", dm1, null, "");
 //        testEval("/non-existent", dm1, null, "");
