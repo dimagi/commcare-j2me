@@ -14,6 +14,21 @@ repositories {
 /* props.load(propsFile.newDataInputStream()) */
 /* props.getProperty('src') */
 
+checkstyle {
+    toolVersion = "6.7"
+}
+
+findbugs {
+  ignoreFailures = true
+  sourceSets = [sourceSets.main]
+  effort = "max"
+}
+
+pmd {
+  ignoreFailures = true
+  sourceSets = [sourceSets.main]
+}
+
 dependencies {
       compile group: 'kxml2', name: 'kxml2', version: '2.3.0'
       compile files('../lib/regexp-me.jar')
