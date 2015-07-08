@@ -1,12 +1,16 @@
 package org.javarosa.core.form.api.test;
 
+import j2meunit.framework.Test;
+import j2meunit.framework.TestCase;
+import j2meunit.framework.TestMethod;
+import j2meunit.framework.TestSuite;
+
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.QuestionString;
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.test.DummyFormEntryPrompt;
-import org.javarosa.core.model.test.QuestionDefTest;
 import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.services.locale.Localizer;
 import org.javarosa.core.services.locale.TableLocaleSource;
@@ -16,11 +20,6 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryPrompt;
-
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
 
 public class TextFormTests extends TestCase {
 
@@ -63,9 +62,9 @@ public class TextFormTests extends TestCase {
         System.out.println("Running TextFormTests...");
         for (int i = 1; i <= NUM_TESTS; i++) {
             final int testID = i;
-            aSuite.addTest(new QuestionDefTest("QuestionDef Test " + i, new TestMethod() {
+            aSuite.addTest(new TextFormTests("TextForm Test Test " + i, new TestMethod() {
                 public void run(TestCase tc) {
-                    ((QuestionDefTest)tc).doTest(testID);
+                    ((TextFormTests)tc).doTest(testID);
                 }
             }));
         }
@@ -74,7 +73,7 @@ public class TextFormTests extends TestCase {
     }
 
 
-    public final static int NUM_TESTS = 8;
+    public final static int NUM_TESTS = 9;
 
     public void doTest(int i) {
         switch (i) {
@@ -105,6 +104,7 @@ public class TextFormTests extends TestCase {
         }
     }
 
+
     public void testConstructors() {
         QuestionDef q;
 
@@ -130,15 +130,15 @@ public class TextFormTests extends TestCase {
     public void testTextForms() {
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
-        boolean foundFlag = false;
         Localizer l = fpi.getFormDef().getLocalizer();
 
         l.setDefaultLocale(l.getAvailableLocales()[0]);
         l.setLocale(l.getAvailableLocales()[0]);
-        int state = -99;
+        int state = fec.getModel().getEvent();
         while (state != FormEntryController.EVENT_QUESTION) {
             state = fec.stepToNextEvent();
         }
+        fep = fec.getModel().getQuestionPrompt();
 
         if (!fep.getLongText().equals("Patient ID"))
             fail("getLongText() not returning correct value");
@@ -150,10 +150,11 @@ public class TextFormTests extends TestCase {
         while (state != FormEntryController.EVENT_QUESTION) {
             state = fec.stepToNextEvent();
         }
+        fep = fec.getModel().getQuestionPrompt();
 
         if (!fep.getLongText().equals("Full Name"))
-            fail("getLongText() not falling back to default text form correctly");
-        if (!fep.getSpecialFormQuestionText("long").equals(null))
+            fail("getLongText() not falling back to default text form correctly, returned: " + fep.getLongText());
+        if (fep.getSpecialFormQuestionText("long") != null)
             fail("getSpecialFormQuestionText() returning incorrect value");
 
     }
@@ -274,20 +275,17 @@ public class TextFormTests extends TestCase {
         QuestionString hint = new QuestionString("hint");
         hint.setTextId("hint text id");
         q.putQuestionString("hint", hint);
-        if (!"help text id".equals(q.getQuestionString("hint").getTextId()) || q.getQuestionString("hint") != null) {
-            fail("Help text ID getter/setter broken");
+        if (!"hint text id".equals(q.getQuestionString("hint").getTextId())) {
+            fail("hint text ID getter/setter broken");
         }
     }
 
     public void testPromptsNoLocalizer() {
-
         QuestionDef q = new QuestionDef();
 
         q.putQuestionString("help", new QuestionString("help", "help text"));
-        if (!"help text".equals(q.getQuestionString("help"))) {
+        if (!"help text".equals(q.getQuestionString("help").getTextInner())) {
             fail("Help text getter/setter broken");
         }
     }
-
-
 }
