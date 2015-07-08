@@ -29,6 +29,10 @@ pmd {
   sourceSets = [sourceSets.main]
 }
 
+test {
+  reports.junitXml.destination = file('build/reports/tests')
+}
+
 dependencies {
       compile group: 'kxml2', name: 'kxml2', version: '2.3.0'
       compile files('../lib/regexp-me.jar')
