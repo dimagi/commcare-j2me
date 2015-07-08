@@ -9,7 +9,7 @@
 	<target name="package" depends="clean">
 		<mkdir dir="buildTools"/>
 		<javac destdir="buildTools">
-			<src path="src"/>
+      <src path="src/main"/>
 			<include name="**/*.java"/>
 		</javac>
 		
