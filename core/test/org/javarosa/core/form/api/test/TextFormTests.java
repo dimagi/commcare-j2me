@@ -73,7 +73,7 @@ public class TextFormTests extends TestCase {
     }
 
 
-    public final static int NUM_TESTS = 9;
+    public final static int NUM_TESTS = 8;
 
     public void doTest(int i) {
         switch (i) {
