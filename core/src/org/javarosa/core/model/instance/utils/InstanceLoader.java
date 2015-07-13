@@ -1,6 +1,5 @@
 package org.javarosa.core.model.instance.utils;
 
-
 import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.condition.IFunctionHandler;
@@ -16,7 +15,6 @@ import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.xform.parse.IElementHandler;
-import org.javarosa.xform.parse.XFormParseException;
 import org.javarosa.xform.parse.XFormParser;
 import org.javarosa.xform.util.XFormUtils;
 import org.javarosa.core.util.Pair;
@@ -30,9 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Vector;
-
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 public class InstanceLoader {
     private final static String TAG = InstanceLoader.class.getSimpleName();
