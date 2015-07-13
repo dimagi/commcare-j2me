@@ -1,6 +1,5 @@
 package org.javarosa.core.model.instance.utils;
 
-import android.util.Pair;
 
 import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.model.FormDef;
@@ -8,6 +7,7 @@ import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
+import org.javarosa.core.reference.ReferenceFactory;
 import org.javarosa.core.reference.ReferenceManager;
 import org.javarosa.core.reference.RootTranslator;
 import org.javarosa.core.services.Logger;
@@ -19,6 +19,7 @@ import org.javarosa.xform.parse.IElementHandler;
 import org.javarosa.xform.parse.XFormParseException;
 import org.javarosa.xform.parse.XFormParser;
 import org.javarosa.xform.util.XFormUtils;
+import org.javarosa.core.util.Pair;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -74,8 +75,9 @@ public class InstanceLoader {
                                                    File formBin, File formXml, boolean isReadOnly,
                                                    PrototypeFactory protoFactory, InstanceInitializationFactory iif,
                                                    Vector<IFunctionHandler> funcHandlers,
-                                                   Vector<Pair<String, IElementHandler>> parserHandlers,
-                                                   Vector<Pair<String, IElementHandler>> actionParsers) throws IOException {
+                                                   Vector<Pair> parserHandlers,
+                                                   Vector<Pair> actionParsers,
+                                                   ReferenceFactory fileRefFactory) throws IOException {
         FormEntryController fec;
         FormDef fd = null;
         FileInputStream fis;
@@ -100,12 +102,12 @@ public class InstanceLoader {
             // Log.i(TAG, "Attempting to load from: " + formXml.getAbsolutePath());
             fis = new FileInputStream(formXml);
 
-            for (Pair<String, IElementHandler> handlerPair : parserHandlers) {
-                XFormParser.registerHandler(handlerPair.first, handlerPair.second);
+            for (Pair handlerPair : parserHandlers) {
+                XFormParser.registerHandler((String)handlerPair.first(), (IElementHandler)handlerPair.second());
             }
 
-            for (Pair<String, IElementHandler> actionPair : actionParsers) {
-                XFormParser.registerStructuredAction(actionPair.first, actionPair.second);
+            for (Pair actionPair : actionParsers) {
+                XFormParser.registerStructuredAction((String)actionPair.first(), (IElementHandler)actionPair.second());
             }
 
             fd = XFormUtils.getFormFromInputStream(fis);
@@ -161,10 +163,9 @@ public class InstanceLoader {
 
         } else {
             // This should get moved to the Application Class
-            if (ReferenceManager._().getFactories().length == 0) {
+            if (ReferenceManager._().getFactories().length == 0 && fileRefFactory != null) {
                 // this is /sdcard/odk
-                ReferenceManager._().addReferenceFactory(
-                    new FileReferenceFactory(Environment.getExternalStorageDirectory() + "/odk"));
+                ReferenceManager._().addReferenceFactory(fileRefFactory);
             }
 
             // Set jr://... to point to /sdcard/odk/forms/filename-media/
@@ -175,6 +176,7 @@ public class InstanceLoader {
             ReferenceManager._().addSessionRootTranslator(
                 new RootTranslator("jr://video/", "jr://file/forms/" + formFileName + "-media/"));
         }
+        return fec;
     }
 
     /**
