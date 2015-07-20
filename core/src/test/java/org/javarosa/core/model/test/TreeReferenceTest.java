@@ -176,7 +176,7 @@ public class TreeReferenceTest extends TestCase {
         return aSuite;
     }
 
-    private final static int NUM_TESTS = 10;
+    private final static int NUM_TESTS = 11;
 
     private void doTest(int i) {
         switch (i) {
@@ -218,7 +218,7 @@ public class TreeReferenceTest extends TestCase {
 
     //Tests ensuring that original references aren't mutated.
     private void testMutation() {
-        assertTrue("/a/c[] predicate set illegally modified", acPredRef.getPredicate(0).size() != 1);
+        assertTrue("/a/c[] predicate set illegally modified", acPredRef.getPredicate(0).size() == 1);
     }
 
     private void testSubreferences() {
