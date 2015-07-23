@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+
+sourceCompatibility = 1.5
+
+repositories {
+    mavenCentral()
+}
+
+/* Properties props = new Properties() */
+/* File propsFile = new File('build.properties') */
+/* props.load(propsFile.newDataInputStream()) */
+/* props.getProperty('src') */
+
+checkstyle {
+    toolVersion = "6.7"
+}
+
+findbugs {
+  ignoreFailures = true
+  sourceSets = [sourceSets.main]
+  effort = "max"
+}
+
+pmd {
+  ignoreFailures = true
+  sourceSets = [sourceSets.main]
+}
+
+test {
+  reports.junitXml.destination = file('build/reports/tests')
+}
+
+dependencies {
+      compile group: 'kxml2', name: 'kxml2', version: '2.3.0'
+      compile files('../lib/regexp-me.jar')
+      testCompile files('../lib/j2meunit-javarosa.jar')
+      testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+jar {
+    baseName = "javarosa-libraries"
+}
+
+def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
+
+/* for use primarily by the build server to extract the required 3rd-party
+libraries into the javarosa source tree. to use this in your own build, set the
+'extract-libs-fresh' property, then also set the 'javarosa-deps' property to
+the path of the library archive (make sure you are using the version of the
+archive compatible with the version you wish to build) */
+task extractLibs(type: Copy) {
+  if (buildDeps != null) {
+    from zipTree(file("${buildDeps}")) into file("${projectDir.parent}")
+  }
+}
+
+compileJava.dependsOn extractLibs

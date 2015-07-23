@@ -6,7 +6,7 @@
   <property file="build.properties"/>
 
   <fileset id="jr.sources" dir="../../">
-    <include name="core/src/**/*.java"/>
+    <include name="core/src/main/**/*.java"/>
     <include name="j2me/**/src/**/*.java"/>
 
     <!-- exclude this until we've worked out issues with bluetooth apis -->
@@ -284,9 +284,11 @@
     </trycatch>
   </target>
 
-  <target name="init-libs">
-    <ant antfile="${dir.root}/core/build.xml" target="extract-libs" inheritAll="true" inheritRefs="false" />
+  <target name="extract-libs" if="extract-libs-fresh">
+    <unzip src="${javarosa-deps}" dest="{basedir}/../../" overwrite="true"/>
+  </target>
 
+  <target name="init-libs" depends="extract-libs">
     <taskdef name="for" classname="net.sf.antcontrib.logic.For" onerror="report" classpath="${dir.tools}/ant-contrib.jar" />
     <taskdef name="if" classname="net.sf.antcontrib.logic.IfTask" onerror="report" classpath="${dir.tools}/ant-contrib.jar" />
     <taskdef name="trycatch" classname="net.sf.antcontrib.logic.TryCatchTask" onerror="report" classpath="${dir.tools}/ant-contrib.jar" />
