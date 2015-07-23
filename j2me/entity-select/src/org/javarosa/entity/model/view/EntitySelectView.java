@@ -212,7 +212,7 @@ public class EntitySelectView<E> extends FramedForm implements HandledPItemState
         
         // J2ME assumes that all widths are static, so remove any trailing '%' characters.
         for (int i = 0; i < hints.length; i++) {
-            if (hints[i].indexOf("%") != -1) {
+            if (hints[i] != null && hints[i].indexOf("%") != -1) {
                 hints[i] = hints[i].substring(0, hints[i].indexOf("%"));
             }
         }
