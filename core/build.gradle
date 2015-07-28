@@ -58,3 +58,13 @@ task extractLibs(type: Copy) {
 }
 
 compileJava.dependsOn extractLibs
+
+task jenkinsTest{
+    inputs.files test.outputs.files
+    doLast{
+        def timestamp = System.currentTimeMillis()
+        test.getReports().getJunitXml().getDestination().eachFile { it.lastModified = timestamp }
+    }
+}
+
+check.dependsOn(jenkinsTest)
