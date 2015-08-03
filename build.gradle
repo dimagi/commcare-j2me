@@ -78,6 +78,12 @@ task harnessJar(type: Jar) {
     from sourceSets.harness.output
 }
 
+task copyTestResources(type: Copy) {
+  from sourceSets.test.resources
+  into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
+
 def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
 
 /* for use primarily by the build server to extract the required 3rd-party
