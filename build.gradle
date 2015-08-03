@@ -11,6 +11,7 @@ repositories {
 
 checkstyle {
     toolVersion = "6.7"
+    sourceSets = [sourceSets.main]
 }
 
 findbugs {
