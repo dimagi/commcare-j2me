@@ -99,7 +99,7 @@ the path of the library archive (make sure you are using the version of the
 archive compatible with the version you wish to build) */
 task extractLibs(type: Copy) {
     if (buildDeps != null) {
-        from zipTree(file("${buildDeps}")) into file("${projectDir.parent}")
+        from zipTree(file("${buildDeps}")) into file("${projectDir}")
     }
 }
 
