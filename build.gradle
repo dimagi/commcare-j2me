@@ -26,6 +26,10 @@ pmd {
     sourceSets = [sourceSets.main]
 }
 
+jacoco {
+    toolVersion = "0.7.4"
+}
+
 test {
     reports.junitXml.destination = file('build/reports/tests')
 }
