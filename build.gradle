@@ -11,6 +11,7 @@ repositories {
 
 checkstyle {
     toolVersion = "6.7"
+    sourceSets = [sourceSets.main]
 }
 
 findbugs {
@@ -77,6 +78,12 @@ task harnessJar(type: Jar) {
     baseName = "harness"
     from sourceSets.harness.output
 }
+
+task copyTestResources(type: Copy) {
+  from sourceSets.test.resources
+  into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
 
 def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
 
