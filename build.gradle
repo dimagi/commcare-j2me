@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.7
 
@@ -23,6 +24,10 @@ findbugs {
 pmd {
     ignoreFailures = true
     sourceSets = [sourceSets.main]
+}
+
+jacoco {
+    toolVersion = "0.7.4.+"
 }
 
 test {
@@ -94,7 +99,7 @@ the path of the library archive (make sure you are using the version of the
 archive compatible with the version you wish to build) */
 task extractLibs(type: Copy) {
     if (buildDeps != null) {
-        from zipTree(file("${buildDeps}")) into file("${projectDir.parent}")
+        from zipTree(file("${buildDeps}")) into file("${projectDir}")
     }
 }
 
