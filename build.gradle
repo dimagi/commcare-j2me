@@ -79,9 +79,17 @@ jar {
     baseName = "javarosa-libraries"
 }
 
-task harnessJar(type: Jar) {
+configurations {
+  harnessOutput.extendsFrom (harnessCompile)
+}
+
+task harnessJar(type: Jar, dependsOn: harnessClasses) {
     baseName = "harness"
     from sourceSets.harness.output
+}
+
+artifacts {
+  harnessOutput harnessJar
 }
 
 task copyTestResources(type: Copy) {
