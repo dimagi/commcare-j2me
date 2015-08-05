@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'checkstyle'
 apply plugin: 'findbugs'
 apply plugin: 'pmd'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.7
 
@@ -11,6 +12,7 @@ repositories {
 
 checkstyle {
     toolVersion = "6.7"
+    sourceSets = [sourceSets.main]
 }
 
 findbugs {
@@ -22,6 +24,10 @@ findbugs {
 pmd {
     ignoreFailures = true
     sourceSets = [sourceSets.main]
+}
+
+jacoco {
+    toolVersion = "0.7.4.+"
 }
 
 test {
@@ -77,10 +83,24 @@ jar {
     baseName = "javarosa-libraries"
 }
 
-task harnessJar(type: Jar) {
+configurations {
+  harnessOutput.extendsFrom (harnessCompile)
+}
+
+task harnessJar(type: Jar, dependsOn: harnessClasses) {
     baseName = "harness"
     from sourceSets.harness.output
 }
+
+artifacts {
+  harnessOutput harnessJar
+}
+
+task copyTestResources(type: Copy) {
+  from sourceSets.test.resources
+  into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
 
 def buildDeps = hasProperty('javarosaDeps') ? javarosaDeps : null
 
@@ -91,7 +111,7 @@ the path of the library archive (make sure you are using the version of the
 archive compatible with the version you wish to build) */
 task extractLibs(type: Copy) {
     if (buildDeps != null) {
-        from zipTree(file("${buildDeps}")) into file("${projectDir.parent}")
+        from zipTree(file("${buildDeps}")) into file("${projectDir}")
     }
 }
 
