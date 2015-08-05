@@ -1,19 +1,5 @@
 package org.javarosa.services.transport.impl.simplehttp;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Hashtable;
-
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-import javax.microedition.pki.Certificate;
-import javax.microedition.pki.CertificateException;
-
 import org.javarosa.core.io.StreamsUtil;
 import org.javarosa.core.log.WrappedException;
 import org.javarosa.core.services.Logger;
@@ -30,6 +16,19 @@ import org.javarosa.service.transport.securehttp.HttpAuthenticator;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.BasicTransportMessage;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
+
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
+import javax.microedition.pki.Certificate;
+import javax.microedition.pki.CertificateException;
 
 /**
  * A message which implements the simplest Http transfer - plain text via POST

@@ -19,9 +19,6 @@
  */
 package org.javarosa.communication.reporting.activity;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.communication.reporting.properties.FeedbackReportProperties;
 import org.javarosa.communication.reporting.view.FeedbackReportScreen;
 import org.javarosa.core.api.State;
@@ -30,6 +27,9 @@ import org.javarosa.core.util.TrivialTransitions;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * @author Clayton Sims

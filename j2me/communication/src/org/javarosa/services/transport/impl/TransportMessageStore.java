@@ -1,11 +1,5 @@
 package org.javarosa.services.transport.impl;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.NoSuchElementException;
-import java.util.Vector;
-
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
@@ -15,6 +9,12 @@ import org.javarosa.core.services.storage.StorageModifiedException;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.services.transport.TransportCache;
 import org.javarosa.services.transport.TransportMessage;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * A TransportMessageStore is necessary since not all attempts to send succeed.

@@ -1,12 +1,6 @@
 package org.javarosa.demo.applogic;
 
-import java.io.IOException;
-import java.util.Vector;
-
-import javax.microedition.midlet.MIDlet;
-
 import org.javarosa.core.model.CoreModelModule;
-import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
@@ -19,8 +13,6 @@ import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
-import org.javarosa.core.services.storage.StorageFullException;
-import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.JavaRosaCoreModule;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.demo.properties.DemoAppProperties;
@@ -40,7 +32,11 @@ import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.user.activity.UserModule;
 import org.javarosa.user.model.User;
 import org.javarosa.user.utility.UserUtility;
-import org.javarosa.xform.util.XFormUtils;
+
+import java.io.IOException;
+import java.util.Vector;
+
+import javax.microedition.midlet.MIDlet;
 
 public class JRDemoContext {
 

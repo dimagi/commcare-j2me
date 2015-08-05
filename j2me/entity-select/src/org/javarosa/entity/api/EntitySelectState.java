@@ -1,7 +1,6 @@
 package org.javarosa.entity.api;
 
 import org.javarosa.core.api.State;
-import org.javarosa.core.services.storage.Persistable;
 import org.javarosa.entity.api.transitions.EntitySelectTransitions;
 
 /*

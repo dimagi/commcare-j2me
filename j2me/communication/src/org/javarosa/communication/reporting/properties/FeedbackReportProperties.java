@@ -16,12 +16,12 @@
 
 package org.javarosa.communication.reporting.properties;
 
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.services.properties.IPropertyRules;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.javarosa.core.services.PropertyManager;
-import org.javarosa.core.services.properties.IPropertyRules;
 
 public class FeedbackReportProperties implements IPropertyRules {
     Hashtable rules;

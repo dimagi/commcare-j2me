@@ -1,10 +1,9 @@
 package org.javarosa.services.transport;
 
-import java.io.InputStream;
-import java.util.Date;
-
 import org.javarosa.core.services.storage.Persistable;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
+
+import java.util.Date;
 
 /**
  * TransportMessage is one of a pair of interfaces which must be implemented in

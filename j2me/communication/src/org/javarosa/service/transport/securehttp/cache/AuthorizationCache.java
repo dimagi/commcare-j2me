@@ -3,9 +3,9 @@
  */
 package org.javarosa.service.transport.securehttp.cache;
 
-import java.util.Vector;
-
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+
+import java.util.Vector;
 
 /**
  * The authorization cache contains records of authorization

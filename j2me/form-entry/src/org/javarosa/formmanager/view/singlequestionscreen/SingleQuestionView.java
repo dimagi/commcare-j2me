@@ -16,11 +16,6 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.helper.InvalidDataException;
@@ -51,10 +46,14 @@ import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.microedition.lcdui.Image;
+
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Displayable;
 import de.enough.polish.ui.FramedForm;
-import de.enough.polish.ui.Screen;
 
 public class SingleQuestionView extends FramedForm implements IFormEntryView,
         HandledPCommandListener {

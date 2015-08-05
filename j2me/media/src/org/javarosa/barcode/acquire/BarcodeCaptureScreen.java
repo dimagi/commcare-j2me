@@ -16,16 +16,16 @@
 
 package org.javarosa.barcode.acquire;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Image;
-import javax.microedition.media.MediaException;
-
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquiringQuestionScreen;
 import org.javarosa.j2me.services.BarcodeCaptureService;
 import org.javarosa.j2me.services.exception.ImageProcessingException;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Image;
+import javax.microedition.media.MediaException;
 
 /**
  * @author mel

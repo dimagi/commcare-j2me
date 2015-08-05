@@ -16,6 +16,14 @@
 
 package org.javarosa.media.audio.service;
 
+import org.javarosa.core.services.UnavailableServiceException;
+import org.javarosa.j2me.services.AudioCaptureService;
+import org.javarosa.j2me.services.DataCaptureService;
+import org.javarosa.j2me.services.FileService;
+import org.javarosa.j2me.services.exception.AudioException;
+import org.javarosa.j2me.services.exception.FileException;
+import org.javarosa.utilities.file.J2MEFileService;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,14 +32,6 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.RecordControl;
-
-import org.javarosa.core.services.UnavailableServiceException;
-import org.javarosa.j2me.services.AudioCaptureService;
-import org.javarosa.j2me.services.DataCaptureService;
-import org.javarosa.j2me.services.FileService;
-import org.javarosa.j2me.services.exception.AudioException;
-import org.javarosa.j2me.services.exception.FileException;
-import org.javarosa.utilities.file.J2MEFileService;
 
 /**
  * An audio capture service that utilizes J2ME's robust Media API

@@ -1,17 +1,16 @@
 package org.javarosa.services.transport;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.Vector;
-
 import org.javarosa.core.services.Logger;
-import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.services.transport.impl.TransportException;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.TransportMessageStore;
 import org.javarosa.services.transport.senders.SenderThread;
 import org.javarosa.services.transport.senders.SimpleSenderThread;
 import org.javarosa.services.transport.senders.TransporterSharingSender;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.Vector;
 
 /**
  * The TransportService is generic. Its capabilities are extended by defining

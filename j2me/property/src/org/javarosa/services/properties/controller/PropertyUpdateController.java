@@ -3,6 +3,14 @@
  */
 package org.javarosa.services.properties.controller;
 
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.util.TrivialTransitions;
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.log.HandledItemStateListener;
+import org.javarosa.j2me.view.J2MEDisplay;
+import org.javarosa.services.properties.view.PropertiesScreen;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -12,14 +20,6 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.TextField;
-
-import org.javarosa.core.services.PropertyManager;
-import org.javarosa.core.util.TrivialTransitions;
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.j2me.log.HandledItemStateListener;
-import org.javarosa.j2me.view.J2MEDisplay;
-import org.javarosa.services.properties.view.PropertiesScreen;
 
 /**
  * @author ctsims

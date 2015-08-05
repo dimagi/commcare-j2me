@@ -1,13 +1,9 @@
 package org.javarosa.formmanager.view.summary;
 
-import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.IFormElement;
-import org.javarosa.core.model.QuestionDef;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.formmanager.api.JrFormEntryModel;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;

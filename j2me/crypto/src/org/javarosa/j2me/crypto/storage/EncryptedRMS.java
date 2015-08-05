@@ -1,11 +1,11 @@
 package org.javarosa.j2me.crypto.storage;
 
-import javax.microedition.rms.RecordStoreException;
-
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.javarosa.j2me.crypto.util.CryptUtil;
 import org.javarosa.j2me.crypto.util.CryptoSession;
 import org.javarosa.j2me.storage.rms.raw.RMS;
+
+import javax.microedition.rms.RecordStoreException;
 
 /**
  * A simple wrapper around an RMS RecordStore that handles common exceptions and

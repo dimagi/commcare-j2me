@@ -16,12 +16,12 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen.acquire;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.singlequestionscreen.screen.SingleQuestionScreen;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 
 import de.enough.polish.ui.Style;
 

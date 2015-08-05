@@ -1,12 +1,5 @@
 package org.javarosa.demo.activity.savedformlist;
 
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.List;
-
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.util.OrderedHashtable;
@@ -15,6 +8,13 @@ import org.javarosa.demo.util.SavedFormListItem;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import java.util.Enumeration;
+import java.util.Vector;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.List;
 
 public class JRDemoSavedFormListController implements HandledCommandListener {
     JRDemoSavedFormListTransitions transitions;

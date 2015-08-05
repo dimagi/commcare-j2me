@@ -16,6 +16,16 @@
 
 package org.javarosa.formmanager.api;
 
+import org.javarosa.core.api.State;
+import org.javarosa.formmanager.api.transitions.FormListTransitions;
+import org.javarosa.formmanager.view.AvailableFormsScreen;
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.view.J2MEDisplay;
+import org.kxml2.io.KXmlParser;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,16 +36,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
-
-import org.javarosa.core.api.State;
-import org.javarosa.formmanager.api.transitions.FormListTransitions;
-import org.javarosa.formmanager.view.AvailableFormsScreen;
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.j2me.view.J2MEDisplay;
-import org.kxml2.io.KXmlParser;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
 
 public abstract class DisplayFormsHttpState implements FormListTransitions, State, HandledCommandListener {
     private AvailableFormsScreen formList;

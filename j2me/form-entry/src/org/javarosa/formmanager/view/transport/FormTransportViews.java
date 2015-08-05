@@ -16,12 +16,12 @@
 
 package org.javarosa.formmanager.view.transport;
 
+import org.javarosa.core.services.locale.Localization;
+
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
-
-import org.javarosa.core.services.locale.Localization;
 
 public class FormTransportViews {
     // ----------- subviews

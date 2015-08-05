@@ -1,10 +1,5 @@
 package org.javarosa.user.transport;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.Enumeration;
-
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
@@ -16,6 +11,11 @@ import org.kxml2.io.KXmlSerializer;
 import org.kxml2.kdom.Document;
 import org.kxml2.kdom.Element;
 import org.xmlpull.v1.XmlSerializer;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.Enumeration;
 
 public class HttpUserRegistrationTranslator implements UserRegistrationTranslator<SimpleHttpTransportMessage>{
 

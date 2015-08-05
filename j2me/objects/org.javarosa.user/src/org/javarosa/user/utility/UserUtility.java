@@ -3,8 +3,6 @@
  */
 package org.javarosa.user.utility;
 
-import javax.microedition.midlet.MIDlet;
-
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -12,6 +10,8 @@ import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.user.model.User;
+
+import javax.microedition.midlet.MIDlet;
 
 /**
  * @author Clayton Sims

@@ -3,6 +3,15 @@
  */
 package org.javarosa.utilities.media;
 
+import org.javarosa.core.data.IDataPointer;
+import org.javarosa.core.io.StreamsUtil;
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.j2me.view.J2MEDisplay;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -13,15 +22,6 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
-
-import org.javarosa.core.data.IDataPointer;
-import org.javarosa.core.io.StreamsUtil;
-import org.javarosa.core.reference.InvalidReferenceException;
-import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.Item;

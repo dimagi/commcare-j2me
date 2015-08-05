@@ -20,8 +20,6 @@ import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.SelectOneData;
 import org.javarosa.core.model.data.helper.Selection;
-import org.javarosa.formmanager.view.chatterbox.Chatterbox;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.ChoiceGroup;
 

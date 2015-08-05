@@ -16,9 +16,9 @@
 
 package org.javarosa.formmanager.utility;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.FormIndex;
+
+import java.util.Vector;
 
 /**
  * Copied from Drew's SortedIntSet class.

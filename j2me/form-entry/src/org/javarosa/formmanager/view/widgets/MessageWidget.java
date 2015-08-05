@@ -21,14 +21,9 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.formmanager.api.FormMultimediaController;
-import org.javarosa.j2me.view.J2MEDisplay;
 
-import de.enough.polish.ui.Container;
-import de.enough.polish.ui.ImageItem;
 import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
-import de.enough.polish.ui.UiAccess;
 
 /**
  * TODO: make an expandedwidget.

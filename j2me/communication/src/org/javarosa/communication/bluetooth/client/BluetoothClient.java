@@ -19,7 +19,6 @@ package org.javarosa.communication.bluetooth.client;
 
 import java.util.Vector;
 
-// jsr082 API
 import javax.bluetooth.BluetoothStateException;
 import javax.bluetooth.DeviceClass;
 import javax.bluetooth.DiscoveryAgent;
@@ -28,6 +27,8 @@ import javax.bluetooth.LocalDevice;
 import javax.bluetooth.RemoteDevice;
 import javax.bluetooth.ServiceRecord;
 import javax.bluetooth.UUID;
+
+// jsr082 API
 
 
 /**

@@ -16,7 +16,8 @@
 
 package org.javarosa.communication.bluetooth.server;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 
 /**
  * Interface through which bluetooth server commnunicates with the application specific server.

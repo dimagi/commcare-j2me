@@ -3,15 +3,15 @@
  */
 package org.javarosa.j2me.reference;
 
+import org.javarosa.core.io.BufferedInputStream;
+import org.javarosa.core.reference.Reference;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
-
-import org.javarosa.core.io.BufferedInputStream;
-import org.javarosa.core.reference.Reference;
 
 /**
  * @author ctsims

@@ -1,13 +1,13 @@
 package org.javarosa.services.transport.impl.simplehttp;
 
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.transport.payload.IDataPayload;
+import org.javarosa.services.transport.TransportService;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.microedition.io.HttpConnection;
-
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.transport.payload.IDataPayload;
-import org.javarosa.services.transport.TransportService;
 
 public abstract class StreamingHTTPMessage extends SimpleHttpTransportMessage {
 
