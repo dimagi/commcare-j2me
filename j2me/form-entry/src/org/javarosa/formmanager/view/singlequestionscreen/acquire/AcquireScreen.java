@@ -16,14 +16,14 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen.acquire;
 
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
-
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
 
 /**
  * @author mel

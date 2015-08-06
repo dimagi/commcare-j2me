@@ -16,16 +16,15 @@
 
 package org.javarosa.entity.model.view;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.services.storage.Persistable;
 import org.javarosa.entity.api.EntitySelectController;
 import org.javarosa.entity.model.Entity;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.log.HandledPItemStateListener;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 import de.enough.polish.ui.Choice;
 import de.enough.polish.ui.ChoiceGroup;

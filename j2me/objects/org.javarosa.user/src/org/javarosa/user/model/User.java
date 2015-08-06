@@ -17,12 +17,6 @@
 package org.javarosa.user.model;
 
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Hashtable;
-
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.model.instance.TreeReference;
@@ -34,6 +28,12 @@ import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapMap;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 
 

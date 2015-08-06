@@ -1,16 +1,14 @@
 package org.javarosa.services.transport.impl.simplehttp;
 
+import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.services.locale.Localization;
+
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.TimeZone;
 
 import javax.microedition.io.HttpConnection;
-
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.services.locale.Localization;
 
 public class HttpRequestProperties {
 

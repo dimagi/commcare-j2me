@@ -3,11 +3,11 @@
  */
 package org.javarosa.user.transport;
 
-import java.io.IOException;
-
 import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.services.transport.UnrecognizedResponseException;
 import org.javarosa.user.model.User;
+
+import java.io.IOException;
 
 /**
  * @author ctsims

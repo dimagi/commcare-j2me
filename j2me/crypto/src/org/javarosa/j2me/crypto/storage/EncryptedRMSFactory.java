@@ -3,12 +3,12 @@
  */
 package org.javarosa.j2me.crypto.storage;
 
-import javax.microedition.rms.RecordStoreException;
-import javax.microedition.rms.RecordStoreNotFoundException;
-
 import org.javarosa.j2me.crypto.util.CryptoSession;
 import org.javarosa.j2me.storage.rms.raw.RMS;
 import org.javarosa.j2me.storage.rms.raw.RMSFactory;
+
+import javax.microedition.rms.RecordStoreException;
+import javax.microedition.rms.RecordStoreNotFoundException;
 
 /**
  * @author ctsims

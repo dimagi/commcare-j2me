@@ -17,14 +17,6 @@
 package org.javarosa.entity.model.view;
 
 
-
-import java.io.IOException;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
@@ -36,6 +28,13 @@ import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import java.io.IOException;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Form;

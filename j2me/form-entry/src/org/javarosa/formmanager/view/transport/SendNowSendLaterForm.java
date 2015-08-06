@@ -16,17 +16,16 @@
 
 package org.javarosa.formmanager.view.transport;
 
+import org.javarosa.core.services.locale.Localization;
+
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.ItemStateListener;
 import javax.microedition.lcdui.Spacer;
 
-import org.javarosa.core.services.locale.Localization;
-
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.FramedForm;
-import de.enough.polish.ui.Item;
 import de.enough.polish.ui.StringItem;
 
 public class SendNowSendLaterForm extends FramedForm {

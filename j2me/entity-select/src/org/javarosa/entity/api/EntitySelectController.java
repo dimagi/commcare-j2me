@@ -15,12 +15,7 @@ package org.javarosa.entity.api;
  * the License.
  */
 
-import java.util.Vector;
-
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.services.storage.EntityFilter;
 import org.javarosa.core.util.Iterator;
 import org.javarosa.entity.api.transitions.EntitySelectTransitions;
 import org.javarosa.entity.model.Entity;
@@ -29,6 +24,10 @@ import org.javarosa.entity.model.view.EntitySelectDetailPopup;
 import org.javarosa.entity.model.view.EntitySelectView;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.j2me.view.ProgressIndicator;
+
+import java.util.Vector;
+
+import javax.microedition.lcdui.Displayable;
 
 /**
  * Entity Select is a reusable activity for selecting a single record from a set of like records. For

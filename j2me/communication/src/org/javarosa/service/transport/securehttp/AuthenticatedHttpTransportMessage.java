@@ -3,16 +3,6 @@
  */
 package org.javarosa.service.transport.securehttp;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-
-import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
-
 import org.javarosa.core.io.BufferedInputStream;
 import org.javarosa.core.log.WrappedException;
 import org.javarosa.core.services.Logger;
@@ -25,6 +15,16 @@ import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+
+import javax.microedition.io.Connector;
+import javax.microedition.io.HttpConnection;
 
 import de.enough.polish.util.StreamUtil;
 

@@ -3,12 +3,12 @@
  */
 package org.javarosa.splashscreen.api;
 
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.util.TrivialTransitions;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Display;
 import de.enough.polish.ui.Displayable;

@@ -16,10 +16,6 @@
 
 package org.javarosa.formmanager.view.widgets;
 
-import java.io.IOException;
-
-import javax.microedition.media.MediaException;
-
 import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.IAnswerData;
@@ -27,6 +23,10 @@ import org.javarosa.core.model.data.PointerAnswerData;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.utilities.media.CameraItem;
+
+import java.io.IOException;
+
+import javax.microedition.media.MediaException;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;

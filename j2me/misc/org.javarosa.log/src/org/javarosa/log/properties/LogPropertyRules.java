@@ -19,16 +19,16 @@
  */
 package org.javarosa.log.properties;
 
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.properties.IPropertyRules;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
+
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * @author Clayton Sims

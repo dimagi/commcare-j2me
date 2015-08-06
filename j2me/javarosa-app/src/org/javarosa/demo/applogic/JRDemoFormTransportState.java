@@ -3,8 +3,6 @@
  */
 package org.javarosa.demo.applogic;
 
-import java.io.IOException;
-
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -13,6 +11,8 @@ import org.javarosa.formmanager.api.FormTransportState;
 import org.javarosa.formmanager.view.ISubmitStatusObserver;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.services.transport.TransportMessage;
+
+import java.io.IOException;
 
 /**
  * @author ctsims

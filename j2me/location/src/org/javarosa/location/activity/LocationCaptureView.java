@@ -1,11 +1,11 @@
 package org.javarosa.location.activity;
 
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.j2me.services.LocationCaptureService;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
-
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.j2me.services.LocationCaptureService;
 
 
 

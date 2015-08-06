@@ -3,8 +3,6 @@
  */
 package org.javarosa.user.api;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.condition.IFunctionHandler;
 import org.javarosa.core.model.instance.FormInstance;
@@ -20,6 +18,8 @@ import org.javarosa.formmanager.view.chatterbox.Chatterbox;
 import org.javarosa.user.api.transitions.AddUserTransitions;
 import org.javarosa.user.model.User;
 import org.javarosa.user.utility.UserModelProcessor;
+
+import java.util.Vector;
 
 /**
  * The Add User Form Entry State is responsible for

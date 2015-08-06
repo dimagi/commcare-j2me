@@ -4,10 +4,8 @@ import org.javarosa.core.api.State;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.properties.JavaRosaPropertyRules;
-import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.demo.activity.selectlanguage.JRDemoSelectLanguageController;
 import org.javarosa.demo.activity.selectlanguage.JRDemoSelectLanguageTransitions;
-import org.javarosa.resources.locale.LanguageUtils;
 
 
 public class JRDemoLanguageSelectState implements JRDemoSelectLanguageTransitions, State {

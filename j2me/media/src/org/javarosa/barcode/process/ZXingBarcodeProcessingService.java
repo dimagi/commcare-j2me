@@ -19,9 +19,12 @@ package org.javarosa.barcode.process;
 //This condition turns off compilation of this file unless javarosa.barcode is set to true
 //#condition javarosa.barcode
 
-import java.util.Hashtable;
-
-import javax.microedition.lcdui.Image;
+import com.google.zxing.MonochromeBitmapSource;
+import com.google.zxing.Reader;
+import com.google.zxing.ReaderException;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2me.LCDUIImageMonochromeBitmapSource;
+import com.google.zxing.qrcode.QRCodeReader;
 
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.StringData;
@@ -29,12 +32,9 @@ import org.javarosa.j2me.services.BarcodeCaptureService;
 import org.javarosa.j2me.services.DataCaptureService;
 import org.javarosa.j2me.services.exception.ImageProcessingException;
 
-import com.google.zxing.MonochromeBitmapSource;
-import com.google.zxing.Reader;
-import com.google.zxing.ReaderException;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2me.LCDUIImageMonochromeBitmapSource;
-import com.google.zxing.qrcode.QRCodeReader;
+import java.util.Hashtable;
+
+import javax.microedition.lcdui.Image;
 
 /**
  * @author mel

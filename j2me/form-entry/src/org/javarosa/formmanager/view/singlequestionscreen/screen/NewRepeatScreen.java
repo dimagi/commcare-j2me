@@ -1,9 +1,9 @@
 package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
-import javax.microedition.lcdui.Command;
-
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.formmanager.view.singlequestionscreen.Constants;
+
+import javax.microedition.lcdui.Command;
 
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;

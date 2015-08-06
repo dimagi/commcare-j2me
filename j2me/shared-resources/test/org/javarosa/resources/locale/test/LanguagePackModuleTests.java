@@ -17,13 +17,13 @@
 package org.javarosa.resources.locale.test;
 
 
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.resources.locale.LanguagePackModule;
+
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
-
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.resources.locale.LanguagePackModule;
 
 public class LanguagePackModuleTests extends TestCase  {
     public final int NUM_TESTS = 1 ;

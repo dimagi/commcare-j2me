@@ -16,9 +16,6 @@
 
 package org.javarosa.user.view;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
@@ -28,6 +25,9 @@ import org.javarosa.core.util.SHA1;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.FramedForm;
 import de.enough.polish.ui.Item;

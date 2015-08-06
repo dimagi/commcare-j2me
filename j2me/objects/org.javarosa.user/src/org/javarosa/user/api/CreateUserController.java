@@ -3,13 +3,7 @@
  */
 package org.javarosa.user.api;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.StorageFullException;
-import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
@@ -18,6 +12,9 @@ import org.javarosa.user.model.User;
 import org.javarosa.user.utility.IUserDecorator;
 import org.javarosa.user.utility.UserValidator;
 import org.javarosa.user.view.UserForm;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * @author ctsims

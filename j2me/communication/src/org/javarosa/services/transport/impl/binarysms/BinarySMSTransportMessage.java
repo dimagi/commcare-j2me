@@ -2,6 +2,11 @@
 
 package org.javarosa.services.transport.impl.binarysms;
 
+import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.services.transport.impl.BasicTransportMessage;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,11 +16,6 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.wireless.messaging.BinaryMessage;
 import javax.wireless.messaging.MessageConnection;
-
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.services.transport.impl.BasicTransportMessage;
 
 /**
  * SMS message object

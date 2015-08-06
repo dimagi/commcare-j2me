@@ -16,15 +16,15 @@
 
 package org.javarosa.media.image.model;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.media.image.utilities.FileUtility;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implementation of the data pointer that represents an underlying file on the file system.

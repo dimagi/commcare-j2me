@@ -16,13 +16,13 @@
 
 package org.javarosa.demo.properties;
 
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Vector;
-
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.properties.IPropertyRules;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Application-specific properties for the JavaRosa reference

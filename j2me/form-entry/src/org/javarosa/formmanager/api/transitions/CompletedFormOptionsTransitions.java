@@ -3,8 +3,6 @@
  */
 package org.javarosa.formmanager.api.transitions;
 
-import org.javarosa.services.transport.TransportMessage;
-
 /**
  * @author ctsims
  *
