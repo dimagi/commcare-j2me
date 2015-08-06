@@ -16,13 +16,13 @@
 
 package org.javarosa.formmanager.view;
 
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.j2me.log.HandledThread;
+
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
-
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.j2me.log.HandledThread;
 
 public class ProgressScreen extends Form{
     protected Gauge progressbar;

@@ -3,9 +3,6 @@
  */
 package org.javarosa.services.transport;
 
-import java.io.IOException;
-import java.util.Hashtable;
-
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.services.transport.payload.IDataPayload;
@@ -14,6 +11,9 @@ import org.javarosa.model.xform.XFormSerializingVisitor;
 import org.javarosa.model.xform.XPathReference;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 import org.javarosa.services.transport.impl.simplehttp.multipart.HttpHeaderAppendingVisitor;
+
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * @author ctsims

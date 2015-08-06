@@ -3,17 +3,17 @@
  */
 package org.javarosa.user.utility;
 
-import java.util.Stack;
-import java.util.Vector;
-
-import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.AbstractTreeElement;
+import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.utils.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.user.model.User;
 import org.javarosa.xform.util.XFormAnswerDataSerializer;
+
+import java.util.Stack;
+import java.util.Vector;
 
 /**
  * The UserModel Processor is responsible for reading in a

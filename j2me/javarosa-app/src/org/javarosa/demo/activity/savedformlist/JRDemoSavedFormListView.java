@@ -1,12 +1,12 @@
 package org.javarosa.demo.activity.savedformlist;
 
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.demo.util.SavedFormListItem;
+
 import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.List;
-
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.demo.util.SavedFormListItem;
 
 public class JRDemoSavedFormListView extends List {
 

@@ -3,10 +3,6 @@
  */
 package org.javarosa.formmanager.api;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Item;
-
 import org.javarosa.core.api.State;
 import org.javarosa.formmanager.api.transitions.FormTransportStateTransitions;
 import org.javarosa.formmanager.utility.FormSender;
@@ -18,6 +14,10 @@ import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.log.HandledItemStateListener;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.services.transport.TransportMessage;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Item;
 
 /**
  * @author ctsims

@@ -16,15 +16,15 @@
 
 package org.javarosa.user.view;
 
-import javax.microedition.lcdui.Choice;
-import javax.microedition.lcdui.ChoiceGroup;
-import javax.microedition.lcdui.Form;
-import javax.microedition.lcdui.TextField;
-
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.user.api.CreateUserController;
 import org.javarosa.user.model.User;
 import org.javarosa.user.utility.IUserDecorator;
+
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
+import javax.microedition.lcdui.Form;
+import javax.microedition.lcdui.TextField;
 
 /**
  * Form accessible to admins for adding new users to an application

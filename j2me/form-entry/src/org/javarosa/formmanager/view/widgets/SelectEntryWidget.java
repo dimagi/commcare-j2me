@@ -16,13 +16,13 @@
 
 package org.javarosa.formmanager.view.widgets;
 
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.form.api.FormEntryCaption;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.CustomChoiceGroup;
 import org.javarosa.j2me.util.media.ImageUtils;
+
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Item;
 

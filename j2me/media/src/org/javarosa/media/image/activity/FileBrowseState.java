@@ -19,12 +19,6 @@
 
 package org.javarosa.media.image.activity;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.List;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.j2me.log.CrashHandler;
@@ -35,6 +29,12 @@ import org.javarosa.j2me.services.exception.FileException;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.media.image.model.FileDataPointer;
 import org.javarosa.utilities.file.J2MEFileService;
+
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.List;
 
 /**
  * The <code>FileBrowser</code> custom component lets the user list files and

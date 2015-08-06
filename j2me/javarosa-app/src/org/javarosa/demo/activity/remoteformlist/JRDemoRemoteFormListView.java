@@ -1,13 +1,12 @@
 package org.javarosa.demo.activity.remoteformlist;
 
-import java.util.Hashtable;
+import org.javarosa.core.services.locale.Localization;
+
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Hashtable;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.List;
-
-import org.javarosa.core.services.locale.Localization;
 
 public class JRDemoRemoteFormListView extends List {
 

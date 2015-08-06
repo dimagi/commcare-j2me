@@ -16,13 +16,13 @@
 
 package org.javarosa.services.transport.impl.simplehttp.multipart;
 
-import java.util.Enumeration;
-
 import org.javarosa.core.services.transport.payload.ByteArrayPayload;
 import org.javarosa.core.services.transport.payload.DataPointerPayload;
 import org.javarosa.core.services.transport.payload.IDataPayload;
 import org.javarosa.core.services.transport.payload.IDataPayloadVisitor;
 import org.javarosa.core.services.transport.payload.MultiMessagePayload;
+
+import java.util.Enumeration;
 
 /**
  * @author Clayton Sims

@@ -2,6 +2,13 @@
 
 package org.javarosa.services.transport.impl.sms;
 
+import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.ExtWrapList;
+import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.services.transport.impl.BasicTransportMessage;
+import org.javarosa.services.transport.impl.TransportMessageStatus;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,13 +18,6 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.wireless.messaging.MessageConnection;
 import javax.wireless.messaging.TextMessage;
-
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.ExtWrapList;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.services.transport.impl.BasicTransportMessage;
-import org.javarosa.services.transport.impl.TransportMessageStatus;
 
 /**
  *

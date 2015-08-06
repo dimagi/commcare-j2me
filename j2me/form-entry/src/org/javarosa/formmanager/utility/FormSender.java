@@ -19,8 +19,6 @@ package org.javarosa.formmanager.utility;
 import org.javarosa.core.services.Logger;
 import org.javarosa.formmanager.view.ISubmitStatusObserver;
 import org.javarosa.formmanager.view.transport.FormTransportSubmitStatusScreen;
-import org.javarosa.formmanager.view.transport.FormTransportViews;
-import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.TransportException;

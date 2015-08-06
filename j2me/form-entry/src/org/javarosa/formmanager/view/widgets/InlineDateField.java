@@ -16,15 +16,15 @@
 
 package org.javarosa.formmanager.view.widgets;
 
+import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.services.Logger;
+
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.services.Logger;
 
 import de.enough.polish.ui.CustomItem;
 

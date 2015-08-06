@@ -16,10 +16,6 @@
 
 package org.javarosa.view.singlequestionscreen.widgets;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.TextField;
-
 import org.javarosa.barcode.acquire.BarcodeCaptureScreen;
 import org.javarosa.core.model.QuestionDef;
 import org.javarosa.core.model.data.IAnswerData;
@@ -28,6 +24,10 @@ import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
 import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquiringQuestionScreen;
 import org.javarosa.j2me.services.BarcodeCaptureService;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.TextField;
 
 import de.enough.polish.ui.Style;
 

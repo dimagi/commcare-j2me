@@ -2,18 +2,18 @@
 
 package org.javarosa.location.service;
 
-import javax.microedition.location.Criteria;
-import javax.microedition.location.Location;
-import javax.microedition.location.LocationException;
-import javax.microedition.location.LocationProvider;
-import javax.microedition.location.QualifiedCoordinates;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.j2me.services.DataCaptureService;
 import org.javarosa.j2me.services.LocationCaptureService;
 import org.javarosa.j2me.services.exception.LocationServiceException;
 import org.javarosa.location.activity.LocationCaptureState;
+
+import javax.microedition.location.Criteria;
+import javax.microedition.location.Location;
+import javax.microedition.location.LocationException;
+import javax.microedition.location.LocationProvider;
+import javax.microedition.location.QualifiedCoordinates;
 
 public class J2MELocationService extends LocationCaptureService {
 

@@ -16,10 +16,6 @@
 
 package org.javarosa.user.utility;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.CommandListener;
-
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -28,6 +24,8 @@ import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.model.User;
 import org.javarosa.user.view.UserForm;
+
+import javax.microedition.lcdui.CommandListener;
 
 public class UserValidator {
 

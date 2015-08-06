@@ -19,6 +19,10 @@
 
 package org.netbeans.microedition.lcdui.pda;
 
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.log.HandledThread;
+
 import java.io.IOException;
 import java.util.Enumeration;
 
@@ -33,10 +37,6 @@ import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.List;
-
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.j2me.log.HandledThread;
 
 /**
  * The <code>FileBrowser</code> custom component lets the user list files and

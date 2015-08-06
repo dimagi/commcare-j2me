@@ -37,8 +37,11 @@ package org.javarosa.demo.debug;
  */
 
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Hashtable;
+
 import javax.microedition.rms.*;
 
 

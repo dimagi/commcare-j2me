@@ -16,9 +16,6 @@
 
 package org.javarosa.location.activity;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.log.HandledThread;
@@ -27,6 +24,9 @@ import org.javarosa.j2me.services.LocationCaptureService.Fix;
 import org.javarosa.j2me.services.LocationCaptureService.LocationStateListener;
 import org.javarosa.j2me.services.exception.LocationServiceException;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 public class LocationCaptureController implements LocationStateListener,
         HandledCommandListener, Runnable {

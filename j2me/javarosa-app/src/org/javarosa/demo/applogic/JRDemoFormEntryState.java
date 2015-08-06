@@ -1,7 +1,5 @@
 package org.javarosa.demo.applogic;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.condition.IFunctionHandler;
@@ -21,6 +19,8 @@ import org.javarosa.formmanager.api.JrFormEntryModel;
 import org.javarosa.formmanager.utility.FormDefFetcher;
 import org.javarosa.formmanager.utility.RMSRetreivalMethod;
 import org.javarosa.services.transport.TransportMessage;
+
+import java.util.Vector;
 
 public class JRDemoFormEntryState extends FormEntryState {
 

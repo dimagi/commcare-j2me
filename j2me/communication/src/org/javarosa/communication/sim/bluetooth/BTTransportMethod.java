@@ -1,40 +1,29 @@
 package org.javarosa.communication.sim.bluetooth;
 
+import org.javarosa.core.JavaRosaServiceProvider;
+import org.javarosa.core.api.IActivity;
+import org.javarosa.core.services.ITransportManager;
+import org.javarosa.core.services.transport.IDataPayload;
+import org.javarosa.core.services.transport.ITransportDestination;
+import org.javarosa.core.services.transport.TransportMessage;
+import org.javarosa.core.services.transport.TransportMethod;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Vector;
-import java.io.*;
 
-import javax.bluetooth.BluetoothStateException;
 import javax.microedition.io.*;
-import javax.microedition.lcdui.*;
-import javax.microedition.midlet.*;
-
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
-import javax.microedition.io.HttpConnection;
 import javax.microedition.io.StreamConnection;
-
+import javax.microedition.lcdui.*;
+import javax.microedition.lcdui.AlertType;
+import javax.microedition.midlet.*;
 
 //import javax.microedition.io.HttpConnection;
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Image;
-
-
-import org.javarosa.core.JavaRosaServiceProvider;
-import org.javarosa.core.api.IActivity;
-import org.javarosa.core.api.IView;
-import org.javarosa.core.services.ITransportManager;
-import org.javarosa.core.services.transport.ByteArrayPayload;
-import org.javarosa.core.services.transport.IDataPayload;
-import org.javarosa.core.services.transport.ITransportDestination;
-import org.javarosa.core.services.transport.TransportMessage;
-import org.javarosa.core.services.transport.TransportMethod;
 
 /**
  *

@@ -3,18 +3,9 @@
  */
 package org.javarosa.formmanager.api;
 
-import java.util.Vector;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
-import javax.microedition.media.PlayerListener;
-
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
-import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.core.reference.Reference;
-import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryCaption;
@@ -24,6 +15,11 @@ import org.javarosa.formmanager.api.transitions.FormEntryTransitions;
 import org.javarosa.formmanager.properties.FormManagerProperties;
 import org.javarosa.formmanager.view.IFormEntryView;
 import org.javarosa.utilities.media.MediaUtils;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
+import javax.microedition.media.PlayerListener;
 
 /**
  * Extension of {@link FormEntryController} for J2ME.

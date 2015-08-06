@@ -17,13 +17,6 @@
 package org.javarosa.formmanager.view.widgets;
 
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.microedition.lcdui.Image;
-import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
-
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.SelectChoice;
@@ -37,6 +30,13 @@ import org.javarosa.formmanager.api.FormMultimediaController;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.VideoItem;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.microedition.lcdui.Image;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.ImageItem;

@@ -16,12 +16,6 @@
 
 package org.javarosa.formmanager.api;
 
-import java.io.ByteArrayInputStream;
-
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Form;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.services.storage.IStorageUtility;
@@ -39,6 +33,11 @@ import org.javarosa.services.transport.impl.TransportException;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 import org.javarosa.services.transport.senders.SenderThread;
 import org.javarosa.xform.util.XFormUtils;
+
+import java.io.ByteArrayInputStream;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 public abstract class GetFormHttpState implements State,TrivialTransitions,HandledCommandListener,TransportListener {
 

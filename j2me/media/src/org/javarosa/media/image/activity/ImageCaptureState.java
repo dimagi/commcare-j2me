@@ -16,16 +16,6 @@
 
 package org.javarosa.media.image.activity;
 
-import java.io.IOException;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.media.Manager;
-import javax.microedition.media.MediaException;
-import javax.microedition.media.Player;
-import javax.microedition.media.control.VideoControl;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.j2me.log.CrashHandler;
@@ -36,6 +26,16 @@ import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.media.image.model.FileDataPointer;
 import org.javarosa.media.image.view.CameraCanvas;
 import org.javarosa.utilities.file.J2MEFileService;
+
+import java.io.IOException;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
+import javax.microedition.media.control.VideoControl;
 
 //TODO: image capture should be factored out into a service
 

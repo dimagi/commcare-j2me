@@ -37,15 +37,15 @@
 package org.javarosa.media.image.midlet;
 
 
+import org.javarosa.media.image.utilities.ImageUtility;
+import org.javarosa.media.image.view.CameraCanvas;
+
 import java.io.IOException;
 
 import javax.microedition.lcdui.*;
 import javax.microedition.media.*;
 import javax.microedition.media.control.*;
 import javax.microedition.midlet.MIDlet;
-
-import org.javarosa.media.image.utilities.ImageUtility;
-import org.javarosa.media.image.view.CameraCanvas;
 
 public class SnapperMIDlet
     extends MIDlet

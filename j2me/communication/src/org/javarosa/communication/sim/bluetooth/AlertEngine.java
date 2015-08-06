@@ -1,7 +1,6 @@
 package org.javarosa.communication.sim.bluetooth;
 
 import javax.microedition.lcdui.*;
-import org.javarosa.core.api.*;
 
 /**
  * AlertEngine extends Alert and implements the interface, IView

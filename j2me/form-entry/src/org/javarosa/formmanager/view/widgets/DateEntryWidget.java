@@ -16,14 +16,13 @@
 
 package org.javarosa.formmanager.view.widgets;
 
-import java.util.Date;
-
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.DateData;
 import org.javarosa.core.model.data.DateTimeData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.form.api.FormEntryPrompt;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
+
+import java.util.Date;
 
 import de.enough.polish.ui.DateField;
 import de.enough.polish.ui.Item;

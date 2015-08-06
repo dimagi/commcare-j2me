@@ -17,13 +17,12 @@
 package org.javarosa.user.model.test;
 
 
+import org.javarosa.user.model.User;
+
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;
 import j2meunit.framework.TestMethod;
 import j2meunit.framework.TestSuite;
-
-
-import org.javarosa.user.model.User;
 
 public class UserTests extends TestCase  {
     public final int NUM_TESTS = 2 ;

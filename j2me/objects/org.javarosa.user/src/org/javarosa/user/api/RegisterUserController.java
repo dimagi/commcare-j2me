@@ -1,7 +1,5 @@
 package org.javarosa.user.api;
 
-import java.io.IOException;
-
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledPCommandListener;
@@ -17,6 +15,8 @@ import org.javarosa.user.api.transitions.RegisterUserTransitions;
 import org.javarosa.user.model.User;
 import org.javarosa.user.transport.UserRegistrationTranslator;
 import org.javarosa.user.view.UserRegistrationForm;
+
+import java.io.IOException;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Displayable;

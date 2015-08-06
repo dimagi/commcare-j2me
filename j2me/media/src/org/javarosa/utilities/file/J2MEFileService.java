@@ -16,6 +16,9 @@
 
 package org.javarosa.utilities.file;
 
+import org.javarosa.j2me.services.FileService;
+import org.javarosa.j2me.services.exception.FileException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,9 +29,6 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.io.file.FileSystemRegistry;
-
-import org.javarosa.j2me.services.FileService;
-import org.javarosa.j2me.services.exception.FileException;
 
 
 /**

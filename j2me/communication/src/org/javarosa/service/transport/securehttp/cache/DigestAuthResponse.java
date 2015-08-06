@@ -3,17 +3,17 @@
  */
 package org.javarosa.service.transport.securehttp.cache;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Hashtable;
-import java.util.Random;
-
 import org.javarosa.core.util.MD5;
 import org.javarosa.core.util.MD5InputStream;
 import org.javarosa.core.util.MathUtils;
 import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.service.transport.securehttp.AuthUtils;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Random;
 
 /**
  * A digest authorization response object which accepts the
