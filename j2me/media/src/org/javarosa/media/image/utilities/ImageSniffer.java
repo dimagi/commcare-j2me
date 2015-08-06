@@ -16,8 +16,6 @@
 
 package org.javarosa.media.image.utilities;
 
-import java.util.Vector;
-
 import org.javarosa.core.services.UnavailableServiceException;
 import org.javarosa.j2me.log.HandledThread;
 import org.javarosa.j2me.services.FileService;
@@ -25,6 +23,8 @@ import org.javarosa.j2me.services.exception.FileException;
 import org.javarosa.media.image.activity.ImageChooserState;
 import org.javarosa.media.image.model.FileDataPointer;
 import org.javarosa.utilities.file.J2MEFileService;
+
+import java.util.Vector;
 
 /**
  * Image Sniffer that polls the contents of a directory and notifies someone when they change

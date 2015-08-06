@@ -1,8 +1,8 @@
 package org.javarosa.services.transport;
 
-import java.util.Vector;
-
 import org.javarosa.services.transport.impl.TransportException;
+
+import java.util.Vector;
 
 /**
  * The TransportService needs persistent storage.

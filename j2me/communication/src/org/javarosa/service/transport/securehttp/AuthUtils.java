@@ -3,10 +3,10 @@
  */
 package org.javarosa.service.transport.securehttp;
 
+import org.javarosa.core.util.MD5;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import org.javarosa.core.util.MD5;
 
 /**
  * The AuthUtils method contains simple utilities for manipulating

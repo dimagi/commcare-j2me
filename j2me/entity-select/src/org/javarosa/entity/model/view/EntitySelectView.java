@@ -16,6 +16,19 @@
 
 package org.javarosa.entity.model.view;
 
+import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.entity.api.EntitySelectController;
+import org.javarosa.entity.model.Entity;
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.j2me.log.HandledPItemStateListener;
+import org.javarosa.j2me.view.J2MEDisplay;
+import org.javarosa.j2me.view.ProgressIndicator;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
@@ -27,20 +40,6 @@ import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.reference.InvalidReferenceException;
-import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.services.storage.Persistable;
-import org.javarosa.entity.api.EntitySelectController;
-import org.javarosa.entity.model.Entity;
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.j2me.log.HandledPItemStateListener;
-import org.javarosa.j2me.view.J2MEDisplay;
-import org.javarosa.j2me.view.ProgressIndicator;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.FramedForm;

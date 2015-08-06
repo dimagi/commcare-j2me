@@ -1,5 +1,13 @@
 package org.javarosa.utilities.media;
 
+import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.formmanager.properties.FormManagerProperties;
+
 import java.io.IOException;
 import java.util.Vector;
 
@@ -9,15 +17,6 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VolumeControl;
-
-import org.javarosa.core.model.utils.DateUtils;
-import org.javarosa.core.reference.InvalidReferenceException;
-import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.PropertyManager;
-import org.javarosa.core.util.PropertyUtils;
-import org.javarosa.formmanager.properties.FormManagerProperties;
 
 public class MediaUtils {
 

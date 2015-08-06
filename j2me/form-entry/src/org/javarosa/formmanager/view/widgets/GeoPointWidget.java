@@ -3,13 +3,13 @@
  */
 package org.javarosa.formmanager.view.widgets;
 
-import javax.microedition.lcdui.TextField;
-
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.data.GeoPointData;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryPrompt;
+
+import javax.microedition.lcdui.TextField;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;

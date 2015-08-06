@@ -16,11 +16,11 @@
 
 package org.javarosa.formmanager.view;
 
+import org.javarosa.core.services.locale.Localization;
+
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Spacer;
-
-import org.javarosa.core.services.locale.Localization;
 
 
 public class SubmitScreen extends Form {

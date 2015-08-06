@@ -16,9 +16,9 @@
 
 package org.javarosa.formmanager.view.transport;
 
-import javax.microedition.lcdui.Command;
-
 import org.javarosa.core.services.locale.Localization;
+
+import javax.microedition.lcdui.Command;
 
 public class FormTransportCommands {
     public static final Command CMD_BACK = new Command(Localization.get("menu.Back"),

@@ -1,14 +1,14 @@
 package org.javarosa.service.transport.securehttp;
 
-import java.util.Hashtable;
-import java.util.Vector;
-
-import javax.microedition.io.HttpConnection;
-
 import org.javarosa.core.model.utils.DateUtils;
 import org.javarosa.service.transport.securehttp.cache.AuthorizationCache;
 import org.javarosa.service.transport.securehttp.cache.DigestAuthResponse;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
+
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.microedition.io.HttpConnection;
 
 /**
  * An Http Authenticator is responsible for receiving WWW-Authenticate

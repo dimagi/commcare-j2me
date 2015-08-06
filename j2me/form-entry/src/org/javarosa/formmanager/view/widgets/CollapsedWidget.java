@@ -16,11 +16,10 @@
 
 package org.javarosa.formmanager.view.widgets;
 
-import javax.microedition.lcdui.Command;
-
 import org.javarosa.core.model.Constants;
-import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.form.api.FormEntryPrompt;
+
+import javax.microedition.lcdui.Command;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.StringItem;

@@ -1,13 +1,7 @@
 package org.javarosa.formmanager.view.summary;
 
-import java.io.IOException;
-import java.util.Vector;
-
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.form.api.FormEntryCaption;
@@ -16,6 +10,11 @@ import org.javarosa.form.api.FormEntryModel;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.singlequestionscreen.Constants;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import java.io.IOException;
+import java.util.Vector;
+
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.ChoiceItem;
 import de.enough.polish.ui.Command;

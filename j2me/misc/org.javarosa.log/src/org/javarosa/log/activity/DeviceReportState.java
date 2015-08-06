@@ -3,13 +3,6 @@
  */
 package org.javarosa.log.activity;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.NoSuchElementException;
-import java.util.Vector;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.log.StreamLogSerializer;
 import org.javarosa.core.model.utils.DateUtils;
@@ -41,6 +34,13 @@ import org.javarosa.services.transport.senders.SenderThread;
 import org.javarosa.user.model.User;
 import org.kxml2.io.KXmlSerializer;
 import org.xmlpull.v1.XmlSerializer;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.NoSuchElementException;
+import java.util.Vector;
 
 /**
  * Note: Much of this behavior should be moved into a controller

@@ -16,13 +16,6 @@
 
 package org.javarosa.media.image.activity;
 
-import java.util.Hashtable;
-
-import javax.microedition.io.ConnectionNotFoundException;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.midlet.MIDlet;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.data.IDataPointer;
 import org.javarosa.core.services.UnavailableServiceException;
@@ -34,6 +27,13 @@ import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.media.image.model.FileDataPointer;
 import org.javarosa.media.image.utilities.ImageSniffer;
 import org.javarosa.utilities.file.J2MEFileService;
+
+import java.util.Hashtable;
+
+import javax.microedition.io.ConnectionNotFoundException;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.midlet.MIDlet;
 
 import de.enough.polish.ui.ChoiceGroup;
 import de.enough.polish.ui.ChoiceItem;

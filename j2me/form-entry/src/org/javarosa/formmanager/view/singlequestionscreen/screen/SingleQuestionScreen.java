@@ -16,10 +16,6 @@
 
 package org.javarosa.formmanager.view.singlequestionscreen.screen;
 
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.Graphics;
-
 import org.javarosa.core.model.FormElementStateListener;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.helper.InvalidDataException;
@@ -30,6 +26,10 @@ import org.javarosa.formmanager.view.IQuestionWidget;
 import org.javarosa.formmanager.view.widgets.ExpandedWidget;
 import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Gauge;
+import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.CommandListener;

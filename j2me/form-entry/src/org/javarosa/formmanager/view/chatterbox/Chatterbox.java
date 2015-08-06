@@ -18,16 +18,6 @@
 
 package org.javarosa.formmanager.view.chatterbox;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.Vector;
-
-import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Gauge;
-import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
-
 import org.javarosa.core.api.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.GroupDef;
@@ -62,6 +52,16 @@ import org.javarosa.j2me.log.HandledPCommandListener;
 import org.javarosa.j2me.log.HandledThread;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.utilities.media.MediaUtils;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Date;
+import java.util.Vector;
+
+import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Gauge;
+import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Image;
 
 import de.enough.polish.ui.Command;
 import de.enough.polish.ui.Container;

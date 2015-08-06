@@ -19,10 +19,6 @@
  */
 package org.javarosa.log.activity;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.log.FlatLogSerializer;
 import org.javarosa.core.services.Logger;
@@ -32,6 +28,10 @@ import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.log.view.LogManagementView;
 import org.javarosa.log.view.LogViewer;
+
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 /**
  * @author Clayton Sims

@@ -16,6 +16,10 @@
 
 package org.javarosa.barcode.acquire;
 
+import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
+import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquiringQuestionScreen;
+
 import java.io.IOException;
 
 import javax.microedition.lcdui.Command;
@@ -27,10 +31,6 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.control.GUIControl;
 import javax.microedition.media.control.VideoControl;
-
-import org.javarosa.core.model.data.IAnswerData;
-import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquireScreen;
-import org.javarosa.formmanager.view.singlequestionscreen.acquire.AcquiringQuestionScreen;
 
 public abstract class ImageCaptureScreen extends AcquireScreen implements CommandListener {
 

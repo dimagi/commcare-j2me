@@ -4,10 +4,6 @@
 package org.javarosa.user.api;
 
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Graphics;
-
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.util.NoLocalizedTextException;
 import org.javarosa.j2me.log.CrashHandler;
@@ -18,6 +14,10 @@ import org.javarosa.user.api.transitions.LoginTransitions;
 import org.javarosa.user.model.User;
 import org.javarosa.user.view.LoginForm;
 import org.javarosa.utilities.media.MediaUtils;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Graphics;
 
 import de.enough.polish.ui.Alert;
 import de.enough.polish.ui.ImageItem;

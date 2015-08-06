@@ -3,12 +3,12 @@
  */
 package org.javarosa.formmanager.utility;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageManager;
+
+import java.util.Vector;
 
 /**
  * Retrieves a FormDef from RMS by its XML namespace.

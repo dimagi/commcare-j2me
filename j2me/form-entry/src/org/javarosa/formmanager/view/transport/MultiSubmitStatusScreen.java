@@ -16,6 +16,13 @@
 
 package org.javarosa.formmanager.view.transport;
 
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.formmanager.view.ISubmitStatusObserver;
+import org.javarosa.j2me.log.CrashHandler;
+import org.javarosa.j2me.log.HandledCommandListener;
+import org.javarosa.services.transport.TransportMessage;
+import org.javarosa.services.transport.impl.TransportMessageStatus;
+
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -25,13 +32,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Spacer;
 import javax.microedition.lcdui.StringItem;
-
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.formmanager.view.ISubmitStatusObserver;
-import org.javarosa.j2me.log.CrashHandler;
-import org.javarosa.j2me.log.HandledCommandListener;
-import org.javarosa.services.transport.TransportMessage;
-import org.javarosa.services.transport.impl.TransportMessageStatus;
 
 /**
  * Note: This screen assumes that the model IDs provided will be sent in a more

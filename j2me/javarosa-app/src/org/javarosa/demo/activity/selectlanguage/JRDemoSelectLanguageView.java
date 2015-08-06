@@ -1,13 +1,12 @@
 package org.javarosa.demo.activity.selectlanguage;
 
 
+import org.javarosa.core.services.locale.Localization;
+
 import java.util.Hashtable;
-import java.util.Vector;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.List;
-
-import org.javarosa.core.services.locale.Localization;
 
 public class JRDemoSelectLanguageView extends List {
     public final Command CMD_EXIT = new Command(Localization.get("polish.command.exit"), Command.EXIT, 0);

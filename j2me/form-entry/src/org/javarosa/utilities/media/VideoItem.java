@@ -3,6 +3,14 @@
  */
 package org.javarosa.utilities.media;
 
+import org.javarosa.core.reference.InvalidReferenceException;
+import org.javarosa.core.reference.Reference;
+import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.locale.Localization;
+import org.javarosa.core.util.NoLocalizedTextException;
+import org.javarosa.j2me.util.media.ImageUtils;
+import org.javarosa.j2me.view.J2MEDisplay;
+
 import java.io.IOException;
 
 import javax.microedition.lcdui.Font;
@@ -12,14 +20,6 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 import javax.microedition.media.PlayerListener;
 import javax.microedition.media.control.VideoControl;
-
-import org.javarosa.core.reference.InvalidReferenceException;
-import org.javarosa.core.reference.Reference;
-import org.javarosa.core.reference.ReferenceManager;
-import org.javarosa.core.services.locale.Localization;
-import org.javarosa.core.util.NoLocalizedTextException;
-import org.javarosa.j2me.util.media.ImageUtils;
-import org.javarosa.j2me.view.J2MEDisplay;
 
 import de.enough.polish.ui.CustomItem;
 import de.enough.polish.ui.Item;

@@ -3,11 +3,6 @@
  */
 package org.javarosa.services.transport.impl;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.util.Hashtable;
-
 import org.javarosa.core.services.storage.IMetaData;
 import org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper;
 import org.javarosa.core.util.externalizable.DeserializationException;
@@ -16,6 +11,11 @@ import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.Externalizable;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
 import org.javarosa.services.transport.TransportMessage;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.Hashtable;
 
 /**
  * @author ctsims

@@ -16,8 +16,6 @@
 
 package org.javarosa.formmanager.view.chatterbox.widget;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.Constants;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.SelectChoice;
@@ -34,6 +32,8 @@ import org.javarosa.formmanager.view.widgets.IWidgetStyleEditable;
 import org.javarosa.formmanager.view.widgets.LabelWidget;
 import org.javarosa.formmanager.view.widgets.SelectOneEntryWidget;
 import org.javarosa.formmanager.view.widgets.WidgetFactory;
+
+import java.util.Vector;
 
 import de.enough.polish.ui.ChoiceGroup;
 

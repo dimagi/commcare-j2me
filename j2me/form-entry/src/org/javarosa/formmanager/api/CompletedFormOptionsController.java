@@ -3,16 +3,16 @@
  */
 package org.javarosa.formmanager.api;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Item;
-
 import org.javarosa.formmanager.api.transitions.CompletedFormOptionsTransitions;
 import org.javarosa.formmanager.view.transport.SendNowSendLaterForm;
 import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.log.HandledItemStateListener;
 import org.javarosa.j2me.view.J2MEDisplay;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Item;
 
 /**
  * @author ctsims

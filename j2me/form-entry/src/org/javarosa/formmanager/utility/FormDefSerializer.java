@@ -16,15 +16,15 @@
 
 package org.javarosa.formmanager.utility;
 
+import org.javarosa.core.model.FormDef;
+import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.j2me.log.HandledThread;
+
 import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
-
-import org.javarosa.core.model.FormDef;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.j2me.log.HandledThread;
 
 /**
  * @author Kieran

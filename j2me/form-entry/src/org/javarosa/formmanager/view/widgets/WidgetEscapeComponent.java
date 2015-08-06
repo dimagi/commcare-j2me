@@ -16,10 +16,7 @@
 
 package org.javarosa.formmanager.view.widgets;
 
-import javax.microedition.lcdui.Canvas;
-
 import org.javarosa.core.services.locale.Localization;
-import org.javarosa.formmanager.view.chatterbox.widget.ChatterboxWidget;
 
 import de.enough.polish.ui.Container;
 import de.enough.polish.ui.Item;

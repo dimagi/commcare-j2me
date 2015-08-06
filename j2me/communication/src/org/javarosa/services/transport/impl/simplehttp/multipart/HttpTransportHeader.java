@@ -16,6 +16,13 @@
 
 package org.javarosa.services.transport.impl.simplehttp.multipart;
 
+import org.javarosa.core.services.transport.payload.IDataPayload;
+import org.javarosa.core.services.transport.payload.IDataPayloadVisitor;
+import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.ExtWrapMap;
+import org.javarosa.core.util.externalizable.PrototypeFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -23,13 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
-import org.javarosa.core.services.transport.payload.IDataPayload;
-import org.javarosa.core.services.transport.payload.IDataPayloadVisitor;
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.ExtWrapMap;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
 
 /**
  * A stream representing an HTTP header.

@@ -3,10 +3,10 @@
  */
 package org.javarosa.formmanager.api;
 
-import javax.microedition.media.Player;
-
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.form.api.FormEntryPrompt;
+
+import javax.microedition.media.Player;
 
 /**
  * The FormMultimediaController is used to give form elements a single point

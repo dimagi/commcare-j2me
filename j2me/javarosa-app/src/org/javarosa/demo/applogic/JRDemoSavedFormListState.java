@@ -1,7 +1,5 @@
 package org.javarosa.demo.applogic;
 
-import java.io.IOException;
-
 import org.javarosa.core.model.SubmissionProfile;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.InstanceInitializationFactory;
@@ -9,6 +7,8 @@ import org.javarosa.demo.activity.savedformlist.JRDemoSavedFormListController;
 import org.javarosa.demo.activity.savedformlist.JRDemoSavedFormListTransitions;
 import org.javarosa.formmanager.utility.FormDefFetcher;
 import org.javarosa.formmanager.utility.ModelRmsRetrievalMethod;
+
+import java.io.IOException;
 
 public class JRDemoSavedFormListState implements JRDemoSavedFormListTransitions{
     public void start() {

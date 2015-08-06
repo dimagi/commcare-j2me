@@ -3,18 +3,18 @@
  */
 package org.javarosa.j2me.crypto.test;
 
-import j2meunit.framework.Test;
-import j2meunit.framework.TestCase;
-import j2meunit.framework.TestMethod;
-import j2meunit.framework.TestSuite;
-
-import java.util.Random;
-
 import org.bouncycastle.crypto.BufferedBlockCipher;
 import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.encoders.Hex;
 import org.javarosa.j2me.crypto.util.CryptUtil;
 import org.javarosa.j2me.crypto.util.CryptoSession;
+
+import java.util.Random;
+
+import j2meunit.framework.Test;
+import j2meunit.framework.TestCase;
+import j2meunit.framework.TestMethod;
+import j2meunit.framework.TestSuite;
 
 /**
  * @author ctsims

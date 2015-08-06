@@ -1,11 +1,11 @@
 package org.javarosa.communication.sim.bluetooth;
 
+import org.javarosa.core.JavaRosaServiceProvider;
+import org.javarosa.core.services.properties.IPropertyRules;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-
-import org.javarosa.core.JavaRosaServiceProvider;
-import org.javarosa.core.services.properties.IPropertyRules;
 /**
  * A set of rules for the properties of the Bluetooth Transport layer
  *

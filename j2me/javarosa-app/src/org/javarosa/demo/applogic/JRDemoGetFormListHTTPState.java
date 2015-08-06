@@ -1,10 +1,5 @@
 package org.javarosa.demo.applogic;
 
-import java.io.UnsupportedEncodingException;
-
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Displayable;
-
 import org.javarosa.core.api.State;
 import org.javarosa.core.log.FatalException;
 import org.javarosa.core.services.locale.Localization;
@@ -20,6 +15,11 @@ import org.javarosa.services.transport.impl.TransportException;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 import org.javarosa.services.transport.senders.SenderThread;
+
+import java.io.UnsupportedEncodingException;
+
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.Displayable;
 
 public class JRDemoGetFormListHTTPState implements State,
         HandledCommandListener, TransportListener, HttpFetchTransitions {

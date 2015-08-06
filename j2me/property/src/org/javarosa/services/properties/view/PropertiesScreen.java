@@ -16,6 +16,9 @@
 
 package org.javarosa.services.properties.view;
 
+import org.javarosa.core.services.IPropertyManager;
+import org.javarosa.core.services.properties.IPropertyRules;
+
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -29,9 +32,6 @@ import javax.microedition.lcdui.StringItem;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.rms.RecordStore;
 import javax.microedition.rms.RecordStoreException;
-
-import org.javarosa.core.services.IPropertyManager;
-import org.javarosa.core.services.properties.IPropertyRules;
 
 public class PropertiesScreen extends Form{
 

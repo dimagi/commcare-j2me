@@ -1,12 +1,12 @@
 package org.javarosa.formmanager.view.chatterbox;
 
-import java.util.Vector;
-
 import org.javarosa.core.model.SelectChoice;
 import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.data.helper.Selection;
 import org.javarosa.form.api.FormEntryPrompt;
 import org.javarosa.formmanager.view.IQuestionWidget;
+
+import java.util.Vector;
 
 public class FakedFormEntryPrompt extends FormEntryPrompt {
 
