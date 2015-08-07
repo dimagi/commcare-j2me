@@ -25,6 +25,7 @@ j2me/buildfiles/
 .settings/
 default.build
 devices/
+*.iml
 
 #OS and environment
 *~
