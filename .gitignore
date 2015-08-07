@@ -51,10 +51,6 @@ j2me/javarosa-app/custom-devices.xml
 j2me/javarosa-app/tools/ant-contrib.jar
 j2me/javarosa-app/tools/j2merosa-libraries.jar
 j2me/javarosa-app/tools/pyAntTasks-1.3.jar
-lib/bouncycastle-lw.jar
-lib/j2meunit-javarosa.jar
-lib/kxml2-2.3.0.jar
-lib/regexp-me.jar
 util/schema-gen/lib/xpp3-1.1.4.jar
 util/validator/org.javarosa.shellformtest/tools/
 util/validator/org.javarosa.xform.validator/JavaRosaFormTest.jar
