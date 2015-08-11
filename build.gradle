@@ -84,16 +84,29 @@ jar {
 }
 
 configurations {
-  harnessOutput.extendsFrom (harnessCompile)
+  harness
 }
 
 task harnessJar(type: Jar, dependsOn: harnessClasses) {
-    baseName = "harness"
+    baseName = "javarosa-cli"
     from sourceSets.harness.output
+    from sourceSets.main.output
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+        configurations.runtime.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    manifest {
+        attributes 'Main-Class': 'org.javarosa.engine.Harness'
+    }
+    
 }
 
 artifacts {
-  harnessOutput harnessJar
+  harness harnessJar
 }
 
 task copyTestResources(type: Copy) {
