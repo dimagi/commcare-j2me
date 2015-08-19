@@ -87,7 +87,7 @@ public abstract class DataInstance<T extends AbstractTreeElement<T>> implements 
             return null;
         }
 
-        T t = referenceCache.retrieve(ref);
+        T t = null;//referenceCache.retrieve(ref);
 
         if (t != null && (t.getValue() != null)) {
             return t;
