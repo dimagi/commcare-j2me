@@ -3,7 +3,7 @@
  */
 package org.javarosa.user.api.transitions;
 
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 /**
  * @author ctsims

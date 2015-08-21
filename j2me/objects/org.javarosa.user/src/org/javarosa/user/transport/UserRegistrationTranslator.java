@@ -5,7 +5,7 @@ package org.javarosa.user.transport;
 
 import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.services.transport.UnrecognizedResponseException;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 import java.io.IOException;
 

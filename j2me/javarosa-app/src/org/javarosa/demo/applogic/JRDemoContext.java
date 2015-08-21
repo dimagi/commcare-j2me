@@ -30,7 +30,7 @@ import org.javarosa.services.transport.SubmissionTransportHelper;
 import org.javarosa.services.transport.TransportManagerModule;
 import org.javarosa.services.transport.TransportMessage;
 import org.javarosa.user.activity.UserModule;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.utility.UserUtility;
 
 import java.io.IOException;

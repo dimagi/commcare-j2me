@@ -9,7 +9,7 @@ import org.javarosa.demo.properties.DemoAppProperties;
 import org.javarosa.demo.util.JRDemoUtil;
 import org.javarosa.services.properties.api.PropertyUpdateState;
 import org.javarosa.user.api.CreateUserState;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 public class JRDemoFormListState implements JRDemoFormListTransitions, State {
 

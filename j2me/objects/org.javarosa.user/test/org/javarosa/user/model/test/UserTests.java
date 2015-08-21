@@ -17,7 +17,7 @@
 package org.javarosa.user.model.test;
 
 
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 import j2meunit.framework.Test;
 import j2meunit.framework.TestCase;

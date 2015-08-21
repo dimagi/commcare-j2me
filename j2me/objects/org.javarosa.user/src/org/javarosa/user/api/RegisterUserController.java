@@ -12,7 +12,7 @@ import org.javarosa.services.transport.impl.TransportException;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.senders.SenderThread;
 import org.javarosa.user.api.transitions.RegisterUserTransitions;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.transport.UserRegistrationTranslator;
 import org.javarosa.user.view.UserRegistrationForm;
 

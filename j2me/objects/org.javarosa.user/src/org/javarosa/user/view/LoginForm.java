@@ -24,7 +24,7 @@ import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.SHA1;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.user.api.CreateUserController;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.Image;
