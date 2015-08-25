@@ -38,7 +38,6 @@ sourceSets {
     main {
         java {
             srcDir 'core/src/main/java'
-            srcDir 'util/schema-gen/src'
         }
     }
 
