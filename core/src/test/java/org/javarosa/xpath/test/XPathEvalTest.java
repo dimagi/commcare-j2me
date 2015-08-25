@@ -22,6 +22,8 @@ import org.javarosa.xpath.expr.XPathFuncExpr;
 import org.javarosa.xpath.expr.XPathNumericLiteral;
 import org.javarosa.xpath.expr.XPathPathExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.Vector;
@@ -78,6 +80,7 @@ public class XPathEvalTest {
         }
     }
 
+    @Test
     public void doTests() {
         EvaluationContext ec = getFunctionHandlers();
 
@@ -375,8 +378,17 @@ public class XPathEvalTest {
         testEval("weighted-checklist(5, 5, 5)", null, null, new XPathArityException());
         testEval("substr('hello')", null, null, new XPathArityException());
         testEval("join()", null, null, new XPathArityException());
+
+        // Aggregate functions
         testEval("max()", null, null, new XPathArityException());
+        testEval("max(4, 5, 4)", null, null, new Double(5.0));
         testEval("min()", null, null, new XPathArityException());
+        testEval("min(4, 5, 4)", null, null, new Double(4.0));
+        testEval("first()", null, null, new XPathArityException());
+        testEval("first('fake', 'plastic', 'trees')", null, null, new String("fake"));
+        testEval("last()", null, null, new XPathArityException());
+        testEval("last('small', 'blue', 'thing')", null, null, new String("thing"));
+
         testEval("true(5)", null, null, new XPathArityException());
         testEval("number()", null, null, new XPathArityException());
         testEval("string('too', 'many', 'args')", null, null, new XPathArityException());
