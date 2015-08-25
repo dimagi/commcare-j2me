@@ -8,7 +8,6 @@ import org.javarosa.core.model.instance.InstanceInitializationFactory;
 import org.javarosa.core.model.utils.IPreloadHandler;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.demo.util.JRDemoFormEntryViewFactory;
 import org.javarosa.demo.util.JRDemoUtil;
@@ -80,41 +79,37 @@ public class JRDemoFormEntryState extends FormEntryState {
             // either sent _or_ saved.
 
             IStorageUtility storage = StorageManager.getStorage(FormInstance.STORAGE_KEY);
-            try {
-                Logger.log("formentry","writing data: " + instanceData.getName());
-                storage.write(instanceData);
-                final int record = instanceData.getID();
+            Logger.log("formentry","writing data: " + instanceData.getName());
+            storage.write(instanceData);
+            final int record = instanceData.getID();
 
-                TransportMessage message = JRDemoContext._().buildMessage(instanceData, profile);
+            TransportMessage message = JRDemoContext._().buildMessage(instanceData, profile);
 
-                CompletedFormOptionsState completed = new CompletedFormOptionsState(message.getCacheIdentifier()) {
+            CompletedFormOptionsState completed = new CompletedFormOptionsState(message.getCacheIdentifier()) {
 
-                    public void sendData(String messageId) {
+                public void sendData(String messageId) {
 
-                        //TODO: Get Message Using message ID
-                        TransportMessage message = null;
-                        JRDemoFormTransportState send = new JRDemoFormTransportState(message, record) {
-                            public void done() {
-                                JRDemoUtil.goToList(cameFromFormList);
-                            }
+                    //TODO: Get Message Using message ID
+                    TransportMessage message = null;
+                    JRDemoFormTransportState send = new JRDemoFormTransportState(message, record) {
+                        public void done() {
+                            JRDemoUtil.goToList(cameFromFormList);
+                        }
 
-                            public void sendToBackground() {
-                                JRDemoUtil.goToList(cameFromFormList);
-                            }
-                        };
+                        public void sendToBackground() {
+                            JRDemoUtil.goToList(cameFromFormList);
+                        }
+                    };
 
-                        send.start();
-                    }
+                    send.start();
+                }
 
-                    public void skipSend(String message) {
-                        // Message should already be cached.
-                        abort();
-                    }
-                };
-                completed.start();
-            } catch (StorageFullException e) {
-                new RuntimeException("Storage full, unable to save data.");
-            }
+                public void skipSend(String message) {
+                    // Message should already be cached.
+                    abort();
+                }
+            };
+            completed.start();
         } else {
             abort();
         }

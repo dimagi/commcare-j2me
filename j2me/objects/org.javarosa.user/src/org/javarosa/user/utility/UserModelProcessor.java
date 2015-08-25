@@ -7,7 +7,6 @@ import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.utils.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
-import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.user.model.User;
 import org.javarosa.xform.util.XFormAnswerDataSerializer;
@@ -51,10 +50,6 @@ public class UserModelProcessor implements IInstanceProcessor {
                 e.printStackTrace();
                 messages += e.getMessage() + ", ";
                 failures++;
-            } catch (StorageFullException e) {
-                e.printStackTrace();
-                messages += e.getMessage() + ", ";
-                failures++;
             }
         }
 
@@ -70,7 +65,7 @@ public class UserModelProcessor implements IInstanceProcessor {
         return user;
     }
 
-    private void parseRegistration(AbstractTreeElement head) throws MalformedUserModelException, StorageFullException {
+    private void parseRegistration(AbstractTreeElement head) throws MalformedUserModelException {
 
         String username = getString(getChild(head, "username"),head);
         String password = getString(getChild(head, "password"),head);

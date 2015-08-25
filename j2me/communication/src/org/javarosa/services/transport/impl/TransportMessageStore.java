@@ -3,7 +3,6 @@ package org.javarosa.services.transport.impl;
 import org.javarosa.core.services.Logger;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
-import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.services.storage.StorageModifiedException;
 import org.javarosa.core.util.PropertyUtils;
@@ -116,11 +115,7 @@ public class TransportMessageStore implements TransportCache {
         String id = getNextQueueIdentifier();
         message.setCacheIdentifier(id);
         message.setStatus(TransportMessageStatus.QUEUED);
-        try {
-            storage(Q_STORENAME).write(message);
-        } catch (StorageFullException e) {
-            throw new TransportException(e);
-        }
+        storage(Q_STORENAME).write(message);
         updateCachedCounts();
         return id;
     }
@@ -179,12 +174,8 @@ public class TransportMessageStore implements TransportCache {
                         //could get to it. Will try again.
                     }
                 }
-                try {
-                    recent.write(message);
-                    entered = true;
-                } catch (StorageFullException e) {
-                    throw new TransportException(e);
-                }
+                recent.write(message);
+                entered = true;
             }
         }
         updateCachedCounts();
@@ -268,16 +259,12 @@ public class TransportMessageStore implements TransportCache {
      * @throws IOException
      */
     public void updateMessage(TransportMessage message) throws TransportException {
-        try {
-            if(message.getStatus() == TransportMessageStatus.CACHED) {
-                IStorageUtilityIndexed cache = storage(Q_STORENAME);
-                if(cache.getIDsForValue("cache-id",message.getCacheIdentifier()).size() > 0) {
-                    storage(Q_STORENAME).write(message);
-                }
-                updateCachedCounts();
+        if(message.getStatus() == TransportMessageStatus.CACHED) {
+            IStorageUtilityIndexed cache = storage(Q_STORENAME);
+            if(cache.getIDsForValue("cache-id",message.getCacheIdentifier()).size() > 0) {
+                storage(Q_STORENAME).write(message);
             }
-        } catch(StorageFullException e) {
-            throw new TransportException(e);
+            updateCachedCounts();
         }
     }
 

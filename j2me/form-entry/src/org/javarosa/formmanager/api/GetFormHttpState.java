@@ -19,7 +19,6 @@ package org.javarosa.formmanager.api;
 import org.javarosa.core.api.State;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.TrivialTransitions;
 import org.javarosa.formmanager.view.ProgressScreen;
@@ -100,11 +99,7 @@ public abstract class GetFormHttpState implements State,TrivialTransitions,Handl
         IStorageUtility formStorage = StorageManager.getStorage(FormDef.STORAGE_KEY);
 
         bin = new ByteArrayInputStream(response);
-        try {
-            formStorage.write(XFormUtils.getFormFromInputStream(bin));
-        } catch (StorageFullException e) {
-            throw new RuntimeException("Whoops! Storage full : " + FormDef.STORAGE_KEY);
-        }
+        formStorage.write(XFormUtils.getFormFromInputStream(bin));
         done();
     }
 
