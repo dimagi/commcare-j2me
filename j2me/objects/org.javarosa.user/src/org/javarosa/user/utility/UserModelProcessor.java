@@ -7,6 +7,7 @@ import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.utils.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
+import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.user.model.User;
 import org.javarosa.xform.util.XFormAnswerDataSerializer;
@@ -47,6 +48,10 @@ public class UserModelProcessor implements IInstanceProcessor {
                 parseRegistration(element);
                 parsed++;
             } catch (MalformedUserModelException e) {
+                e.printStackTrace();
+                messages += e.getMessage() + ", ";
+                failures++;
+            } catch (StorageFullException e) {
                 e.printStackTrace();
                 messages += e.getMessage() + ", ";
                 failures++;
