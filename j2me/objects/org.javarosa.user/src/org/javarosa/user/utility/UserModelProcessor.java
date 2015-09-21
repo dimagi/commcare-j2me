@@ -70,7 +70,7 @@ public class UserModelProcessor implements IInstanceProcessor {
         return user;
     }
 
-    private void parseRegistration(AbstractTreeElement head) throws MalformedUserModelException, StorageFullException {
+    private void parseRegistration(AbstractTreeElement head) throws MalformedUserModelException {
 
         String username = getString(getChild(head, "username"),head);
         String password = getString(getChild(head, "password"),head);

@@ -6,7 +6,6 @@ package org.javarosa.user.utility;
 import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
-import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.PropertyUtils;
 import org.javarosa.core.model.User;
@@ -49,11 +48,7 @@ public class UserUtility {
             User admin = new User("admin", defaultFromEnvironment != null ? defaultFromEnvironment : defaultPassword, PropertyUtils.genGUID(25), User.ADMINUSER);
             admin.setUuid(PropertyManager._().getSingularProperty("DeviceID"));
 
-            try {
-                users.write(admin);
-            } catch (StorageFullException e) {
-                throw new RuntimeException("uh-oh, storage full [users]"); //TODO: handle this
-            }
+            users.write(admin);
         }
     }
 
