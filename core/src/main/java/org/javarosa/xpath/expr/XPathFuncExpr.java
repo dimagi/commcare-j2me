@@ -258,6 +258,25 @@ public class XPathFuncExpr extends XPathExpression {
                 } else {
                     return min(argVals);
                 }
+            } else if (name.equals("first")) {
+                if (args.length == 0) {
+                    throw new XPathArityException(name, "at least one argument", args.length);
+                }
+                if (argVals.length == 1 && argVals[0] instanceof XPathNodeset) {
+                    return ((XPathNodeset)argVals[0]).toArgList()[0];
+                } else {
+                    return argVals[0];
+                }
+            } else if (name.equals("last")) {
+                if (args.length == 0) {
+                    throw new XPathArityException(name, "at least one argument", args.length);
+                }
+                if (argVals.length == 1 && argVals[0] instanceof XPathNodeset) {
+                    Object[] vals = ((XPathNodeset)argVals[0]).toArgList();
+                    return vals[vals.length - 1];
+                } else {
+                    return argVals[argVals.length - 1];
+                }
             } else if (name.equals("today")) {
                 checkArity(name, 0, args.length);
                 return DateUtils.roundDate(new Date());
@@ -313,7 +332,7 @@ public class XPathFuncExpr extends XPathExpression {
                     throw new XPathArityException(name, "two or more arguments", args.length);
                 }
                 if (args.length == 3 && argVals[2] instanceof XPathNodeset) {
-                    return checklist(argVals[0], argVals[1], ((XPathNodeset)argVals[2]).toArgList());
+                    return checklist(argVals[0], argVals[1], ((XPathNodeset) argVals[2]).toArgList());
                 } else {
                     return checklist(argVals[0], argVals[1], subsetArgList(argVals, 2));
                 }
