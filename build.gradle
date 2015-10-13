@@ -81,6 +81,7 @@ jar {
 
 configurations {
   harness
+  testsAsJar
 }
 
 task harnessJar(type: Jar, dependsOn: harnessClasses) {
@@ -98,11 +99,18 @@ task harnessJar(type: Jar, dependsOn: harnessClasses) {
     manifest {
         attributes 'Main-Class': 'org.javarosa.engine.Harness'
     }
-    
+}
+
+// used to provide the test source files to external projects, such as odk,
+// which might want to import classes
+task testsrcJar(type: Jar, dependsOn: testClasses) {
+    classifier = 'tests'
+    from files(sourceSets.test.output.classesDir)
 }
 
 artifacts {
   harness harnessJar
+  testsAsJar testsrcJar
 }
 
 task copyTestResources(type: Copy) {
