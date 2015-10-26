@@ -200,18 +200,20 @@ public abstract class DataInstance<T extends AbstractTreeElement<T>> implements 
             // try to grab template node
             T nextNode = currentNode.getChild(name, TreeReference.INDEX_TEMPLATE);
             if (nextNode != null) {
-                return hasTemplatePathRec(topRef, nextNode, depth + 1);
-            } else {
-                // if there isn't a template element, recur through normal children
-                // looking for the first valid path forward
-                Vector<T> children = currentNode.getChildrenWithName(name);
-                for (T child : children) {
-                    if (hasTemplatePathRec(topRef, child, depth + 1)) {
-                        // stop if we found a path
-                        return true;
-                    }
+                if(hasTemplatePathRec(topRef, nextNode, depth + 1)){
+                    return true;
                 }
             }
+            // if there isn't a template element, recur through normal children
+            // looking for the first valid path forward
+            Vector<T> children = currentNode.getChildrenWithName(name);
+            for (T child : children) {
+                if (hasTemplatePathRec(topRef, child, depth + 1)) {
+                    // stop if we found a path
+                    return true;
+                }
+            }
+
         }
         // no way forward
         return false;
