@@ -143,10 +143,6 @@ public class User implements Persistable, Restorable, IMetaData
         this.password = password;
     }
 
-    public boolean isRememberMe() {
-        return rememberMe;
-    }
-
     public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
     }
