@@ -452,6 +452,12 @@ public class XFormParser {
             // TODO: to enable parsing that doesn't fail on first error found,
             // but rather continues, we need to check if report.errors isn't
             // empty and if so throw xpath parse exception here
+
+            //Lots of code assumes there's _some_ title so if we never got anything during the parse
+            //just initialize this to something
+            if(_f.getName() == null && _f.getTitle() == null) {
+                _f.setName("Form");
+            }
         }
         return _f;
     }
@@ -2218,7 +2224,6 @@ public class XFormParser {
         flagRepeatables(instance);
         processTemplates(instance);
         //2013-05-17 - ctsims - No longer call this, since we don't do the check
-        //checkDuplicateNodesAreRepeatable(instance.getRoot());    
         checkHomogeneity(instance);
     }
 
@@ -2388,23 +2393,6 @@ public class XFormParser {
             } else {
                 trimRepeatChildren(child);
             }
-        }
-    }
-
-    private static void checkDuplicateNodesAreRepeatable(TreeElement node) {
-        int mult = node.getMult();
-        if (mult > 0) { //repeated node
-            if (!node.isRepeatable()) {
-                //2013-05-17 - ctsims - I removed our check here, since we now support this
-                //much more cleanly.
-
-                //In theory, we should possibly make sure there are no _binds_ defined on these
-                //nodes at the very least, but that can be its own step
-            }
-        }
-
-        for (int i = 0; i < node.getNumChildren(); i++) {
-            checkDuplicateNodesAreRepeatable(node.getChildAt(i));
         }
     }
 

@@ -3,6 +3,7 @@ package org.javarosa.core.model.test;
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
 import org.javarosa.core.model.QuestionDef;
+import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.data.IntegerData;
 import org.javarosa.core.model.data.StringData;
 import org.javarosa.core.model.instance.FormInstance;
@@ -10,7 +11,6 @@ import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.model.instance.test.DummyInstanceInitializationFactory;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.form.api.FormEntryController;
-import org.javarosa.model.xform.XPathReference;
 import org.javarosa.test_utils.ExprEvalUtils;
 import org.junit.Test;
 
@@ -39,12 +39,12 @@ public class FormDefTest {
                 continue;
             }
             // get the reference of question
-            TreeReference qRef = (TreeReference)((XPathReference)q.getBind()).getReference();
+            TreeReference qRef = (TreeReference)(q.getBind()).getReference();
 
             // are we changing the value of /data/show?
             if (qRef.toString().equals("/data/show")) {
                 int response = fec.answerQuestion(new StringData("no"));
-                if (response != fec.ANSWER_OK) {
+                if (response != FormEntryController.ANSWER_OK) {
                     fail("Bad response from fec.answerQuestion()");
                 }
             } else if (q.getID() == 2) {
@@ -53,7 +53,7 @@ public class FormDefTest {
                 // triggers aren't working properly.
                 fail("shouldn't be relevant after answering no before");
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
     /**
@@ -71,27 +71,24 @@ public class FormDefTest {
         // triggered.
         fd.initialize(true, new DummyInstanceInitializationFactory());
 
-        FormInstance instance = (FormInstance)fd.getMainInstance();
+        FormInstance instance = fd.getMainInstance();
 
         String errorMsg;
         errorMsg = ExprEvalUtils.expectedEval("/data/query-one", instance, null, "0", null);
         assertTrue(errorMsg, "".equals(errorMsg));
 
-        boolean isShown = false;
-        boolean[] shouldBePresent = { true, true };
+        boolean[] shouldBePresent = {true, true};
 
         do {
             QuestionDef q = fpi.getCurrentQuestion();
             if (q == null) {
                 continue;
             }
-            // get the reference of question
-            TreeReference qRef = (TreeReference)((XPathReference)q.getBind()).getReference();
 
             if (q.getID() <= shouldBePresent.length && !shouldBePresent[q.getID() - 1]) {
                 fail("question with id " + q.getID() + " shouldn't be relevant");
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
     @Test
@@ -103,20 +100,20 @@ public class FormDefTest {
 
         do {
             QuestionDef q = fpi.getCurrentQuestion();
-            if (q == null || q.getTextID() == null || q.getTextID() == "") {
+            if (q == null || q.getTextID() == null || "".equals(q.getTextID())) {
                 continue;
             }
             if (q.getTextID().equals("constraint-test")) {
                 int response = fec.answerQuestion(ans);
-                if (response == fec.ANSWER_CONSTRAINT_VIOLATED) {
+                if (response == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
                     fail("Answer Constraint test failed.");
-                } else if (response == fec.ANSWER_OK) {
+                } else if (response == FormEntryController.ANSWER_OK) {
                     break;
                 } else {
                     fail("Bad response from fec.answerQuestion()");
                 }
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
     @Test
@@ -129,17 +126,17 @@ public class FormDefTest {
 
         do {
             QuestionDef q = fpi.getCurrentQuestion();
-            if (q == null || q.getTextID() == null || q.getTextID() == "") {
+            if (q == null || q.getTextID() == null || "".equals(q.getTextID())) {
                 continue;
             }
             if (q.getTextID().equals("constraint-test")) {
                 int response = fec.answerQuestion(ans);
-                if (response == fec.ANSWER_CONSTRAINT_VIOLATED) {
+                if (response == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
                     if (!"Old Constraint".equals(fec.getModel().getQuestionPrompt().getConstraintText())) {
                         fail("Old constraint message not found, instead got: "
                                 + fec.getModel().getQuestionPrompt().getConstraintText());
                     }
-                } else if (response == fec.ANSWER_OK) {
+                } else if (response == FormEntryController.ANSWER_OK) {
                     fail("Should have constrained");
                     break;
                 }
@@ -147,12 +144,12 @@ public class FormDefTest {
             if (q.getTextID().equals("constraint-test-2")) {
 
                 int response3 = fec.answerQuestion(new IntegerData(13));
-                if (response3 == fec.ANSWER_CONSTRAINT_VIOLATED) {
-                    if(!"New Alert".equals(fec.getModel().getQuestionPrompt().getConstraintText())){
+                if (response3 == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
+                    if (!"New Alert".equals(fec.getModel().getQuestionPrompt().getConstraintText())) {
                         fail("New constraint message not found, instead got: "
                                 + fec.getModel().getQuestionPrompt().getConstraintText());
                     }
-                } else if (response3 == fec.ANSWER_OK) {
+                } else if (response3 == FormEntryController.ANSWER_OK) {
                     fail("Should have constrained (2)");
                     break;
                 }
@@ -161,18 +158,18 @@ public class FormDefTest {
             if (q.getTextID().equals("constraint-test-3")) {
 
                 int response4 = fec.answerQuestion(new IntegerData(13));
-                if (response4 == fec.ANSWER_CONSTRAINT_VIOLATED) {
-                    if(!"The best QB of all time: Tom Brady".equals(fec.getModel().getQuestionPrompt().getConstraintText())){
+                if (response4 == FormEntryController.ANSWER_CONSTRAINT_VIOLATED) {
+                    if (!"The best QB of all time: Tom Brady".equals(fec.getModel().getQuestionPrompt().getConstraintText())) {
                         fail("New constraint message not found, instead got: "
                                 + fec.getModel().getQuestionPrompt().getConstraintText());
                     }
-                } else if (response4 == fec.ANSWER_OK) {
+                } else if (response4 == FormEntryController.ANSWER_OK) {
                     fail("Should have constrained (2)");
                     break;
                 }
 
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 
     /**
@@ -182,24 +179,82 @@ public class FormDefTest {
     public void testSetValuePredicate() {
         FormParseInit fpi = new FormParseInit("/test_setvalue_predicate.xml");
         FormEntryController fec = fpi.getFormEntryController();
-        fpi.getFormDef().initialize(true,null);
+        fpi.getFormDef().initialize(true, null);
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
         boolean testPassed = false;
         do {
-            if(fec.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {
+            if (fec.getModel().getEvent() != FormEntryController.EVENT_QUESTION) {
                 continue;
             }
             String text = fec.getModel().getQuestionPrompt().getQuestionText();
             //check for our test
-            if(text.indexOf("Test") != -1) {
-                if(text.indexOf("pass") != -1) {
-                    testPassed = true;
-                }
+            if (text.contains("Test") && text.contains("pass")) {
+                testPassed = true;
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
-        if(!testPassed) {
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+        if (!testPassed) {
             fail("Setvalue Predicate Target Test");
         }
+    }
+
+    /**
+     * Test nested form repeat triggers and actions
+     */
+    @Test
+    public void testNestedRepeatActions() throws Exception {
+        FormParseInit fpi = new FormParseInit("/xform_tests/test_looped_model_iteration.xml");
+        FormEntryController fec = fpi.getFormEntryController();
+        fpi.getFormDef().initialize(true, null);
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+
+        do {
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+
+        ExprEvalUtils.assertEqualsXpathEval("Nested repeats did not evaluate to the proper outcome",
+                30.0,
+                "/data/sum",
+                fpi.getFormDef().getEvaluationContext());
+    }
+
+    /**
+     * Tests trigger caching related to cascading relevancy calculations to children.
+     */
+    @Test
+    public void testTriggerCaching() throws Exception {
+        // Running the form creates a few animals with weights that count down from the init_weight.
+        // Skips over a specified entry by setting it to irrelevant.
+        FormParseInit fpi = new FormParseInit("/xform_tests/test_trigger_caching.xml");
+        FormEntryController fec = fpi.getFormEntryController();
+        fpi.getFormDef().initialize(true, null);
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+
+        do {
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+
+        EvaluationContext evalCtx = fpi.getFormDef().getEvaluationContext();
+        ExprEvalUtils.assertEqualsXpathEval("Check max animal weight",
+                400.0, "/data/heaviest_animal_weight", evalCtx);
+        ExprEvalUtils.assertEqualsXpathEval("Check min animal",
+                100.0, "/data/lightest_animal_weight", evalCtx);
+        ExprEvalUtils.assertEqualsXpathEval("Ensure we skip over setting attr of irrelevant entry",
+                "", "/data/animals[/data/skip_weighing_nth_animal]/weight/@time", evalCtx);
+
+        Object weighTimeResult =
+                ExprEvalUtils.xpathEval(evalCtx,
+                        "/data/animals[/data/skip_weighing_nth_animal - 1]/weight/@time");
+        if ("".equals(weighTimeResult) || "-1".equals(weighTimeResult)) {
+            fail("@time should be set for relevant animal weight.");
+        }
+        ExprEvalUtils.assertEqualsXpathEval("Assert genus skip value",
+                1.0, "/data/skip_genus_nth_animal", evalCtx);
+        ExprEvalUtils.assertEqualsXpathEval("Ensure genus at skip entry is irrelevant",
+                "", "/data/animals[1]/genus/species", evalCtx);
+        ExprEvalUtils.assertEqualsXpathEval("Ensure genuse at non-skip entry has default value",
+                "default", "/data/animals[2]/genus/species", evalCtx);
+
+        ExprEvalUtils.assertEqualsXpathEval(
+                "Relevancy of skipped genus entry should be irrelevant to, due to the way it is calculated",
+                "", "/data/disabled_species", evalCtx);
     }
 }

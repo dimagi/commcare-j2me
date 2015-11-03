@@ -7,6 +7,7 @@ import org.javarosa.xpath.XPathParseTool;
 import org.javarosa.xpath.expr.XPathExpression;
 import org.javarosa.xpath.expr.XPathFuncExpr;
 import org.javarosa.xpath.parser.XPathSyntaxException;
+import org.junit.Assert;
 
 import static org.junit.Assert.fail;
 
@@ -83,50 +84,20 @@ public class ExprEvalUtils {
         return "";
     }
 
-    public static void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected) {
-        testEval(expr, model, ec, expected, 1.0e-12);
+    public static void assertEqualsXpathEval(String failureMessage,
+                                             Object expectedOutput,
+                                             String input,
+                                             EvaluationContext evalContext)
+            throws XPathSyntaxException {
+        Object evalResult = xpathEval(evalContext, input);
+        Assert.assertEquals(failureMessage, expectedOutput, evalResult);
     }
 
-    public static void testEval(String expr, FormInstance model, EvaluationContext ec, Object expected, double tolerance) {
-        XPathExpression xpe = null;
-        boolean exceptionExpected = (expected instanceof XPathException);
-
-        if (ec == null) {
-            ec = new EvaluationContext(model);
-        }
-
-        try {
-            xpe = XPathParseTool.parseXPath(expr);
-        } catch (XPathSyntaxException xpse) {
-        }
-
-        if (xpe == null) {
-            fail("Null expression or syntax error " + expr);
-        }
-
-        try {
-            Object result = XPathFuncExpr.unpack(xpe.eval(model, ec));
-            if (tolerance != XPathFuncExpr.DOUBLE_TOLERANCE) {
-                System.out.println(expr + " = " + result);
-            }
-
-            if (exceptionExpected) {
-                fail("Expected exception, expression : " + expr);
-            } else if ((result instanceof Double && expected instanceof Double)) {
-                Double o = ((Double)result).doubleValue();
-                Double t = ((Double)expected).doubleValue();
-                if (Math.abs(o - t) > tolerance) {
-                    fail("Doubles outside of tolerance: got " + o + ", expected " + t);
-                }
-            } else if (!expected.equals(result)) {
-                fail("Expected " + expected + ", got " + result);
-            }
-        } catch (XPathException xpex) {
-            if (!exceptionExpected) {
-                fail("Did not expect " + xpex.getClass() + " exception");
-            } else if (xpex.getClass() != expected.getClass()) {
-                fail("Did not get expected exception type");
-            }
-        }
+    public static Object xpathEval(EvaluationContext evalContext,
+                                              String input)
+            throws XPathSyntaxException {
+        XPathExpression expr;
+        expr = XPathParseTool.parseXPath(input);
+        return XPathFuncExpr.unpack(expr.eval(evalContext));
     }
 }
