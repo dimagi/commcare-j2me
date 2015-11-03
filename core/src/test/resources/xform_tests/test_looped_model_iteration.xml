@@ -37,7 +37,7 @@
             <bind nodeset="/data/begin"/>
             <bind calculate="3" nodeset="/data/number"/>
             <bind nodeset="/data/outer_repeat"/>
-            <bind calculate="count(/data/outer_repeat/iterator/item)"
+            <bind calculate="count(../item)"
                   nodeset="/data/outer_repeat/iterator/@current_index"/>
             <bind nodeset="/data/outer_repeat/iterator/item"/>
             <bind nodeset="/data/outer_repeat/iterator/item/placeholder" relevant="false()"/>
@@ -48,13 +48,13 @@
                   nodeset="/data/outer_repeat/iterator/item/val"/>
 
             <setvalue event="jr-insert" ref="/data/outer_repeat/iterator/item/holder[true()]/@index"
-                      value="int(/data/outer_repeat/iterator/@current_index)"/>
+                      value="int(../../@current_index)"/>
             <setvalue event="jr-insert" ref="/data/outer_repeat/iterator/item/@id"
-                      value="selected-at(/data/outer_repeat/iterator/@ids,../holder/@index)"/>
+                      value="selected-at(../@ids,../holder/@index)"/>
 
             <bind calculate="join(' ', instance('internal')/items/item/@id)"
                   nodeset="/data/outer_repeat/iterator/@ids"/>
-            <bind calculate="count-selected(/data/outer_repeat/iterator/@ids)"
+            <bind calculate="count-selected(../@ids)"
                   nodeset="/data/outer_repeat/iterator/@count"/>
             <itext>
                 <translation default="" lang="en">
