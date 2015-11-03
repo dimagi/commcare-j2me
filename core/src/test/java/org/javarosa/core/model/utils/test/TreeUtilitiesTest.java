@@ -15,14 +15,14 @@ public class TreeUtilitiesTest {
         FormParseInit fpi = new FormParseInit("/test_nested_multiplicities.xml");
         FormDef fd = fpi.getFormDef();
 
+        ExprEvalUtils.testEval("count(/data/bikes/manufacturer[@american='yes'][count(model[.=1]) > /data/bikes/manufacturer/model[@id='long-haul']]/model/@id)",
+                fd.getInstance(), null, 4.0);
+
         ExprEvalUtils.testEval("count(/data/bikes/manufacturer[@american='yes'][count(model[.=1]) > 0]/model/@id)",
                 fd.getInstance(), null, 4.0);
         ExprEvalUtils.testEval("count(/data/bikes/manufacturer[@american='yes'][count(model[.=1]) > '0']/model/@id)",
                 fd.getInstance(), null, 4.0);
         ExprEvalUtils.testEval("/data/bikes/manufacturer/model[@id='long-haul']",
                 fd.getInstance(), null, "0");
-        ExprEvalUtils.testEval("count(/data/bikes/manufacturer[@american='yes'][count(model[.=1]) > /data/bikes/manufacturer/model[@id='long-haul']]/model/@id)",
-                fd.getInstance(), null, 4.0);
-
     }
 }
