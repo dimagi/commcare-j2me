@@ -8,7 +8,7 @@ import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.core.util.PropertyUtils;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 import javax.microedition.midlet.MIDlet;
 

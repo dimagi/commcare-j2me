@@ -9,7 +9,7 @@ import org.javarosa.core.model.utils.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.xform.util.XFormAnswerDataSerializer;
 
 import java.util.Stack;

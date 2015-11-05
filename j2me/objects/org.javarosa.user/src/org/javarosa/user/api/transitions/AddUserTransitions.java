@@ -3,7 +3,7 @@
  */
 package org.javarosa.user.api.transitions;
 
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 /**
  * Transitions for a user interface for creating a new user object.

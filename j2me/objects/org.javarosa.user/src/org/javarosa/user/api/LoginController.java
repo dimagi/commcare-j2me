@@ -11,7 +11,7 @@ import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.util.media.ImageUtils;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.api.transitions.LoginTransitions;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.view.LoginForm;
 import org.javarosa.utilities.media.MediaUtils;
 
