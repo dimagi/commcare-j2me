@@ -6,7 +6,7 @@ import org.javarosa.core.services.properties.JavaRosaPropertyRules;
 import org.javarosa.services.transport.CommUtil;
 import org.javarosa.services.transport.UnrecognizedResponseException;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.kxml2.io.KXmlSerializer;
 import org.kxml2.kdom.Document;
 import org.kxml2.kdom.Element;

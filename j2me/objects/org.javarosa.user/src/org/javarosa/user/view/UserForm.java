@@ -18,7 +18,7 @@ package org.javarosa.user.view;
 
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.user.api.CreateUserController;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.utility.IUserDecorator;
 
 import javax.microedition.lcdui.Choice;

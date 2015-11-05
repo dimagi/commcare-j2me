@@ -31,7 +31,7 @@ import org.javarosa.services.transport.TransportService;
 import org.javarosa.services.transport.impl.TransportMessageStatus;
 import org.javarosa.services.transport.impl.simplehttp.StreamingHTTPMessage;
 import org.javarosa.services.transport.senders.SenderThread;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.kxml2.io.KXmlSerializer;
 import org.xmlpull.v1.XmlSerializer;
 

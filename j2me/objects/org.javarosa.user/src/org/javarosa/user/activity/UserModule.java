@@ -21,7 +21,7 @@ package org.javarosa.user.activity;
 
 import org.javarosa.core.api.IModule;
 import org.javarosa.core.services.storage.StorageManager;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 /**
  * @author Clayton Sims

@@ -21,7 +21,7 @@ package org.javarosa.user.utility;
 
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.entity.model.Entity;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 /**
  * @author Clayton Sims

@@ -3,7 +3,7 @@ package org.javarosa.demo.applogic;
 import org.javarosa.demo.util.JRDemoUtil;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.api.LoginState;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 public class JRDemoLoginState extends LoginState {
 

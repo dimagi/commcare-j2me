@@ -1,21 +1,4 @@
-/*
- * Copyright (C) 2009 JavaRosa
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
-package org.javarosa.user.model;
-
+package org.javarosa.core.model;
 
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.model.instance.TreeElement;
@@ -28,41 +11,49 @@ import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapMap;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-
-
-public class User implements Persistable, Restorable, IMetaData
-{
+/**
+ * Peristable object representing a CommCare mobile user.
+ *
+ * @author ctsims
+ * @author wspride
+ */
+public class User implements Persistable, Restorable, IMetaData {
     public static final String STORAGE_KEY = "USER";
 
     public static final String ADMINUSER = "admin";
     public static final String STANDARD = "standard";
     public static final String DEMO_USER = "demo_user";
     public static final String KEY_USER_TYPE = "user_type";
+    public static final String TYPE_DEMO = "demo";
 
     public static final String META_UID = "uid";
     public static final String META_USERNAME = "username";
-    public static final String META_ID = "id";
+    public static final String META_ID = "userid";
+    public static final String META_WRAPPED_KEY = "wrappedkey";
+    public static final String META_SYNC_TOKEN = "synctoken";
 
-    private int recordId = -1; //record id on device
-    private String username;
-    private String password;
-    private String uniqueId;  //globally-unique id
+    public int recordId = -1; //record id on device
+    public String username;
+    public String password;
+    public String uniqueId;  //globally-unique id
 
-    private boolean rememberMe = false;
+    static private User demo_user;
 
-    private String syncToken;
+    public boolean rememberMe = false;
 
-    /** String -> String **/
-    private Hashtable<String,String> properties = new Hashtable<String,String>();
+    public String syncToken;
 
-    public User () {
+    public byte[] wrappedKey;
+
+    public Hashtable<String, String> properties = new Hashtable<String, String>();
+
+    public User() {
         setUserType(STANDARD);
     }
 
@@ -78,7 +69,8 @@ public class User implements Persistable, Restorable, IMetaData
         rememberMe = false;
     }
 
-    ///fetch the value for the default user and password from the RMS
+    // fetch the value for the default user and password from the RMS
+    @Override
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         this.username = ExtUtil.readString(in);
         this.password = ExtUtil.readString(in);
@@ -87,8 +79,10 @@ public class User implements Persistable, Restorable, IMetaData
         this.rememberMe = ExtUtil.readBool(in);
         this.syncToken = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
         this.properties = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class), pf);
+        this.wrappedKey = ExtUtil.nullIfEmpty(ExtUtil.readBytes(in));
     }
 
+    @Override
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.writeString(out, username);
         ExtUtil.writeString(out, password);
@@ -97,34 +91,33 @@ public class User implements Persistable, Restorable, IMetaData
         ExtUtil.writeBool(out, rememberMe);
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(syncToken));
         ExtUtil.write(out, new ExtWrapMap(properties));
+        ExtUtil.writeBytes(out, ExtUtil.emptyIfNull(wrappedKey));
     }
 
     public boolean isAdminUser() {
         return ADMINUSER.equals(getUserType());
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public void setID(int recordId)
-    {
-
+    @Override
+    public void setID(int recordId) {
         this.recordId = recordId;
     }
 
+    @Override
     public int getID() {
         return recordId;
     }
 
     public String getUserType() {
-        if(properties.containsKey(KEY_USER_TYPE)) {
+        if (properties.containsKey(KEY_USER_TYPE)) {
             return properties.get(KEY_USER_TYPE);
         } else {
             return null;
@@ -132,7 +125,7 @@ public class User implements Persistable, Restorable, IMetaData
     }
 
     public void setUserType(String userType) {
-        properties.put(KEY_USER_TYPE,userType);
+        properties.put(KEY_USER_TYPE, userType);
     }
 
     public void setUsername(String username) {
@@ -141,10 +134,6 @@ public class User implements Persistable, Restorable, IMetaData
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public boolean isRememberMe() {
-        return rememberMe;
     }
 
     public void setRememberMe(boolean rememberMe) {
@@ -168,32 +157,19 @@ public class User implements Persistable, Restorable, IMetaData
     }
 
     public String getProperty(String key) {
-        return (String)this.properties.get(key);
+        return this.properties.get(key);
     }
 
     public Hashtable<String, String> getProperties() {
         return this.properties;
     }
 
+    @Override
     public String getRestorableType() {
         return "user";
     }
 
-    public FormInstance exportData() {
-        FormInstance dm = RestoreUtils.createDataModel(this);
-        RestoreUtils.addData(dm, "name", username);
-        RestoreUtils.addData(dm, "pass", password);
-        RestoreUtils.addData(dm, "uuid", uniqueId);
-        RestoreUtils.addData(dm, "remember", new Boolean(rememberMe));
-
-        for (Enumeration e = properties.keys(); e.hasMoreElements(); ) {
-            String key = (String)e.nextElement();
-            RestoreUtils.addData(dm, "other/" + key, properties.get(key));
-        }
-
-        return dm;
-    }
-
+    @Override
     public void templateData(FormInstance dm, TreeReference parentRef) {
         RestoreUtils.applyDataType(dm, "name", parentRef, String.class);
         RestoreUtils.applyDataType(dm, "pass", parentRef, String.class);
@@ -201,50 +177,44 @@ public class User implements Persistable, Restorable, IMetaData
         RestoreUtils.applyDataType(dm, "user-id", parentRef, Integer.class);
         RestoreUtils.applyDataType(dm, "uuid", parentRef, String.class);
         RestoreUtils.applyDataType(dm, "remember", parentRef, Boolean.class);
-
-        // other/* defaults to string
-    }
-
-    public void importData(FormInstance dm) {
-        username = (String)RestoreUtils.getValue("name", dm);
-        password = (String)RestoreUtils.getValue("pass", dm);
-        uniqueId = (String)RestoreUtils.getValue("uuid", dm);
-        rememberMe = RestoreUtils.getBoolean(RestoreUtils.getValue("remember", dm));
-
-        TreeElement e = dm.resolveReference(RestoreUtils.absRef("other", dm));
-        if (e != null) {
-            for (int i = 0; i < e.getNumChildren(); i++) {
-                TreeElement child = e.getChildAt(i);
-                String name = child.getName();
-                Object value = RestoreUtils.getValue("other/" + name, dm);
-                if (value != null){
-                    properties.put(name, (String)value);
-                }
-            }
-        }
     }
 
     public Hashtable getMetaData() {
         Hashtable ret = new Hashtable();
-        for(String name : getMetaDataFields()) {
+        for (String name : getMetaDataFields()) {
             ret.put(name, getMetaData(name));
         }
         return ret;
     }
 
+    @Override
     public Object getMetaData(String fieldName) {
-        if(META_UID.equals(fieldName)) {
+        if (META_UID.equals(fieldName)) {
             return uniqueId;
         } else if(META_USERNAME.equals(fieldName)) {
             return username;
         } else if(META_ID.equals(fieldName)) {
             return new Integer(recordId);
+        } else if (META_WRAPPED_KEY.equals(fieldName)) {
+            return wrappedKey;
+        } else if (META_SYNC_TOKEN.equals(fieldName)) {
+            return ExtUtil.emptyIfNull(syncToken);
         }
-        throw new IllegalArgumentException("No metadata field " + fieldName  + " for User Models");
+        throw new IllegalArgumentException("No metadata field " + fieldName + " for User Models");
+    }
+    // TODO: Add META_WRAPPED_KEY back in?
+    @Override
+    public String[] getMetaDataFields() {
+        return new String[] {META_UID, META_USERNAME, META_ID, META_SYNC_TOKEN};
     }
 
-    public String[] getMetaDataFields() {
-        return new String[] {META_UID, META_USERNAME, META_ID};
+    //Don't ever save!
+    private String cachedPwd;
+    public void setCachedPwd(String password) {
+        this.cachedPwd = password;
+    }
+    public String getCachedPwd() {
+        return this.cachedPwd;
     }
 
     public String getLastSyncToken() {
@@ -255,9 +225,8 @@ public class User implements Persistable, Restorable, IMetaData
         this.syncToken = syncToken;
     }
 
-    static private User demo_user;
     public static User FactoryDemoUser() {
-        if(demo_user == null) {
+        if (demo_user == null) {
             demo_user = new User();
             demo_user.setUsername(User.DEMO_USER); // NOTE: Using a user type as a
             // username also!
@@ -265,6 +234,22 @@ public class User implements Persistable, Restorable, IMetaData
             demo_user.setUuid(User.DEMO_USER);
         }
         return demo_user;
+    }
+
+    public int getRecordId(){
+        return recordId;
+    }
+
+    public void setRecordId(int recordId){
+        this.recordId = recordId;
+    }
+
+    public void setWrappedKey(byte[] key) {
+        this.wrappedKey = key;
+    }
+
+    public byte[] getWrappedKey() {
+        return wrappedKey;
     }
 
 }

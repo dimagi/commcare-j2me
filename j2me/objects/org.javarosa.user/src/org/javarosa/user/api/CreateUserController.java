@@ -8,7 +8,7 @@ import org.javarosa.j2me.log.CrashHandler;
 import org.javarosa.j2me.log.HandledCommandListener;
 import org.javarosa.j2me.view.J2MEDisplay;
 import org.javarosa.user.api.transitions.AddUserTransitions;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.utility.IUserDecorator;
 import org.javarosa.user.utility.UserValidator;
 import org.javarosa.user.view.UserForm;

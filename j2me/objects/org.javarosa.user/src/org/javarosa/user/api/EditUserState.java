@@ -2,7 +2,7 @@ package org.javarosa.user.api;
 
 import org.javarosa.core.api.State;
 import org.javarosa.user.api.transitions.EditUserTransitions;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 
 public abstract class EditUserState implements EditUserTransitions, State {
 

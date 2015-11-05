@@ -16,7 +16,7 @@ import org.javarosa.formmanager.utility.FormDefFetcher;
 import org.javarosa.formmanager.utility.NamespaceRetrievalMethod;
 import org.javarosa.formmanager.view.chatterbox.Chatterbox;
 import org.javarosa.user.api.transitions.AddUserTransitions;
-import org.javarosa.user.model.User;
+import org.javarosa.core.model.User;
 import org.javarosa.user.utility.UserModelProcessor;
 
 import java.util.Vector;

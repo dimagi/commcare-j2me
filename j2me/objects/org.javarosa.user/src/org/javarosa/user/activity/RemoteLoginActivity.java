@@ -47,7 +47,7 @@
 //import org.javarosa.core.util.Observable;
 //import org.javarosa.core.util.Observer;
 //import org.javarosa.core.util.externalizable.DeserializationException;
-//import org.javarosa.user.model.User;
+//import org.javarosa.core.model.User;
 //import org.javarosa.user.storage.UserRMSUtility;
 //import org.javarosa.user.view.LoginForm;
 //import org.kxml2.io.KXmlParser;
