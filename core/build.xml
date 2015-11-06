@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<project default="package">
+
+    <property file="local.properties"/>
+    <property file="build.properties"/>
+
+    <!-- Include ant contrib library to use fancy things like "for" and "if" tasks -->
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="${ant-contrib}"/>
+        </classpath>
+    </taskdef>
+
+    <!-- Test resource files -->
+    <fileset id="test.resources" dir="${basedir}/../">
+        <include name="**/resources/*.txt"/>
+        <include name="**/resources/*.x*ml/"/>
+    </fileset>
+
+
+    <!-- ///////////////////////////////////////////// -->
+    <!-- Build targets                                 -->
+    <!-- ///////////////////////////////////////////// -->
+
+    <target name="init" description="set classpath and make needed directories">
+        <path id="classpath">
+            <fileset dir="${dir.lib}" includes="*.jar"/>
+        </path>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${doc}"/>
+    </target>
+
+    <target name="clean" description="delete dist and build directories">
+        <delete dir="${dist}"/>
+        <delete dir="${build}"/>
+        <delete dir="${doc}"/>
+        <delete dir="${test-build}"/>
+    </target>
+
+    <target name="compile" depends="extract-libs, init" description="compile the source">
+        <!-- To get rid of
+             "bootstrap class path not set in conjunction with -source 1.5" warning
+             add bootclasspath="path/to/java/instance/rt.jar" attribute to javac tag -->
+        <javac srcdir="${src}" destdir="${build}"
+            classpathref="classpath"
+            debug="true" debuglevel="lines,source"
+            source="1.5" target="1.5" includeantruntime="false">
+            <!-- Do we want to see lint warnings? -->
+            <!-- <compilerarg value="-Xlint:unchecked"/> -->
+        </javac>
+    </target>
+
+    <target name="package" depends="compile" description="package binary into jar">
+        <jar destfile="${dist}/${jar}">
+            <fileset dir="${build}" includes="**/*.class"/>
+        </jar>
+    </target>
+
+    <!-- for use primarily by the build server to extract the required 3rd-party libraries into the
+         javarosa source tree. to use this in your own build, set the 'extract-libs-fresh' property,
+         then also set the 'javarosa-deps' property to the path of the library archive (make sure you
+         are using the version of the archive compatible with the version you wish to build) -->
+    <target name="extract-libs" if="extract-libs-fresh">
+        <unzip src="${javarosa-deps}" dest="${dir.root}" overwrite="true"/>
+    </target>
+
+    <target name="packageTestResources" description="pack-up test resource files into jar">
+        <mkdir dir="${test-build}"/>
+        <mkdir dir="${test-build}/tmp"/>
+
+        <copy todir="${test-build}/tmp">
+            <fileset refid="test.resources"/>
+            <flattenmapper/>
+        </copy>
+
+        <zip destfile="${test-build}/jr-test-resource-jar.jar" basedir="${test-build}/tmp"/>
+
+        <delete dir="${test-build}/tmp"/>
+
+        <!-- Setup the test classpath now that everything has been created in it -->
+        <path id="test.classpath">
+            <fileset dir="${test-build}" includes="jr-test-resource-jar.jar"/>
+            <fileset dir="${dir.lib}" includes="*.jar"/>
+            <fileset dir="${dist}" includes="*.jar"/>
+            <dirset dir="${test-build}">
+                <exclude name="**/*$*.class"/>
+            </dirset>
+        </path>
+    </target>
+
+    <target name="compileTests" depends="package, packageTestResources"
+        description="compile unit tests">
+        <javac destdir="${test-build}" classpathref="test.classpath" includeantruntime="false">
+            <src path="${basedir}"/>
+            <include name="**/test**/*.java"/>
+            <exclude name="crypto/**/*.java"/>
+        </javac>
+    </target>
+
+    <target name="test" depends="compileTests" description="Runs all unit tests found in the code">
+        <fileset id="dist.contents.test" dir="${test-build}" includes="**/*.class"
+            excludes="**/*$*.class"/>
+
+        <!-- Now, convert that source list into a property which is newline seperated, and contains references
+                that start assuming you're in a zip file and in the src directory already -->
+        <pathconvert pathsep="${line.separator}" property="testclasses" refid="dist.contents.test">
+            <chainedmapper>
+                <!-- Cut all non-local elements from the path -->
+                <regexpmapper from="^(.*)${test-build}(.*)$$" to="\2"/>
+                <!-- Now covert from seperators to package seperators -->
+                <filtermapper>
+                    <replacestring from="\" to="."/>
+                    <replacestring from="/" to="."/>
+                </filtermapper>
+                <!-- Trim leading seperators -->
+                <globmapper from=".*" to="*"/>
+                <!-- snip the .class, we should now be left with fully qualified classnames -->
+                <globmapper from="*.class" to="*"/>
+            </chainedmapper>
+        </pathconvert>
+
+        <typedef name="instanceof" classname="org.javarosa.build.InstanceOfCondition"
+            onerror="report">
+            <classpath>
+                <pathelement
+                    location="${javarosa-dependencies}/j2me/buildfiles/tools/javarosa-ant-libs.jar"/>
+                <path refid="test.classpath"/>
+            </classpath>
+        </typedef>
+
+        <!-- Run tests that extend TestCase -->
+        <for list="${testclasses}" delimiter="${line.separator}" param="testclassname">
+            <sequential>
+                <if>
+                    <instanceof classname="@{testclassname}"
+                        baseclass="j2meunit.framework.TestCase"/>
+                    <then>
+                        <echo message="@{testclassname}"/>
+                        <RunTestSuite suite="@{testclassname}"/>
+                    </then>
+                </if>
+            </sequential>
+        </for>
+        <fail if="testresult.global">Unit Tests Failed!</fail>
+    </target>
+
+    <!-- Generate javadocs for current project into ${doc.dir} -->
+    <target name="doc" depends="init" description="generate documentation">
+        <javadoc sourcepath="${src}" destdir="${doc}"/>
+    </target>
+
+    <!-- ///////////////////////////////////////////// -->
+    <!-- Macros                                        -->
+    <!-- ///////////////////////////////////////////// -->
+
+    <!-- Runs a test suite, and sets testresult.global to be true on failure -->
+    <macrodef name="RunTestSuite"
+        description="Runs a test suite, and sets testresult.global to be true on failure">
+        <attribute name="suite"/>
+        <!-- Note: The reason that we are using @{suite} as a property is because properties in ANT
+            are immutable, and this is a unique identifier -->
+        <sequential>
+            <java classname="j2meunit.textui.TestRunner" failonerror="false" fork="true"
+                resultproperty="@{suite}">
+                <classpath refid="test.classpath"/>
+                <arg value="@{suite}"/>
+            </java>
+            <condition property="testresult.global">
+                <not>
+                    <equals arg1="${@{suite}}" arg2="0"/>
+                </not>
+            </condition>
+        </sequential>
+    </macrodef>
+
+
+</project>
