@@ -12,7 +12,6 @@ import org.javarosa.core.model.instance.utils.ITreeVisitor;
 import org.javarosa.core.model.instance.utils.TreeUtilities;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
-import org.javarosa.core.util.externalizable.ExtWrapList;
 import org.javarosa.core.util.externalizable.ExtWrapNullable;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.Externalizable;
@@ -259,10 +258,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
      * @see org.javarosa.core.model.instance.AbstractTreeElement#addChild(org.javarosa.core.model.instance.TreeElement)
      */
     public void addChild(TreeElement child) {
-        addChild(child, false);
-    }
-
-    private void addChild(TreeElement child, boolean checkDuplicate) {
         if (!isChildable()) {
             throw new RuntimeException("Can't add children to node that has data value!");
         }
@@ -271,14 +266,8 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             throw new RuntimeException("Cannot add child with an unbound index!");
         }
 
-        if (checkDuplicate) {
-            TreeElement existingChild = getChild(child.name, child.multiplicity);
-            if (existingChild != null) {
-                throw new RuntimeException("Attempted to add duplicate child!");
-            }
-        }
         if (children == null) {
-            children = new Vector();
+            children = new Vector<TreeElement>();
         }
 
         // try to keep things in order
@@ -293,12 +282,32 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             if (anchor != null)
                 i = children.indexOf(anchor) + 1;
         }
-        children.insertElementAt(child, i);
-        child.setParent(this);
 
-        child.setRelevant(isRelevant(), true);
-        child.setEnabled(isEnabled(), true);
-        child.setInstanceName(getInstanceName());
+        children.insertElementAt(child, i);
+
+        initAddedSubNode(child);
+    }
+
+    private void addAttribute(TreeElement attr) {
+        if (attr.multiplicity != TreeReference.INDEX_ATTRIBUTE) {
+            throw new RuntimeException("Attribute doesn't have the correct index!");
+        }
+
+        if (attributes == null) {
+            attributes = new Vector<TreeElement>();
+        }
+
+        attributes.addElement(attr);
+
+        initAddedSubNode(attr);
+    }
+
+    private void initAddedSubNode(TreeElement node) {
+        node.setParent(this);
+        node.setRelevant(isRelevant(), true);
+        node.setEnabled(isEnabled(), true);
+        node.setInstanceName(getInstanceName());
+
     }
 
     /* (non-Javadoc)
@@ -353,10 +362,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         return getChildrenWithName(name, false).size();
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#shallowCopy()
-     */
-    public TreeElement shallowCopy() {
+    private TreeElement shallowCopy() {
         TreeElement newNode = new TreeElement(name, multiplicity);
         newNode.parent = parent;
         newNode.setRepeatable(this.isRepeatable());
@@ -373,27 +379,32 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         newNode.instanceName = instanceName;
         newNode.namespace = namespace;
 
-        newNode.setAttributesFromSingleStringVector(getSingleStringAttributeVector());
         if (value != null) {
             newNode.value = value.clone();
         }
 
         newNode.children = children;
+        newNode.attributes = attributes;
         return newNode;
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#deepCopy(boolean)
-     */
     public TreeElement deepCopy(boolean includeTemplates) {
         TreeElement newNode = shallowCopy();
 
         if (children != null) {
-            newNode.children = new Vector();
-            for (int i = 0; i < children.size(); i++) {
-                TreeElement child = (TreeElement)children.elementAt(i);
+            newNode.children = new Vector<TreeElement>();
+            for (TreeElement child : children) {
                 if (includeTemplates || child.getMult() != TreeReference.INDEX_TEMPLATE) {
                     newNode.addChild(child.deepCopy(includeTemplates));
+                }
+            }
+        }
+
+        if (attributes != null) {
+            newNode.attributes = new Vector<TreeElement>();
+            for (TreeElement attr : attributes) {
+                if (includeTemplates || attr.getMult() != TreeReference.INDEX_TEMPLATE) {
+                    newNode.addAttribute(attr.deepCopy(includeTemplates));
                 }
             }
         }
@@ -671,85 +682,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         attributes.addElement(attr);
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#getSingleStringAttributeVector()
-     */
-    public Vector getSingleStringAttributeVector() {
-        Vector strings = new Vector();
-        if (attributes == null || attributes.size() == 0)
-            return null;
-        else {
-            for (int i = 0; i < this.attributes.size(); i++) {
-                TreeElement attribute = attributes.elementAt(i);
-                String value = getAttributeValue(attribute);
-                if (attribute.namespace == null || attribute.namespace.equals(""))
-                    strings.addElement(new String(attribute.getName() + "=" + value));
-                else
-                    strings.addElement(new String(attribute.namespace + ":" + attribute.getName()
-                            + "=" + value));
-            }
-            return strings;
-        }
-    }
-
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#setAttributesFromSingleStringVector(java.util.Vector)
-     */
-    public void setAttributesFromSingleStringVector(Vector attStrings) {
-        if (attStrings != null) {
-            this.attributes = new Vector(0);
-            for (int i = 0; i < attStrings.size(); i++) {
-                addSingleAttribute(i, attStrings);
-            }
-        }
-    }
-
-    private void addSingleAttribute(int i, Vector attStrings) {
-        String att = (String)attStrings.elementAt(i);
-        String[] array = new String[3];
-
-        int pos = -1;
-
-        //TODO: The only current assumption here is that the namespace/name of the attribute doesn't have
-        //an equals sign in it. I think this is safe. not sure.
-
-        //Split into first and second parts
-        pos = att.indexOf("=");
-
-        //put the value in our output
-        array[2] = att.substring(pos + 1);
-
-        //now we're left with the xmlns (possibly) and the
-        //name. Get that into a single string.
-        att = att.substring(0, pos);
-
-        //reset position marker.
-        pos = -1;
-
-        // Clayton Sims - Jun 1, 2009 : Updated this code:
-        //    We want to find the _last_ possible ':', not the
-        // first one. Namespaces can have URLs in them.
-        //int pos = att.indexOf(":");
-        while (att.indexOf(":", pos + 1) != -1) {
-            pos = att.indexOf(":", pos + 1);
-        }
-
-        if (pos == -1) {
-            //No namespace
-            array[0] = null;
-
-            //for the name eval below
-            pos = 0;
-        } else {
-            //there is a namespace, grab it
-            array[0] = att.substring(0, pos);
-        }
-        // Now get the name part
-        array[1] = att.substring(pos);
-
-        this.setAttribute(array[0], array[1], array[2]);
-    }
-
     /* ==== SERIALIZATION ==== */
 
     /*
@@ -764,16 +696,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
      * failing that, we should wrap this scheme in an ExternalizableWrapper
      */
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.javarosa.core.services.storage.utilities.Externalizable#readExternal
-     * (java.io.DataInputStream)
-     */
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#readExternal(java.io.DataInputStream, org.javarosa.core.util.externalizable.PrototypeFactory)
-     */
+    @Override
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         name = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
         multiplicity = ExtUtil.readInt(in);
@@ -812,6 +735,9 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     child.readExternal(in, pf);
                 } else {
                     // 3.2
+                    // NOTE PLM: according to Clayton this conditional branch
+                    // probably doesn't happen anymore.  it was for "sketch
+                    // magic datatypes" or polymorphic contexts or something
                     child = (TreeElement)ExtUtil.read(in, new ExtWrapTagged(), pf);
                 }
                 child.setParent(this);
@@ -829,31 +755,33 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         preloadParams = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
         namespace = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 
-        Vector attStrings = ExtUtil.nullIfEmpty((Vector)ExtUtil.read(in,
-                new ExtWrapList(String.class), pf));
-        setAttributesFromSingleStringVector(attStrings);
+        readAttributesFromExternal(in, pf);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.javarosa.core.services.storage.utilities.Externalizable#writeExternal
-     * (java.io.DataOutputStream)
-     */
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#writeExternal(java.io.DataOutputStream)
-     */
+    private void readAttributesFromExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
+        if (!ExtUtil.readBool(in)) {
+            attributes = null;
+        } else {
+            attributes = new Vector<TreeElement>();
+            // 2.
+            int attrCount = (int)ExtUtil.readNumeric(in);
+            // 3.
+            for (int i = 0; i < attrCount; ++i) {
+                TreeElement attr = new TreeElement();
+                attr.readExternal(in, pf);
+                attr.setParent(this);
+                attributes.addElement(attr);
+            }
+        }
+    }
+
+    @Override
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(name));
         ExtUtil.writeNumeric(out, multiplicity);
         ExtUtil.writeNumeric(out, flags);
         ExtUtil.write(out, new ExtWrapNullable(value == null ? null : new ExtWrapTagged(value)));
 
-        // Jan 22, 2009 - csims@dimagi.com
-        // old line: ExtUtil.write(out, new
-        // ExtWrapList(ExtUtil.emptyIfNull(children)));
-        // New Child serialization
         // 1. write null status as boolean
         // 2. write number of children
         // 3. for all child in children
@@ -879,13 +807,14 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     child.writeExternal(out);
                 } else {
                     // 3.2
+                    // NOTE PLM: according to Clayton this conditional branch
+                    // probably doesn't happen anymore.  it was for "sketch
+                    // magic datatypes" or polymorphic contexts or something
                     ExtUtil.writeBool(out, false);
                     ExtUtil.write(out, new ExtWrapTagged(child));
                 }
             }
         }
-
-        // end Jan 22, 2009
 
         ExtUtil.writeNumeric(out, dataType);
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceName));
@@ -893,9 +822,21 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(preloadHandler));
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(preloadParams));
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(namespace));
+        writeAttributesFromExternal(out);
+    }
 
-        Vector attStrings = getSingleStringAttributeVector();
-        ExtUtil.write(out, new ExtWrapList(ExtUtil.emptyIfNull(attStrings)));
+    private void writeAttributesFromExternal(DataOutputStream out) throws IOException {
+        if (attributes == null) {
+            ExtUtil.writeBool(out, false);
+        } else {
+            ExtUtil.writeBool(out, true);
+            ExtUtil.writeNumeric(out, attributes.size());
+            Enumeration en = attributes.elements();
+            while (en.hasMoreElements()) {
+                TreeElement attr = (TreeElement)en.nextElement();
+                attr.writeExternal(out);
+            }
+        }
     }
 
     /**
