@@ -671,9 +671,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         attributes.addElement(attr);
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#getSingleStringAttributeVector()
-     */
     public Vector getSingleStringAttributeVector() {
         Vector strings = new Vector();
         if (attributes == null || attributes.size() == 0)
@@ -692,9 +689,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#setAttributesFromSingleStringVector(java.util.Vector)
-     */
     public void setAttributesFromSingleStringVector(Vector attStrings) {
         if (attStrings != null) {
             this.attributes = new Vector(0);
@@ -812,6 +806,9 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     child.readExternal(in, pf);
                 } else {
                     // 3.2
+                    // NOTE PLM: according to Clayton this conditional branch
+                    // probably doesn't happen anymore.  it was for "sketch
+                    // magic datatypes" or polymorphic contexts or something
                     child = (TreeElement)ExtUtil.read(in, new ExtWrapTagged(), pf);
                 }
                 child.setParent(this);
@@ -879,6 +876,9 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     child.writeExternal(out);
                 } else {
                     // 3.2
+                    // NOTE PLM: according to Clayton this conditional branch
+                    // probably doesn't happen anymore.  it was for "sketch
+                    // magic datatypes" or polymorphic contexts or something
                     ExtUtil.writeBool(out, false);
                     ExtUtil.write(out, new ExtWrapTagged(child));
                 }
