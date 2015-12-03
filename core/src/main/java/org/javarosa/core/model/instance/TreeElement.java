@@ -834,7 +834,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             Enumeration en = attributes.elements();
             while (en.hasMoreElements()) {
                 TreeElement attr = (TreeElement)en.nextElement();
-                ExtUtil.writeBool(out, true);
                 attr.writeExternal(out);
             }
         }
