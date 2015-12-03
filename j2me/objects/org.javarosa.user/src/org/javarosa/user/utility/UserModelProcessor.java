@@ -5,7 +5,7 @@ package org.javarosa.user.utility;
 
 import org.javarosa.core.model.instance.AbstractTreeElement;
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.utils.IInstanceProcessor;
+import org.javarosa.user.utility.IInstanceProcessor;
 import org.javarosa.core.services.storage.IStorageUtilityIndexed;
 import org.javarosa.core.services.storage.StorageFullException;
 import org.javarosa.core.services.storage.StorageManager;
