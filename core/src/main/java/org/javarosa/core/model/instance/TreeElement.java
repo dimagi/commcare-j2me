@@ -258,10 +258,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
      * @see org.javarosa.core.model.instance.AbstractTreeElement#addChild(org.javarosa.core.model.instance.TreeElement)
      */
     public void addChild(TreeElement child) {
-        addChild(child, false);
-    }
-
-    private void addChild(TreeElement child, boolean checkDuplicate) {
         if (!isChildable()) {
             throw new RuntimeException("Can't add children to node that has data value!");
         }
@@ -270,14 +266,8 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             throw new RuntimeException("Cannot add child with an unbound index!");
         }
 
-        if (checkDuplicate) {
-            TreeElement existingChild = getChild(child.name, child.multiplicity);
-            if (existingChild != null) {
-                throw new RuntimeException("Attempted to add duplicate child!");
-            }
-        }
         if (children == null) {
-            children = new Vector();
+            children = new Vector<TreeElement>();
         }
 
         // try to keep things in order
@@ -292,12 +282,32 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             if (anchor != null)
                 i = children.indexOf(anchor) + 1;
         }
-        children.insertElementAt(child, i);
-        child.setParent(this);
 
-        child.setRelevant(isRelevant(), true);
-        child.setEnabled(isEnabled(), true);
-        child.setInstanceName(getInstanceName());
+        children.insertElementAt(child, i);
+
+        initAddedSubNode(child);
+    }
+
+    private void addAttribute(TreeElement attr) {
+        if (attr.multiplicity != TreeReference.INDEX_ATTRIBUTE) {
+            throw new RuntimeException("Attribute doesn't have the correct index!");
+        }
+
+        if (attributes == null) {
+            attributes = new Vector<TreeElement>();
+        }
+
+        attributes.addElement(attr);
+
+        initAddedSubNode(attr);
+    }
+
+    private void initAddedSubNode(TreeElement node) {
+        node.setParent(this);
+        node.setRelevant(isRelevant(), true);
+        node.setEnabled(isEnabled(), true);
+        node.setInstanceName(getInstanceName());
+
     }
 
     /* (non-Javadoc)
@@ -394,7 +404,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             newNode.attributes = new Vector<TreeElement>();
             for (TreeElement attr : attributes) {
                 if (includeTemplates || attr.getMult() != TreeReference.INDEX_TEMPLATE) {
-                    newNode.addChild(attr.deepCopy(includeTemplates));
+                    newNode.addAttribute(attr.deepCopy(includeTemplates));
                 }
             }
         }
