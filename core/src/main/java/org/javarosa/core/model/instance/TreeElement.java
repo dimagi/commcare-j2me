@@ -244,9 +244,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         this.dataType = dataType;
     }
 
-    /* (non-Javadoc)
-     * @see org.javarosa.core.model.instance.AbstractTreeElement#addChild(org.javarosa.core.model.instance.TreeElement)
-     */
     public void addChild(TreeElement child) {
         if (!isChildable()) {
             throw new RuntimeException("Can't add children to node that has data value!");
@@ -261,24 +258,35 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         }
 
         // try to keep things in order
-        /*
         int i = children.size();
         if (child.getMult() == TreeReference.INDEX_TEMPLATE) {
             TreeElement anchor = getChild(child.getName(), 0);
             if (anchor != null)
-                i = children.indexOf(anchor);
+                i = referenceIndexOf(children, anchor);
         } else {
             TreeElement anchor = getChild(child.getName(),
                     (child.getMult() == 0 ? TreeReference.INDEX_TEMPLATE : child.getMult() - 1));
             if (anchor != null)
-                i = children.indexOf(anchor) + 1;
+                i = referenceIndexOf(children, anchor) + 1;
         }
 
         children.insertElementAt(child, i);
-        */
-        children.addElement(child);
 
         initAddedSubNode(child);
+    }
+
+    /**
+     * Implementation of Vector.indexOf that avoids calling TreeElement.equals,
+     * which is very slow.
+     */
+    private static int referenceIndexOf(Vector list, Object potentialEntry) {
+        for (int i = 0; i < list.size(); i++) {
+            Object element = list.get(i);
+            if (potentialEntry == element) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void addAttribute(TreeElement attr) {
@@ -1189,10 +1197,11 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             return true;
         }
 
+        // NOTE PLM: does not compare equality of parents because that requires
+        // trickery to avoid looping indefinitely
         if (o instanceof TreeElement) {
             TreeElement otherTreeElement = (TreeElement)o;
             final boolean doFieldsMatch = (name.equals(otherTreeElement.name) &&
-//                            parent.deepEquals(otherTreeElement.parent) &&
                     multiplicity == otherTreeElement.multiplicity &&
                     flags == otherTreeElement.flags &&
                     dataType == otherTreeElement.dataType &&
