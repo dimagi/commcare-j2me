@@ -2,14 +2,11 @@ package org.javarosa.core.model.instance.test;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
-import org.javarosa.core.model.condition.Constraint;
 import org.javarosa.core.model.instance.FormInstance;
-import org.javarosa.core.model.instance.TreeElement;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.core.util.externalizable.LivePrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
-import org.javarosa.xpath.expr.XPathExpression;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -18,7 +15,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -26,19 +22,11 @@ import static org.junit.Assert.fail;
  * @author Phillip Mates (pmates@dimagi.com).
  */
 public class FormInstanceTest {
-    private static final PrototypeFactory pf;
-
-    static {
-        pf = new PrototypeFactory();
-        pf.addClass(TreeElement.class);
-        pf.addClass(FormInstance.class);
-        pf.addClass(Constraint.class);
-        pf.addClass(XPathExpression.class);
-    }
+    private static final LivePrototypeFactory pf =  new LivePrototypeFactory();
 
     @Test
     public void testInstanceSerialization() {
-        FormParseInit fpi = new FormParseInit("/test_repeat_insert_duplicate_triggering.xml");
+        FormParseInit fpi = new FormParseInit("/xform_tests/test_repeat_insert_duplicate_triggering.xml");
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
