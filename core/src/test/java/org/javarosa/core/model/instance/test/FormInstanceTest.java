@@ -2,12 +2,15 @@ package org.javarosa.core.model.instance.test;
 
 import org.javarosa.core.model.FormDef;
 import org.javarosa.core.model.FormIndex;
+import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.instance.FormInstance;
 import org.javarosa.core.test.FormParseInit;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.LivePrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
 import org.javarosa.form.api.FormEntryModel;
+import org.javarosa.test_utils.ExprEvalUtils;
+import org.javarosa.xpath.parser.XPathSyntaxException;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -15,6 +18,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -69,7 +73,7 @@ public class FormInstanceTest {
     }
 
     @Test
-    public void testFormEntryAfterSerialization() {
+    public void testFormEntryAfterSerialization() throws XPathSyntaxException {
         FormParseInit fpi = new FormParseInit("/xform_tests/test_repeat_insert_duplicate_triggering.xml");
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
@@ -82,15 +86,22 @@ public class FormInstanceTest {
         FormInstance instance = fd.getMainInstance();
         do {
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+        EvaluationContext evalCtx = fd.getEvaluationContext();
+        Date modified = (Date)ExprEvalUtils.xpathEval(evalCtx, "/data/how_many/@date_modified");
+
 
         FormInstance reSerializedInstance = reSerializeFormInstance(instance);
 
         fd.setInstance(reSerializedInstance);
+        fd.initialize(true, new DummyInstanceInitializationFactory());
         FormEntryModel femodel = new FormEntryModel(fd);
         fec = new FormEntryController(femodel);
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
         do {
         } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+        evalCtx = fd.getEvaluationContext();
+        Date modified2 = (Date)ExprEvalUtils.xpathEval(evalCtx, "/data/how_many/@date_modified");
+        assertTrue(modified.getTime() - modified2.getTime() < 3000);
     }
 }
