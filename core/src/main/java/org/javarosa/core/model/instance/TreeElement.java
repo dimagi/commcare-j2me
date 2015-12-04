@@ -702,35 +702,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         flags = ExtUtil.readInt(in);
         value = (IAnswerData)ExtUtil.read(in, new ExtWrapNullable(new ExtWrapTagged()), pf);
 
-        // children = ExtUtil.nullIfEmpty((Vector)ExtUtil.read(in, new
-        // ExtWrapList(TreeElement.class), pf));
-
-        // Jan 22, 2009 - csims@dimagi.com
-        // old line: children = ExtUtil.nullIfEmpty((Vector)ExtUtil.read(in, new
-        // ExtWrapList(TreeElement.class), pf));
-        // New Child deserialization
-        // 1. read null status as boolean
-        // 2. read number of children
-        // 3. for i < number of children
-        // 3.1 if read boolean true , then create TreeElement and deserialize
-        // directly.
-        if (!ExtUtil.readBool(in)) {
-            // 1.
-            children = null;
-        } else {
-            children = new Vector();
-            // 2.
-            int numChildren = (int)ExtUtil.readNumeric(in);
-            // 3.
-            for (int i = 0; i < numChildren; ++i) {
-                TreeElement child = new TreeElement();
-                child.readExternal(in, pf);
-                child.setParent(this);
-                children.addElement(child);
-            }
-        }
-
-        // end Jan 22, 2009
+        readChildrenFromExternal(in, pf);
 
         dataType = ExtUtil.readInt(in);
         instanceName = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
@@ -741,6 +713,21 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         namespace = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
 
         readAttributesFromExternal(in, pf);
+    }
+
+    private void readChildrenFromExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
+        if (!ExtUtil.readBool(in)) {
+            children = null;
+        } else {
+            children = new Vector<TreeElement>();
+            int numChildren = (int)ExtUtil.readNumeric(in);
+            for (int i = 0; i < numChildren; ++i) {
+                TreeElement child = new TreeElement();
+                child.readExternal(in, pf);
+                child.setParent(this);
+                children.addElement(child);
+            }
+        }
     }
 
     private void readAttributesFromExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
@@ -767,28 +754,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         ExtUtil.writeNumeric(out, flags);
         ExtUtil.write(out, new ExtWrapNullable(value == null ? null : new ExtWrapTagged(value)));
 
-        // 1. write null status as boolean
-        // 2. write number of children
-        // 3. for all child in children
-        // 3.1 if child type == TreeElement write boolean true , then serialize
-        // directly.
-        // 3.2 if child type != TreeElement, write boolean false, then tagged
-        // child
-        if (children == null) {
-            // 1.
-            ExtUtil.writeBool(out, false);
-        } else {
-            // 1.
-            ExtUtil.writeBool(out, true);
-            // 2.
-            ExtUtil.writeNumeric(out, children.size());
-            // 3.
-            Enumeration en = children.elements();
-            while (en.hasMoreElements()) {
-                TreeElement child = (TreeElement)en.nextElement();
-                child.writeExternal(out);
-            }
-        }
+        writeChildrenToExternal(out);
 
         ExtUtil.writeNumeric(out, dataType);
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(instanceName));
@@ -796,10 +762,25 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(preloadHandler));
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(preloadParams));
         ExtUtil.writeString(out, ExtUtil.emptyIfNull(namespace));
-        writeAttributesFromExternal(out);
+
+        writeAttributesToExternal(out);
     }
 
-    private void writeAttributesFromExternal(DataOutputStream out) throws IOException {
+    private void writeChildrenToExternal(DataOutputStream out) throws IOException {
+        if (children == null) {
+            ExtUtil.writeBool(out, false);
+        } else {
+            ExtUtil.writeBool(out, true);
+            ExtUtil.writeNumeric(out, children.size());
+            Enumeration en = children.elements();
+            while (en.hasMoreElements()) {
+                TreeElement child = (TreeElement)en.nextElement();
+                child.writeExternal(out);
+            }
+        }
+    }
+
+    private void writeAttributesToExternal(DataOutputStream out) throws IOException {
         if (attributes == null) {
             ExtUtil.writeBool(out, false);
         } else {
