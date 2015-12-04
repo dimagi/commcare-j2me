@@ -1203,7 +1203,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                             (preloadParams == null && otherTreeElement.preloadParams == null)) &&
                     ((namespace != null && namespace.equals(otherTreeElement.namespace)) ||
                             (namespace == null && otherTreeElement.namespace == null)) &&
-                    ((value != null && value.equals(otherTreeElement.value)) ||
+                    ((value != null && value.uncast().getString().equals(otherTreeElement.value.uncast().getString())) ||
                             value == null && otherTreeElement.value == null));
             if (doFieldsMatch) {
                 //if ((children == null && otherTreeElement.children == null) ||
@@ -1235,6 +1235,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                         return false;
                     }
                 }
+                return true;
             }
         }
         return false;
