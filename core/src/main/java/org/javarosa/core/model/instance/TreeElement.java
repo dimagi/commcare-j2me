@@ -167,7 +167,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             if (multiplicity == TreeReference.INDEX_TEMPLATE || this.children.size() < multiplicity + 1) {
                 return null;
             }
-            return (TreeElement)this.children.elementAt(multiplicity); //droos: i'm suspicious of this
+            return children.elementAt(multiplicity);
         } else {
             for (TreeElement child : children) {
                 if (((name.hashCode() == child.getName().hashCode()) || name.equals(child.getName())) && child.getMult() == multiplicity) {
@@ -193,7 +193,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         }
 
         for (int i = 0; i < this.children.size(); i++) {
-            TreeElement child = (TreeElement)this.children.elementAt(i);
+            TreeElement child = children.elementAt(i);
             if ((child.getName().equals(name) || name.equals(TreeReference.NAME_WILDCARD))
                     && (includeTemplate || child.multiplicity != TreeReference.INDEX_TEMPLATE))
                 v.addElement(child);
@@ -210,17 +210,14 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
     }
 
     public boolean hasChildren() {
-        if (getNumChildren() > 0) {
-            return true;
-        }
-        return false;
+        return (getNumChildren() > 0);
     }
 
     /* (non-Javadoc)
      * @see org.javarosa.core.model.instance.AbstractTreeElement#getChildAt(int)
      */
     public TreeElement getChildAt(int i) {
-        return (TreeElement)children.elementAt(i);
+        return children.elementAt(i);
     }
 
     /* (non-Javadoc)
@@ -491,7 +488,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             }
             if (children != null) {
                 for (int i = 0; i < children.size(); i++) {
-                    ((TreeElement)children.elementAt(i)).setRelevant(isRelevant(), true);
+                    (children.elementAt(i)).setRelevant(isRelevant(), true);
                 }
             }
             alertStateObservers(FormElementStateListener.CHANGE_RELEVANT);
@@ -519,8 +516,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         if (isEnabled() != oldEnabled) {
             if (children != null) {
                 for (int i = 0; i < children.size(); i++) {
-                    ((TreeElement)children.elementAt(i)).setEnabled(isEnabled(),
-                            true);
+                    children.elementAt(i).setEnabled(isEnabled(), true);
                 }
             }
             alertStateObservers(FormElementStateListener.CHANGE_ENABLED);
@@ -585,7 +581,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         while (en.hasMoreElements()) {
             ((TreeElement)en.nextElement()).accept(visitor);
         }
-
     }
 
     /* ==== Attributes ==== */
@@ -719,8 +714,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         // 3. for i < number of children
         // 3.1 if read boolean true , then create TreeElement and deserialize
         // directly.
-        // 3.2 if read boolean false then create tagged element and deserialize
-        // child
         if (!ExtUtil.readBool(in)) {
             // 1.
             children = null;
@@ -730,20 +723,8 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             int numChildren = (int)ExtUtil.readNumeric(in);
             // 3.
             for (int i = 0; i < numChildren; ++i) {
-                boolean normal = ExtUtil.readBool(in);
-                TreeElement child;
-
-                if (normal) {
-                    // 3.1
-                    child = new TreeElement();
-                    child.readExternal(in, pf);
-                } else {
-                    // 3.2
-                    // NOTE PLM: according to Clayton this conditional branch
-                    // probably doesn't happen anymore.  it was for "sketch
-                    // magic datatypes" or polymorphic contexts or something
-                    child = (TreeElement)ExtUtil.read(in, new ExtWrapTagged(), pf);
-                }
+                TreeElement child = new TreeElement();
+                child.readExternal(in, pf);
                 child.setParent(this);
                 children.addElement(child);
             }
@@ -805,18 +786,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
             Enumeration en = children.elements();
             while (en.hasMoreElements()) {
                 TreeElement child = (TreeElement)en.nextElement();
-                if (child.getClass() == TreeElement.class) {
-                    // 3.1
-                    ExtUtil.writeBool(out, true);
-                    child.writeExternal(out);
-                } else {
-                    // 3.2
-                    // NOTE PLM: according to Clayton this conditional branch
-                    // probably doesn't happen anymore.  it was for "sketch
-                    // magic datatypes" or polymorphic contexts or something
-                    ExtUtil.writeBool(out, false);
-                    ExtUtil.write(out, new ExtWrapTagged(child));
-                }
+                child.writeExternal(out);
             }
         }
 
