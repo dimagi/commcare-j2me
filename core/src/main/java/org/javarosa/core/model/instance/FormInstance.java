@@ -1,19 +1,3 @@
-/*
- * Copyright (C) 2009 JavaRosa
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package org.javarosa.core.model.instance;
 
 import org.javarosa.core.model.FormDef;
@@ -35,7 +19,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-
 /**
  * This class represents the xform model instance
  */
@@ -54,14 +37,13 @@ public class FormInstance extends DataInstance<TreeElement> implements Persistab
 
     Hashtable namespaces = new Hashtable();
 
-
     /**
      * The root of this tree
      */
     protected TreeElement root = new TreeElement();
 
     public FormInstance() {
-
+        // for externalization
     }
 
     public FormInstance(TreeElement root) {
@@ -423,5 +405,32 @@ public class FormInstance extends DataInstance<TreeElement> implements Persistab
             return ExtUtil.emptyIfNull(this.getInstanceId());
         }
         throw new IllegalArgumentException("No metadata field " + fieldName + " in the form instance storage system");
+    }
+
+
+    /**
+     * Custom externalization reader used to migrate fixtures from CommCare 2.24 to 2.25
+     *
+     * This can be removed once we are certain no devices will be migrated up from 2.24
+     */
+    public void migrateSerialization(DataInputStream in, PrototypeFactory pf)
+            throws IOException, DeserializationException {
+        super.readExternal(in, pf);
+        schema = (String)ExtUtil.read(in, new ExtWrapNullable(String.class), pf);
+        dateSaved = (Date)ExtUtil.read(in, new ExtWrapNullable(Date.class), pf);
+
+        namespaces = (Hashtable)ExtUtil.read(in, new ExtWrapMap(String.class, String.class));
+        TreeElement newRoot;
+        try {
+            newRoot = TreeElement.class.newInstance();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        } catch (IllegalAccessException e){
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+        newRoot.readExternalMigration(in, pf);
+        setRoot(newRoot);
     }
 }

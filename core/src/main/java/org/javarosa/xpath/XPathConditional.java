@@ -28,10 +28,7 @@ public class XPathConditional implements IConditionExpr {
     public boolean hasNow; //indicates whether this XpathConditional contains the now() function (used for timestamping)
 
     public XPathConditional(String xpath) throws XPathSyntaxException {
-        hasNow = false;
-        if (xpath.indexOf("now()") > -1) {
-            hasNow = true;
-        }
+        hasNow = xpath.indexOf("now()") > -1;
         this.expr = XPathParseTool.parseXPath(xpath);
         this.xpath = xpath;
     }
@@ -41,7 +38,7 @@ public class XPathConditional implements IConditionExpr {
     }
 
     public XPathConditional() {
-
+        // for externalization
     }
 
     public XPathExpression getExpr() {
@@ -57,8 +54,6 @@ public class XPathConditional implements IConditionExpr {
             } else {
                 throw e;
             }
-
-
         }
     }
 
@@ -165,10 +160,12 @@ public class XPathConditional implements IConditionExpr {
         }
     }
 
+    @Override
     public int hashCode() {
         return expr.hashCode();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof XPathConditional) {
             XPathConditional cond = (XPathConditional)o;
@@ -178,11 +175,13 @@ public class XPathConditional implements IConditionExpr {
         }
     }
 
+    @Override
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         expr = (XPathExpression)ExtUtil.read(in, new ExtWrapTagged(), pf);
         hasNow = (boolean)ExtUtil.readBool(in);
     }
 
+    @Override
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.write(out, new ExtWrapTagged(expr));
         ExtUtil.writeBool(out, hasNow);
