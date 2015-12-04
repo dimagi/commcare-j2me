@@ -44,7 +44,6 @@ public class FormParseInit {
         this.init(extensionParsers);
     }
 
-
     private void init(Vector<QuestionExtensionParser> extensionParsers) {
         InputStream is = this.getClass().getResourceAsStream(formName);
 
@@ -164,7 +163,7 @@ public class FormParseInit {
             } else {
                 stuff += "]\n";
             }
-        } while (fec.stepToNextEvent() != fec.EVENT_END_OF_FORM);
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
 
         return stuff;
     }

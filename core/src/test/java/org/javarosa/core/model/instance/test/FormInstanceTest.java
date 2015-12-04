@@ -7,6 +7,7 @@ import org.javarosa.core.test.FormParseInit;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.LivePrototypeFactory;
 import org.javarosa.form.api.FormEntryController;
+import org.javarosa.form.api.FormEntryModel;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,13 @@ public class FormInstanceTest {
         fd.initialize(true, new DummyInstanceInitializationFactory());
 
         FormInstance instance = fd.getMainInstance();
+        FormInstance reSerializedInstance = reSerializeFormInstance(instance);
+
+        assertTrue("Form instance root should be same after serialization",
+                instance.getRoot().equals(reSerializedInstance.getRoot()));
+    }
+
+    private static FormInstance reSerializeFormInstance(FormInstance originalInstance) {
         FormInstance reSerializedInstance = null;
         try {
             reSerializedInstance = FormInstance.class.newInstance();
@@ -46,7 +54,7 @@ public class FormInstanceTest {
         DataOutputStream out = new DataOutputStream(baos);
 
         try {
-            instance.writeExternal(out);
+            originalInstance.writeExternal(out);
             out.flush();
             out.close();
         } catch (IOException e) {
@@ -57,8 +65,32 @@ public class FormInstanceTest {
         } catch (IOException | DeserializationException e) {
             fail(e.getMessage());
         }
+        return reSerializedInstance;
+    }
 
-        assertTrue("Form instance root should be same after serialization",
-                instance.getRoot().equals(reSerializedInstance.getRoot()));
+    @Test
+    public void testFormEntryAfterSerialization() {
+        FormParseInit fpi = new FormParseInit("/xform_tests/test_repeat_insert_duplicate_triggering.xml");
+        FormEntryController fec = fpi.getFormEntryController();
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+
+        FormDef fd = fpi.getFormDef();
+        // run initialization to ensure xforms-ready event and binds are
+        // triggered.
+        fd.initialize(true, new DummyInstanceInitializationFactory());
+
+        FormInstance instance = fd.getMainInstance();
+        do {
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
+
+        FormInstance reSerializedInstance = reSerializeFormInstance(instance);
+
+        fd.setInstance(reSerializedInstance);
+        FormEntryModel femodel = new FormEntryModel(fd);
+        fec = new FormEntryController(femodel);
+        fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
+
+        do {
+        } while (fec.stepToNextEvent() != FormEntryController.EVENT_END_OF_FORM);
     }
 }
