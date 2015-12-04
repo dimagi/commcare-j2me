@@ -48,7 +48,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
     protected int multiplicity = -1; // see TreeReference for special values
     protected AbstractTreeElement parent;
 
-
     protected IAnswerData value;
 
     //I made all of these null again because there are so many treeelements that they
@@ -63,15 +62,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
     private Constraint constraint = null;
     private String preloadHandler = null;
     private String preloadParams = null;
-
-    //private boolean required = false;// TODO
-    //protected boolean repeatable;
-    //protected boolean isAttribute;
-    //private boolean relevant = true;
-    //private boolean enabled = true;
-    // inherited properties
-    //private boolean relevantInherited = true;
-    //private boolean enabledInherited = true;
 
     private static final int MASK_REQUIRED = 0x01;
     private static final int MASK_REPEATABLE = 0x02;
@@ -282,6 +272,7 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         }
 
         // try to keep things in order
+        /*
         int i = children.size();
         if (child.getMult() == TreeReference.INDEX_TEMPLATE) {
             TreeElement anchor = getChild(child.getName(), 0);
@@ -294,6 +285,8 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                 i = children.indexOf(anchor) + 1;
         }
         children.insertElementAt(child, i);
+        */
+        children.addElement(child);
         child.setParent(this);
 
         child.setRelevant(isRelevant(), true);
@@ -1244,5 +1237,85 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
      */
     public Vector<TreeReference> tryBatchChildFetch(String name, int mult, Vector<XPathExpression> predicates, EvaluationContext evalContext) {
         return TreeUtilities.tryBatchChildFetch(this, mChildStepMapping, name, mult, predicates, evalContext);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o instanceof TreeElement) {
+            TreeElement otherTreeElement = (TreeElement)o;
+            final boolean doFieldsMatch = (name.equals(otherTreeElement.name) &&
+//                            parent.deepEquals(otherTreeElement.parent) &&
+                    multiplicity == otherTreeElement.multiplicity &&
+                    flags == otherTreeElement.flags &&
+                    dataType == otherTreeElement.dataType &&
+                    instanceName.equals(otherTreeElement.instanceName) &&
+                    constraint.equals(otherTreeElement.constraint) &&
+                    preloadHandler.equals(otherTreeElement.preloadHandler) &&
+                    preloadParams.equals(otherTreeElement.preloadParams) &&
+                    namespace.equals(otherTreeElement.namespace) &&
+                    ((value != null && value.equals(otherTreeElement.value)) || value == null && otherTreeElement.value == null));
+            if (doFieldsMatch) {
+                //if ((children == null && otherTreeElement.children == null) ||
+                if (children != null) {
+                    if (otherTreeElement.children == null) {
+                        return false;
+                    }
+                    for (TreeElement child : children) {
+                        if (!otherTreeElement.children.contains(child)) {
+                            return false;
+                        }
+                    }
+                } else {
+                    if (otherTreeElement.children != null) {
+                        return false;
+                    }
+                }
+                if (attributes != null) {
+                    if (otherTreeElement.attributes == null) {
+                        return false;
+                    }
+                    for (TreeElement attr : attributes) {
+                        if (!otherTreeElement.attributes.contains(attr)) {
+                            return false;
+                        }
+                    }
+                } else {
+                    if (otherTreeElement.attributes != null) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int childrenHashCode = 0;
+        if (children != null) {
+            for (TreeElement child : children) {
+                childrenHashCode ^= child.hashCode();
+            }
+        }
+
+        int attributesHashCode = 0;
+        if (attributes != null) {
+            for (TreeElement attr : attributes) {
+                attributesHashCode ^= attr.hashCode();
+            }
+        }
+
+        return multiplicity ^ flags ^ dataType ^
+                (instanceName == null ? 0 : instanceName.hashCode()) ^
+                (constraint == null ? 0 : constraint.hashCode()) ^
+                (preloadHandler == null ? 0 : preloadHandler.hashCode()) ^
+                (preloadParams == null ? 0 : preloadParams.hashCode()) ^
+                (namespace == null ? 0 : namespace.hashCode()) ^
+                (value == null ? 0 : value.hashCode()) ^
+                childrenHashCode ^ attributesHashCode;
     }
 }
