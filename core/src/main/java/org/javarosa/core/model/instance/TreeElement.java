@@ -12,6 +12,7 @@ import org.javarosa.core.model.instance.utils.ITreeVisitor;
 import org.javarosa.core.model.instance.utils.TreeUtilities;
 import org.javarosa.core.util.externalizable.DeserializationException;
 import org.javarosa.core.util.externalizable.ExtUtil;
+import org.javarosa.core.util.externalizable.ExtWrapList;
 import org.javarosa.core.util.externalizable.ExtWrapNullable;
 import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.Externalizable;
@@ -683,18 +684,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
 
     /* ==== SERIALIZATION ==== */
 
-    /*
-     * TODO:
-     *
-     * this new serialization scheme is kind of lame. ideally, we shouldn't have
-     * to sub-class TreeElement at all; we should have an API that can
-     * seamlessly represent complex data model objects (like weight history or
-     * immunizations) as if they were explicity XML subtrees underneath the
-     * parent TreeElement
-     *
-     * failing that, we should wrap this scheme in an ExternalizableWrapper
-     */
-
     @Override
     public void readExternal(DataInputStream in, PrototypeFactory pf) throws IOException, DeserializationException {
         name = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
@@ -1227,5 +1216,105 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                 (namespace == null ? 0 : namespace.hashCode()) ^
                 (value == null ? 0 : value.hashCode()) ^
                 childrenHashCode ^ attributesHashCode;
+    }
+
+    /**
+     * Old externalization scheme used to migrate fixtures from CommCare 2.24 to 2.25
+     *
+     * This can be removed once we are certain no devices will be migrated up from 2.24
+     */
+    public void readExternalMigration(DataInputStream in, PrototypeFactory pf)
+            throws IOException, DeserializationException {
+        name = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
+        multiplicity = ExtUtil.readInt(in);
+        flags = ExtUtil.readInt(in);
+        value = (IAnswerData)ExtUtil.read(in, new ExtWrapNullable(new ExtWrapTagged()), pf);
+
+        if (!ExtUtil.readBool(in)) {
+            children = null;
+        } else {
+            children = new Vector<TreeElement>();
+            int numChildren = (int)ExtUtil.readNumeric(in);
+            for (int i = 0; i < numChildren; ++i) {
+                boolean normal = ExtUtil.readBool(in);
+                TreeElement child;
+
+                if (normal) {
+                    child = new TreeElement();
+                    child.readExternalMigration(in, pf);
+                } else {
+                    child = (TreeElement)ExtUtil.read(in, new ExtWrapTagged(), pf);
+                }
+                child.setParent(this);
+                children.addElement(child);
+            }
+        }
+
+        dataType = ExtUtil.readInt(in);
+        instanceName = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
+        constraint = (Constraint)ExtUtil.read(in, new ExtWrapNullable(
+                Constraint.class), pf);
+        preloadHandler = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
+        preloadParams = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
+        namespace = ExtUtil.nullIfEmpty(ExtUtil.readString(in));
+
+        Vector attStrings = ExtUtil.nullIfEmpty((Vector)ExtUtil.read(in,
+                new ExtWrapList(String.class), pf));
+        setAttributesFromSingleStringVector(attStrings);
+    }
+
+    private void setAttributesFromSingleStringVector(Vector attStrings) {
+        if (attStrings != null) {
+            this.attributes = new Vector<TreeElement>();
+            for (int i = 0; i < attStrings.size(); i++) {
+                addSingleAttribute(i, attStrings);
+            }
+        }
+    }
+
+    private void addSingleAttribute(int i, Vector attStrings) {
+        String att = (String)attStrings.elementAt(i);
+        String[] array = new String[3];
+
+        int pos = -1;
+
+        //TODO: The only current assumption here is that the namespace/name of the attribute doesn't have
+        //an equals sign in it. I think this is safe. not sure.
+
+        //Split into first and second parts
+        pos = att.indexOf("=");
+
+        //put the value in our output
+        array[2] = att.substring(pos + 1);
+
+        //now we're left with the xmlns (possibly) and the
+        //name. Get that into a single string.
+        att = att.substring(0, pos);
+
+        //reset position marker.
+        pos = -1;
+
+        // Clayton Sims - Jun 1, 2009 : Updated this code:
+        //    We want to find the _last_ possible ':', not the
+        // first one. Namespaces can have URLs in them.
+        //int pos = att.indexOf(":");
+        while (att.indexOf(":", pos + 1) != -1) {
+            pos = att.indexOf(":", pos + 1);
+        }
+
+        if (pos == -1) {
+            //No namespace
+            array[0] = null;
+
+            //for the name eval below
+            pos = 0;
+        } else {
+            //there is a namespace, grab it
+            array[0] = att.substring(0, pos);
+        }
+        // Now get the name part
+        array[1] = att.substring(pos);
+
+        setAttribute(array[0], array[1], array[2]);
     }
 }
