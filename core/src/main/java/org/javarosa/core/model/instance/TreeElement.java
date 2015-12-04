@@ -652,6 +652,13 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
         if (attributes == null) {
             this.attributes = new Vector<TreeElement>();
         }
+
+        if ("".equals(namespace)) {
+            // normalize to match how non-attribute TreeElements store namespaces
+            // NOTE PLM: "" and null are quite conflated, especially in read/writeExternal.
+            namespace = null;
+        }
+
         for (int i = attributes.size() - 1; i >= 0; i--) {
             TreeElement attribut = attributes.elementAt(i);
             if (attribut.name.equals(name) && (namespace == null || namespace.equals(attribut.namespace))) {
@@ -662,10 +669,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                 }
                 return;
             }
-        }
-
-        if (namespace == null) {
-            namespace = "";
         }
 
         TreeElement attr = TreeElement.constructAttributeElement(namespace, name);
@@ -1206,7 +1209,6 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     ((value != null && value.uncast().getString().equals(otherTreeElement.value.uncast().getString())) ||
                             value == null && otherTreeElement.value == null));
             if (doFieldsMatch) {
-                //if ((children == null && otherTreeElement.children == null) ||
                 if (children != null) {
                     if (otherTreeElement.children == null) {
                         return false;
