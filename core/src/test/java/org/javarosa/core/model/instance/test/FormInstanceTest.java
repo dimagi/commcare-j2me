@@ -38,7 +38,7 @@ public class FormInstanceTest {
 
     @Test
     public void testInstanceSerialization() {
-        FormParseInit fpi = new FormParseInit("/test_nested_preds_with_rel_refs.xml");
+        FormParseInit fpi = new FormParseInit("/test_repeat_insert_duplicate_triggering.xml");
         FormEntryController fec = fpi.getFormEntryController();
         fec.jumpToIndex(FormIndex.createBeginningOfFormIndex());
 
