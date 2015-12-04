@@ -1193,12 +1193,18 @@ public class TreeElement implements Externalizable, AbstractTreeElement<TreeElem
                     multiplicity == otherTreeElement.multiplicity &&
                     flags == otherTreeElement.flags &&
                     dataType == otherTreeElement.dataType &&
-                    instanceName.equals(otherTreeElement.instanceName) &&
-                    constraint.equals(otherTreeElement.constraint) &&
-                    preloadHandler.equals(otherTreeElement.preloadHandler) &&
-                    preloadParams.equals(otherTreeElement.preloadParams) &&
-                    namespace.equals(otherTreeElement.namespace) &&
-                    ((value != null && value.equals(otherTreeElement.value)) || value == null && otherTreeElement.value == null));
+                    ((instanceName != null && instanceName.equals(otherTreeElement.instanceName)) ||
+                            (instanceName == null && otherTreeElement.instanceName == null)) &&
+                    ((constraint != null && constraint.equals(otherTreeElement.constraint)) ||
+                            (constraint == null && otherTreeElement.constraint == null)) &&
+                    ((preloadHandler != null && preloadHandler.equals(otherTreeElement.preloadHandler)) ||
+                            (preloadHandler == null && otherTreeElement.preloadHandler == null)) &&
+                    ((preloadParams != null && preloadParams.equals(otherTreeElement.preloadParams)) ||
+                            (preloadParams == null && otherTreeElement.preloadParams == null)) &&
+                    ((namespace != null && namespace.equals(otherTreeElement.namespace)) ||
+                            (namespace == null && otherTreeElement.namespace == null)) &&
+                    ((value != null && value.equals(otherTreeElement.value)) ||
+                            value == null && otherTreeElement.value == null));
             if (doFieldsMatch) {
                 //if ((children == null && otherTreeElement.children == null) ||
                 if (children != null) {
