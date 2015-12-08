@@ -409,9 +409,17 @@ public class FormInstance extends DataInstance<TreeElement> implements Persistab
 
 
     /**
-     * Custom externalization reader used to migrate fixtures from CommCare 2.24 to 2.25
+     * Custom deserializer for migrating fixtures off of CommCare 2.24.
      *
-     * This can be removed once we are certain no devices will be migrated up from 2.24
+     * The migration is needed because attribute serialization was redone to
+     * capture data-type information.  If this migration is not performed
+     * between 2.24 and subsequent versions, fixtures can not be opened. If the
+     * migration fails the user can always sync, clear user data, and restore
+     * to get reload the fixtures.
+     *
+     * Used in Android app db migration V.7 and user db migration V.9
+     *
+     * This can be removed once no devices running 2.24 remain
      */
     public void migrateSerialization(DataInputStream in, PrototypeFactory pf)
             throws IOException, DeserializationException {
