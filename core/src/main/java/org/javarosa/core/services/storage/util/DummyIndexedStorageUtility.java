@@ -107,7 +107,7 @@ public class DummyIndexedStorageUtility<T extends Persistable> implements IStora
             throw new InvalidIndexException("Multiple records matching meta index " + fieldName + " with value " + value, fieldName);
         }
 
-        return data.get(matches.elementAt(0));
+        return read(matches.elementAt(0));
     }
 
     /* (non-Javadoc)

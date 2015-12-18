@@ -244,7 +244,7 @@ public class QuestionDef implements IFormElement, Localizable {
         for (int i = 0; i < getNumChoices(); i++) {
             choices.elementAt(i).setIndex(i);
         }
-        setDynamicChoices((ItemsetBinding)ExtUtil.read(dis, new ExtWrapNullable(ItemsetBinding.class)));
+        setDynamicChoices((ItemsetBinding)ExtUtil.read(dis, new ExtWrapNullable(ItemsetBinding.class), pf));
         mQuestionStrings = (Hashtable<String, QuestionString>)ExtUtil.read(dis, new ExtWrapMap(String.class, QuestionString.class));
         extensions = (Vector)ExtUtil.read(dis, new ExtWrapListPoly(), pf);
     }
