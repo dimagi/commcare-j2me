@@ -58,13 +58,6 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
         ExtUtil.write(out, new ExtWrapTagged(m));
     }
 
-
-    public Hashtable getMetaData() {
-        Hashtable meta = new Hashtable();
-        meta.put("cache-id", m.getCacheIdentifier());
-        return meta;
-    }
-
     public Object getMetaData(String fieldName) {
         if(fieldName.equals("cache-id")) {
             return m.getCacheIdentifier();
