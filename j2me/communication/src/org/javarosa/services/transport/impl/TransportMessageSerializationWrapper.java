@@ -25,10 +25,6 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
 
     TransportMessage m;
 
-    public Class baseType() {
-        return TransportMessage.class;
-    }
-
     /* (non-Javadoc)
      * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#getData()
      */
