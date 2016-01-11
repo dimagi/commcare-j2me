@@ -25,10 +25,6 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
 
     TransportMessage m;
 
-    public Class baseType() {
-        return TransportMessage.class;
-    }
-
     /* (non-Javadoc)
      * @see org.javarosa.core.services.storage.WrappingStorageUtility.SerializationWrapper#getData()
      */
@@ -56,13 +52,6 @@ public class TransportMessageSerializationWrapper implements SerializationWrappe
      */
     public void writeExternal(DataOutputStream out) throws IOException {
         ExtUtil.write(out, new ExtWrapTagged(m));
-    }
-
-
-    public Hashtable getMetaData() {
-        Hashtable meta = new Hashtable();
-        meta.put("cache-id", m.getCacheIdentifier());
-        return meta;
     }
 
     public Object getMetaData(String fieldName) {
