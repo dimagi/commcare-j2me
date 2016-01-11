@@ -4,7 +4,6 @@ import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.BooleanData;
 import org.javarosa.core.model.data.DateData;
-import org.javarosa.core.model.data.DateTimeData;
 import org.javarosa.core.model.data.DecimalData;
 import org.javarosa.core.model.data.GeoPointData;
 import org.javarosa.core.model.data.IAnswerData;
@@ -254,8 +253,6 @@ public class XPathPathExpr extends XPathExpression {
         } else if (val instanceof SelectMultiData) {
             return (new XFormAnswerDataSerializer()).serializeAnswerData(val);
         } else if (val instanceof DateData) {
-            return val.getValue();
-        } else if (val instanceof DateTimeData) {
             return val.getValue();
         } else if (val instanceof BooleanData) {
             return val.getValue();
