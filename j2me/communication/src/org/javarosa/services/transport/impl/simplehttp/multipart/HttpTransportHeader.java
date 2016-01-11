@@ -95,8 +95,4 @@ public class HttpTransportHeader implements IDataPayload {
     public long getLength() {
         return getBytes().length;
     }
-
-    public int getTransportId() {
-        return -1;
-    }
 }
