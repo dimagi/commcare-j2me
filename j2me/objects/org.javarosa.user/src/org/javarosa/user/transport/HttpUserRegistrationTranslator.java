@@ -190,7 +190,7 @@ public class HttpUserRegistrationTranslator implements UserRegistrationTranslato
 
         addChildWithText(root,"username",u.getUsername());
 
-        addChildWithText(root,"password",u.getPassword());
+        addChildWithText(root,"password",u.getPasswordHash());
         addChildWithText(root,"uuid",u.getUniqueId());
 
         addChildWithText(root,"date",DateUtils.formatDate(new Date(),DateUtils.FORMAT_ISO8601));
