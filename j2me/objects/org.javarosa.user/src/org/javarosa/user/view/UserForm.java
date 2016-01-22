@@ -105,7 +105,7 @@ public class UserForm extends Form {
      */
     public void loadUser(User user) {
         this.usernameField.setString(user.getUsername());
-        this.passwordField.setString(user.getPassword());
+        this.passwordField.setString(user.getPasswordHash());
 
         if (user.isAdminUser()) {
             this.choice.setSelectedIndex(0, true);
