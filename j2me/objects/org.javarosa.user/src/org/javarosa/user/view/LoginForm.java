@@ -267,7 +267,7 @@ public class LoginForm extends FramedForm {
             User u = (User)ui.nextRecord();
 
             String xName = u.getUsername();
-            String xPass = u.getPassword();
+            String xPass = u.getPasswordHash();
             String xType = u.getUserType();
 
             if (   (xName.equalsIgnoreCase(usernameEntered) ||
