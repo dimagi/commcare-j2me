@@ -1,6 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'checkstyle'
-apply plugin: 'findbugs'
 apply plugin: 'pmd'
 apply plugin: 'jacoco'
 
@@ -8,17 +6,6 @@ sourceCompatibility = 1.7
 
 repositories {
     mavenCentral()
-}
-
-checkstyle {
-    toolVersion = "6.7"
-    sourceSets = [sourceSets.main]
-}
-
-findbugs {
-    ignoreFailures = true
-    sourceSets = [sourceSets.main]
-    effort = "max"
 }
 
 pmd {
