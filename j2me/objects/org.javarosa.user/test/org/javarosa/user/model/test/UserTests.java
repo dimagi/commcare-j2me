@@ -77,7 +77,7 @@ public class UserTests extends TestCase  {
         }
 
         u.setPassword("TEST");
-        if (!u.getPassword().equals("TEST")) {
+        if (!u.getPasswordHash().equals("TEST")) {
             fail("Password getter/setter broken");
         }
 

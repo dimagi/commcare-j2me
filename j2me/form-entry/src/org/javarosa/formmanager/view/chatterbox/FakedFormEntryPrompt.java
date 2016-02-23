@@ -51,10 +51,6 @@ public class FakedFormEntryPrompt extends FormEntryPrompt {
         return text;
     }
 
-    public String getPromptAttributes() {
-        return null;
-    }
-
     public Vector<SelectChoice> getSelectChoices() {
         return choices;
     }
