@@ -128,15 +128,15 @@ task formTranslateJar(type: Jar, dependsOn: translateClasses) {
     from sourceSets.translate.output
     from sourceSets.main.output
     from {
-        configurations.compile.collect {
+        configurations.translateCompile.collect {
             it.isDirectory() ? it : zipTree(it)
         }
-        configurations.runtime.collect {
+        configurations.translateRuntime.collect {
             it.isDirectory() ? it : zipTree(it)
         }
     }
     manifest {
-        attributes 'Main-Class': 'org.javarosa.engine.Harness'
+        attributes 'Main-Class': 'org.javarosa.xform.schema.Harness'
     }
 }
 
