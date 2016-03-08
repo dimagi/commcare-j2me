@@ -21,10 +21,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.Exception;
 import java.util.Date;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.pki.CertificateException;
 
 import de.enough.polish.util.StreamUtil;
 
@@ -50,6 +53,8 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
 
     HttpRequestProperties responseProperties;
     private SecurityFailureListener listener;
+
+    public static MIDlet CalloutResolver;
 
     private AuthenticatedHttpTransportMessage(String URL, HttpAuthenticator authenticator, SecurityFailureListener listener) {
         this.setCreated(new Date());
@@ -224,10 +229,19 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
                 //handle the response.
                 handleResponse(connection);
             }
+        } catch (CertificateException e) {
+            //Certificates are now (March 2016) basically useless, since no one can issue a safe SHA1
+            //cert anymore. Direct the user to a browser to accept the authentication.
+            noteFailure(e);
+            try {
+                if(CalloutResolver != null) {
+                    CalloutResolver.platformRequest(URL);
+                } 
+            } catch(Exception ex) {
+                //If the platform can't help, there's nothing to do but fail
+            } 
         } catch (IOException e) {
-            e.printStackTrace();
-            this.setStatus(TransportMessageStatus.FAILED);
-            this.setFailureReason(WrappedException.printException(e));
+            noteFailure(e);
         } finally {
             //CTS - New: Don't close the response if we got a stream here. the connection will be closed
             //when the stream is. (some platforms dont' properly delay closing the connection until after
@@ -240,6 +254,12 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
                 }
             }
         }
+    }
+
+    private void noteFailure(Exception e) {
+        e.printStackTrace();
+        this.setStatus(TransportMessageStatus.FAILED);
+        this.setFailureReason(WrappedException.printException(e));
     }
 
     public static String getChallenge(HttpConnection connection ) throws IOException {
