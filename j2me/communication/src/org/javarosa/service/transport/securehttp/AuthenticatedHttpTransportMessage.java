@@ -3,31 +3,32 @@
  */
 package org.javarosa.service.transport.securehttp;
 
-import org.javarosa.core.io.BufferedInputStream;
-import org.javarosa.core.log.WrappedException;
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.transport.payload.IDataPayload;
-import org.javarosa.core.util.PropertyUtils;
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
-import org.javarosa.services.transport.TransportService;
-import org.javarosa.services.transport.impl.TransportMessageStatus;
-import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
-import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.Exception;
 import java.util.Date;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.pki.CertificateException;
+
+import org.javarosa.core.io.BufferedInputStream;
+import org.javarosa.core.log.WrappedException;
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.services.transport.payload.IDataPayload;
+import org.javarosa.core.util.PropertyUtils;
+import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
+import org.javarosa.services.transport.TransportPropertyRules;
+import org.javarosa.services.transport.TransportService;
+import org.javarosa.services.transport.impl.TransportMessageStatus;
+import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 import de.enough.polish.util.StreamUtil;
 
@@ -233,13 +234,7 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
             //Certificates are now (March 2016) basically useless, since no one can issue a safe SHA1
             //cert anymore. Direct the user to a browser to accept the authentication.
             noteFailure(e);
-            try {
-                if(CalloutResolver != null) {
-                    CalloutResolver.platformRequest(URL);
-                } 
-            } catch(Exception ex) {
-                //If the platform can't help, there's nothing to do but fail
-            } 
+           	attemptBrowserCertificateAcceptCallout();
         } catch (IOException e) {
             noteFailure(e);
         } finally {
@@ -254,6 +249,24 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
                 }
             }
         }
+    }
+    
+    private void attemptBrowserCertificateAcceptCallout() {
+    	try {
+	    	if(CalloutResolver != null) {
+	    		//See if we have a location in our current context to do a cert accept
+	    		String fetchUrl = 
+	    				PropertyManager._().getSingularProperty(TransportPropertyRules.HTTP_CERTIFICATE_REQUEST_URL);
+	    		
+	    		if(fetchUrl == null) {
+	    			fetchUrl = URL;
+	    		}
+	            CalloutResolver.platformRequest(fetchUrl);
+	    	}
+        } catch(Exception ex) {
+            //If the platform can't help, there's nothing to do but fail
+        } 
+
     }
 
     private void noteFailure(Exception e) {
