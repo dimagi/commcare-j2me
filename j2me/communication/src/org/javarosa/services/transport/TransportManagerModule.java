@@ -5,6 +5,7 @@ package org.javarosa.services.transport;
 
 import org.javarosa.core.api.IModule;
 import org.javarosa.core.reference.ReferenceManager;
+import org.javarosa.core.services.PropertyManager;
 import org.javarosa.core.services.PrototypeManager;
 import org.javarosa.core.services.storage.StorageManager;
 import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
@@ -47,6 +48,9 @@ public class TransportManagerModule implements IModule {
         StorageManager.registerWrappedStorage(TransportMessageStore.Q_STORENAME, TransportMessageStore.Q_STORENAME, new TransportMessageSerializationWrapper());
         StorageManager.registerWrappedStorage(TransportMessageStore.RECENTLY_SENT_STORENAME, TransportMessageStore.RECENTLY_SENT_STORENAME, new TransportMessageSerializationWrapper());
         ReferenceManager._().addReferenceFactory(new HttpRoot(listener));
+        
+        PropertyManager._().addRules(new TransportPropertyRules());
+        
         TransportService.init();
     }
 
