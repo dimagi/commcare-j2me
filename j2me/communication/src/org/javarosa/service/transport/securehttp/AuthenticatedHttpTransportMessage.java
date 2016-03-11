@@ -3,19 +3,6 @@
  */
 package org.javarosa.service.transport.securehttp;
 
-import org.javarosa.core.io.BufferedInputStream;
-import org.javarosa.core.log.WrappedException;
-import org.javarosa.core.services.Logger;
-import org.javarosa.core.services.transport.payload.IDataPayload;
-import org.javarosa.core.util.PropertyUtils;
-import org.javarosa.core.util.externalizable.DeserializationException;
-import org.javarosa.core.util.externalizable.PrototypeFactory;
-import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
-import org.javarosa.services.transport.TransportService;
-import org.javarosa.services.transport.impl.TransportMessageStatus;
-import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
-import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
-
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -25,6 +12,23 @@ import java.util.Date;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.HttpConnection;
+import javax.microedition.midlet.MIDlet;
+import javax.microedition.pki.CertificateException;
+
+import org.javarosa.core.io.BufferedInputStream;
+import org.javarosa.core.log.WrappedException;
+import org.javarosa.core.services.Logger;
+import org.javarosa.core.services.PropertyManager;
+import org.javarosa.core.services.transport.payload.IDataPayload;
+import org.javarosa.core.util.PropertyUtils;
+import org.javarosa.core.util.externalizable.DeserializationException;
+import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.j2me.reference.HttpReference.SecurityFailureListener;
+import org.javarosa.services.transport.TransportPropertyRules;
+import org.javarosa.services.transport.TransportService;
+import org.javarosa.services.transport.impl.TransportMessageStatus;
+import org.javarosa.services.transport.impl.simplehttp.HttpRequestProperties;
+import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
 
 import de.enough.polish.util.StreamUtil;
 
@@ -50,6 +54,8 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
 
     HttpRequestProperties responseProperties;
     private SecurityFailureListener listener;
+
+    public static MIDlet CalloutResolver;
 
     private AuthenticatedHttpTransportMessage(String URL, HttpAuthenticator authenticator, SecurityFailureListener listener) {
         this.setCreated(new Date());
@@ -224,10 +230,13 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
                 //handle the response.
                 handleResponse(connection);
             }
+        } catch (CertificateException e) {
+            //Certificates are now (March 2016) basically useless, since no one can issue a safe SHA1
+            //cert anymore. Direct the user to a browser to accept the authentication.
+            noteFailure(e);
+           	attemptBrowserCertificateAcceptCallout();
         } catch (IOException e) {
-            e.printStackTrace();
-            this.setStatus(TransportMessageStatus.FAILED);
-            this.setFailureReason(WrappedException.printException(e));
+            noteFailure(e);
         } finally {
             //CTS - New: Don't close the response if we got a stream here. the connection will be closed
             //when the stream is. (some platforms dont' properly delay closing the connection until after
@@ -240,6 +249,30 @@ public class AuthenticatedHttpTransportMessage extends SimpleHttpTransportMessag
                 }
             }
         }
+    }
+    
+    private void attemptBrowserCertificateAcceptCallout() {
+    	try {
+	    	if(CalloutResolver != null) {
+	    		//See if we have a location in our current context to do a cert accept
+	    		String fetchUrl = 
+	    				PropertyManager._().getSingularProperty(TransportPropertyRules.HTTP_CERTIFICATE_REQUEST_URL);
+	    		
+	    		if(fetchUrl == null) {
+	    			fetchUrl = URL;
+	    		}
+	            CalloutResolver.platformRequest(fetchUrl);
+	    	}
+        } catch(Exception ex) {
+            //If the platform can't help, there's nothing to do but fail
+        } 
+
+    }
+
+    private void noteFailure(Exception e) {
+        e.printStackTrace();
+        this.setStatus(TransportMessageStatus.FAILED);
+        this.setFailureReason(WrappedException.printException(e));
     }
 
     public static String getChallenge(HttpConnection connection ) throws IOException {
