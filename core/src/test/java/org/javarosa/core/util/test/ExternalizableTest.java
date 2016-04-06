@@ -1,6 +1,7 @@
 package org.javarosa.core.util.test;
 
 import org.javarosa.core.api.ClassNameHasher;
+import org.javarosa.core.model.instance.TreeReference;
 import org.javarosa.core.util.OrderedHashtable;
 import org.javarosa.core.util.externalizable.ExtUtil;
 import org.javarosa.core.util.externalizable.ExtWrapBase;
@@ -13,6 +14,7 @@ import org.javarosa.core.util.externalizable.ExtWrapTagged;
 import org.javarosa.core.util.externalizable.Externalizable;
 import org.javarosa.core.util.externalizable.ExternalizableWrapper;
 import org.javarosa.core.util.externalizable.PrototypeFactory;
+import org.javarosa.model.xform.XPathReference;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -267,5 +269,18 @@ public class ExternalizableTest {
         m.put("d", new SampleExtz("boris", "yeltsin"));
         m.put("e", new ExtWrapList(vs));
         testExternalizable(new ExtWrapMapPoly(m), new ExtWrapMapPoly(String.class, true), pf);
+    }
+
+    @Test
+    public void testJavarosaObjectSerialization() {
+        PrototypeFactory.setStaticHasher(new ClassNameHasher());
+
+        String exprWithoutPreds = "instance('patients')/case/name";
+        TreeReference refWithoutPreds = XPathReference.getPathExpr(exprWithoutPreds).getReference();
+        testExternalizable(refWithoutPreds, TreeReference.class);
+
+        String exprWithPreds = "instance('patients')/case[@case_type='test_case']/name";
+        TreeReference refWithPreds = XPathReference.getPathExpr(exprWithPreds).getReference();
+        testExternalizable(refWithPreds, TreeReference.class);
     }
 }
