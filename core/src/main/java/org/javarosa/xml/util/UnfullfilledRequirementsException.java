@@ -37,6 +37,7 @@ public class UnfullfilledRequirementsException extends Exception {
      */
     public static final int REQUIREMENT_MULTIPLE_APPS_COMPAT_NEW = 5;
 
+    public static final int REQUIREMENT_MULTIPLE_APPS_COMPAT_UPGRADE = 6;
 
     private final int severity;
     private final int requirement;
@@ -117,5 +118,9 @@ public class UnfullfilledRequirementsException extends Exception {
      */
     public boolean isMultipleAppsViolationByExisting() {
         return requirement == REQUIREMENT_MULTIPLE_APPS_COMPAT_EXISTING;
+    }
+
+    public boolean isMultipleAppsViolationOnUpgrade() {
+        return requirement == REQUIREMENT_MULTIPLE_APPS_COMPAT_UPGRADE;
     }
 }
