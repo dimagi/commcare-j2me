@@ -295,7 +295,7 @@ public class XPathFuncExpr extends XPathExpression {
                 return DateUtils.roundDate(new Date());
             } else if (name.equals("now")) {
                 checkArity(name, 0, args.length);
-                return new Date();
+                return DateUtils.roundDate(new Date());
             } else if (name.equals("concat")) {
                 if (args.length == 1 && argVals[0] instanceof XPathNodeset) {
                     return join("", ((XPathNodeset)argVals[0]).toArgList());
@@ -381,7 +381,7 @@ public class XPathFuncExpr extends XPathExpression {
                 }
                 //calculated expressions may be recomputed w/o warning! use with caution!!
                 if (args.length == 0) {
-                    return PropertyUtils.genUUID();
+                    return "000-000"; //PropertyUtils.genUUID();
                 }
 
                 int len = toInt(argVals[0]).intValue();
