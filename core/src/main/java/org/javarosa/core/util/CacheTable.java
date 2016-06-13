@@ -56,8 +56,8 @@ public class CacheTable<T, K> {
                                 //See if our current size is 25% the size of the largest size we've been
                                 //and compact (clone to a new table) if so, since the table maintains the
                                 //largest size it has ever been.
-                                //TODO: 50 is a super arbitrary upper bound
-                                if (cache.totalAdditions > 50 && cache.totalAdditions - cache.currentTable.size() > (cache.currentTable.size() >> 2)) {
+                                //TODO: 40 is a super arbitrary upper bound
+                                if (cache.totalAdditions > 40 && cache.totalAdditions - cache.currentTable.size() > (cache.currentTable.size() >> 2)) {
                                     Hashtable newTable = new Hashtable(cache.currentTable.size());
                                     int oldMax = cache.totalAdditions;
                                     for (Enumeration en = table.keys(); en.hasMoreElements(); ) {

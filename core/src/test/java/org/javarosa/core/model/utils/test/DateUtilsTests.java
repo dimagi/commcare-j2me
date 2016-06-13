@@ -243,10 +243,10 @@ public class DateUtilsTests {
         //Testing method getDate
 
         int hour = 12;
-        int minute = 50;
+        int minute = 40;
         int second = 60;
 
-        currentTime.setTime(125060);
+        currentTime.setTime(124060);
 
         assertEquals("DateUtils's getDate returned an incorrect Time", DateUtils.getDate(hour, minute, second), currentTime);
 

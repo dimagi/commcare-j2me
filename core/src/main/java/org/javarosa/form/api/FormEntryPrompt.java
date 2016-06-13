@@ -12,6 +12,7 @@ import org.javarosa.core.model.condition.EvaluationContext;
 import org.javarosa.core.model.condition.pivot.ConstraintHint;
 import org.javarosa.core.model.condition.pivot.UnpivotableExpressionException;
 import org.javarosa.core.model.data.IAnswerData;
+import org.javarosa.core.model.data.InvalidData;
 import org.javarosa.core.model.data.SelectMultiData;
 import org.javarosa.core.model.data.SelectOneData;
 import org.javarosa.core.model.data.helper.Selection;
@@ -24,6 +25,8 @@ import org.javarosa.formmanager.view.IQuestionWidget;
 import org.javarosa.xform.parse.XFormParser;
 
 import java.util.Vector;
+
+import sun.rmi.runtime.Log;
 
 
 /**
@@ -185,6 +188,10 @@ public class FormEntryPrompt extends FormEntryCaption {
 
     public String getConstraintText(String textForm, IAnswerData attemptedValue) {
         // if doesn't exist, use the old logic
+        if(attemptedValue instanceof InvalidData){
+            return ((InvalidData) attemptedValue).getErrorMessage();
+        }
+
         if (mTreeElement.getConstraint() == null) {
             return null;
         } else {

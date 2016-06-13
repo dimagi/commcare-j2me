@@ -858,7 +858,7 @@ public class LocalizerTest {
         Thread t = new Thread(test);
         t.start();
         try {
-            t.join(50);
+            t.join(40);
         } catch (InterruptedException e) {
 
         }

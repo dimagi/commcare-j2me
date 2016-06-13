@@ -26,6 +26,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Date;
 
+import sun.rmi.runtime.Log;
+
 /**
  * A response to a question requesting a Date Value
  *
