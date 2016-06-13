@@ -65,10 +65,10 @@
             <setvalue event="xforms-ready" ref="/data/skip_weighing_nth_animal" value="3"/>
             <setvalue event="xforms-ready" ref="/data/skip_genus_nth_animal" value="1"/>
             <setvalue event="xforms-ready" ref="/data/always_true" value="true()"/>
-            <setvalue event="xforms-ready" ref="/data/init_weight" value="500"/>
+            <setvalue event="xforms-ready" ref="/data/init_weight" value="400"/>
             <setvalue event="xforms-ready" ref="/data/how_many" value="4"/>
             <setvalue event="jr-insert" ref="/data/animals/genus/species" value="'default'"/>
-            <setvalue event="jr-insert" ref="/data/animals/weight" value="50"/>
+            <setvalue event="jr-insert" ref="/data/animals/weight" value="40"/>
             <setvalue event="jr-insert" ref="/data/animals/weight/@time" value="-1"/>
             <setvalue event="jr-insert" ref="/data/animals/bmi" value="/data/tmp_bmi * 0.5"/>
             <itext>

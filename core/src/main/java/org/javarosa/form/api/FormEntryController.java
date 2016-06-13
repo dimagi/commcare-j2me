@@ -7,6 +7,8 @@ import org.javarosa.core.model.data.IAnswerData;
 import org.javarosa.core.model.instance.InvalidReferenceException;
 import org.javarosa.core.model.instance.TreeElement;
 
+import sun.rmi.runtime.Log;
+
 /**
  * This class is used to navigate through an xform and appropriately manipulate
  * the FormEntryModel's state.
@@ -168,6 +170,7 @@ public class FormEntryController {
      * @return true if saved successfully, false otherwise
      */
     private boolean commitAnswer(TreeElement element, FormIndex index, IAnswerData data) {
+
         if (data != null) {
             formEntrySession.addValueSet(index, data.uncast().getString());
         } else {

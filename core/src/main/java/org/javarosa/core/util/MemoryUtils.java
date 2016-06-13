@@ -48,7 +48,7 @@ public class MemoryUtils {
     //Used once at the beginning of an execution to enable memory profiling for
     //this run through. If you get an error when you try to profile memory,
     //due to lack of space, you can increase the profile size.
-    private static final int MEMORY_PROFILE_SIZE = 5000;
+    private static final int MEMORY_PROFILE_SIZE = 4000;
 
     public static void enableMemoryProfile() {
         memoryProfile = new long[MEMORY_PROFILE_SIZE * 2];
@@ -191,7 +191,7 @@ public class MemoryUtils {
                 currentCount++;
                 memoryAccountedFor += chunkSize;
             } catch (OutOfMemoryError oom) {
-                chunkSize = chunkSize - (chunkSize < 100 ? 1 : 50);
+                chunkSize = chunkSize - (chunkSize < 100 ? 1 : 40);
             }
         }
         for (int i = 0; i < currentCount; ++i) {
