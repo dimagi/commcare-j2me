@@ -1,6 +1,6 @@
 package org.javarosa.service.transport.securehttp;
 
-import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.util.DataUtil;
 import org.javarosa.service.transport.securehttp.cache.AuthorizationCache;
 import org.javarosa.service.transport.securehttp.cache.DigestAuthResponse;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
