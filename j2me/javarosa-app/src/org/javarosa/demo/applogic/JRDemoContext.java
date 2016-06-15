@@ -98,7 +98,7 @@ public class JRDemoContext {
     }
 
     private void parseAndProcessLanguageResources(String resourceString) {
-        Vector<String> resources = DateUtils.split(resourceString, ",", true);
+        Vector<String> resources = DataUtil.split(resourceString, ",", true);
         for(int i = 0 ; i < resources.size() ; i+=2) {
             String langkey = resources.elementAt(i);
             String resource = resources.elementAt(i+1);

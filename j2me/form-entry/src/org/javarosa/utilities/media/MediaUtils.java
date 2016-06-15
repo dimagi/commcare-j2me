@@ -160,7 +160,7 @@ public class MediaUtils {
             }
             if (!"".equals(action)) {
                 try {
-                    Vector<String> pieces = DateUtils.split(uri, "/", false);
+                    Vector<String> pieces = DataUtil.split(uri, "/", false);
                     uri = pieces.lastElement();
                 } catch (Exception e) {
                     // just use the full URI
