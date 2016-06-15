@@ -285,7 +285,7 @@ public class LoginForm extends FramedForm {
     private boolean checkPassword(String stored, String input) {
         if(stored.indexOf("$") != -1) {
             String alg = "sha1";
-            String salt = (String)DateUtils.split(stored,"$", false).elementAt(1);
+            String salt = (String)DataUtil.split(stored,"$", false).elementAt(1);
             String hashed = SHA1.encodeHex(salt + input);
             String compare = alg + "$" + salt + "$" + hashed;
 
