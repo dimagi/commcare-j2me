@@ -16,7 +16,7 @@
 
 package org.javarosa.user.view;
 
-import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.util.DataUtil;
 import org.javarosa.core.services.locale.Localization;
 import org.javarosa.core.services.storage.IStorageIterator;
 import org.javarosa.core.services.storage.IStorageUtility;

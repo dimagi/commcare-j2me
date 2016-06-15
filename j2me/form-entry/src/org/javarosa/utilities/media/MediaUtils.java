@@ -1,6 +1,6 @@
 package org.javarosa.utilities.media;
 
-import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.util.DataUtil;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
