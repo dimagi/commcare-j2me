@@ -1,6 +1,6 @@
 package org.javarosa.utilities.media;
 
-import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.util.DataUtil;
 import org.javarosa.core.reference.InvalidReferenceException;
 import org.javarosa.core.reference.Reference;
 import org.javarosa.core.reference.ReferenceManager;
@@ -160,7 +160,7 @@ public class MediaUtils {
             }
             if (!"".equals(action)) {
                 try {
-                    Vector<String> pieces = DateUtils.split(uri, "/", false);
+                    Vector<String> pieces = DataUtil.split(uri, "/", false);
                     uri = pieces.lastElement();
                 } catch (Exception e) {
                     // just use the full URI
