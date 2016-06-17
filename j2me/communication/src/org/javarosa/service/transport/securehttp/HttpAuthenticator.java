@@ -1,6 +1,6 @@
 package org.javarosa.service.transport.securehttp;
 
-import org.javarosa.core.model.utils.DateUtils;
+import org.javarosa.core.util.DataUtil;
 import org.javarosa.service.transport.securehttp.cache.AuthorizationCache;
 import org.javarosa.service.transport.securehttp.cache.DigestAuthResponse;
 import org.javarosa.services.transport.impl.simplehttp.SimpleHttpTransportMessage;
@@ -132,7 +132,7 @@ public class HttpAuthenticator {
         if(!params.containsKey("qop")) {
             qop = DigestAuthResponse.QOP_UNSPECIFIED;
         } else {
-            Vector<String> qops = DateUtils.split(params.get("qop"),",",false);
+            Vector<String> qops = DataUtil.split(params.get("qop"),",",false);
             if(qops.contains(DigestAuthResponse.QOP_AUTH_INT) && qops.contains(DigestAuthResponse.QOP_AUTH)) {
                 //choose between auth-int and auth if both are available;
                 qop = DigestAuthResponse.QOP_AUTH;
