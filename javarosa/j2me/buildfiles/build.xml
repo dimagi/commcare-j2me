@@ -285,7 +285,7 @@
   </target>
 
   <target name="extract-libs" if="extract-libs-fresh">
-    <unzip src="${javarosa-deps}" dest="{basedir}/../../" overwrite="true"/>
+    <unzip src="${javarosa-deps}" dest="{basedir}/../../../" overwrite="true"/>
   </target>
 
   <target name="init-libs" depends="extract-libs">

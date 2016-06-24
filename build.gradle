@@ -32,16 +32,16 @@ sourceSets {
     // javarosa configs
     javarosa {
           java {
-              srcDir 'javarosa/src/main/java'
+              srcDir 'javarosa/core/src/main/java'
           }
     }
     harness {
         java {
             srcDir 'javarosa/util/schema-gen/src'
-            srcDir 'javarosa/src/main/java'
+            srcDir 'javarosa/core/src/main/java'
         }
         resources{
-            srcDir 'javarosa/src/test/resources'
+            srcDir 'javarosa/core/src/test/resources'
         }
     }
 
@@ -49,14 +49,14 @@ sourceSets {
         java {
             srcDir 'javarosa/util/schema-gen/src'
             srcDir 'javarosa/util/validator/org.javarosa.xform.validator/src'
-            srcDir 'javarosa/src/main/java'
+            srcDir 'javarosa/core/src/main/java'
         }
     }
 
     // commcare configs
   main {
         java {
-            srcDir 'javarosa/src/main/java'
+            srcDir 'javarosa/core/src/main/java'
             srcDir 'cases/src'
             srcDir 'backend/src'
             srcDir 'core'
