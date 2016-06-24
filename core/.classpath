@@ -4,5 +4,11 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/javarosa-libs/kxml2-2.3.0.jar" sourcepath="/javarosa-libs/kxml2-2.3.0.jar"/>
 	<classpathentry kind="lib" path="/javarosa-libs/regexp-me.jar" sourcepath="/javarosa-libs/regexp-me.jar"/>
+
+	<classpathentry kind="src" path=""/>
+	<classpathentry combineaccessrules="false" kind="src" path="/javarosa-core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.commcare"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.commcare.cases"/>
+
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -34,10 +34,10 @@ devices/
 #mercurial
 *.rej
 *.orig
-glob:util/validator/org.javarosa.xform.validator/settings.properties
-glob:j2me/demo-app/resources/localizertest.xhtml
-glob:j2me/buildfiles/documentation/javadoc/
-glob:j2me/javarosa-app/custom-devices.xml
+glob:javarosa/util/validator/org.javarosa.xform.validator/settings.properties
+glob:javarosa/j2me/demo-app/resources/localizertest.xhtml
+glob:javarosa/j2me/buildfiles/documentation/javadoc/
+glob:javarosa/j2me/javarosa-app/custom-devices.xml
 .hg/
 
 #vi
@@ -47,13 +47,42 @@ glob:j2me/javarosa-app/custom-devices.xml
 .gitignore
 
 # Files from javarosa-dependencies-rNNNN.zip
-j2me/javarosa-app/custom-devices.xml
-j2me/javarosa-app/tools/ant-contrib.jar
-j2me/javarosa-app/tools/j2merosa-libraries.jar
-j2me/javarosa-app/tools/pyAntTasks-1.3.jar
-util/schema-gen/lib/xpp3-1.1.4.jar
-util/validator/org.javarosa.shellformtest/tools/
-util/validator/org.javarosa.xform.validator/JavaRosaFormTest.jar
+javarosa/j2me/javarosa-app/custom-devices.xml
+javarosa/j2me/javarosa-app/tools/ant-contrib.jar
+javarosa/j2me/javarosa-app/tools/j2merosa-libraries.jar
+javarosa/j2me/javarosa-app/tools/pyAntTasks-1.3.jar
+javarosa/util/schema-gen/lib/xpp3-1.1.4.jar
+javarosa/util/validator/org.javarosa.shellformtest/tools/
+javarosa/util/validator/org.javarosa.xform.validator/JavaRosaFormTest.jar
 
 # gradle
 .gradle/**
+
+backend/bin/
+application/bin/
+application/build
+core/bin/
+core/build/
+util/bin
+application/dist
+application/lib
+application/.polishSettings
+application/tools
+backend/dist/*
+key.properties
+glob:application/custom-devices.xml
+cases/bin/
+application/custom-devices.xml
+application/corpora/*
+application/cover/*
+application/cover/*
+application/coverage/image/data/three-three_three.png
+*/application/coverage/*
+application/src/org/commcare/restore/CommCareOTARestoreController.java.orig
+application/weblib*/*
+*.*~
+.hg*
+**.DS_STORE
+*.db
+.idea/
+clean_annotations.sh
